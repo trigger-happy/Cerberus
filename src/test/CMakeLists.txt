@@ -5,9 +5,6 @@
 #QT4_WRAP_UI(UIS_H ${UIS})
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
-set(QT_USE_QTSQL true)
-set(QT_USE_QTNETWORK true)
-include(${QT_USE_FILE})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_libraries(${QT_LIBRARIES})
 
