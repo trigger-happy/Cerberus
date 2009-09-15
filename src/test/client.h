@@ -3,6 +3,7 @@
 #include <QtGui>
 #include <QtNetwork>
 
+//this is a test comment
 namespace Ui{
 	class client_dlg;
 }
