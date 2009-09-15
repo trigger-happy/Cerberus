@@ -1,7 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
-#include <QtGui/QDialog>
-#include <QtNetwork/QtNetwork>
+#include <QtGui>
+#include <QtNetwork>
 
 namespace Ui{
 	class client_dlg;
