@@ -21,3 +21,8 @@ qt4_wrap_cpp(NET_SERVER_MSRC ${NET_SERVER_MHDR})
 set(NET_SERVER_UIS server.ui)
 qt4_wrap_ui(NET_SERVER_UIS_H ${NET_SERVER_UIS})
 add_executable(server ${NET_SERVER_SRC} ${NET_SERVER_MSRC} ${NET_SERVER_UIS_H})
+
+set(TEST_SRC tester.cpp)
+set(TEST_HDR tester.h)
+qt4_wrap_cpp(TEST_MOC ${TEST_HDR})
+add_executable(test ${TEST_SRC} ${TEST_MOC})

@@ -1,5 +1,6 @@
 set(QT_USE_QTSQL true)
 set(QT_USE_QTNETWORK true)
+set(QT_USE_QTTEST true)
 include(${QT_USE_FILE})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_libraries(${QT_LIBRARIES})
