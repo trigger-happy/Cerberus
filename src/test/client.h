@@ -13,9 +13,12 @@ public:
 	ClientDlg(QWidget* parent = 0);
 	~ClientDlg();
 private slots:
+	void onConnectBtn();
+	void onQuitBtn();
 	void onConnect();
-	void onQuit();
+	void onError(QAbstractSocket::SocketError error);
 private:
+	QTcpSocket* m_socket;
 	Ui::client_dlg* m_dlg;
 };
 
