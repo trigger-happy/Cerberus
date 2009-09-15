@@ -8,7 +8,9 @@ if(${WIN32})
 else()
 endif()
 
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
+
+find_package(Qt4 REQUIRED)
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
