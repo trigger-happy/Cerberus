@@ -3,8 +3,8 @@ project("Cerberus")
 
 if(${WIN32})
 	set(CMAKE_INCLUDE_PATH /usr/i686-pc-mingw32/sys-root/mingw/include/)
-	set(QT_INCLUDE_DIR /usr/i686-pc-mingw32/sys-root/mingw/include)
-	set(QT_LIBRARY_DIR /usr/i686-pc-mingw32/sys-root/mingw/lib)
+#set(QT_INCLUDE_DIR /usr/i686-pc-mingw32/sys-root/mingw/include)
+#set(QT_LIBRARY_DIR /usr/i686-pc-mingw32/sys-root/mingw/lib)
 else()
 endif()
 
