@@ -5,3 +5,4 @@ build/
 *.h~
 *.cpp~
 *.xml~
+*.user
