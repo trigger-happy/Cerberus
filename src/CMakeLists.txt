@@ -14,3 +14,4 @@ link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 
 add_subdirectory(test)
+add_subdirectory(unit_tests)
