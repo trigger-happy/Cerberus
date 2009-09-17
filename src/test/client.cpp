@@ -11,7 +11,7 @@ ClientDlg::ClientDlg(QWidget* parent): QDialog(parent), m_dlg(new Ui::client_dlg
 	connect(m_dlg->connect_btn, SIGNAL(clicked()), this, SLOT(onConnectBtn()));
 	connect(m_dlg->quit_btn, SIGNAL(clicked()), this, SLOT(onQuitBtn()));
 	
-	m_socket = new QTcpSocket();
+	m_socket = new QSslSocket();
 	connect(m_socket, SIGNAL(connected()), this, SLOT(onConnect()));
 	connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
 		this, SLOT(onError(QAbstractSocket::SocketError)));
@@ -20,7 +20,6 @@ ClientDlg::ClientDlg(QWidget* parent): QDialog(parent), m_dlg(new Ui::client_dlg
 ClientDlg::~ClientDlg(){
 	delete m_dlg;
 }
-
 
 void ClientDlg::onConnect(){
 	cout << "Connected" << endl;

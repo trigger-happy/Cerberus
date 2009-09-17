@@ -18,7 +18,7 @@ private slots:
 	void onConnect();
 	void onError(QAbstractSocket::SocketError error);
 private:
-	QTcpSocket* m_socket;
+	QSslSocket* m_socket;
 	Ui::client_dlg* m_dlg;
 };
 
