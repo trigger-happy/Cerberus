@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <questiondata>
-  <question number="1">
+  <question number="1" difficulty="1">
     <q>What is the bla bla bla?</q>
     <choice id="1">Bla</choice>
     <choice id="2">BLA</choice>
     <choice id="3">bla</choice>
     <choice id="4">blarg</choice>
   </question>
-  <question number="2">
+  <question number="2" difficulty="2">
     <q>Who is Mr. Shires?</q>
     <choice id="1">Sir Diy</choice>
     <choice id="2">Doc Mana</choice>
