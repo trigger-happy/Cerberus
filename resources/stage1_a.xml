@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<answerdata>
-  <answer number="1">1</answer>
-  <answer number="2">4</answer>
-</answerdata>
+<stage1_ans>
+	<answer number="1">1</answer>
+	<answer number="2">4</answer>
+</stage1_ans>
