@@ -1,1 +1,5 @@
 <?xml version="1.0"?>
+<config>
+	<ip>192.168.1.100</ip>
+	<port>2652</port>
+</config>
