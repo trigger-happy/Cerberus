@@ -1,6 +1,7 @@
 #include <QFile>
 #include <QString>
 #include "xml_test.h"
+#include "data_types.h"
 
 void XmlTest::q1ReadTest(){
 	QFile file("resources/stage1_q.xml");

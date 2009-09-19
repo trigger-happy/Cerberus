@@ -1,4 +1,5 @@
 #include "xml_util.h"
+#include "data_types.h"
 
 bool XmlUtil::readR1QData(const QString& xml, R1QData& data){
 	return true;
