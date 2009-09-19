@@ -7,3 +7,8 @@
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_libraries(${QT_LIBRARIES})
+
+set(XML_UT_SRCS xml_test.cpp ../utils/xml_util.cpp)
+set(XML_UT_MHDRS ../../include/xml_test.h ../../include/xml_util.h)
+qt4_wrap_cpp(XML_UT_MSRCS ${XML_UT_MHDRS})
+add_executable(xml_test ${XML_UT_SRCS} ${XML_UT_MSRCS})

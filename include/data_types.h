@@ -7,6 +7,7 @@
 using std::string;
 using std::vector;
 using std::map;
+using std::pair;
 
 struct R1Question{
 	string question;
