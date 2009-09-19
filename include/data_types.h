@@ -14,7 +14,7 @@ struct R1Question{
 };
 
 struct R1QData{
-	string msg;
+	string welcome_msg;
 	vector<R1Question> questions;
 };
 
