@@ -1,1 +1,7 @@
 <?xml version="1.0"?>
+<config>
+	<stage_data round="1">
+		<question_data>stage1_q.xml</question_data>
+		<answer_data>stage1_a.xml</answer_data>
+	</stage_data>
+</config>
