@@ -96,4 +96,22 @@ struct ServerConfig{
 	vector<StageData> stage_data;
 };
 
+struct UserData{
+	string user_name;
+	string password;
+	string firstname;
+	string lastname;
+	string teamname;
+};
+
+struct TeamData{
+	string teamname;
+	string school;
+};
+
+struct ScoreData{
+	string user_name;
+	double score;
+};
+
 #endif //DATA_TYPES_H
