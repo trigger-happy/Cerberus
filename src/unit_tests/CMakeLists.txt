@@ -9,6 +9,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_libraries(${QT_LIBRARIES})
 
 set(XML_UT_SRCS xml_test.cpp ../utils/xml_util.cpp)
-set(XML_UT_MHDRS ../../include/xml_test.h)
+set(XML_UT_MHDRS ../../include/tests/xml_test.h)
 qt4_wrap_cpp(XML_UT_MSRCS ${XML_UT_MHDRS})
 add_executable(xml_test ${XML_UT_SRCS} ${XML_UT_MSRCS})
+
+set(SQL_UT_SRCS sql_test.cpp ../utils/sql_util.cpp)
+set(SQL_UT_MHDRS ../../include/tests/sql_test.h)
+qt4_wrap_cpp(SQL_UT_MSRCS ${SQL_UT_MHDRS})
+add_executable(sql_test ${SQL_UT_SRCS} ${SQL_UT_MSRCS})

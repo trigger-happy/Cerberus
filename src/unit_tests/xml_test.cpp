@@ -1,6 +1,6 @@
 #include <QFile>
 #include <QString>
-#include "xml_test.h"
+#include "tests/xml_test.h"
 #include "data_types.h"
 
 void XmlTest::q1ReadTest(){
