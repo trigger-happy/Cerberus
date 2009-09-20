@@ -3,7 +3,8 @@
 #include <QtSql/QtSql>
 #include "data_types.h"
 
-class SqlUtil{
+class SqlUtil : public QObject{
+	Q_OBJECT
 public:
 	bool init(const QString& dbname);
 	int addTeam(const QString& team_name, const QString& school);

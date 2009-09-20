@@ -3,7 +3,8 @@
 #include <QtXml/QtXml>
 #include "data_types.h"
 
-class XmlUtil{
+class XmlUtil : public QObject{
+	Q_OBJECT;
 public:
 	/*!
 	Parse the round 1 question data.
