@@ -13,6 +13,7 @@ ContestantNetwork::ContestantNetwork(QObject* parent) : QObject(parent){
 	connect(m_socket, SIGNAL(readyRead()), this, SLOT(ready()));
 	m_blocksize = 0;
 	m_state = CCS_DISCONNECTED;
+	m_authenticated = false;
 }
 
 ContestantNetwork::~ContestantNetwork(){
@@ -44,7 +45,7 @@ void ContestantNetwork::authenticate(const QString& user_name, const QString& pw
 	m_socket->write(block);
 }
 
-int ContestantNetwork::r1QDataRequest(){
+void ContestantNetwork::r1QDataRequest(){
 	m_state = CCS_R1QDATA_REQUEST;
 	//construct a question data request packet
 	//packet format is:
@@ -57,7 +58,7 @@ int ContestantNetwork::r1QDataRequest(){
 	m_socket->write(block);
 }
 
-int ContestantNetwork::r1ADataSend(const QString& xml){
+void ContestantNetwork::r1ADataSend(const QString& xml){
 	m_state = CCS_R1ADATA_SEND;
 	//construct an answer data packet
 	//packet format:
@@ -79,6 +80,7 @@ void ContestantNetwork::connected(){
 
 void ContestantNetwork::disconnected(){
 	m_state = CCS_DISCONNECTED;
+	m_authenticated = false;
 }
 
 void ContestantNetwork::error(const QAbstractSocket::SocketError& err){
@@ -116,6 +118,7 @@ void ContestantNetwork::ready(){
 				bool result;
 				in >> result;
 				emit onAuthenticate(result);
+				m_authenticated = true;
 			}
 			break;
 		case SR_QDATA:
