@@ -1,6 +1,7 @@
 #ifndef SERVER_NET_H
 #define SERVER_NET_H
 #include <QtNetwork/QtNetwork>
+#include <boost/pool/object_pool.hpp>
 #include <list>
 #include "patterns/singleton.h"
 
@@ -19,7 +20,7 @@ private:
 	QTcpSocket* m_socket;
 };
 
-typedef list<ContestantConnection> concon_list;
+typedef list<ContestantConnection*> pconcon_list;
 
 class ServerNetwork : public QObject, public Singleton<ServerNetwork>{
 	Q_OBJECT;
@@ -33,8 +34,10 @@ signals:
 protected:
 	//extra data, we may need a resource manager for these
 	QString* m_r1qdata;
-	//connections
-	concon_list m_contestants;
+	//active connections
+	pconcon_list m_conconlist;
+	//connection pool
+	boost::object_pool<ContestantConnection> m_concon_pool;
 };
 
 #endif //SERVER_NET_H
