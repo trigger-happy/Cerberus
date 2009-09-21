@@ -3,8 +3,16 @@
 #include <QtNetwork/QtNetwork>
 #include <list>
 #include "patterns/singleton.h"
+#include "sql_util.h"
 
 using std::list;
+
+enum CONTESTANT_REQUEST{
+	CR_CONTEST_STATE = 0,
+	CR_AUTHENTICATE,
+	CR_QDATA,
+	CR_ADATA
+};
 
 class ContestantConnection : public QObject{
 	Q_OBJECT;
@@ -16,9 +24,18 @@ public slots:
 	void ready();
 	void disconnected();
 signals:
+	void contestantDisconnect(ContestantConnection* cc);
 private:
+	//some private functions
+	void authenticationReply(bool res);
+	void sendR1QData(const QString& xml);
+	void sendR1AReply(bool res);
+	void sendContestState(quint16 state);
+	
+	//private fields
 	QString* m_r1qdata;
 	QTcpSocket* m_socket;
+	quint16 m_blocksize;
 };
 
 typedef list<ContestantConnection> concon_list;
