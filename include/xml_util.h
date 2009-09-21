@@ -2,8 +2,9 @@
 #define XML_UTIL_H
 #include <QtXml/QtXml>
 #include "data_types.h"
+#include "patterns/singleton.h"
 
-class XmlUtil : public QObject{
+class XmlUtil : public QObject, public Singleton<XmlUtil>{
 	Q_OBJECT;
 public:
 	/*!

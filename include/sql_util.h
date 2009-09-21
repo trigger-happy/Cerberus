@@ -2,8 +2,9 @@
 #define SQL_UTIL_H
 #include <QtSql/QtSql>
 #include "data_types.h"
+#include "patterns/singleton.h"
 
-class SqlUtil : public QObject{
+class SqlUtil : public QObject, public Singleton<SqlUtil>{
 	Q_OBJECT
 public:
 	bool init(const QString& dbname);
