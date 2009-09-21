@@ -62,19 +62,22 @@ public:
 	Attempt to authenticate (use the onAuthenticate signal to get the response).
 	\param user_name QString containing the user name.
 	\param pw QString containing the password.
+	\return true if the data was sent, false otherwise.
 	*/
-	void authenticate(const QString& user_name, const QString& pw);
+	bool authenticate(const QString& user_name, const QString& pw);
 	
 	/*!
 	Requet for the round 1 question data from the server.
+	\return true if the data was sent, false otherwise.
 	*/
-	void r1QDataRequest();
+	bool r1QDataRequest();
 	
 	/*!
 	Send the answer data for 1st round to the server.
 	\param xml QString containing the xml answer data to be sent.
+	\return true if the data was sent, false otherwise.
 	*/
-	void r1ADataSend(const QString& xml);
+	bool r1ADataSend(const QString& xml);
 	
 	/*!
 	Get the current state of the connection class.

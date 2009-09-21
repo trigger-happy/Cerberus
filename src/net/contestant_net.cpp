@@ -28,7 +28,10 @@ void ContestantNetwork::disconnectFromHost(){
 	m_socket->disconnectFromHost();
 }
 
-void ContestantNetwork::authenticate(const QString& user_name, const QString& pw){
+bool ContestantNetwork::authenticate(const QString& user_name, const QString& pw){
+	if(!m_socket->isWritable()){
+		return false;
+	}
 	m_state = CCS_AUTHENTICATING;
 	//construct an authentication packet
 	//packet format is:
@@ -43,9 +46,13 @@ void ContestantNetwork::authenticate(const QString& user_name, const QString& pw
 	out.device()->seek(0);
 	out << (quint16)(block.size()-sizeof(quint16));
 	m_socket->write(block);
+	return true;
 }
 
-void ContestantNetwork::r1QDataRequest(){
+bool ContestantNetwork::r1QDataRequest(){
+	if(!m_socket->isWritable()){
+		return false;
+	}
 	m_state = CCS_R1QDATA_REQUEST;
 	//construct a question data request packet
 	//packet format is:
@@ -56,9 +63,13 @@ void ContestantNetwork::r1QDataRequest(){
 	out.setVersion(QDataStream::Qt_4_5);
 	out << (quint16)sizeof(quint16) << (quint16)2;
 	m_socket->write(block);
+	return true;
 }
 
-void ContestantNetwork::r1ADataSend(const QString& xml){
+bool ContestantNetwork::r1ADataSend(const QString& xml){
+	if(!m_socket->isWritable()){
+		return false;
+	}
 	m_state = CCS_R1ADATA_SEND;
 	//construct an answer data packet
 	//packet format:
@@ -72,6 +83,7 @@ void ContestantNetwork::r1ADataSend(const QString& xml){
 	out.device()->seek(0);
 	out << (quint16)(block.size()-sizeof(quint16));
 	m_socket->write(block);
+	return true;
 }
 
 void ContestantNetwork::connected(){
