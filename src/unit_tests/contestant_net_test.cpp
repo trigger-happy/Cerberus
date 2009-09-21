@@ -1,7 +1,7 @@
 #include <QFile>
 #include "tests/contestant_net_test.h"
 
-void CCNetTest::init(){
+CCNetTest::CCNetTest(QObject* parent) : QObject(parent){
 	QVERIFY(m_network.getState() == CCS_DISCONNECTED);
 }
 

@@ -5,8 +5,9 @@
 
 class CCNetTest : public QObject{
 	Q_OBJECT;
+public:
+	CCNetTest(QObject* parent = 0);
 private slots:
-	void init();
 	void connectionTest();
 	void authenticationTest();
 	void R1QDataTest();
