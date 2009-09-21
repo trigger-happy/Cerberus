@@ -20,6 +20,10 @@ private slots:
 	void onQuitBtn();
 	void onConnect();
 	void onError(QAbstractSocket::SocketError error);
+	void onQDR();
+	void onADS();
+	void onR1QData(const QString& xml);
+	void onR1AData(bool result);
 private:
 	ContestantNetwork* m_net;
 	Ui::client_dlg* m_dlg;

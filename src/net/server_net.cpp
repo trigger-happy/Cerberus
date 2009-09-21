@@ -128,6 +128,10 @@ void ContestantConnection::sendContestState(quint16 state){
 	m_socket->write(block);
 }
 
+void ContestantConnection::setR1QData(const QString* xml){
+	m_r1qdata = xml;
+}
+
 ServerNetwork::ServerNetwork(QObject* parent) : QObject(parent){
 	//initialize stuff here
 	m_server = new QTcpServer(this);
@@ -145,6 +149,7 @@ void ServerNetwork::listen(quint16 port){
 void ServerNetwork::newConnection(){
 	ContestantConnection* cc = new ContestantConnection(this);
 	cc->setSocket(m_server->nextPendingConnection());
+	cc->setR1QData(&m_r1qdata);
 	connect(cc, SIGNAL(contestantDisconnect(ContestantConnection*)), 
 	this, SLOT(contestantDisconnect(ContestantConnection*)));
 	m_contestants.insert(m_contestants.end(), cc);
@@ -166,4 +171,8 @@ void ServerNetwork::contestantDisconnect(ContestantConnection* c){
 		delete *i;
 		m_contestants.erase(i);
 	}
+}
+
+void ServerNetwork::setR1QData(const QString& xml){
+	m_r1qdata = xml;
 }

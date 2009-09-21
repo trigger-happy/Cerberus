@@ -6,113 +6,123 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>264</width>
-    <height>490</height>
+    <width>246</width>
+    <height>265</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>263</width>
-     <height>95</height>
+     <width>245</width>
+     <height>260</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>IP:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Port:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="connect_btn">
-        <property name="text">
-         <string>&amp;Connect</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLineEdit" name="ip_ledit"/>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="port_ledit"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="quit_btn">
-        <property name="text">
-         <string>&amp;Quit</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>110</y>
-     <width>190</width>
-     <height>97</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_5">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>user</string>
+           <string>IP:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>pass</string>
+           <string>Port:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="connect_btn">
+          <property name="text">
+           <string>&amp;Connect</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QLineEdit" name="user_ledit"/>
+         <widget class="QLineEdit" name="ip_ledit"/>
         </item>
         <item>
-         <widget class="QLineEdit" name="pass_ledit"/>
+         <widget class="QLineEdit" name="port_ledit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="quit_btn">
+          <property name="text">
+           <string>&amp;Quit</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="QPushButton" name="auth_btn">
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>user</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>pass</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLineEdit" name="user_ledit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="pass_ledit"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="auth_btn">
+        <property name="text">
+         <string>&amp;Authenticate</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="qdr_btn">
       <property name="text">
-       <string>&amp;Authenticate</string>
+       <string>QDataRequest</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="ads_btn">
+      <property name="text">
+       <string>ADataSend</string>
       </property>
      </widget>
     </item>

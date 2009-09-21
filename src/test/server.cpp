@@ -27,6 +27,8 @@ ServerDlg::ServerDlg(QWidget* parent): QDialog(parent), m_dlg(new Ui::server_dlg
 	connect(m_dlg->quit_btn, SIGNAL(clicked()), this, SLOT(onQuitBtn()));
 	m_server = new ServerNetwork(this);
 	connect(m_server, SIGNAL(onNewConnection()), this, SLOT(onConnection()));
+	QString xml = "<?xml version=\"1.0\"?>";
+	m_server->setR1QData(xml);
 	m_server->listen(2652);
 }
 
