@@ -20,7 +20,7 @@ ContestantNetwork::~ContestantNetwork(){
 	delete m_socket;
 }
 
-void ContestantNetwork::connectToHost(const QString& ip, int port){
+void ContestantNetwork::connectToHost(const QString& ip, quint16 port){
 	m_socket->connectToHost(ip, port);
 }
 

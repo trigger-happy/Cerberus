@@ -43,7 +43,7 @@ public:
 	\param ip QString containing the ip address.
 	\param port integer containing the port.
 	*/
-	void connectToHost(const QString& ip, int port);
+	void connectToHost(const QString& ip, quint16 port);
 	
 	/*!
 	Disconnect from the host.
