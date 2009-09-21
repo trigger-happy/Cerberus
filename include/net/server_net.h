@@ -50,6 +50,7 @@ public slots:
 	void newConnection();
 	void contestantDisconnect(ContestantConnection* c);
 signals:
+	void onNewConnection();
 protected:
 	//server socket
 	QTcpServer* m_server;

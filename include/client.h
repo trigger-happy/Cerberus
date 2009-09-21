@@ -2,6 +2,7 @@
 #define CLIENT_H
 #include <QtGui>
 #include <QtNetwork>
+#include "net/contestant_net.h"
 
 namespace Ui{
 	class client_dlg;
@@ -13,12 +14,14 @@ public:
 	ClientDlg(QWidget* parent = 0);
 	~ClientDlg();
 private slots:
+	void onAuthReply(bool result);
+	void onAuthBtn();
 	void onConnectBtn();
 	void onQuitBtn();
 	void onConnect();
 	void onError(QAbstractSocket::SocketError error);
 private:
-	QSslSocket* m_socket;
+	ContestantNetwork* m_net;
 	Ui::client_dlg* m_dlg;
 };
 

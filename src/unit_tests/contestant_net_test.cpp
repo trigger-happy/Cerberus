@@ -1,17 +1,20 @@
 #include <QFile>
 #include "tests/contestant_net_test.h"
 
-CCNetTest::CCNetTest(QObject* parent) : QObject(parent), m_server(this){
+CCNetTest::CCNetTest(QObject* parent) : QObject(parent), m_server(this), m_contestant(this){
 	QVERIFY(m_contestant.getState() == CCS_DISCONNECTED);
 }
 
 void CCNetTest::connectionTest(){
-	QString ip = "127.0.0.1";
-	int port = 2652;
-	QSignalSpy spy(&m_contestant, SIGNAL(connected()));
+	QString ip = "localhost";
+	quint16 port = 2652;
+	//have the server listen
+	m_server.listen(port);
+	//attempt to connect
+	QSignalSpy spy(&m_contestant, SIGNAL(onConnect()));
 	m_contestant.connectToHost(ip, port);
-	QVERIFY(spy.count() == 1);
 	QVERIFY(m_contestant.getState() == CCS_STANDBY);
+	QVERIFY(spy.count() == 1);
 }
 
 void CCNetTest::authenticationTest(){

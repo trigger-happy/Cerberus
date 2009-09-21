@@ -10,15 +10,22 @@ ClientDlg::ClientDlg(QWidget* parent): QDialog(parent), m_dlg(new Ui::client_dlg
 	cout << "Constructor" << endl;
 	connect(m_dlg->connect_btn, SIGNAL(clicked()), this, SLOT(onConnectBtn()));
 	connect(m_dlg->quit_btn, SIGNAL(clicked()), this, SLOT(onQuitBtn()));
+	connect(m_dlg->auth_btn, SIGNAL(clicked()), this, SLOT(onAuthBtn()));
 	
-	m_socket = new QSslSocket();
-	connect(m_socket, SIGNAL(connected()), this, SLOT(onConnect()));
-	connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
-		this, SLOT(onError(QAbstractSocket::SocketError)));
+	m_net = new ContestantNetwork(this);
+	connect(m_net, SIGNAL(onAuthenticate(bool)), this, SLOT(onAuthReply(bool)));
 }
 
 ClientDlg::~ClientDlg(){
 	delete m_dlg;
+}
+
+void ClientDlg::onAuthReply(bool result){
+	cout << "Reply result: " << result << endl;
+}
+
+void ClientDlg::onAuthBtn(){
+	m_net->authenticate(m_dlg->user_ledit->text(), m_dlg->pass_ledit->text());
 }
 
 void ClientDlg::onConnect(){
@@ -27,7 +34,7 @@ void ClientDlg::onConnect(){
 
 void ClientDlg::onConnectBtn(){
 	cout << "Connect" << endl;
-	m_socket->connectToHost(m_dlg->ip_ledit->text(), m_dlg->port_ledit->text().toInt());
+	m_net->connectToHost(m_dlg->ip_ledit->text(), m_dlg->port_ledit->text().toInt());
 }
 
 void ClientDlg::onQuitBtn(){

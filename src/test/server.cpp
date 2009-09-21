@@ -25,9 +25,9 @@ ServerDlg::ServerDlg(QWidget* parent): QDialog(parent), m_dlg(new Ui::server_dlg
 	m_dlg->setupUi(this);
 	cout << "Constructor" << endl;
 	connect(m_dlg->quit_btn, SIGNAL(clicked()), this, SLOT(onQuitBtn()));
-	m_server = new QTcpServer(this);
-	connect(m_server, SIGNAL(newConnection()), this, SLOT(onConnection()));
-	m_server->listen(QHostAddress::Any, 3129);
+	m_server = new ServerNetwork(this);
+	connect(m_server, SIGNAL(onNewConnection()), this, SLOT(onConnection()));
+	m_server->listen(2652);
 }
 
 ServerDlg::~ServerDlg()
@@ -37,11 +37,7 @@ ServerDlg::~ServerDlg()
 
 void ServerDlg::onConnection()
 {
-	log += QString("Client Connected\n");
-	m_dlg->log_tedt->setText(log);
-	QTcpSocket* s = m_server->nextPendingConnection();
-	log += QString("IP: ") + s->localAddress().toString();
-	m_dlg->log_tedt->setText(log);
+	cout << "Connection" << endl;
 }
 
 void ServerDlg::onQuitBtn()

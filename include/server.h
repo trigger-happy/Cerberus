@@ -18,6 +18,7 @@
 #define SERVER_H
 #include <QtGui>
 #include <QtNetwork>
+#include "net/server_net.h"
 
 namespace Ui{
 	class server_dlg;
@@ -34,7 +35,7 @@ private slots:
 private:
 	QString log;
 	Ui::server_dlg* m_dlg;
-	QTcpServer* m_server;
+	ServerNetwork* m_server;
 };
 
 #endif // SERVER_H

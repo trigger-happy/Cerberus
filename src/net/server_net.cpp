@@ -1,10 +1,12 @@
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include "net/server_net.h"
 
 using namespace std;
 
 ContestantConnection::ContestantConnection(QObject* parent) : QObject(parent){
+	m_blocksize = 0;
 }
 
 void ContestantConnection::setSocket(QTcpSocket* socket){
@@ -71,8 +73,10 @@ void ContestantConnection::ready(){
 			}
 			break;
 		default:
+			cout << command << endl;
 			assert(false);
 	}
+	m_blocksize = 0;
 }
 
 void ContestantConnection::disconnected(){
@@ -128,6 +132,7 @@ ServerNetwork::ServerNetwork(QObject* parent) : QObject(parent){
 	//initialize stuff here
 	m_server = new QTcpServer(this);
 	connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnection()));
+	connect(m_server, SIGNAL(newConnection()), this, SIGNAL(onNewConnection()));
 }
 
 ServerNetwork::~ServerNetwork(){

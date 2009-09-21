@@ -1,8 +1,11 @@
 #include <cassert>
+#include <iostream>
 #include "net/contestant_net.h"
 
+using namespace std;
+
 ContestantNetwork::ContestantNetwork(QObject* parent) : QObject(parent){
-	m_socket = new QTcpSocket();
+	m_socket = new QTcpSocket(this);
 	connect(m_socket, SIGNAL(connected()), this, SLOT(connected()));
 	connect(m_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 	connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), 
@@ -96,6 +99,7 @@ void ContestantNetwork::disconnected(){
 }
 
 void ContestantNetwork::error(const QAbstractSocket::SocketError& err){
+	cerr << "Error " << err << endl;
 }
 
 void ContestantNetwork::ready(){
@@ -153,4 +157,5 @@ void ContestantNetwork::ready(){
 			assert(false);
 	}
 	m_state = CCS_STANDBY;
+	m_blocksize = 0;
 }
