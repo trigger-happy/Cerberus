@@ -38,7 +38,7 @@ private:
 	quint16 m_blocksize;
 };
 
-typedef list<ContestantConnection> concon_list;
+typedef list<ContestantConnection*> concon_list;
 
 class ServerNetwork : public QObject, public Singleton<ServerNetwork>{
 	Q_OBJECT;

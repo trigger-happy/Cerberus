@@ -138,10 +138,11 @@ void ServerNetwork::listen(quint16 port){
 }
 
 void ServerNetwork::newConnection(){
-	ContestantConnection cc(this);
-	cc.setSocket(m_server->nextPendingConnection());
-	connect(&cc, SIGNAL(contestantDisconnect(ContestantConnection*)), 
+	ContestantConnection* cc = new ContestantConnection(this);
+	cc->setSocket(m_server->nextPendingConnection());
+	connect(cc, SIGNAL(contestantDisconnect(ContestantConnection*)), 
 	this, SLOT(contestantDisconnect(ContestantConnection*)));
+	m_contestants.insert(m_contestants.end(), cc);
 	//TODO: add more stuff here for when a new client connects
 }
 
@@ -151,12 +152,13 @@ void ServerNetwork::contestantDisconnect(ContestantConnection* c){
 	//remove it from the list
 	concon_list::iterator i = m_contestants.begin();
 	while(i != m_contestants.end()){
-		if(&(*i) == c){
+		if(*i == c){
 			break;
 		}
 		i++;
 	}
-	if(&(*i) == c){
+	if(*i == c){
+		delete *i;
 		m_contestants.erase(i);
 	}
 }
