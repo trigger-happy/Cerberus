@@ -10,6 +10,13 @@ enum CCSTATE{
 	CCS_STANDBY
 };
 
+enum SERVER_REPLIES{
+	SR_CONTEST_STATE = 0,
+	SR_AUTHENTICATE,
+	SR_QDATA,
+	SR_ADATA
+};
+
 class ContestantNetwork : public QObject{
 	Q_OBJECT;
 public:
@@ -27,7 +34,10 @@ protected slots:
 	void connected();
 	void disconnected();
 	void error(const QAbstractSocket::SocketError& err);
+	void ready();
 signals:
+	void onContestStateChange(int state);
+	void onError(const QAbstractSocket::SocketError& err);
 	void onConnect();
 	void onAuthenticate(bool);
 	void onR1QData(const QString& xml);
@@ -36,6 +46,7 @@ protected:
 	QTcpSocket* m_socket;
 	bool m_authenticated;
 	CCSTATE m_state;
+	quint16 m_blocksize;
 };
 
 #endif //CONTESTANT_NET_H
