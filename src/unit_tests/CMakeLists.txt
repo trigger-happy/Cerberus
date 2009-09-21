@@ -18,7 +18,11 @@ set(SQL_UT_MHDRS ../../include/tests/sql_test.h ../../include/sql_util.h)
 qt4_wrap_cpp(SQL_UT_MSRCS ${SQL_UT_MHDRS})
 add_executable(sql_test ${SQL_UT_SRCS} ${SQL_UT_MSRCS})
 
-set(CCNET_UT_SRCS contestant_net_test.cpp ../net/contestant_net.cpp)
-set(CCNET_UT_MHDRS ../../include/tests/contestant_net_test.h ../../include/net/contestant_net.h)
+set(CCNET_UT_SRCS contestant_net_test.cpp 
+	../net/contestant_net.cpp
+	../net/server_net.cpp)
+set(CCNET_UT_MHDRS ../../include/tests/contestant_net_test.h 
+	../../include/net/contestant_net.h
+	../../include/net/server_net.h)
 qt4_wrap_cpp(CCNET_UT_MSRCS ${CCNET_UT_MHDRS})
 add_executable(ccnet_test ${CCNET_UT_SRCS} ${CCNET_UT_MSRCS})

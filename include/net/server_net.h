@@ -9,8 +9,10 @@ using std::list;
 class ContestantConnection : public QObject{
 	Q_OBJECT;
 public:
-	ContestantConnection(QTcpSocket* socket, QObject* parent = 0);
+	ContestantConnection(QObject* parent = 0);
+	void setSocket(QTcpSocket* m_socket);
 public slots:
+	void error(const QAbstractSocket::SocketError& err);
 	void ready();
 	void disconnected();
 signals:
@@ -29,8 +31,11 @@ public:
 	void listen(quint16 port);
 public slots:
 	void newConnection();
+	void contestantDisconnect(ContestantConnection* c);
 signals:
 protected:
+	//server socket
+	QTcpServer* m_server;
 	//extra data, we may need a resource manager for these
 	QString* m_r1qdata;
 	//connections
