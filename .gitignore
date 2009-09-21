@@ -1,6 +1,7 @@
 build/
 docs/
 .kdev4/
+Doxyfile~
 *.kdev4
 *.txt~
 *.h~
