@@ -2,7 +2,7 @@
 #define XML_TEST_H
 #include <QtTest/QtTest>
 #include <QObject>
-#include "xml_util.h"
+#include "util/xml_util.h"
 
 class XmlTest : public QObject{
 	Q_OBJECT;

@@ -1,7 +1,7 @@
 #ifndef SQL_TEST_H
 #define SQL_TEST_H
 #include <QtTest/QTest>
-#include "sql_util.h"
+#include "util/sql_util.h"
 
 class SqlTest : public QObject{
 	Q_OBJECT;

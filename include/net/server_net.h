@@ -4,7 +4,7 @@
 #include <list>
 #include "patterns/singleton.h"
 #include "error_defs.h"
-#include "sql_util.h"
+#include "util/sql_util.h"
 
 using std::list;
 
