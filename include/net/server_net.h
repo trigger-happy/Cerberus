@@ -3,6 +3,7 @@
 #include <QtNetwork/QtNetwork>
 #include <list>
 #include "patterns/singleton.h"
+#include "error_defs.h"
 #include "sql_util.h"
 
 using std::list;
@@ -90,6 +91,7 @@ private:
 	const QString* m_r1qdata;
 	QTcpSocket* m_socket;
 	quint16 m_blocksize;
+	bool m_authenticated;
 };
 
 typedef list<ContestantConnection*> concon_list;

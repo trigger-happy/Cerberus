@@ -7,6 +7,7 @@ using namespace std;
 
 ContestantConnection::ContestantConnection(QObject* parent) : QObject(parent){
 	m_blocksize = 0;
+	m_authenticated = false;
 }
 
 void ContestantConnection::setSocket(QTcpSocket* socket){
@@ -42,34 +43,38 @@ void ContestantConnection::ready(){
 	switch(command){
 		case CR_CONTEST_STATE:
 			//contestant is asking for the contest state.
-			{
+			if(m_authenticated){
+			}else{
 			}
 			break;
 		case CR_AUTHENTICATE:
 			//contestant wants to authenticate
-			{
+			if(!m_authenticated){
 				QString buffer, user, pass;
 				in >> buffer;
 				user = buffer.section(",", 0, 0);
 				pass = buffer.section(",", 1, 1);
 				bool result = SqlUtil::getInstance().authenticate(user, pass);
 				authenticationReply(result);
+			}else{
 			}
 			break;
 		case CR_QDATA:
 			//contestant is asking for question data
-			{
+			if(m_authenticated){
 				sendR1QData(*m_r1qdata);
+			}else{
 			}
 			break;
 		case CR_ADATA:
 			//contestant has submitted their answers
-			{
+			if(m_authenticated){
 				QString buffer;
 				in >> buffer;
 				//TODO: have the buffer contents sent and checked
 				//let's reply with something for now
 				sendR1AReply(true);
+			}else{
 			}
 			break;
 		default:
@@ -85,6 +90,7 @@ void ContestantConnection::disconnected(){
 
 void ContestantConnection::authenticationReply(bool res){
 	//construct the packet and send it
+	m_authenticated = true;
 	QByteArray block;
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_4_5);
