@@ -2,6 +2,7 @@
 #define CONTESTANT_NET_H
 #include <QtNetwork/QtNetwork>
 #include "error_defs.h"
+#include "protocol.h"
 
 enum CCSTATE{
 	CCS_DISCONNECTED = 0,
@@ -9,14 +10,6 @@ enum CCSTATE{
 	CCS_R1QDATA_REQUEST,
 	CCS_R1ADATA_SEND,
 	CCS_STANDBY
-};
-
-enum SERVER_REPLIES{
-	SR_CONTEST_STATE = 0,
-	SR_AUTHENTICATE,
-	SR_QDATA,
-	SR_ADATA,
-	SR_ERROR = 100
 };
 
 /*!

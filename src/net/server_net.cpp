@@ -44,7 +44,10 @@ void ContestantConnection::ready(){
 		case CR_CONTEST_STATE:
 			//contestant is asking for the contest state.
 			if(m_authenticated){
+				//send a reply
 			}else{
+				//send an error
+				errorReply(ERR_NOTAUTHORIZED);
 			}
 			break;
 		case CR_AUTHENTICATE:
@@ -57,6 +60,7 @@ void ContestantConnection::ready(){
 				bool result = SqlUtil::getInstance().authenticate(user, pass);
 				authenticationReply(result);
 			}else{
+				//TODO: what happens here?
 			}
 			break;
 		case CR_QDATA:
@@ -64,6 +68,8 @@ void ContestantConnection::ready(){
 			if(m_authenticated){
 				sendR1QData(*m_r1qdata);
 			}else{
+				//send an error
+				errorReply(ERR_NOTAUTHORIZED);
 			}
 			break;
 		case CR_ADATA:
@@ -75,6 +81,7 @@ void ContestantConnection::ready(){
 				//let's reply with something for now
 				sendR1AReply(true);
 			}else{
+				errorReply(ERR_NOTAUTHORIZED);
 			}
 			break;
 		default:
@@ -82,6 +89,17 @@ void ContestantConnection::ready(){
 			assert(false);
 	}
 	m_blocksize = 0;
+}
+
+void ContestantConnection::errorReply(ERROR_MESSAGES err){
+	QByteArray block;
+	QDataStream out(&block, QIODevice::WriteOnly);
+	out.setVersion(QDataStream::Qt_4_5);
+	out << (quint16)0 << (quint16)100;
+	out << err;
+	out.device()->seek(0);
+	out << (quint16)(block.size()-sizeof(quint16));
+	m_socket->write(block);
 }
 
 void ContestantConnection::disconnected(){

@@ -70,6 +70,12 @@ private:
 	void authenticationReply(bool res);
 	
 	/*!
+	Send a reply that an error has occurred.
+	\param err The error message.
+	*/
+	void errorReply(ERROR_MESSAGES err);
+	
+	/*!
 	Send the round 1 questin data.
 	\param xml QString containing the xml data.
 	*/
