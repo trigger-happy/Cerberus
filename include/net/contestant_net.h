@@ -113,13 +113,21 @@ signals:
 	
 	/*!
 	Signal for when the server states that the contest state has changed.
+	\param state The state that the contest is in now.
 	*/
 	void onContestStateChange(int state);
 	
 	/*!
 	Emitted when there's an error with the connection.
+	\param err SocketError
 	*/
 	void onError(const QAbstractSocket::SocketError& err);
+	
+	/*!
+	Emitted when there's a contest error.
+	\param err ERROR_MESSAGES indicating the error.
+	*/
+	void onContestError(quint16 err);
 	
 	/*!
 	Signal emitted when the connection to the server has been established.
@@ -148,6 +156,7 @@ protected:
 	bool m_authenticated;
 	CCSTATE m_state;
 	quint16 m_blocksize;
+private:
 };
 
 #endif //CONTESTANT_NET_H

@@ -153,6 +153,14 @@ void ContestantNetwork::ready(){
 				emit onR1AData(result);
 			}
 			break;
+		case SR_ERROR:
+			// server said there's an error
+			{
+				quint16 err;
+				in >> err;
+				emit onContestError(err);
+			}
+			break;
 		default:
 			assert(false);
 	}
