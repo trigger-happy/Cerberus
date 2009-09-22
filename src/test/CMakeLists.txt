@@ -6,24 +6,18 @@
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-link_libraries(${QT_LIBRARIES})
+link_libraries(${QT_LIBRARIES} network util)
 set(INCLUDE_PATH ../../include)
 
-set(NET_CLIENT_SRC client.cpp
-		../net/contestant_net.cpp)
-set(NET_CLIENT_MHDR ${INCLUDE_PATH}/client.h
-		${INCLUDE_PATH}/net/contestant_net.h)
+set(NET_CLIENT_SRC client.cpp)
+set(NET_CLIENT_MHDR ${INCLUDE_PATH}/client.h)
 qt4_wrap_cpp(NET_CLIENT_MSRC ${NET_CLIENT_MHDR})
 set(NET_CLIENT_UIS client.ui)
 qt4_wrap_ui(NET_CLIENT_UIS_H ${NET_CLIENT_UIS})
 add_executable(client ${NET_CLIENT_SRC} ${NET_CLIENT_MSRC} ${NET_CLIENT_UIS_H})
 
-set(NET_SERVER_SRC server.cpp 
-		../net/server_net.cpp
-		../utils/sql_util.cpp)
-set(NET_SERVER_MHDR ${INCLUDE_PATH}/server.h 
-		${INCLUDE_PATH}/net/server_net.h
-		${INCLUDE_PATH}/sql_util.h)
+set(NET_SERVER_SRC server.cpp)
+set(NET_SERVER_MHDR ${INCLUDE_PATH}/server.h )
 qt4_wrap_cpp(NET_SERVER_MSRC ${NET_SERVER_MHDR})
 set(NET_SERVER_UIS server.ui)
 qt4_wrap_ui(NET_SERVER_UIS_H ${NET_SERVER_UIS})
