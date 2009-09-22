@@ -15,5 +15,7 @@ public:
 	bool authenticate(const QString& user_name, const QString& password);
 public slots:
 private:
+        QSqlDatabase db;
+        QSqlQuery query;
 };
 #endif //SQL_UTIL_H

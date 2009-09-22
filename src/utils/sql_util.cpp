@@ -1,11 +1,21 @@
 #include "util/sql_util.h"
 
 bool SqlUtil::init(const QString& dbname){
-	return true;
+    db = QSqlDatabase::addDatabase("QSQLITE", "contestdb"); // contestdb = conenction name
+    db.setHostName("server");
+    db.setDatabaseName(dbname);
+    db.setUserName("admin");
+    db.setPassword("admin");
+    bool ok = db.open();
+
+        return true;
 }
 
 int SqlUtil::addTeam(const QString& team_name, const QString& school){
-	return 0;
+    QSqlDatabase contestdb = QSqlDatabase::database("contestdb");
+    query.exec("INSERT INTO team(team_name, school) "
+                "VALUES (" + team_name + ", " + school + ")");
+        return 0;
 }
 
 int SqlUtil::addUser(const UserData& ud){
