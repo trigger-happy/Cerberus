@@ -12,6 +12,7 @@ private slots:
         void addUserTest();
         void getUserTest();
         void setScoreTest();
+        void getScoreTest();
         void authenticateTest();
 private:
         SqlUtil m_sqlutil;
