@@ -1,6 +1,6 @@
 #include "contestant_app.h"
 #include "net/contestant_net.h"
-#include "error.h"
+#include "error_defs.h"
 #include "ui_contestant_app.h"
 
 ContestantDlg::ContestantDlg(QWidget* parent) : QDialog(parent), m_dlg(new Ui::contestant_dlg){
