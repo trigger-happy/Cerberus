@@ -11,5 +11,9 @@ ServerApp::~ServerApp(){
 	delete m_network;
 }
 
+void ServerApp::netNewConnection(){
+	//TODO: Stuff here for when a new connection is made
+}
+
 int main(int argc, char* argv[]){
 }

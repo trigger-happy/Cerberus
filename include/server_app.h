@@ -14,6 +14,10 @@ public:
 	ServerApp(QWidget* parent = 0);
 	~ServerApp();
 private slots:
+	/*!
+	Called when there is a new connection
+	*/
+	void netNewConnection();
 private:
 	ServerNetwork* m_network;
 	Ui::server_dlg* m_dlg;
