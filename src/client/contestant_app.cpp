@@ -3,7 +3,8 @@
 #include "error.h"
 #include "ui_contestant_app.h"
 
-ContestantDlg::ContestantDlg(QWidget* parent){
+ContestantDlg::ContestantDlg(QWidget* parent) : QDialog(parent), m_dlg(new Ui::contestant_dlg){
+	m_dlg->setupUi(this);
 	m_network = new ContestantNetwork(this);
 }
 

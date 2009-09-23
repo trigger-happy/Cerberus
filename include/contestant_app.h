@@ -9,7 +9,7 @@ namespace Ui{
 
 class ContestantNetwork;
 
-class ContestantDlg : public QWidget{
+class ContestantDlg : public QDialog{
 	Q_OBJECT;
 public:
 	ContestantDlg(QWidget* parent = 0);
