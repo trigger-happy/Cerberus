@@ -4,16 +4,16 @@
 #include <QtNetwork/QtNetwork>
 
 namespace Ui{
-	class contestant_dlg;
+        class login_dlg;
 }
 
 class ContestantNetwork;
 
-class ContestantDlg : public QDialog{
+class ContestantApp : public QDialog{
 	Q_OBJECT;
 public:
-	ContestantDlg(QWidget* parent = 0);
-	~ContestantDlg();
+        ContestantApp(QWidget* parent = 0);
+        ~ContestantApp();
 private slots:
 	
 	/*!
@@ -56,9 +56,22 @@ private slots:
 	\param result true on success, false on failure
 	*/
 	void netR1AData(bool result);
+
+        /*!
+        Slot for when the user clicks the login button on the log-in screen.
+        \param the username in the username field
+        \param the password in the password field
+        */
+        void loginLogin();
+
+        /*!
+        Slot for when the user exits from the login screen.
+        */
+        void loginExit();
+
 private:
-	Ui::contestant_dlg* m_dlg;
 	ContestantNetwork* m_network;
+        Ui::login_dlg* m_login_dlg;
 };
 
 #endif //CONTESTANT_APP_H
