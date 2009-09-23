@@ -6,8 +6,6 @@
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-link_libraries(${QT_LIBRARIES} network util)
-set(INCLUDE_DIR ../../include)
 
 set(SERVER_SRCS server_app.cpp)
 set(SERVER_MHDRS ${INCLUDE_DIR}/server_app.h)

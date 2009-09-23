@@ -5,11 +5,9 @@
 #QT4_WRAP_UI(UIS_H ${UIS})
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-link_libraries(${QT_LIBRARIES} network util)
 
 set(XML_UT_SRCS xml_test.cpp)
-set(XML_UT_MHDRS ../../include/tests/xml_test.h)
+set(XML_UT_MHDRS ${INCLUDE_DIR}/tests/xml_test.h)
 qt4_wrap_cpp(XML_UT_MSRCS ${XML_UT_MHDRS})
 add_executable(xml_test ${XML_UT_SRCS} ${XML_UT_MSRCS})
 

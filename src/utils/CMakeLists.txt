@@ -5,9 +5,6 @@
 #QT4_WRAP_UI(UIS_H ${UIS})
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
-set(INCLUDE_DIR ../../include)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-link_libraries(${QT_LIBRARIES})
 
 set(UTIL_SRCS sql_util.cpp xml_util.cpp)
 set(UTIL_MHDRS ${INCLUDE_DIR}/util/sql_util.h
