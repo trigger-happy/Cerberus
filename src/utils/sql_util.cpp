@@ -7,15 +7,14 @@ bool SqlUtil::init(const QString& dbname){
     db.setUserName("admin");
     db.setPassword("admin");
     bool ok = db.open();
+    query = new QSqlQuery(db);
 
-        return true;
+        return ok;
 }
 
 int SqlUtil::addTeam(const QString& team_name, const QString& school){
-    QSqlDatabase contestdb = QSqlDatabase::database("contestdb");
-    query.exec("INSERT INTO team(team_name, school) "
-                "VALUES (" + team_name + ", " + school + ")");
-        return 0;
+    return query->exec("INSERT INTO team(team_name, school) "
+			"VALUES (\"" + team_name + "\", \"" + school + "\")");
 }
 
 int SqlUtil::addUser(const UserData& ud){

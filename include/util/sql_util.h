@@ -16,6 +16,6 @@ public:
 public slots:
 private:
         QSqlDatabase db;
-        QSqlQuery query;
+        QSqlQuery* query;
 };
 #endif //SQL_UTIL_H
