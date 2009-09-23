@@ -10,18 +10,21 @@ This will give it a getInstance() function that will return
 a reference to the single class instance.
 */
 template<typename T>
-class Singleton{
+class Singleton
+{
 public:
-	/*!
-	Return an instance to the class
-	\return A reference to the class
-	*/
-	static T& getInstance(){
-		static T inst;
-		return inst;
-	}
+        /*!
+        Return an instance to the class
+        \return A reference to the class
+        */
+        static T& getInstance() {
+                static T inst;
+                return inst;
+        }
 protected:
-	Singleton(){;}
+        Singleton() {
+                ;
+        }
 };
 
 #endif

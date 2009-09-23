@@ -4,18 +4,19 @@
 #include "net/server_net.h"
 #include "net/contestant_net.h"
 
-class CCNetTest : public QObject{
-	Q_OBJECT;
+class CCNetTest : public QObject
+{
+        Q_OBJECT;
 public:
-	CCNetTest(QObject* parent = 0);
+        CCNetTest ( QObject* parent = 0 );
 private slots:
-	void connectionTest();
-	void authenticationTest();
-	void R1QDataTest();
-	void R1ADataTest();
+        void connectionTest();
+        void authenticationTest();
+        void R1QDataTest();
+        void R1ADataTest();
 private:
-	ContestantNetwork m_contestant;
-	ServerNetwork m_server;
+        ContestantNetwork m_contestant;
+        ServerNetwork m_server;
 };
 
 #endif //CONTESTANT_NET_TEST_H

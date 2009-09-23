@@ -4,12 +4,13 @@
 #include <QtNetwork>
 #include <QObject>
 
-class Tester : public QObject{
-	Q_OBJECT;
+class Tester : public QObject
+{
+        Q_OBJECT;
 private slots:
-	void tcp_test();
+        void tcp_test();
 private:
-	QTcpSocket* m_socket;
+        QTcpSocket* m_socket;
 };
 
 #endif //TESTER_H

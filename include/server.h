@@ -20,22 +20,24 @@
 #include <QtNetwork>
 #include "net/server_net.h"
 
-namespace Ui{
-	class server_dlg;
+namespace Ui
+{
+class server_dlg;
 }
 
-class ServerDlg : public QDialog{
-	Q_OBJECT;
+class ServerDlg : public QDialog
+{
+        Q_OBJECT;
 public:
-	ServerDlg(QWidget* parent = 0);
-	~ServerDlg();
+        ServerDlg ( QWidget* parent = 0 );
+        ~ServerDlg();
 private slots:
-	void onQuitBtn();
-	void onConnection();
+        void onQuitBtn();
+        void onConnection();
 private:
-	QString log;
-	Ui::server_dlg* m_dlg;
-	ServerNetwork* m_server;
+        QString log;
+        Ui::server_dlg* m_dlg;
+        ServerNetwork* m_server;
 };
 
 #endif // SERVER_H
