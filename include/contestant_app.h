@@ -7,6 +7,7 @@ namespace Ui
 {
 class login_dlg;
 class welcome_dlg;
+class reconnect_dlg
 }
 
 class ContestantNetwork;
@@ -77,10 +78,22 @@ private slots:
         */
         void welcomeStart();
 
+        /*!
+        Slot for the Reconnect button on the dialog which appears upon connection problems.
+        */
+        void reconnectTry();
+
+        /*!
+        Slot for the Cancel button on the dialog which appears upon connection problems.
+        */
+        void reconnectCancel();
+
+
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
         Ui::welcome_dlg* m_welcome_dlg;
+        Ui::reconnect_dlg* m_reconnect_dlg;
 };
 
 #endif //CONTESTANT_APP_H

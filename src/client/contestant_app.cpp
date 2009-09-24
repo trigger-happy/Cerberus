@@ -22,8 +22,12 @@ ContestantApp::ContestantApp ( QWidget* parent )
         connect ( m_login_dlg->login_btn, SIGNAL ( clicked() ), this, SLOT ( loginLogin() ) );
         connect ( m_login_dlg->exit_btn, SIGNAL ( clicked() ), this, SLOT ( loginExit() ) );
 
-        //connections for the welcome dialog
+        // connections for the welcome dialog
         connect ( m_welcome_dlg->start_btn, SIGNAL ( clicked() ), this, SLOT ( welcomeStart() ) );
+
+        // connections for the reconnect dialog
+        connect ( m_reconnect_dlg->try_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectTry() ) );
+        connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
 
 }
 
@@ -31,6 +35,8 @@ ContestantApp::~ContestantApp()
 {
         delete m_network;
         delete m_login_dlg;
+        delete m_welcome_dlg;
+        delete m_reconnect_dlg;
 }
 
 void ContestantApp::netContestStateChange ( int state )
@@ -81,6 +87,31 @@ void ContestantApp::loginExit()
 void ContestantApp::welcomeStart()
 {
         // to do later
+}
+
+void ContestantApp::reconnectTry()
+{
+}
+
+void ContestantApp::reconnectCancel()
+{
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Confirm Disconnection");
+        msgBox.setText(DISCONNECT_QUESTION);
+        msgBox.setInformativeText(DISCONNECT_INFORMATION);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        msgBox.setIcon(QMessageBox::Question);
+        int disconnect = msgBox.exec();
+
+        switch(disconnect)
+        {
+            case QMessageBox::Yes:
+                // "close the whole friggin program" - jim
+
+            case QMessageBox::No:
+                break;
+        }
 }
 
 int main ( int argc, char* argv[] )

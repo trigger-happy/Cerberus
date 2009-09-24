@@ -29,14 +29,14 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="cancel_btn">
+        <widget class="QPushButton" name="try_btn">
          <property name="text">
-          <string>Reconnect</string>
+          <string>Try Again</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="cancel_btn">
          <property name="text">
           <string>Cancel</string>
          </property>
