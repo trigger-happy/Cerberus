@@ -2,6 +2,7 @@
 #include "net/contestant_net.h"
 #include "error_defs.h"
 #include "ui_login.h"
+#include "ui_welcome.h"
 
 ContestantApp::ContestantApp ( QWidget* parent )
                 : QDialog ( parent ), m_login_dlg ( new Ui::login_dlg )
@@ -17,8 +18,12 @@ ContestantApp::ContestantApp ( QWidget* parent )
         connect ( m_network, SIGNAL ( onR1AData ( bool ) ), this, SLOT ( netR1AData ( bool ) ) );
         connect ( m_network, SIGNAL ( onR1QData ( QString ) ), this, SLOT ( netR1QData ( QString ) ) );
 
+        // connections for the login dialog
         connect ( m_login_dlg->login_btn, SIGNAL ( clicked() ), this, SLOT ( loginLogin() ) );
         connect ( m_login_dlg->exit_btn, SIGNAL ( clicked() ), this, SLOT ( loginExit() ) );
+
+        //connections for the welcome dialog
+        connect ( m_welcome_dlg->start_btn, SIGNAL ( clicked() ), this, SLOT ( welcomeStart() ) );
 
 }
 
@@ -71,6 +76,11 @@ void ContestantApp::loginLogin()
 void ContestantApp::loginExit()
 {
         this->close();
+}
+
+void ContestantApp::welcomeStart()
+{
+        // to do later
 }
 
 int main ( int argc, char* argv[] )

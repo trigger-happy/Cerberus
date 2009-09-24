@@ -6,6 +6,7 @@
 namespace Ui
 {
 class login_dlg;
+class welcome_dlg;
 }
 
 class ContestantNetwork;
@@ -71,9 +72,15 @@ private slots:
         */
         void loginExit();
 
+        /*!
+        Slot for when the user clicks the Start button on the welcome screen.
+        */
+        void welcomeStart();
+
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
+        Ui::welcome_dlg* m_welcome_dlg;
 };
 
 #endif //CONTESTANT_APP_H
