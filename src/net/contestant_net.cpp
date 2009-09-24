@@ -14,6 +14,7 @@ ContestantNetwork::ContestantNetwork(QObject* parent) : QObject(parent){
 	connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
 		this, SIGNAL(onError(QAbstractSocket::SocketError)));
 	connect(m_socket, SIGNAL(readyRead()), this, SLOT(ready()));
+	connect(m_socket, SIGNAL(disconnected()), this, SIGNAL(onDisconnect()));
 	m_blocksize = 0;
 	m_state = CCS_DISCONNECTED;
 	m_authenticated = false;

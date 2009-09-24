@@ -16,7 +16,7 @@ enum CCSTATE {
 \brief This class provides a simple communication layer with the server.
 The ContestantNetwork class provides a networking layer for the contest client.
 The intended design for this class is to hide away most of the core networking
-stuff from the user. The class aims for a non-blocking approach throught the
+stuff from the user. The class aims for a non-blocking approach through the
 use of Qt's signals and slots.
 */
 class ContestantNetwork : public QObject
@@ -104,6 +104,11 @@ protected slots:
         */
         void ready();
 signals:
+	
+	/*!
+	Signal for disconnections.
+	*/
+	void onDisconnect();
 
         /*!
         Signal for when the server states that the contest state has changed.
