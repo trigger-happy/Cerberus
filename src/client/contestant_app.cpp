@@ -3,9 +3,12 @@
 #include "error_defs.h"
 #include "ui_login.h"
 #include "ui_welcome.h"
+#include "ui_reconnect.h"
 
 ContestantApp::ContestantApp ( QWidget* parent )
-                : QDialog ( parent ), m_login_dlg ( new Ui::login_dlg )
+                : QDialog ( parent ), m_login_dlg ( new Ui::login_dlg ),
+		DISCONNECT_INFORMATION(tr("There will be a penalty for disconnecting.")),
+		DISCONNECT_QUESTION(tr("Are you sure you want to exit the program?"))
 {
         m_login_dlg->setupUi ( this );
         m_network = new ContestantNetwork ( this );
@@ -28,7 +31,6 @@ ContestantApp::ContestantApp ( QWidget* parent )
         // connections for the reconnect dialog
         connect ( m_reconnect_dlg->try_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectTry() ) );
         connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
-
 }
 
 ContestantApp::~ContestantApp()
