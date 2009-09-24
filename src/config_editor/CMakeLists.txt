@@ -5,5 +5,3 @@
 #QT4_WRAP_UI(UIS_H ${UIS})
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-link_libraries(${QT_LIBRARIES})

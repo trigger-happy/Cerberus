@@ -6,4 +6,11 @@
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-link_libraries(${QT_LIBRARIES})
+
+set(CONTESTANT_SRCS contestant_app.cpp)
+set(CONTESTANT_MHDRS ${INCLUDE_DIR}/contestant_app.h)
+QT4_WRAP_CPP(CONTESTANT_MSRCS ${CONTESTANT_MHDRS})
+set(CONTESTANT_UIS login.ui)
+QT4_WRAP_UI(CONTESTANT_UIS_H ${CONTESTANT_UIS})
+add_executable(contestant ${CONTESTANT_SRCS} ${CONTESTANT_UIS_H} ${CONTESTANT_MSRCS})
+

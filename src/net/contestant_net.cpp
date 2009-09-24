@@ -120,7 +120,7 @@ void ContestantNetwork::ready(){
 	quint16 command;
 	in >> command;
 	switch(command){
-		case SR_CONTEST_STATE:
+		case PC_CONTEST_STATE:
 			//we got info on the contest state
 			{
 				int state;
@@ -128,7 +128,7 @@ void ContestantNetwork::ready(){
 				emit onContestStateChange(state);
 			}
 			break;
-		case SR_AUTHENTICATE:
+		case PC_AUTHENTICATE:
 			//it's a reply to the authentication
 			{
 				bool result;
@@ -137,7 +137,7 @@ void ContestantNetwork::ready(){
 				m_authenticated = true;
 			}
 			break;
-		case SR_QDATA:
+		case PC_QDATA:
 			//we have our question data
 			{
 				QString xml;
@@ -145,12 +145,20 @@ void ContestantNetwork::ready(){
 				emit onR1QData(xml);
 			}
 			break;
-		case SR_ADATA:
+		case PC_ADATA:
 			//a reply on our submission
 			{
 				bool result;
 				in >> result;
 				emit onR1AData(result);
+			}
+			break;
+		case PC_ERROR:
+			// server said there's an error
+			{
+				quint16 err;
+				in >> err;
+				emit onContestError(err);
 			}
 			break;
 		default:
