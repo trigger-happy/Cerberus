@@ -7,7 +7,7 @@ namespace Ui
 {
 class login_dlg;
 class welcome_dlg;
-class reconnect_dlg
+class reconnect_dlg;
 }
 
 class ContestantNetwork;
