@@ -94,6 +94,9 @@ private:
         Ui::login_dlg* m_login_dlg;
         Ui::welcome_dlg* m_welcome_dlg;
         Ui::reconnect_dlg* m_reconnect_dlg;
+
+        const QString DISCONNECT_QUESTION = tr("Are you sure you want to exit the program?");
+        const QString DISCONNECT_INFORMATION = tr("There will be a penalty for disconnecting.");
 };
 
 #endif //CONTESTANT_APP_H
