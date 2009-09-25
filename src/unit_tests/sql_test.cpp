@@ -16,11 +16,11 @@ void SqlTest::addUserTest()
 {
         SqlUtil& sql = SqlUtil::getInstance();
         UserData ud;
-        ud.user_name = 'user';
-        ud.password = 'pass';
-        ud.firstname = 'fname';
-        ud.lastname = 'lname';
-        ud.teamname = 'teamname';
+        ud.user_name = "user";
+        ud.password = "pass";
+        ud.firstname = "fname";
+        ud.lastname = "lname";
+        ud.teamname = "teamname";
         QVERIFY ( sql.addUser ( ud ) );
 }
 
