@@ -1,7 +1,10 @@
 #include <QFile>
 #include <QString>
+#include <iostream>
 #include "tests/xml_test.h"
 #include "data_types.h"
+
+using namespace std;
 
 void XmlTest::q1ReadTest()
 {
@@ -15,19 +18,24 @@ void XmlTest::q1ReadTest()
         qd.welcome_msg = "Insert welcome message here to be shown in the 1st screen.";
         R1Question qtemp;
         qtemp.question = "What is the bla bla bla?";
+	qtemp.number = 1;
+	qtemp.difficulty = 1;
         qtemp.choices.insert ( pair<int, QString> ( 1, "Bla" ) );
         qtemp.choices.insert ( pair<int, QString> ( 2, "BLA" ) );
         qtemp.choices.insert ( pair<int, QString> ( 3, "bla" ) );
         qtemp.choices.insert ( pair<int, QString> ( 4, "blarg" ) );
         qd.questions.push_back ( qtemp );
         qtemp.choices.clear();
-        qtemp.question = "Who is Mr. Shires";
+        qtemp.question = "Who is Mr. Shires?";
+	qtemp.number = 2;
+	qtemp.difficulty = 2;
         qtemp.choices.insert ( pair<int, QString> ( 1, "Sir Diy" ) );
         qtemp.choices.insert ( pair<int, QString> ( 2, "Doc Mana" ) );
         qtemp.choices.insert ( pair<int, QString> ( 3, "Fr. David" ) );
         qtemp.choices.insert ( pair<int, QString> ( 4, "Michael Jackson" ) );
         qd.questions.push_back ( qtemp );
-        m_util.readR1QData ( xml, td );
+        bool result = m_util.readR1QData ( xml, td );
+	QVERIFY(result);
         QVERIFY ( td == qd );
 }
 
