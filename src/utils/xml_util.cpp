@@ -8,7 +8,7 @@ bool XmlUtil::readR1QData(const QString& xml, R1QData& data){
             QXmlStreamReader::TokenType token = reader.readNext();
 
             if(token == QXmlStreamReader::StartElement){
-                if(reader.name() == "welcome_msg"){ // reads the welcome_msg tag
+                if(reader.name() == "question_msg"){ // reads the question_msg tag
                     token = reader.readNext();
                     if(token == QXmlStreamReader::Characters){
                         data.welcome_msg = reader.text().toString(); // reads the characters within the question_msg tag
@@ -29,7 +29,7 @@ bool XmlUtil::readR1QData(const QString& xml, R1QData& data){
 
                     // reads from the difficulty attribute from question
                     if(attributes.hasAttribute("difficulty")){
-                        temp.difficulty =  attributes.value("difficulty").toString().toInt();
+                        temp.number =  attributes.value("difficulty").toString().toInt();
                     }else{
                         return false;
                     }
@@ -99,6 +99,21 @@ bool XmlUtil::writeR1QData(const R1QData& data, QString& xml){
 }
 
 bool XmlUtil::readR1AData(const QString& xml, R1Answers& data){
+        QXmlStreamReader reader(xml);
+        QXmlStreamReader::TokenType token = reader.readNext();
+
+        while(!reader.atEnd()){
+            if(token == QXmlStreamReader::StartElement){
+                if(reader.name() == "answer"){ // checks for the answer tag
+                    QXmlStreamAttributes attribute = reader.attributes(); // extracts the attributes
+                    int number = attribute.value("number").toString().toInt(); // gets the number attribute
+                    token = reader.readNext();
+                    int answer = reader.text().toString().toInt(); // gets the number of the answer
+                    data[number] = answer; // stores the number and answer into a map
+                }
+            }
+            token = reader.readNext();
+        }
 	return true;
 }
 
