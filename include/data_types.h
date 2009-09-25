@@ -1,11 +1,10 @@
 #ifndef DATA_TYPES_H
 #define DATA_TYPES_H
-#include <string>
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <QString>
 
-using std::string;
 using std::vector;
 using std::map;
 using std::pair;
@@ -17,7 +16,7 @@ struct R1Question {
                         return false;
                 }
                 if ( this->choices.size() == rhs.choices.size() ) {
-                        map<int, string>::const_iterator lit, rit;
+                        map<int, QString>::const_iterator lit, rit;
                         lit = this->choices.begin();
                         rit = rhs.choices.begin();
                         while ( lit != this->choices.end() ) {
@@ -30,10 +29,10 @@ struct R1Question {
                 }
                 return true;
         }
-        string question;
-        map<int, string> choices;
         int number;
         int difficulty;
+        QString question;
+        map<int, QString> choices;
 };
 
 struct R1QData {
@@ -52,7 +51,7 @@ struct R1QData {
                 }
                 return true;
         }
-        string welcome_msg;
+        QString welcome_msg;
         vector<R1Question> questions;
 };
 
@@ -65,7 +64,7 @@ struct ClientConfig {
                 }
                 return false;
         }
-        string ip;
+        QString ip;
         int port;
 };
 
@@ -77,8 +76,8 @@ struct StageData {
                 }
                 return false;
         }
-        string question_file;
-        string answer_file;
+        QString question_file;
+        QString answer_file;
 };
 
 struct ServerConfig {
@@ -94,25 +93,25 @@ struct ServerConfig {
                 return false;
         }
         int port;
-        string db_path;
+        QString db_path;
         vector<StageData> stage_data;
 };
 
 struct UserData {
-        string user_name;
-        string password;
-        string firstname;
-        string lastname;
-        string teamname;
+        QString user_name;
+        QString password;
+        QString firstname;
+        QString lastname;
+        QString teamname;
 };
 
 struct TeamData {
-        string teamname;
-        string school;
+        QString teamname;
+        QString school;
 };
 
 struct ScoreData {
-        string user_name;
+        QString user_name;
         double score;
 };
 

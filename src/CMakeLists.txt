@@ -1,12 +1,3 @@
-set(QT_USE_QTSQL true)
-set(QT_USE_QTNETWORK true)
-set(QT_USE_QTTEST true)
-set(QT_USE_QTXML true)
-include(${QT_USE_FILE})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
-link_libraries(${QT_LIBRARIES} network util)
-
 #set(SRCS main.cpp mainwindow.cpp)
 #set(MOC_HDRS mainwindow.h)
 #QT4_WRAP_CPP(MOC_SRCS ${MOC_HDRS})

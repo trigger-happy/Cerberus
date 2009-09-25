@@ -6,7 +6,8 @@
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 
-set(UTIL_SRCS sql_util.cpp xml_util.cpp)
+set(UTIL_SRCS sql_util.cpp
+		xml_util.cpp)
 set(UTIL_MHDRS ${INCLUDE_DIR}/util/sql_util.h
 	${INCLUDE_DIR}/util/xml_util.h)
 QT4_WRAP_CPP(UTIL_MSRCS ${UTIL_MHDRS})
