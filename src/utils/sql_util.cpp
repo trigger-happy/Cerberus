@@ -27,11 +27,11 @@ int SqlUtil::addUser ( const UserData& ud )
         QString sql = QString ( "INSERT INTO user(username, team_name, "
                                 "firstname, lastname, password) "
                                 "VALUES ('%1', '%2', '%3', '%4', '%5')" )
-                      .arg ( QString ( ud.user_name.c_str() ) )
-                      .arg ( QString ( ud.teamname.c_str() ) )
-                      .arg ( QString ( ud.firstname.c_str() ) )
-                      .arg ( QString ( ud.lastname.c_str() ) )
-                      .arg ( QString ( ud.password.c_str() ) );
+                      .arg ( QString ( ud.user_name ) )
+                      .arg ( QString ( ud.teamname ) )
+                      .arg ( QString ( ud.firstname ) )
+                      .arg ( QString ( ud.lastname ) )
+                      .arg ( QString ( ud.password ) );
         return query->exec ( sql );
 }
 
