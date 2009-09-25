@@ -6,6 +6,8 @@
 void XmlTest::q1ReadTest()
 {
         QFile file ( "resources/stage1_q.xml" );
+        file.open ( QIODevice::ReadOnly );
+        QVERIFY ( file.isOpen() );
         QString xml = file.readAll();
         QVERIFY ( xml.size() != 0 );
         R1QData qd;
@@ -36,7 +38,9 @@ void XmlTest::q1WriteTest()
 
 void XmlTest::a1ReadTest()
 {
-        QFile file ( "resources/stage1_a.xml" );
+	QFile file ( "resources/stage1_a.xml" );
+	file.open ( QIODevice::ReadOnly );
+	QVERIFY ( file.isOpen() );
         QString xml = file.readAll();
         QVERIFY ( xml.size() > 0 );
         R1Answers ad, td;
@@ -53,7 +57,9 @@ void XmlTest::a1WriteTest()
 
 void XmlTest::clientConfReadTest()
 {
-        QFile file ( "resources/client_config.xml" );
+	QFile file ( "resources/client_config.xml" );
+	file.open ( QIODevice::ReadOnly );
+	QVERIFY ( file.isOpen() );
         QString xml = file.readAll();
         QVERIFY ( xml.size() > 0 );
         ClientConfig cd, td;
@@ -65,7 +71,9 @@ void XmlTest::clientConfReadTest()
 
 void XmlTest::serverConfReadTest()
 {
-        QFile file ( "resources/server_config.xml" );
+	QFile file ( "resources/server_config.xml" );
+	file.open ( QIODevice::ReadOnly );
+	QVERIFY ( file.isOpen() );
         QString xml = file.readAll();
         QVERIFY ( xml.size() > 0 );
         ServerConfig sd, td;
