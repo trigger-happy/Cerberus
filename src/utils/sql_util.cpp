@@ -1,7 +1,5 @@
 #include "util/sql_util.h"
-#include <iostream>
-
-using namespace std;
+#include <QCryptographicHash>
 
 bool SqlUtil::init ( const QString& dbname )
 {
@@ -24,6 +22,7 @@ int SqlUtil::addTeam ( const QString& team_name, const QString& school )
 
 int SqlUtil::addUser ( const UserData& ud )
 {
+	QString pwd = QCryptographicHash::hash(ud.password.toAscii(), QCryptographicHash::Md5);
         QString sql = QString ( "INSERT INTO user(username, team_name, "
                                 "firstname, lastname, password) "
                                 "VALUES ('%1', '%2', '%3', '%4', '%5')" )
@@ -31,7 +30,7 @@ int SqlUtil::addUser ( const UserData& ud )
                       .arg ( QString ( ud.teamname ) )
                       .arg ( QString ( ud.firstname ) )
                       .arg ( QString ( ud.lastname ) )
-                      .arg ( QString ( ud.password ) );
+                      .arg ( QString ( pwd ) );
         return query->exec ( sql );
 }
 
@@ -50,9 +49,10 @@ void SqlUtil::setScore ( const QString& user_name, int score )
 
 bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
 {
+	QString pwd = QCryptographicHash::hash(password.toAscii(), QCryptographicHash::Md5);
         QString sql = QString ( "SELECT username FROM user WHERE username = '%1' AND password = '%2'" )
                       .arg ( user_name )
-                      .arg ( password );
+                      .arg ( pwd );
         query->exec ( sql );
         int size = 0;
         while ( query->next() ) {

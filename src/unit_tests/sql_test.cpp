@@ -21,7 +21,7 @@ void SqlTest::addUserTest()
         ud.firstname = "fname";
         ud.lastname = "lname";
         ud.teamname = "teamname";
-        QVERIFY ( sql.addUser ( ud ) );
+	QVERIFY ( sql.addUser ( ud ) );
 }
 
 void SqlTest::getUserTest()
