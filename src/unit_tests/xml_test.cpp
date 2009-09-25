@@ -54,7 +54,8 @@ void XmlTest::a1ReadTest()
         R1Answers ad, td;
         ad.insert ( pair<int, int> ( 1,1 ) );
         ad.insert ( pair<int, int> ( 2,4 ) );
-        m_util.readR1AData ( xml, td );
+        bool result = m_util.readR1AData ( xml, td );
+	QVERIFY(result);
         QVERIFY ( td == ad );
 }
 
