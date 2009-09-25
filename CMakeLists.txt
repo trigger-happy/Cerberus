@@ -8,14 +8,22 @@ if(${WIN32})
 else()
 endif()
 
-set(CMAKE_BUILD_TYPE "Debug")
-
 find_package(Qt4 REQUIRED)
+enable_testing()
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+
+set(QT_USE_QTSQL true)
+set(QT_USE_QTNETWORK true)
+set(QT_USE_QTTEST true)
+set(QT_USE_QTXML true)
+include(${QT_USE_FILE})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+link_libraries(${QT_LIBRARIES} network util)
 
 add_subdirectory(src)
 #add the ff into src/CMakeLists.txt
