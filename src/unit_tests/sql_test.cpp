@@ -3,7 +3,7 @@
 void SqlTest::initTestCase()
 {
         SqlUtil& sql = SqlUtil::getInstance();
-        QVERIFY ( sql.init ( "resources/server.db" ) );
+        QVERIFY ( sql.init ( "resources/test.db" ) );
 }
 
 void SqlTest::addTeamTest()
@@ -20,7 +20,7 @@ void SqlTest::addUserTest()
         ud.password = "pass";
         ud.firstname = "fname";
         ud.lastname = "lname";
-        ud.teamname = "teamname";
+        ud.teamname = "test_team";
 	QVERIFY ( sql.addUser ( ud ) );
 }
 
@@ -31,19 +31,20 @@ void SqlTest::getUserTest()
 void SqlTest::setScoreTest()
 {
         SqlUtil& sql = SqlUtil::getInstance();
-        sql.setScore ( "mynameismanny", 100 );
+        sql.setScore ( "user", 100 );
 }
 
 void SqlTest::getScoreTest()
 {
         SqlUtil& sql = SqlUtil::getInstance();
-        QVERIFY ( sql.getScore ( "mynameismanny" ) );
+        QVERIFY ( sql.getScore ( "user" ) );
 }
 
 void SqlTest::authenticateTest()
 {
         SqlUtil& sql = SqlUtil::getInstance();
-        QVERIFY ( sql.authenticate ( "mynameismanny", "money" ) );
+	QVERIFY ( sql.authenticate ( "user", "pass" ) );
+	QVERIFY ( !sql.authenticate ( "user", "notpass" ) );
 }
 
 QTEST_MAIN ( SqlTest )
