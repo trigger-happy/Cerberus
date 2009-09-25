@@ -32,6 +32,8 @@ struct R1Question {
         }
         string question;
         map<int, string> choices;
+        int number;
+        int difficulty;
 };
 
 struct R1QData {
