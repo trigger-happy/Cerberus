@@ -61,6 +61,7 @@ void ContestantConnection::ready(){
 				authenticationReply(result);
 			}else{
 				//TODO: what happens here?
+				authenticationReply(false);
 			}
 			break;
 		case CR_QDATA:
