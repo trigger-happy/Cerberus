@@ -22,7 +22,7 @@ int SqlUtil::addTeam ( const QString& team_name, const QString& school )
 
 int SqlUtil::addUser ( const UserData& ud )
 {
-	QString pwd = QCryptographicHash::hash(ud.password.toAscii(), QCryptographicHash::Md5);
+	QString pwd = QCryptographicHash::hash(ud.password.toAscii(), QCryptographicHash::Sha1);
         QString sql = QString ( "INSERT INTO user(username, team_name, "
                                 "firstname, lastname, password) "
                                 "VALUES ('%1', '%2', '%3', '%4', '%5')" )
@@ -49,7 +49,7 @@ void SqlUtil::setScore ( const QString& user_name, int score )
 
 bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
 {
-	QString pwd = QCryptographicHash::hash(password.toAscii(), QCryptographicHash::Md5);
+	QString pwd = QCryptographicHash::hash(password.toAscii(), QCryptographicHash::Sha1);
         QString sql = QString ( "SELECT username FROM user WHERE username = '%1' AND password = '%2'" )
                       .arg ( user_name )
                       .arg ( pwd );
