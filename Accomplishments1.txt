@@ -1,0 +1,14 @@
+1.) SQL module's essential functions generally complete.
+Just need to repair some minor issues with the getscore
+function. Database has also been constructed (server.db)
+
+2.) Xml module's question and answer reading functions
+completed and tested. Next is the server and client
+configuration parsing.
+
+3.) Network module completed and tested. Next is the
+abusive style of tests (doing the wrong sequence of
+commands, bad packets, etc)
+
+4.) Client GUI under construction, not functional yet
+and the design isn't final.
