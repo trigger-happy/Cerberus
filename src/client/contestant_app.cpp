@@ -4,6 +4,8 @@
 #include "ui_login.h"
 #include "ui_welcome.h"
 #include "ui_reconnect.h"
+#include "ui_round1.h"
+#include "ui_summary.h"
 
 ContestantApp::ContestantApp ( QWidget* parent )
                 : QDialog ( parent ), m_login_dlg ( new Ui::login_dlg ),

@@ -8,6 +8,8 @@ namespace Ui
 class login_dlg;
 class welcome_dlg;
 class reconnect_dlg;
+class round1_dlg;
+class summary_dlg;
 }
 
 class ContestantNetwork;
@@ -88,12 +90,16 @@ private slots:
         */
         void reconnectCancel();
 
+        /*!
+
 
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
         Ui::welcome_dlg* m_welcome_dlg;
         Ui::reconnect_dlg* m_reconnect_dlg;
+        Ui::round1_dlg* round1_dlg;
+        Ui::summary_dlg* summary_dlg;
 
         const QString DISCONNECT_QUESTION;
         const QString DISCONNECT_INFORMATION;
