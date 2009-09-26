@@ -17,19 +17,28 @@
 #include <iostream>
 #include "ui_server.h"
 #include "server.h"
+#include "util/xml_util.h"
+#include "util/sql_util.h"
 
 using namespace std;
 
 ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg() )
 {
         m_dlg->setupUi ( this );
-        cout << "Constructor" << endl;
         connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
         m_server = new ServerNetwork ( this );
         connect ( m_server, SIGNAL ( onNewConnection() ), this, SLOT ( onConnection() ) );
-        QString xml = "<?xml version=\"1.0\"?>";
+        QFile f("resources/stage1_q.xml");
+	f.open(QIODevice::ReadOnly);
+	QString xml = f.readAll();
         m_server->setR1QData ( xml );
         m_server->listen ( 2652 );
+	bool result = SqlUtil::getInstance().init("resources/server.db");
+	if(!result){
+		QMessageBox msg(this);
+		msg.setText("Failed to load db");
+		msg.exec();
+	}
 }
 
 ServerDlg::~ServerDlg()
@@ -39,7 +48,7 @@ ServerDlg::~ServerDlg()
 
 void ServerDlg::onConnection()
 {
-        cout << "Connection" << endl;
+        cout << "Connection from client" << endl;
 }
 
 void ServerDlg::onQuitBtn()

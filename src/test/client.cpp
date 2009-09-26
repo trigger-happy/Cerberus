@@ -8,7 +8,6 @@ using namespace std;
 ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::client_dlg )
 {
         m_dlg->setupUi ( this );
-        cout << "Constructor" << endl;
         connect ( m_dlg->connect_btn, SIGNAL ( clicked() ), this, SLOT ( onConnectBtn() ) );
         connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
         connect ( m_dlg->auth_btn, SIGNAL ( clicked() ), this, SLOT ( onAuthBtn() ) );
@@ -19,11 +18,19 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
         connect ( m_net, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( onAuthReply ( bool ) ) );
         connect ( m_net, SIGNAL ( onR1QData ( QString ) ), this, SLOT ( onR1QData ( QString ) ) );
         connect ( m_net, SIGNAL ( onR1AData ( bool ) ), this, SLOT ( onR1AData ( bool ) ) );
+	connect ( m_net, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
 }
 
 ClientDlg::~ClientDlg()
 {
         delete m_dlg;
+}
+
+void ClientDlg::onContestStateChange(int s)
+{
+	QMessageBox msg(this);
+	msg.setText(QString("State change to %1").arg(s));
+	msg.exec();
 }
 
 void ClientDlg::onQDR()
@@ -50,7 +57,14 @@ void ClientDlg::onR1AData ( bool result )
 
 void ClientDlg::onAuthReply ( bool result )
 {
-        cout << "Reply result: " << result << endl;
+	QMessageBox msg(this);
+        if(!result){
+		msg.setText("Failed to authenticate");
+		msg.exec();
+	}else{
+		msg.setText("Authenticated");
+		msg.exec();
+	}
 }
 
 void ClientDlg::onAuthBtn()
@@ -65,19 +79,20 @@ void ClientDlg::onConnect()
 
 void ClientDlg::onConnectBtn()
 {
-        cout << "Connect" << endl;
+        cout << "Connecting..." << endl;
         m_net->connectToHost ( m_dlg->ip_ledit->text(), m_dlg->port_ledit->text().toInt() );
 }
 
 void ClientDlg::onQuitBtn()
 {
-        cout << "Quit" << endl;
         this->close();
 }
 
 void ClientDlg::onError ( QAbstractSocket::SocketError error )
 {
         cout << "Error" << endl;
+	QMessageBox msg(this);
+	msg.setText(QString("Socket error: %1").arg(error));
 }
 
 int main ( int argc, char* argv[] )

@@ -135,7 +135,7 @@ void ContestantNetwork::ready(){
 				bool result;
 				in >> result;
 				emit onAuthenticate(result);
-				m_authenticated = true;
+				m_authenticated = result;
 			}
 			break;
 		case PC_QDATA:
@@ -163,6 +163,7 @@ void ContestantNetwork::ready(){
 			}
 			break;
 		default:
+			cout << command << endl;
 			assert(false);
 	}
 	m_state = CCS_STANDBY;
