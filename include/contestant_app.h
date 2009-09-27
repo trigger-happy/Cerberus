@@ -91,7 +91,7 @@ private slots:
         void reconnectCancel();
 
         /*!
-
+	*/
 
 private:
         ContestantNetwork* m_network;
@@ -100,6 +100,12 @@ private:
         Ui::reconnect_dlg* m_reconnect_dlg;
         Ui::round1_dlg* round1_dlg;
         Ui::summary_dlg* summary_dlg;
+	
+	QDialog* m_login_w;
+	QDialog* m_welcome_w;
+	QDialog* m_reconnect_w;
+	QDialog* m_round1_w;
+	QDialog* m_summary_w;
 
         const QString DISCONNECT_QUESTION;
         const QString DISCONNECT_INFORMATION;

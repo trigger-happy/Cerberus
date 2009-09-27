@@ -9,10 +9,24 @@
 
 ContestantApp::ContestantApp ( QWidget* parent )
                 : QDialog ( parent ), m_login_dlg ( new Ui::login_dlg ),
+		m_welcome_dlg( new Ui::welcome_dlg ),
+		m_reconnect_dlg( new Ui::reconnect_dlg ),
 		DISCONNECT_INFORMATION(tr("There will be a penalty for disconnecting.")),
 		DISCONNECT_QUESTION(tr("Are you sure you want to exit the program?"))
 {
-        m_login_dlg->setupUi ( this );
+	this->hide();
+	m_welcome_w = new QDialog( this );
+	m_welcome_dlg->setupUi( m_welcome_w );
+	m_welcome_w->hide();
+	
+	m_reconnect_w = new QDialog( this );
+	m_reconnect_dlg->setupUi( m_reconnect_w );
+	m_reconnect_w->hide();
+	
+	m_login_w = new QDialog( this );
+        m_login_dlg->setupUi ( m_login_w );
+	m_login_w->show();
+	
         m_network = new ContestantNetwork ( this );
 
         connect ( m_network, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( netAuthenticate ( bool ) ) );
@@ -33,14 +47,19 @@ ContestantApp::ContestantApp ( QWidget* parent )
         // connections for the reconnect dialog
         connect ( m_reconnect_dlg->try_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectTry() ) );
         connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
+	
+	// TODO: get the client configuration from XmlUtil
+	
+	// TODO: connect to the server here
+	
 }
 
 ContestantApp::~ContestantApp()
 {
         delete m_network;
-        delete m_login_dlg;
-        delete m_welcome_dlg;
-        delete m_reconnect_dlg;
+        delete m_login_w;
+        delete m_welcome_w;
+        delete m_reconnect_w;
 }
 
 void ContestantApp::netContestStateChange ( int state )
@@ -125,7 +144,7 @@ int main ( int argc, char* argv[] )
         QApplication app ( argc, argv );
 
         ContestantApp c_app;
-        c_app.show();
+        //c_app.show();
 
         return app.exec();
 }
