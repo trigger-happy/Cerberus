@@ -8,25 +8,27 @@
 #include "ui_summary.h"
 
 ContestantApp::ContestantApp ( QWidget* parent )
-                : QDialog ( parent ), m_login_dlg ( new Ui::login_dlg ),
-		m_welcome_dlg( new Ui::welcome_dlg ),
-		m_reconnect_dlg( new Ui::reconnect_dlg ),
-		DISCONNECT_INFORMATION(tr("There will be a penalty for disconnecting.")),
-		DISCONNECT_QUESTION(tr("Are you sure you want to exit the program?"))
+                : QDialog ( parent ),
+                DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
+                DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) )
 {
-	this->hide();
-	m_welcome_w = new QDialog( this );
-	m_welcome_dlg->setupUi( m_welcome_w );
-	m_welcome_w->hide();
+	m_login_dlg = new Ui::login_dlg;
+	m_welcome_dlg = new Ui::welcome_dlg;
+	m_reconnect_dlg = new Ui::reconnect_dlg;
 	
-	m_reconnect_w = new QDialog( this );
-	m_reconnect_dlg->setupUi( m_reconnect_w );
-	m_reconnect_w->hide();
-	
-	m_login_w = new QDialog( this );
+        this->hide();
+        m_welcome_w = new QDialog ( this );
+        m_welcome_dlg->setupUi ( m_welcome_w );
+        m_welcome_w->hide();
+
+        m_reconnect_w = new QDialog ( this );
+        m_reconnect_dlg->setupUi ( m_reconnect_w );
+        m_reconnect_w->hide();
+
+        m_login_w = new QDialog ( this );
         m_login_dlg->setupUi ( m_login_w );
-	m_login_w->show();
-	
+        m_login_w->show();
+
         m_network = new ContestantNetwork ( this );
 
         connect ( m_network, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( netAuthenticate ( bool ) ) );
@@ -47,11 +49,11 @@ ContestantApp::ContestantApp ( QWidget* parent )
         // connections for the reconnect dialog
         connect ( m_reconnect_dlg->try_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectTry() ) );
         connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
-	
-	// TODO: get the client configuration from XmlUtil
-	
-	// TODO: connect to the server here
-	
+
+        // TODO: get the client configuration from XmlUtil
+
+        // TODO: connect to the server here
+
 }
 
 ContestantApp::~ContestantApp()
@@ -119,20 +121,19 @@ void ContestantApp::reconnectTry()
 void ContestantApp::reconnectCancel()
 {
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Confirm Disconnection");
-        msgBox.setText(DISCONNECT_QUESTION);
-        msgBox.setInformativeText(DISCONNECT_INFORMATION);
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::No);
-        msgBox.setIcon(QMessageBox::Question);
+        msgBox.setWindowTitle ( "Confirm Disconnection" );
+        msgBox.setText ( DISCONNECT_QUESTION );
+        msgBox.setInformativeText ( DISCONNECT_INFORMATION );
+        msgBox.setStandardButtons ( QMessageBox::Yes | QMessageBox::No );
+        msgBox.setDefaultButton ( QMessageBox::No );
+        msgBox.setIcon ( QMessageBox::Question );
         int disconnect = msgBox.exec();
 
-        switch(disconnect)
-        {
-            case QMessageBox::Yes:
+        switch ( disconnect ) {
+        case QMessageBox::Yes:
                 // "close the whole friggin program" - jim
 
-            case QMessageBox::No:
+        case QMessageBox::No:
                 break;
         }
 }
