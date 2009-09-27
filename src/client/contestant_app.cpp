@@ -15,6 +15,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_login_dlg = new Ui::login_dlg;
 	m_welcome_dlg = new Ui::welcome_dlg;
 	m_reconnect_dlg = new Ui::reconnect_dlg;
+        m_round1_dlg = new Ui::round1_dlg;
+        m_summary_dlg = new Ui::summary_dlg;
 	
         this->hide();
         m_welcome_w = new QDialog ( this );
@@ -24,6 +26,14 @@ ContestantApp::ContestantApp ( QWidget* parent )
         m_reconnect_w = new QDialog ( this );
         m_reconnect_dlg->setupUi ( m_reconnect_w );
         m_reconnect_w->hide();
+
+        m_round1_w = new QDialog ( this );
+        m_round1_dlg->setupUi ( m_round1_w );
+        m_round1_w->hide();
+
+        m_summary_w = new QDialog ( this );
+        m_summary_dlg->setupUi ( m_summary_w );
+        m_summary_w->hide();
 
         m_login_w = new QDialog ( this );
         m_login_dlg->setupUi ( m_login_w );
@@ -50,6 +60,10 @@ ContestantApp::ContestantApp ( QWidget* parent )
         connect ( m_reconnect_dlg->try_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectTry() ) );
         connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
 
+        // connections for the round 1 dialog
+        connect ( m_round1_dlg->previous_btn, SIGNAL( clicked() ), this, SLOT ( round1Previous() ) );
+        connect ( m_round1_dlg->next_btn, SIGNAL( clicked() ), this, SLOT ( round1Next() ) );
+
         // TODO: get the client configuration from XmlUtil
 
         // TODO: connect to the server here
@@ -62,6 +76,7 @@ ContestantApp::~ContestantApp()
         delete m_login_w;
         delete m_welcome_w;
         delete m_reconnect_w;
+        delete m_round1_w;
 }
 
 void ContestantApp::netContestStateChange ( int state )
@@ -136,6 +151,14 @@ void ContestantApp::reconnectCancel()
         case QMessageBox::No:
                 break;
         }
+}
+
+void ContestantApp::round1Next()
+{
+}
+
+void ContestantApp::round1Previous()
+{
 }
 
 int main ( int argc, char* argv[] )

@@ -91,15 +91,22 @@ private slots:
         void reconnectCancel();
 
         /*!
-	*/
+        Slot for the Previous button on the round 1 dialog.
+        */
+        void round1Previous();
+
+        /*!
+        Slot for the Next button on the round 1 dialog.
+        */
+        void round1Next();
 
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
         Ui::welcome_dlg* m_welcome_dlg;
         Ui::reconnect_dlg* m_reconnect_dlg;
-        Ui::round1_dlg* round1_dlg;
-        Ui::summary_dlg* summary_dlg;
+        Ui::round1_dlg* m_round1_dlg;
+        Ui::summary_dlg* m_summary_dlg;
 	
 	QDialog* m_login_w;
 	QDialog* m_welcome_w;
