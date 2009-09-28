@@ -70,7 +70,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
         // TODO: connect to the server here
 
-        // question data
+        // question data types, to be used all throughout the round
         r1qdata = new R1QData;
         r1question = new R1Question;
 
@@ -134,6 +134,8 @@ void ContestantApp::netR1QData ( const QString& xml )
 {
         m_login_w->hide();
         m_welcome_w->show();
+
+        // where will the instructions text field's text be changed? here?
 }
 
 void ContestantApp::netR1AData ( bool result )
@@ -154,6 +156,16 @@ void ContestantApp::loginExit()
 void ContestantApp::welcomeStart()
 {
         // to do later
+        m_welcome_w->hide();
+        m_round1_w->show();
+
+        // changing the question text to the first question
+        r1question = &(r1qdata->questions[0]);
+        m_round1_dlg->question_lbl->setText( r1question->question );
+        m_round1_dlg->a_radio->setText( r1question->choices[0]);
+        m_round1_dlg->b_radio->setText( r1question->choices[1]);
+        m_round1_dlg->c_radio->setText( r1question->choices[2]);
+        m_round1_dlg->d_radio->setText( r1question->choices[3]);
 }
 
 void ContestantApp::reconnectTry()
@@ -173,7 +185,8 @@ void ContestantApp::reconnectCancel()
 
         switch ( disconnect ) {
         case QMessageBox::Yes:
-                // TO DO: "close the whole friggin program" - jim
+                this->close();
+                break;
 
         case QMessageBox::No:
                 break;
@@ -182,10 +195,77 @@ void ContestantApp::reconnectCancel()
 
 void ContestantApp::round1Next()
 {
+        bool atLastQuestion = false;
+
+        for( int i = 0; i < r1qdata->questions.size(); i++ )
+        {
+            if( i == r1qdata->questions.size()-1 )
+            {
+                // check if this is already the last question
+                atLastQuestion = true;
+                break;
+            }
+            else if( r1qdata->questions[i] == *r1question )
+            {
+                // get next question and make r1question point to this
+                r1question = &(r1qdata->questions[i+1]);
+                break;
+            }
+        }
+
+        // if last question, show the summary page
+        if( atLastQuestion )
+        {
+            m_round1_w->hide();
+            m_summary_w->show();
+        }
+        else
+        {
+            // for all other questions
+            m_round1_dlg->question_lbl->setText( r1question->question );
+            m_round1_dlg->a_radio->setText( r1question->choices[0]);
+            m_round1_dlg->b_radio->setText( r1question->choices[1]);
+            m_round1_dlg->c_radio->setText( r1question->choices[2]);
+            m_round1_dlg->d_radio->setText( r1question->choices[3]);
+        }
+
 }
 
 void ContestantApp::round1Previous()
 {
+        bool atFirstQuestion = false;
+
+        for( int i = 1; i < r1qdata->questions.size(); i++ )
+        {
+            if( r1qdata->questions[0] == *r1question )
+            {
+                // check if this is already the first question
+                atFirstQuestion = true;
+                break;
+            }
+            else if( r1qdata->questions[i] == *r1question )
+            {
+                // get previous question and make r1question point to this
+                r1question = &(r1qdata->questions[i-1]);
+                break;
+            }
+        }
+
+        // if first question, show the welcome/instructions page
+        if( atFirstQuestion )
+        {
+            m_round1_w->hide();
+            m_welcome_w->show();
+        }
+        else
+        {
+            // for all other questions
+            m_round1_dlg->question_lbl->setText( r1question->question );
+            m_round1_dlg->a_radio->setText( r1question->choices[0]);
+            m_round1_dlg->b_radio->setText( r1question->choices[1]);
+            m_round1_dlg->c_radio->setText( r1question->choices[2]);
+            m_round1_dlg->d_radio->setText( r1question->choices[3]);
+        }
 }
 
 int main ( int argc, char* argv[] )
