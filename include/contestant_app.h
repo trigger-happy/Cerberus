@@ -117,6 +117,8 @@ private:
 
         const QString DISCONNECT_QUESTION;
         const QString DISCONNECT_INFORMATION;
+        const QString UNAUTH_TEXT;
+        const QString UNAUTH_INFORMATION;
 
         R1QData* r1qdata;
         R1Question* r1question;

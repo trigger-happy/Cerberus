@@ -10,7 +10,9 @@
 ContestantApp::ContestantApp ( QWidget* parent )
                 : QDialog ( parent ),
                 DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
-                DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) )
+                DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) ),
+                UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
+                UNAUTH_INFORMATION ( tr ( "Username or password may be incorrect." ) )
 {
 	m_login_dlg = new Ui::login_dlg;
 	m_welcome_dlg = new Ui::welcome_dlg;
@@ -109,13 +111,29 @@ void ContestantApp::netConnect()
 void ContestantApp::netAuthenticate ( bool result )
 {
         //TODO: do something here for authorization replies.
+
+        if(result)
+        {
+            int request = m_network->r1QDataRequest();
+        }
+        else
+        {
+            QMessageBox msg;
+            msg.setWindowTitle ( "Error" );
+            msg.setText ( UNAUTH_TEXT );
+            msg.setInformativeText ( UNAUTH_INFORMATION );
+            msg.setStandardButtons ( QMessageBox::Ok );
+            msg.setDefaultButton ( QMessageBox::Ok );
+            msg.setIcon ( QMessageBox::Information );
+            msg.exec();
+        }
+
 }
 
 void ContestantApp::netR1QData ( const QString& xml )
 {
-        //TODO: do something here for question data arriving.
-
-        // change welcome message
+        m_login_w->hide();
+        m_welcome_w->show();
 }
 
 void ContestantApp::netR1AData ( bool result )
@@ -155,7 +173,7 @@ void ContestantApp::reconnectCancel()
 
         switch ( disconnect ) {
         case QMessageBox::Yes:
-                // "close the whole friggin program" - jim
+                // TO DO: "close the whole friggin program" - jim
 
         case QMessageBox::No:
                 break;
