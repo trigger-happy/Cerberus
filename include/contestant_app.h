@@ -2,6 +2,7 @@
 #define CONTESTANT_APP_H
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+#include "util/xml_util.h"
 
 namespace Ui
 {
@@ -116,6 +117,10 @@ private:
 
         const QString DISCONNECT_QUESTION;
         const QString DISCONNECT_INFORMATION;
+
+        R1QData* r1qdata;
+        R1Question* r1question;
+
 };
 
 #endif //CONTESTANT_APP_H

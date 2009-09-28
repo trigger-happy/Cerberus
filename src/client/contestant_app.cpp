@@ -68,6 +68,10 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
         // TODO: connect to the server here
 
+        // question data
+        r1qdata = new R1QData;
+        r1question = new R1Question;
+
 }
 
 ContestantApp::~ContestantApp()
@@ -77,6 +81,9 @@ ContestantApp::~ContestantApp()
         delete m_welcome_w;
         delete m_reconnect_w;
         delete m_round1_w;
+
+        delete r1qdata;
+        delete r1question;
 }
 
 void ContestantApp::netContestStateChange ( int state )
@@ -107,6 +114,8 @@ void ContestantApp::netAuthenticate ( bool result )
 void ContestantApp::netR1QData ( const QString& xml )
 {
         //TODO: do something here for question data arriving.
+
+        // change welcome message
 }
 
 void ContestantApp::netR1AData ( bool result )
