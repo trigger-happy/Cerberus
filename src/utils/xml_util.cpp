@@ -105,6 +105,7 @@ bool XmlUtil::readR1AData(const QString& xml, R1Answers& data){
         while(!reader.atEnd()){
             if(token == QXmlStreamReader::StartElement){
                 if(reader.name() == "answer"){ // checks for the answer tag
+                    token = reader.readNext();
                     QXmlStreamAttributes attribute = reader.attributes(); // extracts the attributes
                     int number = attribute.value("number").toString().toInt(); // gets the number attribute
                     token = reader.readNext();
@@ -136,9 +137,57 @@ bool XmlUtil::writeR1AData(const R1Answers& data, QString& xml){
 }
 
 bool XmlUtil::readClientConfig(const QString& xml, ClientConfig& conf){
+        QXmlStreamReader reader(xml);
+        QXmlStreamReader::TokenType token = reader.readNext();
+
+        while(!reader.atEnd()){
+            if(token == QXmlStreamReader::StartElement){
+                if(reader.name() == "port"){ // checks for the port tag
+                    token = reader.readNext();// moves to the text
+                    QString ip = reader.text().toString(); // reads the ip address
+                    token = reader.readNext(); // moves to the port tag
+                    token = reader.readNext(); // moves to the port text
+                    int port = reader.text().toString().toInt(); // reads the text from the port
+                    conf.ip = ip; // stores ip into data
+                    conf.port = port; // stores port into data port
+                }
+            }
+        }        
 	return true;
 }
 
 bool XmlUtil::readServerConfig(const QString& xml, ServerConfig& conf){
+        QXmlStreamReader reader(xml);
+        QXmlStreamReader::TokenType token = reader.readNext();
+
+        while(!reader.atEnd()){
+            if(token == QXmlStreamReader::StartElement){
+                if(reader.name() == "port"){
+                    token = reader.readNext(); // move token to the characters tag
+                    int port = reader.text().toString().toInt(); // read the port value
+                    token = reader.readNext(); // move token to db tag
+                    token = reader.readNext(); // move token to db value
+                    QString db = reader.text().toString(); // read the db value
+                    token = reader.readNext(); // move token to stage_data tag
+                    QXmlStreamAttributes attributes = reader.attributes(); // get the attributes
+                    int round = attributes.value("round").toString().toInt(); // gets the attribute round from stage_data
+                    token = reader.readNext(); // move token to question_data
+                    token = reader.readNext(); // move token to question_data value
+                    QString questions = reader.text().toString(); // read the questions value
+                    token = reader.readNext(); // move token to answer_data tag
+                    token = reader.readNext(); // move token to answer_data value
+                    QString answers = reader.text().toString(); //read the answers value
+                    StageData data;
+                    data.question_file = questions;
+                    data.question_file = answers;
+
+                    conf.db_path = db;
+                    conf.port = port;
+                    conf.stage_data.push_back(data);
+                }
+            }
+        }
+
+
 	return true;
 }
