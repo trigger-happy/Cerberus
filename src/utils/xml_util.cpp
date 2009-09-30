@@ -152,6 +152,7 @@ bool XmlUtil::readClientConfig(const QString& xml, ClientConfig& conf){
                     conf.port = port; // stores port into data port
                 }
             }
+            //comment
         }        
 	return true;
 }
