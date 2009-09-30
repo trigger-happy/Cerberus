@@ -4,13 +4,43 @@
 #include "ui_login.h"
 #include "ui_welcome.h"
 #include "ui_reconnect.h"
+#include "ui_round1.h"
+#include "ui_summary.h"
 
 ContestantApp::ContestantApp ( QWidget* parent )
-                : QDialog ( parent ), m_login_dlg ( new Ui::login_dlg ),
-		DISCONNECT_INFORMATION(tr("There will be a penalty for disconnecting.")),
-		DISCONNECT_QUESTION(tr("Are you sure you want to exit the program?"))
+                : QDialog ( parent ),
+                DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
+                DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) ),
+                UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
+                UNAUTH_INFORMATION ( tr ( "Username or password may be incorrect." ) )
 {
-        m_login_dlg->setupUi ( this );
+	m_login_dlg = new Ui::login_dlg;
+	m_welcome_dlg = new Ui::welcome_dlg;
+	m_reconnect_dlg = new Ui::reconnect_dlg;
+        m_round1_dlg = new Ui::round1_dlg;
+        m_summary_dlg = new Ui::summary_dlg;
+	
+        this->hide();
+        m_welcome_w = new QDialog ( this );
+        m_welcome_dlg->setupUi ( m_welcome_w );
+        m_welcome_w->hide();
+
+        m_reconnect_w = new QDialog ( this );
+        m_reconnect_dlg->setupUi ( m_reconnect_w );
+        m_reconnect_w->hide();
+
+        m_round1_w = new QDialog ( this );
+        m_round1_dlg->setupUi ( m_round1_w );
+        m_round1_w->hide();
+
+        m_summary_w = new QDialog ( this );
+        m_summary_dlg->setupUi ( m_summary_w );
+        m_summary_w->hide();
+
+        m_login_w = new QDialog ( this );
+        m_login_dlg->setupUi ( m_login_w );
+        m_login_w->show();
+
         m_network = new ContestantNetwork ( this );
 
         connect ( m_network, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( netAuthenticate ( bool ) ) );
@@ -31,14 +61,31 @@ ContestantApp::ContestantApp ( QWidget* parent )
         // connections for the reconnect dialog
         connect ( m_reconnect_dlg->try_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectTry() ) );
         connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
+
+        // connections for the round 1 dialog
+        connect ( m_round1_dlg->previous_btn, SIGNAL( clicked() ), this, SLOT ( round1Previous() ) );
+        connect ( m_round1_dlg->next_btn, SIGNAL( clicked() ), this, SLOT ( round1Next() ) );
+
+        // TODO: get the client configuration from XmlUtil
+
+        // TODO: connect to the server here
+
+        // question data types, to be used all throughout the round
+        r1qdata = new R1QData;
+        r1question = new R1Question;
+
 }
 
 ContestantApp::~ContestantApp()
 {
         delete m_network;
-        delete m_login_dlg;
-        delete m_welcome_dlg;
-        delete m_reconnect_dlg;
+        delete m_login_w;
+        delete m_welcome_w;
+        delete m_reconnect_w;
+        delete m_round1_w;
+
+        delete r1qdata;
+        delete r1question;
 }
 
 void ContestantApp::netContestStateChange ( int state )
@@ -64,11 +111,31 @@ void ContestantApp::netConnect()
 void ContestantApp::netAuthenticate ( bool result )
 {
         //TODO: do something here for authorization replies.
+
+        if(result)
+        {
+            int request = m_network->r1QDataRequest();
+        }
+        else
+        {
+            QMessageBox msg;
+            msg.setWindowTitle ( "Error" );
+            msg.setText ( UNAUTH_TEXT );
+            msg.setInformativeText ( UNAUTH_INFORMATION );
+            msg.setStandardButtons ( QMessageBox::Ok );
+            msg.setDefaultButton ( QMessageBox::Ok );
+            msg.setIcon ( QMessageBox::Information );
+            msg.exec();
+        }
+
 }
 
 void ContestantApp::netR1QData ( const QString& xml )
 {
-        //TODO: do something here for question data arriving.
+        m_login_w->hide();
+        m_welcome_w->show();
+
+        // where will the instructions text field's text be changed? here?
 }
 
 void ContestantApp::netR1AData ( bool result )
@@ -89,6 +156,16 @@ void ContestantApp::loginExit()
 void ContestantApp::welcomeStart()
 {
         // to do later
+        m_welcome_w->hide();
+        m_round1_w->show();
+
+        // changing the question text to the first question
+        r1question = &(r1qdata->questions[0]);
+        m_round1_dlg->question_lbl->setText( r1question->question );
+        m_round1_dlg->a_radio->setText( r1question->choices[0]);
+        m_round1_dlg->b_radio->setText( r1question->choices[1]);
+        m_round1_dlg->c_radio->setText( r1question->choices[2]);
+        m_round1_dlg->d_radio->setText( r1question->choices[3]);
 }
 
 void ContestantApp::reconnectTry()
@@ -98,21 +175,96 @@ void ContestantApp::reconnectTry()
 void ContestantApp::reconnectCancel()
 {
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Confirm Disconnection");
-        msgBox.setText(DISCONNECT_QUESTION);
-        msgBox.setInformativeText(DISCONNECT_INFORMATION);
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::No);
-        msgBox.setIcon(QMessageBox::Question);
+        msgBox.setWindowTitle ( "Confirm Disconnection" );
+        msgBox.setText ( DISCONNECT_QUESTION );
+        msgBox.setInformativeText ( DISCONNECT_INFORMATION );
+        msgBox.setStandardButtons ( QMessageBox::Yes | QMessageBox::No );
+        msgBox.setDefaultButton ( QMessageBox::No );
+        msgBox.setIcon ( QMessageBox::Question );
         int disconnect = msgBox.exec();
 
-        switch(disconnect)
-        {
-            case QMessageBox::Yes:
-                // "close the whole friggin program" - jim
-
-            case QMessageBox::No:
+        switch ( disconnect ) {
+        case QMessageBox::Yes:
+                this->close();
                 break;
+
+        case QMessageBox::No:
+                break;
+        }
+}
+
+void ContestantApp::round1Next()
+{
+        bool atLastQuestion = false;
+
+        for( int i = 0; i < r1qdata->questions.size(); i++ )
+        {
+            if( i == r1qdata->questions.size()-1 )
+            {
+                // check if this is already the last question
+                atLastQuestion = true;
+                break;
+            }
+            else if( r1qdata->questions[i] == *r1question )
+            {
+                // get next question and make r1question point to this
+                r1question = &(r1qdata->questions[i+1]);
+                break;
+            }
+        }
+
+        // if last question, show the summary page
+        if( atLastQuestion )
+        {
+            m_round1_w->hide();
+            m_summary_w->show();
+        }
+        else
+        {
+            // for all other questions
+            m_round1_dlg->question_lbl->setText( r1question->question );
+            m_round1_dlg->a_radio->setText( r1question->choices[0]);
+            m_round1_dlg->b_radio->setText( r1question->choices[1]);
+            m_round1_dlg->c_radio->setText( r1question->choices[2]);
+            m_round1_dlg->d_radio->setText( r1question->choices[3]);
+        }
+
+}
+
+void ContestantApp::round1Previous()
+{
+        bool atFirstQuestion = false;
+
+        for( int i = 1; i < r1qdata->questions.size(); i++ )
+        {
+            if( r1qdata->questions[0] == *r1question )
+            {
+                // check if this is already the first question
+                atFirstQuestion = true;
+                break;
+            }
+            else if( r1qdata->questions[i] == *r1question )
+            {
+                // get previous question and make r1question point to this
+                r1question = &(r1qdata->questions[i-1]);
+                break;
+            }
+        }
+
+        // if first question, show the welcome/instructions page
+        if( atFirstQuestion )
+        {
+            m_round1_w->hide();
+            m_welcome_w->show();
+        }
+        else
+        {
+            // for all other questions
+            m_round1_dlg->question_lbl->setText( r1question->question );
+            m_round1_dlg->a_radio->setText( r1question->choices[0]);
+            m_round1_dlg->b_radio->setText( r1question->choices[1]);
+            m_round1_dlg->c_radio->setText( r1question->choices[2]);
+            m_round1_dlg->d_radio->setText( r1question->choices[3]);
         }
 }
 
@@ -123,7 +275,7 @@ int main ( int argc, char* argv[] )
         QApplication app ( argc, argv );
 
         ContestantApp c_app;
-        c_app.show();
+        //c_app.show();
 
         return app.exec();
 }

@@ -36,6 +36,9 @@ bool ContestantNetwork::authenticate(const QString& user_name, const QString& pw
 	if(!m_socket->isWritable()){
 		return false;
 	}
+	if(m_authenticated){
+		return false;
+	}
 	m_state = CCS_AUTHENTICATING;
 	//construct an authentication packet
 	//packet format is:
@@ -135,7 +138,7 @@ void ContestantNetwork::ready(){
 				bool result;
 				in >> result;
 				emit onAuthenticate(result);
-				m_authenticated = true;
+				m_authenticated = result;
 			}
 			break;
 		case PC_QDATA:
@@ -163,6 +166,7 @@ void ContestantNetwork::ready(){
 			}
 			break;
 		default:
+			cout << command << endl;
 			assert(false);
 	}
 	m_state = CCS_STANDBY;

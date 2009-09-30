@@ -2,12 +2,15 @@
 #define CONTESTANT_APP_H
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+#include "util/xml_util.h"
 
 namespace Ui
 {
 class login_dlg;
 class welcome_dlg;
 class reconnect_dlg;
+class round1_dlg;
+class summary_dlg;
 }
 
 class ContestantNetwork;
@@ -88,15 +91,38 @@ private slots:
         */
         void reconnectCancel();
 
+        /*!
+        Slot for the Previous button on the round 1 dialog.
+        */
+        void round1Previous();
+
+        /*!
+        Slot for the Next button on the round 1 dialog.
+        */
+        void round1Next();
 
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
         Ui::welcome_dlg* m_welcome_dlg;
         Ui::reconnect_dlg* m_reconnect_dlg;
+        Ui::round1_dlg* m_round1_dlg;
+        Ui::summary_dlg* m_summary_dlg;
+	
+	QDialog* m_login_w;
+	QDialog* m_welcome_w;
+	QDialog* m_reconnect_w;
+	QDialog* m_round1_w;
+	QDialog* m_summary_w;
 
         const QString DISCONNECT_QUESTION;
         const QString DISCONNECT_INFORMATION;
+        const QString UNAUTH_TEXT;
+        const QString UNAUTH_INFORMATION;
+
+        R1QData* r1qdata;
+        R1Question* r1question;
+
 };
 
 #endif //CONTESTANT_APP_H

@@ -26,6 +26,7 @@ private slots:
         void onADS();
         void onR1QData ( const QString& xml );
         void onR1AData ( bool result );
+	void onContestStateChange(int c);
 private:
         ContestantNetwork* m_net;
         Ui::client_dlg* m_dlg;

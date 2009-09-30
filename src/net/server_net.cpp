@@ -61,6 +61,7 @@ void ContestantConnection::ready(){
 				authenticationReply(result);
 			}else{
 				//TODO: what happens here?
+				authenticationReply(false);
 			}
 			break;
 		case CR_QDATA:
@@ -108,7 +109,7 @@ void ContestantConnection::disconnected(){
 
 void ContestantConnection::authenticationReply(bool res){
 	//construct the packet and send it
-	m_authenticated = true;
+	m_authenticated = res;
 	QByteArray block;
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_4_5);
