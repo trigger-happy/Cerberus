@@ -36,14 +36,42 @@ int SqlUtil::addUser ( const UserData& ud )
 
 int SqlUtil::getScore ( const QString& user_name )
 {
-        return query->exec ( "SELECT score FROM user u, scores s "
-                             "WHERE s.username = '" + user_name + "' AND u.username = s.username" );
+        query->exec ( "SELECT score FROM user u, scores s "
+                      "WHERE s.username = '" + user_name + "' AND u.username = s.username" );
+        int score = query->next();
+        return score;
 }
 
 void SqlUtil::setScore ( const QString& user_name, int score )
 {
-        QString sql = QString ( "UPDATE scores SET score = '%1' "
+        QString sql = QString("");
+        int size = 0;
+        query->exec ( "SELECT username FROM user "
+                      "WHERE username = '" + user_name + "'" );
+        while ( query->next() ) { size++; }
+        if ( size == 1 )
+        {
+            query->exec ( "SELECT username FROM scores "
+                          "WHERE username = '" + user_name + "'" );
+            size = 0;
+            while ( query->next() ) { size++; }
+            if ( size == 1 )
+            {
+                sql = QString ( "UPDATE scores SET score = '%1' "
                                 "WHERE username='%2'" ).arg ( score ).arg ( user_name );
+            }
+            else
+            {
+                sql = QString ( "INSERT INTO scores (username, score) "
+                                "VALUES ('%1','%2')" )
+                        .arg ( QString ( user_name ) )
+                        .arg ( QString ( score ) );
+            }
+        }
+        else
+        {
+            //return error "username doesn't exist in user table"
+        }
         query->exec ( sql );
 }
 
