@@ -64,8 +64,8 @@ void SqlUtil::setScore ( const QString& user_name, int score )
             {
                 sql = QString ( "INSERT INTO scores (username, score) "
                                 "VALUES ('%1','%2')" )
-                        .arg ( QString ( user_name ) )
-                        .arg ( QString ( score ) );
+                        .arg ( user_name )
+                        .arg ( score );
             }
         }
         else
