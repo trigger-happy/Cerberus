@@ -212,8 +212,6 @@ bool XmlUtil::readServerConfig(const QString& xml, ServerConfig& conf){
                     data.question_file = questions;
                     data.answer_file = answers;
 
-                    cout << questions.toStdString()<< endl;
-                    cout << answers.toStdString() << endl;
                     conf.db_path = db;
                     conf.port = port;
 

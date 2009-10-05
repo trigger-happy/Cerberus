@@ -101,8 +101,8 @@ void XmlTest::serverConfReadTest()
         sd.db_path = "resources/server.db";
         sd.port = 2652;
         StageData stemp;
-        stemp.answer_file = "resources/stage1_q.xml";
-        stemp.question_file = "resources/stage1_a.xml";
+        stemp.answer_file = "resources/stage1_a.xml";
+        stemp.question_file = "resources/stage1_q.xml";
         sd.stage_data.push_back ( stemp );
         m_util.readServerConfig ( xml, td );
         QVERIFY ( td == sd );
