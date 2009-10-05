@@ -11,7 +11,7 @@ public:
         bool init ( const QString& dbname );
         int addTeam ( const QString& team_name, const QString& school );
         int addUser ( const UserData& ud );
-        int getScore ( const QString& user_name );
+        double getScore ( const QString& user_name );
         void setScore ( const QString& user_name, int score );
         bool authenticate ( const QString& user_name, const QString& password );
 public slots:

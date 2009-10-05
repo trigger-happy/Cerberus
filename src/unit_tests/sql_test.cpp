@@ -37,7 +37,7 @@ void SqlTest::setScoreTest()
 void SqlTest::getScoreTest()
 {
         SqlUtil& sql = SqlUtil::getInstance();
-        QVERIFY ( sql.getScore ( "user" ) );
+        QVERIFY ( sql.getScore ( "user" ) == 100 );
 }
 
 void SqlTest::authenticateTest()

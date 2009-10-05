@@ -34,11 +34,12 @@ int SqlUtil::addUser ( const UserData& ud )
         return query->exec ( sql );
 }
 
-int SqlUtil::getScore ( const QString& user_name )
+double SqlUtil::getScore ( const QString& user_name )
 {
         query->exec ( "SELECT score FROM user u, scores s "
                       "WHERE s.username = '" + user_name + "' AND u.username = s.username" );
-        int score = query->next();
+	query->next();
+        double score = query->value(0).toDouble();
         return score;
 }
 
