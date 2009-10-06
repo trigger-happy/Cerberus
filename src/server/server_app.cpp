@@ -20,4 +20,8 @@ void ServerApp::netNewConnection()
 
 int main ( int argc, char* argv[] )
 {
+	QApplication a(argc, argv);
+    ServerApp server;
+    server.show();
+    return a.exec();
 }
