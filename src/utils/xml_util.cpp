@@ -1,9 +1,25 @@
+/*
+Copyright (C) 2009 Victor Tanedo
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 #include "util/xml_util.h"
 #include "data_types.h"
 #include <iostream>
 
 using namespace std;
-
 
 bool XmlUtil::readR1QData ( const QString& xml, R1QData& data )
 {
@@ -147,79 +163,74 @@ bool XmlUtil::writeR1AData ( const R1Answers& data, QString& xml )
         return true;
 }
 
-bool XmlUtil::readClientConfig(const QString& xml, ClientConfig& conf){
-        QXmlStreamReader reader(xml);                
-
-        while(!reader.atEnd()){
-            QXmlStreamReader::TokenType token = reader.readNext();
-
-            if(token == QXmlStreamReader::StartElement){
-                if(reader.name() == "config"){ // checks for the config tag                    
-                    token = reader.readNext();
-                    token = reader.readNext();// moves to the ip tag
-                    token = reader.readNext();
-                    QString ip = reader.text().toString(); // reads the ip address
-                    token = reader.readNext();
-                    token = reader.readNext(); // moves to the port tag
-                    token = reader.readNext();
-                    token = reader.readNext(); // moves to the port text
-                    int port = reader.text().toString().toInt(); // reads the text from the port
-                    conf.ip = ip; // stores ip into data
-                    conf.port = port; // stores port into data port
+bool XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
+{
+        QXmlStreamReader reader ( xml );
+        while ( !reader.atEnd() ) {
+                QXmlStreamReader::TokenType token = reader.readNext();
+                if ( token == QXmlStreamReader::StartElement ) {
+                        if ( reader.name() == "config" ) { // checks for the config tag
+                                token = reader.readNext();
+                                token = reader.readNext();// moves to the ip tag
+                                token = reader.readNext();
+                                QString ip = reader.text().toString(); // reads the ip address
+                                token = reader.readNext();
+                                token = reader.readNext(); // moves to the port tag
+                                token = reader.readNext();
+                                token = reader.readNext(); // moves to the port text
+                                int port = reader.text().toString().toInt(); // reads the text from the port
+                                conf.ip = ip; // stores ip into data
+                                conf.port = port; // stores port into data port
+                        }
                 }
-            }
 
-        }        
-	return true;
+        }
+        return true;
 }
 
-bool XmlUtil::readServerConfig(const QString& xml, ServerConfig& conf){
-        QXmlStreamReader reader(xml);
+bool XmlUtil::readServerConfig ( const QString& xml, ServerConfig& conf )
+{
+        QXmlStreamReader reader ( xml );
+        while ( !reader.atEnd() ) {
+                QXmlStreamReader::TokenType token = reader.readNext();
+                if ( token == QXmlStreamReader::StartElement ) {
+                        if ( reader.name() == "config" ) {
+                                token = reader.readNext();
+                                token = reader.readNext(); // move token to the port tag
+                                token = reader.readNext();
+                                int port = reader.text().toString().toInt(); // read the port value
+                                token = reader.readNext();
+                                token = reader.readNext();// move token to the db tag
+                                token = reader.readNext();
+                                token = reader.readNext();
+                                QString db = reader.text().toString(); // read the db value
+                                token = reader.readNext(); // exit the db tag
+                                token = reader.readNext();
+                                token = reader.readNext(); // move token to stage_data tag
 
-        while(!reader.atEnd()){
+                                QXmlStreamAttributes attributes = reader.attributes(); // get the attributes
+                                int round = attributes.value ( "round" ).toString().toInt(); // gets the attribute round from stage_data
 
-            QXmlStreamReader::TokenType token = reader.readNext();
+                                token = reader.readNext(); // move token to question_data
+                                token = reader.readNext();
+                                token = reader.readNext(); // move token to question_data value
+                                QString questions = reader.text().toString(); // read the questions value
+                                token = reader.readNext(); // move token to answer_data tag
+                                token = reader.readNext();
+                                token = reader.readNext();
+                                token = reader.readNext(); // move token to answer_data value
+                                QString answers = reader.text().toString(); //read the answers value
 
-            if(token == QXmlStreamReader::StartElement){
-                if(reader.name() == "config"){                    
-                    token = reader.readNext();                    
-                    token = reader.readNext(); // move token to the port tag
-                    token = reader.readNext();
-                    int port = reader.text().toString().toInt(); // read the port value                    
-                    token = reader.readNext();                                        
-                    token = reader.readNext();// move token to the db tag
-                    token = reader.readNext();
-                    token = reader.readNext();
-                    QString db = reader.text().toString(); // read the db value
-                    token = reader.readNext(); // exit the db tag
-                    token = reader.readNext();
-                    token = reader.readNext(); // move token to stage_data tag
+                                StageData data;
+                                data.question_file = questions;
+                                data.answer_file = answers;
 
-                    QXmlStreamAttributes attributes = reader.attributes(); // get the attributes
-                    int round = attributes.value("round").toString().toInt(); // gets the attribute round from stage_data
+                                conf.db_path = db;
+                                conf.port = port;
 
-                    token = reader.readNext(); // move token to question_data
-                    token = reader.readNext();
-                    token = reader.readNext(); // move token to question_data value
-                    QString questions = reader.text().toString(); // read the questions value                                        
-                    token = reader.readNext(); // move token to answer_data tag
-                    token = reader.readNext();
-                    token = reader.readNext();
-                    token = reader.readNext(); // move token to answer_data value
-                    QString answers = reader.text().toString(); //read the answers value
-
-                    StageData data;
-                    data.question_file = questions;
-                    data.answer_file = answers;
-
-                    conf.db_path = db;
-                    conf.port = port;
-
-                    conf.stage_data.push_back(data);
+                                conf.stage_data.push_back ( data );
+                        }
                 }
-            }
         }
-
-
-	return true;
+        return true;
 }

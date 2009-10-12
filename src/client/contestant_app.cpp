@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2009 Michael Ybanez
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 #include "contestant_app.h"
 #include "net/contestant_net.h"
 #include "error_defs.h"
@@ -14,12 +31,12 @@ ContestantApp::ContestantApp ( QWidget* parent )
                 UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
                 UNAUTH_INFORMATION ( tr ( "Username or password may be incorrect." ) )
 {
-	m_login_dlg = new Ui::login_dlg;
-	m_welcome_dlg = new Ui::welcome_dlg;
-	m_reconnect_dlg = new Ui::reconnect_dlg;
+        m_login_dlg = new Ui::login_dlg;
+        m_welcome_dlg = new Ui::welcome_dlg;
+        m_reconnect_dlg = new Ui::reconnect_dlg;
         m_round1_dlg = new Ui::round1_dlg;
         m_summary_dlg = new Ui::summary_dlg;
-	
+
         this->hide();
         m_welcome_w = new QDialog ( this );
         m_welcome_dlg->setupUi ( m_welcome_w );
@@ -63,8 +80,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
         connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
 
         // connections for the round 1 dialog
-        connect ( m_round1_dlg->previous_btn, SIGNAL( clicked() ), this, SLOT ( round1Previous() ) );
-        connect ( m_round1_dlg->next_btn, SIGNAL( clicked() ), this, SLOT ( round1Next() ) );
+        connect ( m_round1_dlg->previous_btn, SIGNAL ( clicked() ), this, SLOT ( round1Previous() ) );
+        connect ( m_round1_dlg->next_btn, SIGNAL ( clicked() ), this, SLOT ( round1Next() ) );
 
         // TODO: get the client configuration from XmlUtil
 
@@ -112,20 +129,17 @@ void ContestantApp::netAuthenticate ( bool result )
 {
         //TODO: do something here for authorization replies.
 
-        if(result)
-        {
-            int request = m_network->r1QDataRequest();
-        }
-        else
-        {
-            QMessageBox msg;
-            msg.setWindowTitle ( "Error" );
-            msg.setText ( UNAUTH_TEXT );
-            msg.setInformativeText ( UNAUTH_INFORMATION );
-            msg.setStandardButtons ( QMessageBox::Ok );
-            msg.setDefaultButton ( QMessageBox::Ok );
-            msg.setIcon ( QMessageBox::Information );
-            msg.exec();
+        if ( result ) {
+                int request = m_network->r1QDataRequest();
+        } else {
+                QMessageBox msg;
+                msg.setWindowTitle ( "Error" );
+                msg.setText ( UNAUTH_TEXT );
+                msg.setInformativeText ( UNAUTH_INFORMATION );
+                msg.setStandardButtons ( QMessageBox::Ok );
+                msg.setDefaultButton ( QMessageBox::Ok );
+                msg.setIcon ( QMessageBox::Information );
+                msg.exec();
         }
 
 }
@@ -160,12 +174,12 @@ void ContestantApp::welcomeStart()
         m_round1_w->show();
 
         // changing the question text to the first question
-        r1question = &(r1qdata->questions[0]);
-        m_round1_dlg->question_lbl->setText( r1question->question );
-        m_round1_dlg->a_radio->setText( r1question->choices[0]);
-        m_round1_dlg->b_radio->setText( r1question->choices[1]);
-        m_round1_dlg->c_radio->setText( r1question->choices[2]);
-        m_round1_dlg->d_radio->setText( r1question->choices[3]);
+        r1question = & ( r1qdata->questions[0] );
+        m_round1_dlg->question_lbl->setText ( r1question->question );
+        m_round1_dlg->a_radio->setText ( r1question->choices[0] );
+        m_round1_dlg->b_radio->setText ( r1question->choices[1] );
+        m_round1_dlg->c_radio->setText ( r1question->choices[2] );
+        m_round1_dlg->d_radio->setText ( r1question->choices[3] );
 }
 
 void ContestantApp::reconnectTry()
@@ -197,36 +211,29 @@ void ContestantApp::round1Next()
 {
         bool atLastQuestion = false;
 
-        for( int i = 0; i < r1qdata->questions.size(); i++ )
-        {
-            if( i == r1qdata->questions.size()-1 )
-            {
-                // check if this is already the last question
-                atLastQuestion = true;
-                break;
-            }
-            else if( r1qdata->questions[i] == *r1question )
-            {
-                // get next question and make r1question point to this
-                r1question = &(r1qdata->questions[i+1]);
-                break;
-            }
+        for ( int i = 0; i < r1qdata->questions.size(); i++ ) {
+                if ( i == r1qdata->questions.size()-1 ) {
+                        // check if this is already the last question
+                        atLastQuestion = true;
+                        break;
+                } else if ( r1qdata->questions[i] == *r1question ) {
+                        // get next question and make r1question point to this
+                        r1question = & ( r1qdata->questions[i+1] );
+                        break;
+                }
         }
 
         // if last question, show the summary page
-        if( atLastQuestion )
-        {
-            m_round1_w->hide();
-            m_summary_w->show();
-        }
-        else
-        {
-            // for all other questions
-            m_round1_dlg->question_lbl->setText( r1question->question );
-            m_round1_dlg->a_radio->setText( r1question->choices[0]);
-            m_round1_dlg->b_radio->setText( r1question->choices[1]);
-            m_round1_dlg->c_radio->setText( r1question->choices[2]);
-            m_round1_dlg->d_radio->setText( r1question->choices[3]);
+        if ( atLastQuestion ) {
+                m_round1_w->hide();
+                m_summary_w->show();
+        } else {
+                // for all other questions
+                m_round1_dlg->question_lbl->setText ( r1question->question );
+                m_round1_dlg->a_radio->setText ( r1question->choices[0] );
+                m_round1_dlg->b_radio->setText ( r1question->choices[1] );
+                m_round1_dlg->c_radio->setText ( r1question->choices[2] );
+                m_round1_dlg->d_radio->setText ( r1question->choices[3] );
         }
 
 }
@@ -235,36 +242,29 @@ void ContestantApp::round1Previous()
 {
         bool atFirstQuestion = false;
 
-        for( int i = 1; i < r1qdata->questions.size(); i++ )
-        {
-            if( r1qdata->questions[0] == *r1question )
-            {
-                // check if this is already the first question
-                atFirstQuestion = true;
-                break;
-            }
-            else if( r1qdata->questions[i] == *r1question )
-            {
-                // get previous question and make r1question point to this
-                r1question = &(r1qdata->questions[i-1]);
-                break;
-            }
+        for ( int i = 1; i < r1qdata->questions.size(); i++ ) {
+                if ( r1qdata->questions[0] == *r1question ) {
+                        // check if this is already the first question
+                        atFirstQuestion = true;
+                        break;
+                } else if ( r1qdata->questions[i] == *r1question ) {
+                        // get previous question and make r1question point to this
+                        r1question = & ( r1qdata->questions[i-1] );
+                        break;
+                }
         }
 
         // if first question, show the welcome/instructions page
-        if( atFirstQuestion )
-        {
-            m_round1_w->hide();
-            m_welcome_w->show();
-        }
-        else
-        {
-            // for all other questions
-            m_round1_dlg->question_lbl->setText( r1question->question );
-            m_round1_dlg->a_radio->setText( r1question->choices[0]);
-            m_round1_dlg->b_radio->setText( r1question->choices[1]);
-            m_round1_dlg->c_radio->setText( r1question->choices[2]);
-            m_round1_dlg->d_radio->setText( r1question->choices[3]);
+        if ( atFirstQuestion ) {
+                m_round1_w->hide();
+                m_welcome_w->show();
+        } else {
+                // for all other questions
+                m_round1_dlg->question_lbl->setText ( r1question->question );
+                m_round1_dlg->a_radio->setText ( r1question->choices[0] );
+                m_round1_dlg->b_radio->setText ( r1question->choices[1] );
+                m_round1_dlg->c_radio->setText ( r1question->choices[2] );
+                m_round1_dlg->d_radio->setText ( r1question->choices[3] );
         }
 }
 

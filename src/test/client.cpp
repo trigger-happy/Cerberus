@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2009 James Choa
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 #include <QtGui/QApplication>
 #include <iostream>
 #include "client.h"
@@ -18,7 +35,7 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
         connect ( m_net, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( onAuthReply ( bool ) ) );
         connect ( m_net, SIGNAL ( onR1QData ( QString ) ), this, SLOT ( onR1QData ( QString ) ) );
         connect ( m_net, SIGNAL ( onR1AData ( bool ) ), this, SLOT ( onR1AData ( bool ) ) );
-	connect ( m_net, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
+        connect ( m_net, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
 }
 
 ClientDlg::~ClientDlg()
@@ -26,11 +43,11 @@ ClientDlg::~ClientDlg()
         delete m_dlg;
 }
 
-void ClientDlg::onContestStateChange(int s)
+void ClientDlg::onContestStateChange ( int s )
 {
-	QMessageBox msg(this);
-	msg.setText(QString("State change to %1").arg(s));
-	msg.exec();
+        QMessageBox msg ( this );
+        msg.setText ( QString ( "State change to %1" ).arg ( s ) );
+        msg.exec();
 }
 
 void ClientDlg::onQDR()
@@ -57,14 +74,14 @@ void ClientDlg::onR1AData ( bool result )
 
 void ClientDlg::onAuthReply ( bool result )
 {
-	QMessageBox msg(this);
-        if(!result){
-		msg.setText("Failed to authenticate");
-		msg.exec();
-	}else{
-		msg.setText("Authenticated");
-		msg.exec();
-	}
+        QMessageBox msg ( this );
+        if ( !result ) {
+                msg.setText ( "Failed to authenticate" );
+                msg.exec();
+        } else {
+                msg.setText ( "Authenticated" );
+                msg.exec();
+        }
 }
 
 void ClientDlg::onAuthBtn()
@@ -91,8 +108,8 @@ void ClientDlg::onQuitBtn()
 void ClientDlg::onError ( QAbstractSocket::SocketError error )
 {
         cout << "Error" << endl;
-	QMessageBox msg(this);
-	msg.setText(QString("Socket error: %1").arg(error));
+        QMessageBox msg ( this );
+        msg.setText ( QString ( "Socket error: %1" ).arg ( error ) );
 }
 
 int main ( int argc, char* argv[] )

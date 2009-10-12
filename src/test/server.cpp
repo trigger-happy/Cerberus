@@ -1,17 +1,19 @@
 /*
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License version 2 as published by the Free Software Foundation.
+Copyright (C) 2009 James Choa
 
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-   You should have received a copy of the GNU Library General Public License
-   along with this library; see the file COPYING.LIB.  If not, write to
-   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <QApplication>
 #include <iostream>
@@ -28,17 +30,17 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
         m_server = new ServerNetwork ( this );
         connect ( m_server, SIGNAL ( onNewConnection() ), this, SLOT ( onConnection() ) );
-        QFile f("resources/stage1_q.xml");
-	f.open(QIODevice::ReadOnly);
-	QString xml = f.readAll();
+        QFile f ( "resources/stage1_q.xml" );
+        f.open ( QIODevice::ReadOnly );
+        QString xml = f.readAll();
         m_server->setR1QData ( xml );
         m_server->listen ( 2652 );
-	bool result = SqlUtil::getInstance().init("resources/server.db");
-	if(!result){
-		QMessageBox msg(this);
-		msg.setText("Failed to load db");
-		msg.exec();
-	}
+        bool result = SqlUtil::getInstance().init ( "resources/server.db" );
+        if ( !result ) {
+                QMessageBox msg ( this );
+                msg.setText ( "Failed to load db" );
+                msg.exec();
+        }
 }
 
 ServerDlg::~ServerDlg()

@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2009 Janlebrad Ang
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 #include "util/sql_util.h"
 #include <QCryptographicHash>
 
@@ -22,7 +39,7 @@ int SqlUtil::addTeam ( const QString& team_name, const QString& school )
 
 int SqlUtil::addUser ( const UserData& ud )
 {
-	QString pwd = QCryptographicHash::hash(ud.password.toAscii(), QCryptographicHash::Sha1);
+        QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
         QString sql = QString ( "INSERT INTO user(username, team_name, "
                                 "firstname, lastname, password) "
                                 "VALUES ('%1', '%2', '%3', '%4', '%5')" )
@@ -38,47 +55,45 @@ double SqlUtil::getScore ( const QString& user_name )
 {
         query->exec ( "SELECT score FROM user u, scores s "
                       "WHERE s.username = '" + user_name + "' AND u.username = s.username" );
-	query->next();
-        double score = query->value(0).toDouble();
+        query->next();
+        double score = query->value ( 0 ).toDouble();
         return score;
 }
 
 void SqlUtil::setScore ( const QString& user_name, int score )
 {
-        QString sql = QString("");
+        QString sql = QString ( "" );
         int size = 0;
         query->exec ( "SELECT username FROM user "
                       "WHERE username = '" + user_name + "'" );
-        while ( query->next() ) { size++; }
-        if ( size == 1 )
-        {
-            query->exec ( "SELECT username FROM scores "
-                          "WHERE username = '" + user_name + "'" );
-            size = 0;
-            while ( query->next() ) { size++; }
-            if ( size == 1 )
-            {
-                sql = QString ( "UPDATE scores SET score = '%1' "
-                                "WHERE username='%2'" ).arg ( score ).arg ( user_name );
-            }
-            else
-            {
-                sql = QString ( "INSERT INTO scores (username, score) "
-                                "VALUES ('%1','%2')" )
-                        .arg ( user_name )
-                        .arg ( score );
-            }
+        while ( query->next() ) {
+                size++;
         }
-        else
-        {
-            //return error "username doesn't exist in user table"
+        if ( size == 1 ) {
+                query->exec ( "SELECT username FROM scores "
+                              "WHERE username = '" + user_name + "'" );
+                size = 0;
+                while ( query->next() ) {
+                        size++;
+                }
+                if ( size == 1 ) {
+                        sql = QString ( "UPDATE scores SET score = '%1' "
+                                        "WHERE username='%2'" ).arg ( score ).arg ( user_name );
+                } else {
+                        sql = QString ( "INSERT INTO scores (username, score) "
+                                        "VALUES ('%1','%2')" )
+                              .arg ( user_name )
+                              .arg ( score );
+                }
+        } else {
+                //return error "username doesn't exist in user table"
         }
         query->exec ( sql );
 }
 
 bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
 {
-	QString pwd = QCryptographicHash::hash(password.toAscii(), QCryptographicHash::Sha1);
+        QString pwd = QCryptographicHash::hash ( password.toAscii(), QCryptographicHash::Sha1 );
         QString sql = QString ( "SELECT username FROM user WHERE username = '%1' AND password = '%2'" )
                       .arg ( user_name )
                       .arg ( pwd );
