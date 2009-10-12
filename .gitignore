@@ -5,3 +5,6 @@ Doxyfile~
 *.kdev4
 *.user
 *.*~
+.DS_Store
+.Trash
+.com.apple.*
