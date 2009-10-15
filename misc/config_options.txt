@@ -1,6 +1,6 @@
 Server configuration options:
 1.) Server port.
-2.) path for the ff resources (see server_config.cfg):
+2.) path for the ff resources (see server_config.xml):
 	-SQLite database
 	-Round 1,2,3,4 (tie breaker) question and answer data
 	
