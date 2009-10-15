@@ -47,7 +47,7 @@ struct R1Question {
                 return true;
         }
         int number;
-        int difficulty;
+        int score;
         QString question;
         map<int, QString> choices;
 };

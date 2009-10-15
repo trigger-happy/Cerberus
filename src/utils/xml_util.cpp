@@ -48,9 +48,9 @@ bool XmlUtil::readR1QData ( const QString& xml, R1QData& data )
                                         return false;
                                 }
 
-                                // reads from the difficulty attribute from question
-                                if ( attributes.hasAttribute ( "difficulty" ) ) {
-                                        temp.difficulty =  attributes.value ( "difficulty" ).toString().toInt();
+                                // reads from the score attribute from question
+                                if ( attributes.hasAttribute ( "score" ) ) {
+                                        temp.score =  attributes.value ( "score" ).toString().toInt();
                                 } else {
                                         return false;
                                 }
@@ -97,10 +97,10 @@ bool XmlUtil::writeR1QData ( const R1QData& data, QString& xml )
         // this writes the questions into the xml
         while ( counter != 0 ) {
                 QString questionNum = QString ( "%1" ).arg ( data.questions.at ( counter ).number );
-                QString difficultyNum = QString ( "%1" ).arg ( data.questions.at ( counter ).difficulty );
+                QString scoreNum = QString ( "%1" ).arg ( data.questions.at ( counter ).score );
                 writer.writeStartElement ( "question" );
                 writer.writeAttribute ( "number", questionNum );
-                writer.writeAttribute ( "difficulty", difficultyNum );
+                writer.writeAttribute ( "score", scoreNum );
 
                 writer.writeTextElement ( "q", QString ( data.questions.at ( counter ).question ) );
 
