@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<stage1 contest_time="3600">
+<stage2 contest_time="3600">
 	<welcome_msg>Insert welcome message here.</welcome_msg>
 	<question number="1" score="1">
 		<q>The answer to this question is choice 1.</q>
@@ -16,10 +16,10 @@
 		<choice id="4">Michael Jackson</choice>
 	</question>
 	<question number="3" score="2">
-		<q>This is a 2 point question, correct answer is choice 3.</q>
+		<q>This is a 2 point question, correct answers are choice 3 and 4.</q>
 		<choice id="1">Choice 1</choice>
 		<choice id="2">Choice 2</choice>
 		<choice id="3">Choice 3</choice>
 		<choice id="4">Choice 4</choice>
 	</question>
-</stage1>
+</stage2>
