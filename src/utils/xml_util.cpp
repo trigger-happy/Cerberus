@@ -163,7 +163,11 @@ bool XmlUtil::writeR1AData ( const R1Answers& data, QString& xml )
         return true;
 }
 
-bool XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
+bool XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf){
+	return true;
+}
+
+bool XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 {
         QXmlStreamReader reader ( xml );
         while ( !reader.atEnd() ) {

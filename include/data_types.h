@@ -74,8 +74,8 @@ struct R1QData {
 
 typedef map<int,int> R1Answers;
 
-struct ClientConfig {
-        bool operator== ( const ClientConfig& rhs ) {
+struct NetworkConfig {
+        bool operator== ( const NetworkConfig& rhs ) {
                 if ( this->ip == rhs.ip && this->port == rhs.port ) {
                         return true;
                 }
@@ -83,6 +83,15 @@ struct ClientConfig {
         }
         QString ip;
         int port;
+};
+
+struct ClientConfig{
+};
+
+struct PresenterConfig{
+};
+
+struct AdminConfig{
 };
 
 struct StageData {

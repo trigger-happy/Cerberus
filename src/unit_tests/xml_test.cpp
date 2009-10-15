@@ -104,18 +104,18 @@ void XmlTest::a1WriteTest()
         // there are minute formatting differences, just use cout
 }
 
-void XmlTest::clientConfReadTest()
+void XmlTest::netConfReadTest()
 {
-        QFile file ( "resources/client_config.xml" );
+        QFile file ( "resources/net_config.xml" );
         file.open ( QIODevice::ReadOnly );
         QVERIFY ( file.isOpen() );
         QString xml = file.readAll();
         QVERIFY ( xml.size() > 0 );
-        ClientConfig cd, td;
-        cd.ip = "192.168.1.100";
-        cd.port = 2652;
-        m_util.readClientConfig ( xml, td );
-        QVERIFY ( td == cd );
+        NetworkConfig nd, td;
+        nd.ip = "127.0.0.1";
+        nd.port = 2652;
+        m_util.readNetConfig ( xml, td );
+        QVERIFY ( td == nd );
 }
 
 void XmlTest::serverConfReadTest()

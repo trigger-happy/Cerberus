@@ -63,7 +63,15 @@ public:
         \param conf Reference to a ClientConfig struct to fill up.
         \return true on succes, false on failure.
         */
-        bool readClientConfig ( const QString& xml, ClientConfig& conf );
+	bool readClientConfig ( const QString& xml, ClientConfig& conf );
+	
+	/*!
+	Read the network config from xml.
+	\param xml Xml data in a QString.
+	\param conf Reference to a NetworkConfig struct to fill up.
+	\return true on succes, false on failure.
+	*/
+	bool readNetConfig ( const QString& xml, NetworkConfig& conf );
 
         /*!
         Read the server config from xml.

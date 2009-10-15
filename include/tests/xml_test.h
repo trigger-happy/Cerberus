@@ -29,7 +29,7 @@ private slots:
         void q1WriteTest();
         void a1ReadTest();
         void a1WriteTest();
-        void clientConfReadTest();
+        void netConfReadTest();
         void serverConfReadTest();
 private:
         XmlUtil m_util;
