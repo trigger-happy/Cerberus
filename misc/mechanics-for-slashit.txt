@@ -1,0 +1,72 @@
+Mechanics for SlashIT, more detailed
+Written: October 9, 2009
+Modified: October 11, 2009 -- incorporated decisions made by the /IT group.
+
+
+elimination round: (1.5 hours)
+The elimination round will be multiple choice questions for individuals
+The score will be calculated by adding the score of individuals that make
+up each pair, and dividing it by two (basically getting an average of their score)
+The round will last an hour and a half, and the contestants may be able to go back to previous
+questions. Nothing is final until they submit their answers, and the score is judged.
+The contest itself only lasts 1 hour and 15 minutes, with the last 15 minutes being time that 
+has a penalty on one's score (a deduction of 2 points per minute would suffice).
+
+semi-final round: (1.5 hours)
+The semi-final round is an addition to our contest. This time, answering the multiple
+choice questions will be a team effort. There may be one or many correct answers
+per question. If there are more than one correct answer, these must also be selected.
+The round will last an hour and a half, and the contestants will be able to
+go back to previous questions. Nothing is final until they submitted, and the score is
+judged. The contest itself only lasts 1 hour and 15 minutes
+with the last 15 minutes being extra time with penalty (a deduction of 4 points per minute would suffice).
+
+The measurement of the points will be as follows:
+If at least one wrong answer is checked, no points will be awarded to the team.
+If there is no wrong answer checked, but the team missed some of the correct answers,
+then only a fraction of the score (which is determined by dividing the highest score possible for that
+question by the number of correct answers) will be given to that team.
+
+final round: (1 hour)
+The final round will be a much faster-paced contest, with much more difficult questions.
+There will still be questions in which there will be multiple answers. There might also
+be questions in which the answer is not present among the choices, and therefore
+they must specify what the correct answer it (using a "none of the above" choice, with
+a field provided to allow the contestants to specify the answers). There is no extra time
+for this round, and those who have failed to submit will automatically be eliminated.
+The contests will last for only 45 minutes, giving the remainder of the hour for the tie-breaker
+round. (see the section below regarding tie breaker)
+(As a consequence of not submitting anything for the final round, there is a possibility
+that everyone could be eliminated.
+I would be open to the possibility that no one wins the contest if they did not submit
+anything at all. Therefore, there is a constraint that they must submit within 45 minutes.
+This condition will only occur in such case that no one submits their answers at all. I believe
+this is highly improbable since everyone wants to win in a contest.)
+Unlike the previous two rounds, for the final round, each question will be given a certain
+number of minutes to solve (this depends on the difficulty of a question). Therefore,
+each team will have to solve only one problem at a time. They may submit early. But this
+means that they may not change their answer once they have pressed "Submit." If they did not
+press submit, and the time has run out, it would be considered an incorrect answer (not that
+they did not submit anything, so there would be no points at all)
+
+tie-breaker: (-- minutes)
+The tie breaker is a sudden death contest. Each question has a time limit, in
+which case they would not be allowed to go back to any one question (as there would
+only be one question that would be specified for each case). This format is almost
+identical to the final round. If the team fails
+to answer the question, it would be considered as incorrect once the time is up.
+the Tie-breaker questions would be really difficult questions, in which case it might
+be easier to identify the champion. The tie-breaker round will only end once there is an
+obvious winner (ie, no two scores are the same for the top 3) This means that if there
+are three or more teams that have the same score, the tie-breaker round will have to keep
+going on until there are top 3, different scores. But in such case that we do not have
+any more tie-breakers (I would give 10 tie-breakers at the most, which is many already,
+just to be sure), then we shall award those teams the same rank.
+
+Special Cases:
+*The penalty for disconnection has been removed. We have made this decision based on
+the assumption that the network itself is reliable, so the source of disconnection
+did not come from there. The only reason for disconnection would be an intentional
+act of a member of the team. The positive penalty of deducting scores have been removed
+because having to answer all the questions all over again with lost time is already
+penalty in itself.
