@@ -1,7 +1,37 @@
-//#include <QtGui/QApplication>
+/*
+Copyright (C) 2009 Ken Lee
 
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-int main()
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+#include <QtGui/QApplication>
+#include "question_editor.h"
+#include "ui_question_editor.h"
+
+QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::QEditor)
 {
-	return 0;
+	q_ui->setupUi(this);
+}
+QEditor::~QEditor()
+{
+	delete q_ui;
+}
+
+int main(int argc, char *argv[])
+{
+	QApplication app (argc, argv);
+	QEditor q_App;
+	q_App.show();
+	return app.exec();
 }
