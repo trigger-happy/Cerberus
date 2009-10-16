@@ -6,15 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>423</height>
+    <width>574</width>
+    <height>357</height>
    </rect>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>591</width>
-    <height>426</height>
-   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -23,12 +17,6 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
-      <property name="maximumSize">
-       <size>
-        <width>561</width>
-        <height>421</height>
-       </size>
-      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -225,7 +213,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>586</width>
+     <width>574</width>
      <height>24</height>
     </rect>
    </property>

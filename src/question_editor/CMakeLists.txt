@@ -7,8 +7,8 @@
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set(Q_EDITOR_SRCS <>.cpp)
-set(Q_EDITOR_MHDRS ${INCLUDE_DIR}/<>.h)
+set(Q_EDITOR_SRCS question_editor.cpp)
+set(Q_EDITOR_MHDRS ${INCLUDE_DIR}/question_editor.h)
 QT4_WRAP_CPP(Q_EDITOR_MSRCS ${Q_EDITOR_MHDRS})
 set (Q_EDITOR_UI question_editor.ui)
 QT4_WRAP_UI(Q_EDITOR_UI_H ${Q_EDITOR_UI})
