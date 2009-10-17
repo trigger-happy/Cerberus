@@ -20,6 +20,138 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Pre-contest Setup</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout_5">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Welcome Message:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPlainTextEdit" name="plainTextEdit_5"/>
+        </item>
+        <item row="6" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="toolButton_9">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Update</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="toolButton_10">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Cancel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="1">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="spinBox_7">
+          <property name="maximum">
+           <number>3600</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="spinBox_8">
+          <property name="maximum">
+           <number>3600</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="spinBox_9">
+          <property name="maximum">
+           <number>3600</number>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QSpinBox" name="spinBox_10">
+          <property name="maximum">
+           <number>3600</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>Round 1 Duration:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>Round 2 Duration:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>Round 3 Duration:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Tie-Breaker Duration:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="firstRound">
        <attribute name="title">
         <string>Round 1</string>
@@ -28,7 +160,7 @@
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <widget class="QListView" name="listView">
+           <widget class="QListView" name="first_round_list">
             <property name="maximumSize">
              <size>
               <width>300</width>

@@ -18,10 +18,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtGui/QApplication>
 #include "question_editor.h"
 #include "ui_question_editor.h"
+#include "util/xml_util.h"
+#include <iostream>
+
+using namespace std;
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
 	q_ui->setupUi(this);
+	QFile f ("resources/stage1_q.xml");
+	f.open ( QIODevice::ReadOnly );
+	QString xml = f.readAll();
+	//cout << xml;
 }
 QEditor::~QEditor()
 {
