@@ -78,6 +78,12 @@
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Question:</string>
             </property>
@@ -96,19 +102,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="2" column="0">
            <widget class="QRadioButton" name="radioButton">
             <property name="text">
@@ -119,90 +112,51 @@
           <item row="2" column="1">
            <widget class="QLineEdit" name="lineEdit"/>
           </item>
-          <item row="3" column="1">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="4" column="0">
+          <item row="3" column="0">
            <widget class="QRadioButton" name="radioButton_2">
             <property name="text">
              <string>B.</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="3" column="1">
            <widget class="QLineEdit" name="lineEdit_2"/>
           </item>
-          <item row="5" column="1">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="6" column="0">
+          <item row="4" column="0">
            <widget class="QRadioButton" name="radioButton_4">
             <property name="text">
              <string>C.</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="4" column="1">
            <widget class="QLineEdit" name="lineEdit_3"/>
           </item>
-          <item row="7" column="1">
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="8" column="0">
+          <item row="5" column="0">
            <widget class="QRadioButton" name="radioButton_5">
             <property name="text">
              <string>D.</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="1">
+          <item row="5" column="1">
            <widget class="QLineEdit" name="lineEdit_4"/>
           </item>
-          <item row="9" column="1">
-           <spacer name="verticalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="10" column="1">
+          <item row="6" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item>
              <widget class="QToolButton" name="toolButton">
               <property name="minimumSize">
@@ -236,6 +190,26 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Score:</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_3</cstring>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -303,7 +277,7 @@
              <string>Question:</string>
             </property>
             <property name="buddy">
-             <cstring>plainTextEdit</cstring>
+             <cstring>plainTextEdit_2</cstring>
             </property>
            </widget>
           </item>
@@ -317,85 +291,84 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Score:</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_4</cstring>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="1">
-           <spacer name="verticalSpacer_6">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+           <widget class="QSpinBox" name="spinBox_4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
+            <property name="maximum">
+             <number>10</number>
             </property>
-           </spacer>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="checkBox">
+            <property name="text">
+             <string>A.</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="lineEdit_5"/>
           </item>
-          <item row="3" column="1">
-           <spacer name="verticalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="checkBox_2">
+            <property name="text">
+             <string>B.</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
-          <item row="4" column="1">
+          <item row="3" column="1">
            <widget class="QLineEdit" name="lineEdit_6"/>
           </item>
-          <item row="5" column="1">
-           <spacer name="verticalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="checkBox_3">
+            <property name="text">
+             <string>C.</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
-          <item row="6" column="1">
+          <item row="4" column="1">
            <widget class="QLineEdit" name="lineEdit_7"/>
           </item>
-          <item row="7" column="1">
-           <spacer name="verticalSpacer_9">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="5" column="0">
+           <widget class="QCheckBox" name="checkBox_4">
+            <property name="text">
+             <string>D.</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
-          <item row="8" column="1">
+          <item row="5" column="1">
            <widget class="QLineEdit" name="lineEdit_8"/>
           </item>
-          <item row="9" column="1">
-           <spacer name="verticalSpacer_10">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="10" column="1">
+          <item row="6" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item>
              <widget class="QToolButton" name="toolButton_3">
               <property name="minimumSize">
@@ -429,34 +402,6 @@
              </widget>
             </item>
            </layout>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="checkBox">
-            <property name="text">
-             <string>A.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QCheckBox" name="checkBox_2">
-            <property name="text">
-             <string>B.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QCheckBox" name="checkBox_3">
-            <property name="text">
-             <string>C.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QCheckBox" name="checkBox_4">
-            <property name="text">
-             <string>D.</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
@@ -515,13 +460,16 @@
         </item>
         <item row="0" column="1">
          <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Question:</string>
             </property>
             <property name="buddy">
-             <cstring>plainTextEdit</cstring>
+             <cstring>plainTextEdit_3</cstring>
             </property>
            </widget>
           </item>
@@ -535,17 +483,30 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox_5">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>Time Limit:</string>
             </property>
             <property name="buddy">
-             <cstring>plainTextEdit</cstring>
+             <cstring>spinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QSpinBox" name="spinBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
@@ -558,58 +519,71 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QCheckBox" name="checkBox_5">
             <property name="text">
              <string>A.</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QLineEdit" name="lineEdit_9"/>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QCheckBox" name="checkBox_6">
             <property name="text">
              <string>B.</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QLineEdit" name="lineEdit_10"/>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QCheckBox" name="checkBox_7">
             <property name="text">
              <string>C.</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <widget class="QLineEdit" name="lineEdit_11"/>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QCheckBox" name="checkBox_8">
             <property name="text">
              <string>D.</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="6" column="1">
            <widget class="QLineEdit" name="lineEdit_12"/>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QCheckBox" name="checkBox_9">
             <property name="text">
              <string>E.</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="7" column="1">
            <widget class="QLineEdit" name="lineEdit_13"/>
           </item>
-          <item row="7" column="1">
+          <item row="8" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item>
              <widget class="QToolButton" name="toolButton_5">
               <property name="minimumSize">
@@ -643,6 +617,16 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Score:</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_5</cstring>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -704,16 +688,6 @@
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::ExpandingFieldsGrow</enum>
           </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Question:</string>
-            </property>
-            <property name="buddy">
-             <cstring>plainTextEdit</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QPlainTextEdit" name="plainTextEdit_4">
             <property name="maximumSize">
@@ -724,17 +698,17 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Time Limit:</string>
             </property>
             <property name="buddy">
-             <cstring>plainTextEdit</cstring>
+             <cstring>spinBox_2</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QSpinBox" name="spinBox_2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
@@ -747,58 +721,71 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QCheckBox" name="checkBox_10">
             <property name="text">
              <string>A.</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QLineEdit" name="lineEdit_14"/>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QCheckBox" name="checkBox_11">
             <property name="text">
              <string>B.</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QLineEdit" name="lineEdit_15"/>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QCheckBox" name="checkBox_12">
             <property name="text">
              <string>C.</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <widget class="QLineEdit" name="lineEdit_16"/>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QCheckBox" name="checkBox_13">
             <property name="text">
              <string>D.</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="6" column="1">
            <widget class="QLineEdit" name="lineEdit_17"/>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QCheckBox" name="checkBox_14">
             <property name="text">
              <string>E.</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="7" column="1">
            <widget class="QLineEdit" name="lineEdit_18"/>
           </item>
-          <item row="7" column="1">
+          <item row="8" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item>
              <widget class="QToolButton" name="toolButton_7">
               <property name="minimumSize">
@@ -832,6 +819,39 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Question:</string>
+            </property>
+            <property name="buddy">
+             <cstring>plainTextEdit_4</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox_6">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Score:</string>
+            </property>
+            <property name="buddy">
+             <cstring>spinBox_6</cstring>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
