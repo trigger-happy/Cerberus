@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 namespace Ui
 {
-class QEditor;
+class q_editor;
 }
 
 class QEditor : public QMainWindow
@@ -33,7 +33,7 @@ public:
 	QEditor(QWidget *parent = 0);
 	~QEditor();
 private: 
-	Ui::QEditor *q_ui;
+	Ui::q_editor *q_ui;
 };
 
 #endif

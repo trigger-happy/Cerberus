@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "question_editor.h"
 #include "ui_question_editor.h"
 
-QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::QEditor)
+QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
 	q_ui->setupUi(this);
 }
