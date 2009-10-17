@@ -67,7 +67,7 @@
      <item row="0" column="1" colspan="3">
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
-        <string>Server Info</string>
+        <string>Connection Info</string>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
