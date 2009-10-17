@@ -6,288 +6,35 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>591</width>
-    <height>524</height>
+    <width>502</width>
+    <height>401</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Cerberus Server</string>
   </property>
-  <widget class="QTabWidget" name="server_tabs">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
+  <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>591</width>
-     <height>521</height>
+     <x>40</x>
+     <y>40</y>
+     <width>421</width>
+     <height>301</height>
     </rect>
    </property>
-   <property name="currentIndex">
-    <number>0</number>
+  </widget>
+  <widget class="QPushButton" name="stopButton">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>360</y>
+     <width>80</width>
+     <height>26</height>
+    </rect>
    </property>
-   <widget class="QWidget" name="general_tab">
-    <attribute name="title">
-     <string>General Info</string>
-    </attribute>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>180</y>
-       <width>238</width>
-       <height>104</height>
-      </rect>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Current Round:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="con_current_rnd_lbl">
-        <property name="text">
-         <string>Round here</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Time Left:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="con_current_time_lbl">
-        <property name="text">
-         <string>Time here</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="contest_start_btn">
-        <property name="text">
-         <string>St&amp;art Contest</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="contest_stop_btn">
-        <property name="text">
-         <string>St&amp;op Contest</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="contest_restart_btn">
-        <property name="text">
-         <string>&amp;Restart</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="contest_pause_btn">
-        <property name="text">
-         <string>&amp;Pause</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="server_tab">
-    <attribute name="title">
-     <string>Server Config</string>
-    </attribute>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>0</y>
-       <width>379</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Server configuration file:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="servercfg_line"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="severcfg_load_btn">
-        <property name="text">
-         <string>&amp;Load</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="contest_tab">
-    <attribute name="title">
-     <string>Contest Config</string>
-    </attribute>
-    <layout class="QVBoxLayout" name="verticalLayout_8">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <widget class="QTabWidget" name="tabWidget">
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Round 1</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QGroupBox" name="groupBox">
-             <property name="title">
-              <string>General</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_2">
-                <item>
-                 <widget class="QLabel" name="label">
-                  <property name="text">
-                   <string>Time:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="r1_time_line"/>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>Question Data</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_5">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QLabel" name="label_2">
-                  <property name="text">
-                   <string>Question Data:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="r1_qdata_line"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="r1_qdata_btn">
-                  <property name="text">
-                   <string>&amp;Load</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="groupBox_3">
-             <property name="title">
-              <string>Answer Data</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
-                <item>
-                 <widget class="QLabel" name="label_7">
-                  <property name="text">
-                   <string>Answer Data:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="r1_adata_line"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="r1_adata_btn">
-                  <property name="text">
-                   <string>L&amp;oad</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Round 2</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_2"/>
-         </widget>
-         <widget class="QWidget" name="tab_3">
-          <attribute name="title">
-           <string>Round 3</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_3"/>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QPushButton" name="contestconf_apply_btn">
-           <property name="text">
-            <string>&amp;Apply</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="contestconf_reset_btn">
-           <property name="text">
-            <string>&amp;Reset</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="score_tab">
-    <attribute name="title">
-     <string>Scoring</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="userreg_tab">
-    <attribute name="title">
-     <string>Users</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="monitor_tab">
-    <attribute name="title">
-     <string>Monitor</string>
-    </attribute>
-   </widget>
+   <property name="text">
+    <string>Stop</string>
+   </property>
   </widget>
  </widget>
  <resources/>
