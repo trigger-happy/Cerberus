@@ -60,18 +60,25 @@ double SqlUtil::getScore ( const QString& user_name )
         return score;
 }
 
-void SqlUtil::setScore ( const QString& user_name, int score )
+int SqlUtil::setScore ( const QString& user_name, double score )
 {
         QString sql = QString ( "" );
         int size = 0;
-        query->exec ( "SELECT username FROM user "
-                      "WHERE username = '" + user_name + "'" );
+        int result = 0;
+        result = query->exec ( "SELECT username FROM user "
+                               "WHERE username = '" + user_name + "'" );
+        if ( result != 0 ) {
+                return result;
+        }
         while ( query->next() ) {
                 size++;
         }
         if ( size == 1 ) {
-                query->exec ( "SELECT username FROM scores "
-                              "WHERE username = '" + user_name + "'" );
+                result = query->exec ( "SELECT username FROM scores "
+                                       "WHERE username = '" + user_name + "'" );
+                if ( result != 0 ) {
+                        return result;
+                }
                 size = 0;
                 while ( query->next() ) {
                         size++;
@@ -86,9 +93,9 @@ void SqlUtil::setScore ( const QString& user_name, int score )
                               .arg ( score );
                 }
         } else {
-                //return error "username doesn't exist in user table"
+                return -1;
         }
-        query->exec ( sql );
+        return query->exec( sql );
 }
 
 bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
