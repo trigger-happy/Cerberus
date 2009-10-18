@@ -85,13 +85,13 @@ struct NetworkConfig {
         int port;
 };
 
-struct ClientConfig{
+struct ClientConfig {
 };
 
-struct PresenterConfig{
+struct PresenterConfig {
 };
 
-struct AdminConfig{
+struct AdminConfig {
 };
 
 struct StageData {
@@ -139,6 +139,11 @@ struct TeamData {
 struct ScoreData {
         QString user_name;
         double score;
+};
+
+struct AdminData {
+        QString user_name;
+        QString password;
 };
 
 #endif //DATA_TYPES_H

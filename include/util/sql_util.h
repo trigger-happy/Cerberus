@@ -18,20 +18,100 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef SQL_UTIL_H
 #define SQL_UTIL_H
 #include <QtSql/QtSql>
+#include <vector>
 #include "data_types.h"
 #include "patterns/singleton.h"
 
-class SqlUtil : public QObject, public Singleton<SqlUtil>
+using namespace std;
+/*!
+\brief The SqlUtil class presents an interface for the SQLite database.
+This class takes care of the low level interactions with the SQLite DB
+(using the QtSql module).
+*/
+class SqlUtil : public Singleton<SqlUtil>
 {
-        Q_OBJECT
 public:
+        /*!
+        Initialize the connection to the database specified in dbname
+        \param dbname A QString containing the path to the database
+        \return true on success,false on error.
+        \note This function assumes that the database tables have been made.
+        */
         bool init ( const QString& dbname );
+
+        /*!
+        Add a team to the database.
+        \param team_name The name of the team.
+        \param school The name of the school.
+        \return 0 on success, a QSqlQuery error otherwise.
+        */
         int addTeam ( const QString& team_name, const QString& school );
+
+        /*!
+        Add a user to the database.
+        \param ud A const reference to a filled up UserData struct.
+        \return 0 on success, a QSqlQuery error otherwise.
+        */
         int addUser ( const UserData& ud );
+
+        /*!
+        Returns the score of the user in user_name.
+        \param user_name The user_name of the score to query->
+        \return The score in double.
+        */
         double getScore ( const QString& user_name );
-        void setScore ( const QString& user_name, int score );
+
+        /*!
+        Set the score for user_name to score.
+        \param user_name The user name who's score should be updated.
+        \param score The score of the user in double.
+        \return 0 on success, a QSqlQuery error otherwise.
+        */
+        int setScore ( const QString& user_name, double score );
+
+        /*!
+        Authenticate a user by verifying the match of user_name and password
+        in the database.
+        \param user_name The user name to verify.
+        \param password The password
+        \return true if a match was found, false otherwise.
+        */
         bool authenticate ( const QString& user_name, const QString& password );
-public slots:
+
+        /*!
+        Get all the available teams in the database.
+        \param out A reference to a vector\<TeamData\> to output the data to.
+        \return true on success, false otherwise.
+        */
+        bool getTeams ( vector<TeamData>& out );
+
+        /*!
+        Get all the available users in the database.
+        \param out A reference to a vector\<UserData\> to output the data to.
+        \return true on success, false otherwise.
+        */
+        bool getUsers ( vector<UserData>& out );
+
+        /*!
+        Get all the available score data in the database.
+        \param out A reference to a vector\<UserData\> to output the data to.
+        \return true on success, false otherwise.
+        */
+        bool getScores ( vector<ScoreData>& out );
+
+        /*!
+        Get all the available admin data in the database.
+        \param out A reference to a vector\<AdminData\> to output the data to.
+        \return true on success, false otherwise.
+        */
+        bool getAdmins ( vector<AdminData>& out );
+
+        /*!
+        Add an administrator account into the database.
+        \param a The AdminData to enter into the DB.
+        \return true on success, false otherwise.
+        */
+        bool addAdmin ( const AdminData& a );
 private:
         QSqlDatabase db;
         QSqlQuery* query;
