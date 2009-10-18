@@ -14,12 +14,12 @@
 #add_test(xml_ut xml_test)
 
 set(SQL_UT_SRCS sql_test.cpp)
-set(SQL_UT_MHDRS ../../include/tests/sql_test.h)
+set(SQL_UT_MHDRS sql_test.h)
 qt4_wrap_cpp(SQL_UT_MSRCS ${SQL_UT_MHDRS})
 add_executable(sql_test ${SQL_UT_SRCS} ${SQL_UT_MSRCS})
 add_test(sql_ut sql_test)
 
 set(CCNET_UT_SRCS contestant_net_test.cpp)
-set(CCNET_UT_MHDRS ../../include/tests/contestant_net_test.h)
+set(CCNET_UT_MHDRS contestant_net_test.h)
 qt4_wrap_cpp(CCNET_UT_MSRCS ${CCNET_UT_MHDRS})
 add_executable(ccnet_test ${CCNET_UT_SRCS} ${CCNET_UT_MSRCS})

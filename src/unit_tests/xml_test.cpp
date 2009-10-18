@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QFile>
 #include <QString>
 #include <iostream>
-#include "tests/xml_test.h"
+#include "xml_test.h"
 #include "data_types.h"
 
 using namespace std;

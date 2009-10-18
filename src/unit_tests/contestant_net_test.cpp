@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <QFile>
-#include "tests/contestant_net_test.h"
+#include "contestant_net_test.h"
 
 CCNetTest::CCNetTest ( QObject* parent ) : QObject ( parent ), m_server ( this ), m_contestant ( this )
 {
