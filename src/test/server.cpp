@@ -32,12 +32,12 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
         connect ( m_server, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
         m_server->listen ( 2652 );
-        /*bool result = SqlUtil::getInstance().init ( "resources/server.db" );
+        bool result = SqlUtil::getInstance().init ( "resources/server.db" );
         if ( !result ) {
                 QMessageBox msg ( this );
                 msg.setText ( "Failed to load db" );
                 msg.exec();
-        }*/
+        }
 }
 
 ServerDlg::~ServerDlg()
@@ -47,7 +47,9 @@ ServerDlg::~ServerDlg()
 
 void ServerDlg::newContestant ( ContestantConnection* cc )
 {
-        cout << "Connection from client" << endl;
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "New Contestant connection\n";
+        m_dlg->log_tedt->setText ( buffer );
 }
 
 void ServerDlg::onQuitBtn()
@@ -57,7 +59,9 @@ void ServerDlg::onQuitBtn()
 
 void ServerDlg::badClient ( TempConnection* tc )
 {
-        cout << "Bad client" << endl;
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Bad client\n";
+        m_dlg->log_tedt->setText ( buffer );
 }
 
 int main ( int argc, char* argv[] )

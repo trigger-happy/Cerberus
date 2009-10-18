@@ -34,13 +34,9 @@ public:
         ~ClientDlg();
 private slots:
         void onAuthReply ( bool result );
-        void onAuthBtn();
         void onConnectBtn();
-        void onQuitBtn();
         void onConnect();
         void onError ( QAbstractSocket::SocketError error );
-        void onQDR();
-        void onADS();
         void onR1QData ( const QString& xml );
         void onR1AData ( bool result );
         void onContestStateChange ( int c );
