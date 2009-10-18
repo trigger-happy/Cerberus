@@ -21,41 +21,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "data_types.h"
 #include "patterns/singleton.h"
 
-class XmlUtil : public QObject, public Singleton<XmlUtil>
+/*!
+\brief Handles the reading/writing of Xml data.
+The XmlUtil class provides a utility interface for dealing with Xml data.
+\note It does not actually deal with files, it simply handles xml data in QStrings.
+*/
+class XmlUtil : public Singleton<XmlUtil>
 {
-        Q_OBJECT;
 public:
         /*!
-        Parse the round 1 question data.
-        \param xml The xml data in a QString.
-        \param data A reference to the R1QData struct to be filled up.
-        \return true on success, false on failure
         */
-        bool readR1QData ( const QString& xml, R1QData& data );
+        bool readQuestionData ( int round, const QString& xml, QuestionData& qd );
 
         /*!
-        Serialize the round 1 question data into an xml format.
-        \param data R1QData struct to serialize.
-        \param xml A reference to a QString to contain the xml data.
-        \return true on success, false on failure
         */
-        bool writeR1QData ( const R1QData& data, QString& xml );
-
-        /*!
-        Parse the round 1 answer data.
-        \param xml The xml data in a QString.
-        \param data The R1Answers struct to fill up.
-        \return true on success, false on failure.
-        */
-        bool readR1AData ( const QString& xml, R1Answers& data );
-
-        /*!
-        Serialize the round 1 answer data into an xml format.
-        \param data R1Answers struct to serialize.
-        \param xml Reference to QString to contain the xml data.
-        \return true on success, false on failure.
-        */
-        bool writeR1AData ( const R1Answers& data, QString& xml );
+        bool writeQuestionData ( int round, const QuestionData& qd, QString& xml );
 
         /*!
         Read the client config from xml.
@@ -63,15 +43,31 @@ public:
         \param conf Reference to a ClientConfig struct to fill up.
         \return true on succes, false on failure.
         */
-	bool readClientConfig ( const QString& xml, ClientConfig& conf );
-	
-	/*!
-	Read the network config from xml.
-	\param xml Xml data in a QString.
-	\param conf Reference to a NetworkConfig struct to fill up.
-	\return true on succes, false on failure.
-	*/
-	bool readNetConfig ( const QString& xml, NetworkConfig& conf );
+        bool readClientConfig ( const QString& xml, ClientConfig& conf );
+
+        /*!
+        Write the client config to xml.
+        \param conf The ClientConfig to save to xml.
+        \param xml Reference to QString where the xml data will be saved.
+        \return true on success, false on failure.
+        */
+        bool writeClientConfig ( const ClientConfig& conf, QString& xml );
+
+        /*!
+        Read the network config from xml.
+        \param xml Xml data in a QString.
+        \param conf Reference to a NetworkConfig struct to fill up.
+        \return true on succes, false on failure.
+        */
+        bool readNetConfig ( const QString& xml, NetworkConfig& conf );
+
+        /*!
+        Write the network config to xml.
+        \param conf The NetworkConfig struct to save to xml.
+        \param xml Reference to QString where the xml data will be saved.
+        \return true on success, false on failure.
+        */
+        bool writeNetConfig ( const NetworkConfig& conf, QString& xml );
 
         /*!
         Read the server config from xml.
@@ -80,6 +76,32 @@ public:
         \return true on success, false on failure.
         */
         bool readServerConfig ( const QString& xml, ServerConfig& conf );
+
+        /*!
+        Write the server config to xml.
+        \param conf The ServerConfig struct to save to xml.
+        \param xml Reference to QString where the xml data will be saved.
+        \return true on success, false on failure.
+        */
+        bool writeServerConfig ( const ServerConfig& conf, QString& xml );
+private:
+        // round 1 related stuff
+        bool readR1QData ( const QString& xml, QuestionData& data );
+        bool writeR1QData ( const QuestionData& data, QString& xml );
+        bool readR1AData ( const QString& xml, AnswerData& data );
+        bool writeR1AData ( const AnswerData& data, QString& xml );
+
+        // round 2 related stuff
+        bool readR2QData ( const QString& xml, QuestionData& data );
+        bool writeR2QData ( const QuestionData& data, QString& xml );
+        bool readR2AData ( const QString& xml, AnswerData& data );
+        bool writeR2AData ( const AnswerData& data, QString& xml );
+
+        // round 3 and tie-breaker related stuff
+        bool readR3QData ( const QString& xml, QuestionData& data );
+        bool writeR3QData ( const QuestionData& data, QString& xml );
+        bool readR3AData ( const QString& xml, AnswerData& data );
+        bool writeR3AData ( const AnswerData& data, QString& xml );
 protected:
 };
 

@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 
-bool XmlUtil::readR1QData ( const QString& xml, R1QData& data )
+bool XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
 {
         QXmlStreamReader reader ( xml );
 
@@ -39,7 +39,7 @@ bool XmlUtil::readR1QData ( const QString& xml, R1QData& data )
                                 token = reader.readNext();
                         } else if ( reader.name() == "question" ) { // reads the question tag
                                 QXmlStreamAttributes attributes = reader.attributes();
-                                R1Question temp;
+                                Question temp;
 
                                 // reads the number attribute from question
                                 if ( attributes.hasAttribute ( "number" ) ) {
@@ -82,11 +82,11 @@ bool XmlUtil::readR1QData ( const QString& xml, R1QData& data )
         return true;
 }
 
-bool XmlUtil::writeR1QData ( const R1QData& data, QString& xml )
+bool XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
 {
         int counter = data.questions.size() - 1; // stores number of elements left
         int offset = 1;
-        vector<R1Question> questions = data.questions;
+        vector<Question> questions = data.questions;
 
         QXmlStreamWriter writer ( &xml );
         writer.setAutoFormatting ( true );
@@ -120,7 +120,7 @@ bool XmlUtil::writeR1QData ( const R1QData& data, QString& xml )
         return true;
 }
 
-bool XmlUtil::readR1AData ( const QString& xml, R1Answers& data )
+bool XmlUtil::readR1AData ( const QString& xml, AnswerData& data )
 {
         QXmlStreamReader reader ( xml );
         QXmlStreamReader::TokenType token = reader.readNext();
@@ -141,7 +141,7 @@ bool XmlUtil::readR1AData ( const QString& xml, R1Answers& data )
         return true;
 }
 
-bool XmlUtil::writeR1AData ( const R1Answers& data, QString& xml )
+bool XmlUtil::writeR1AData ( const AnswerData& data, QString& xml )
 {
         int counter = data.size();
         QXmlStreamWriter writer ( &xml );
@@ -149,7 +149,7 @@ bool XmlUtil::writeR1AData ( const R1Answers& data, QString& xml )
         writer.writeStartDocument();
 
         writer.writeStartElement ( "stage1_ans" );
-        R1Answers::const_iterator iter = data.begin();
+        AnswerData::const_iterator iter = data.begin();
         for ( ; iter != data.end(); iter++ ) {
                 writer.writeStartElement ( "answer" );
                 writer.writeAttribute ( QXmlStreamAttribute ( QString ( "number" ), QString ( "%1" ).arg ( iter->first ) ) );
@@ -163,8 +163,9 @@ bool XmlUtil::writeR1AData ( const R1Answers& data, QString& xml )
         return true;
 }
 
-bool XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf){
-	return true;
+bool XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
+{
+        return true;
 }
 
 bool XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )

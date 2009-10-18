@@ -27,9 +27,12 @@ using std::map;
 using std::pair;
 using std::equal;
 
-struct R1Question {
-        bool operator== ( const R1Question& rhs ) {
+struct Question {
+        bool operator== ( const Question& rhs ) {
                 if ( this->question != rhs.question ) {
+                        return false;
+                }
+                if ( this->time != rhs.time ) {
                         return false;
                 }
                 if ( this->choices.size() == rhs.choices.size() ) {
@@ -48,13 +51,17 @@ struct R1Question {
         }
         int number;
         int score;
+        int time;
         QString question;
         map<int, QString> choices;
 };
 
-struct R1QData {
-        bool operator== ( const R1QData& rhs ) {
+struct QuestionData {
+        bool operator== ( const QuestionData& rhs ) {
                 if ( this->welcome_msg != rhs.welcome_msg ) {
+                        return false;
+                }
+                if ( this->contest_time != rhs.contest_time ) {
                         return false;
                 }
                 if ( this->questions.size() == rhs.questions.size() ) {
@@ -69,10 +76,11 @@ struct R1QData {
                 return true;
         }
         QString welcome_msg;
-        vector<R1Question> questions;
+        vector<Question> questions;
+        int contest_time;
 };
 
-typedef map<int,int> R1Answers;
+typedef map<int,QString> AnswerData;
 
 struct NetworkConfig {
         bool operator== ( const NetworkConfig& rhs ) {
