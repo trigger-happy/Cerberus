@@ -19,18 +19,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define SERVER_NET_H
 #include <QtNetwork/QtNetwork>
 #include <list>
+#include "protocol.h"
 #include "patterns/singleton.h"
 #include "error_defs.h"
 #include "util/sql_util.h"
 
 using std::list;
-
-enum CONTESTANT_REQUEST {
-        CR_CONTEST_STATE = 0,
-        CR_AUTHENTICATE,
-        CR_QDATA,
-        CR_ADATA
-};
 
 /*!
 \brief A class representing a connection with a contestant's client.

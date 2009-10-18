@@ -83,7 +83,7 @@ bool ContestantNetwork::r1QDataRequest()
         if ( !m_socket->isWritable() ) {
                 return false;
         }
-        m_state = CCS_R1QDATA_REQUEST;
+        m_state = CCS_QDATA_REQUEST;
         //construct a question data request packet
         //packet format is:
         //(quint16)(quint16)
@@ -101,7 +101,7 @@ bool ContestantNetwork::r1ADataSend ( const QString& xml )
         if ( !m_socket->isWritable() ) {
                 return false;
         }
-        m_state = CCS_R1ADATA_SEND;
+        m_state = CCS_ADATA_SEND;
         //construct an answer data packet
         //packet format:
         //(quint16)(quint16)(QString)
@@ -152,7 +152,7 @@ void ContestantNetwork::ready()
         quint16 command;
         in >> command;
         switch ( command ) {
-        case PC_CONTEST_STATE:
+        case INF_CONTEST_STATE:
                 //we got info on the contest state
         {
                 int state;
@@ -160,7 +160,7 @@ void ContestantNetwork::ready()
                 emit onContestStateChange ( state );
         }
         break;
-        case PC_AUTHENTICATE:
+        case INF_AUTHENTICATE:
                 //it's a reply to the authentication
         {
                 bool result;
@@ -169,7 +169,7 @@ void ContestantNetwork::ready()
                 m_authenticated = result;
         }
         break;
-        case PC_QDATA:
+        case INF_QUESTION_DATA:
                 //we have our question data
         {
                 QString xml;
@@ -177,7 +177,7 @@ void ContestantNetwork::ready()
                 emit onR1QData ( xml );
         }
         break;
-        case PC_ADATA:
+        case INF_ANSWER_REPLY:
                 //a reply on our submission
         {
                 bool result;
@@ -185,7 +185,7 @@ void ContestantNetwork::ready()
                 emit onR1AData ( result );
         }
         break;
-        case PC_ERROR:
+        case INF_ERROR:
                 // server said there's an error
         {
                 quint16 err;

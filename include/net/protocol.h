@@ -19,11 +19,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define PROTOCOL_H
 
 enum PROTOCOL_COMMANDS {
-        PC_CONTEST_STATE = 0,
-        PC_AUTHENTICATE,
-        PC_QDATA,
-        PC_ADATA,
-        PC_ERROR = 100
+        // error
+        INF_ERROR = 0,
+
+        // connection
+        NET_INITIATE_CONNECTION,
+        NET_CONNECTION_RESULT,
+        NET_DISCONNECT,
+
+        // authentication
+        QRY_AUTHENTICATE,
+        INF_AUTHENTICATE,
+
+        // contest state
+        QRY_CONTEST_STATE,
+        INF_CONTEST_STATE,
+
+        // question request
+        QRY_QUESTION_REQUEST,
+        INF_QUESTION_DATA,
+
+        // answer submission
+        QRY_ANSWER_SUBMIT,
+        INF_ANSWER_REPLY
+
+        // TODO: Add presenter commands here
+
+        // TODO: Add admin commands here
 };
 
 #endif //PROTOCOL_H

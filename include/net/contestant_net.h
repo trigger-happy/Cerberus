@@ -24,8 +24,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 enum CCSTATE {
         CCS_DISCONNECTED = 0,
         CCS_AUTHENTICATING,
-        CCS_R1QDATA_REQUEST,
-        CCS_R1ADATA_SEND,
+        CCS_QDATA_REQUEST,
+        CCS_ADATA_SEND,
         CCS_STANDBY
 };
 

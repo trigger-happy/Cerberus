@@ -62,7 +62,7 @@ void ContestantConnection::ready()
         quint16 command;
         in >> command;
         switch ( command ) {
-        case CR_CONTEST_STATE:
+        case QRY_CONTEST_STATE:
                 //contestant is asking for the contest state.
                 if ( m_authenticated ) {
                         //send a reply
@@ -71,7 +71,7 @@ void ContestantConnection::ready()
                         errorReply ( ERR_NOTAUTHORIZED );
                 }
                 break;
-        case CR_AUTHENTICATE:
+        case QRY_AUTHENTICATE:
                 //contestant wants to authenticate
                 if ( !m_authenticated ) {
                         QString buffer, user, pass;
@@ -85,16 +85,16 @@ void ContestantConnection::ready()
                         authenticationReply ( false );
                 }
                 break;
-        case CR_QDATA:
+        case QRY_QUESTION_REQUEST:
                 //contestant is asking for question data
                 if ( m_authenticated ) {
-                        sendR1QData ( *m_r1qdata );
+                        // TODO: check for what round and send the relevant data here
                 } else {
                         //send an error
                         errorReply ( ERR_NOTAUTHORIZED );
                 }
                 break;
-        case CR_ADATA:
+        case QRY_ANSWER_SUBMIT:
                 //contestant has submitted their answers
                 if ( m_authenticated ) {
                         QString buffer;
@@ -137,7 +137,7 @@ void ContestantConnection::authenticationReply ( bool res )
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 1;
+        out << ( quint16 ) 0 << ( quint16 ) INF_AUTHENTICATE;
         out << res;
         out.device()->seek ( 0 );
         out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
@@ -149,7 +149,8 @@ void ContestantConnection::sendR1QData ( const QString& xml )
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 2;
+        out << ( quint16 ) 0 << ( quint16 ) INF_QUESTION_DATA;
+        // TODO: insert round number here
         out << xml;
         out.device()->seek ( 0 );
         out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
@@ -161,7 +162,7 @@ void ContestantConnection::sendR1AReply ( bool res )
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 3;
+        out << ( quint16 ) 0 << ( quint16 ) INF_ANSWER_REPLY;
         out << res;
         out.device()->seek ( 0 );
         out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
@@ -173,7 +174,7 @@ void ContestantConnection::sendContestState ( quint16 state )
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 0;
+        out << ( quint16 ) 0 << ( quint16 ) INF_CONTEST_STATE;
         out << state;
         out.device()->seek ( 0 );
         out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
