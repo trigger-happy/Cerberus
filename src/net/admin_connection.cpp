@@ -15,31 +15,5 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef SERVER_H
-#define SERVER_H
-#include <QtGui>
-#include <QtNetwork>
-#include "net/server_net.h"
-
-namespace Ui
-{
-class server_dlg;
-}
-
-class ServerDlg : public QDialog
-{
-        Q_OBJECT;
-public:
-        ServerDlg ( QWidget* parent = 0 );
-        ~ServerDlg();
-private slots:
-        void onQuitBtn();
-        void newContestant ( ContestantConnection* cc );
-        void badClient ( TempConnection* tc );
-private:
-        QString log;
-        Ui::server_dlg* m_dlg;
-        ServerNetwork* m_server;
-};
-
-#endif // SERVER_H
+#include "net/admin_connection.h"
+#include "net/protocol.h"

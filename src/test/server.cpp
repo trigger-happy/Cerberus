@@ -29,18 +29,15 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         m_dlg->setupUi ( this );
         connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
         m_server = new ServerNetwork ( this );
-        connect ( m_server, SIGNAL ( onNewConnection() ), this, SLOT ( onConnection() ) );
-        QFile f ( "resources/stage1_q.xml" );
-        f.open ( QIODevice::ReadOnly );
-        QString xml = f.readAll();
-        m_server->setR1QData ( xml );
+        connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
+        connect ( m_server, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
         m_server->listen ( 2652 );
-        bool result = SqlUtil::getInstance().init ( "resources/server.db" );
+        /*bool result = SqlUtil::getInstance().init ( "resources/server.db" );
         if ( !result ) {
                 QMessageBox msg ( this );
                 msg.setText ( "Failed to load db" );
                 msg.exec();
-        }
+        }*/
 }
 
 ServerDlg::~ServerDlg()
@@ -48,7 +45,7 @@ ServerDlg::~ServerDlg()
         delete m_dlg;
 }
 
-void ServerDlg::onConnection()
+void ServerDlg::newContestant ( ContestantConnection* cc )
 {
         cout << "Connection from client" << endl;
 }
@@ -56,6 +53,11 @@ void ServerDlg::onConnection()
 void ServerDlg::onQuitBtn()
 {
         this->close();
+}
+
+void ServerDlg::badClient ( TempConnection* tc )
+{
+        cout << "Bad client" << endl;
 }
 
 int main ( int argc, char* argv[] )

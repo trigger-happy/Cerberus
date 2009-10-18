@@ -120,6 +120,15 @@ bool ContestantNetwork::r1ADataSend ( const QString& xml )
 void ContestantNetwork::connected()
 {
         m_state = CCS_STANDBY;
+	// identify ourselves
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	out << ( quint16 )0 << ( quint16 ) NET_INITIATE_CONNECTION;
+	out << CLIENT_CONTESTANT;
+	out.device()->seek ( 0 );
+	out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
+	m_socket->write ( block );
 }
 
 void ContestantNetwork::disconnected()

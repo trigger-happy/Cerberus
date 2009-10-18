@@ -18,6 +18,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+enum CLIENT_ID {
+        CLIENT_CONTESTANT,
+        CLIENT_ADMIN,
+        CLIENT_PRESENTER
+};
+
 enum PROTOCOL_COMMANDS {
         // error
         INF_ERROR = 0,

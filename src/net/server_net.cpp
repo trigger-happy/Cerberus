@@ -19,179 +19,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <cassert>
 #include <iostream>
 #include "net/server_net.h"
+#include "net/temp_connection.h"
+#include "net/contestant_connection.h"
+#include "net/admin_connection.h"
+#include "net/presenter_connection.h"
 
 using namespace std;
-
-ContestantConnection::ContestantConnection ( QObject* parent ) : QObject ( parent )
-{
-        m_blocksize = 0;
-        m_authenticated = false;
-}
-
-void ContestantConnection::setSocket ( QTcpSocket* socket )
-{
-        m_socket = socket;
-        connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
-                  this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
-        connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
-        connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
-}
-
-void ContestantConnection::error ( const QAbstractSocket::SocketError& err )
-{
-        //do something about the error here
-}
-
-void ContestantConnection::ready()
-{
-        //read the socket data
-        QDataStream in ( m_socket );
-        in.setVersion ( QDataStream::Qt_4_5 );
-        if ( m_blocksize == 0 ) {
-                if ( m_socket->bytesAvailable() < ( int ) sizeof ( quint16 ) ) {
-                        return;
-                }
-                in >> m_blocksize;
-        }
-
-        if ( m_socket->bytesAvailable() < m_blocksize ) {
-                return;
-        }
-
-        // check what command was sent by the server and react accordingly
-        quint16 command;
-        in >> command;
-        switch ( command ) {
-        case QRY_CONTEST_STATE:
-                //contestant is asking for the contest state.
-                if ( m_authenticated ) {
-                        //send a reply
-                } else {
-                        //send an error
-                        errorReply ( ERR_NOTAUTHORIZED );
-                }
-                break;
-        case QRY_AUTHENTICATE:
-                //contestant wants to authenticate
-                if ( !m_authenticated ) {
-                        QString buffer, user, pass;
-                        in >> buffer;
-                        user = buffer.section ( ",", 0, 0 );
-                        pass = buffer.section ( ",", 1, 1 );
-                        bool result = SqlUtil::getInstance().authenticate ( user, pass );
-                        authenticationReply ( result );
-                } else {
-                        //TODO: what happens here?
-                        authenticationReply ( false );
-                }
-                break;
-        case QRY_QUESTION_REQUEST:
-                //contestant is asking for question data
-                if ( m_authenticated ) {
-                        // TODO: check for what round and send the relevant data here
-                } else {
-                        //send an error
-                        errorReply ( ERR_NOTAUTHORIZED );
-                }
-                break;
-        case QRY_ANSWER_SUBMIT:
-                //contestant has submitted their answers
-                if ( m_authenticated ) {
-                        QString buffer;
-                        in >> buffer;
-                        //TODO: have the buffer contents sent and checked
-                        //let's reply with something for now
-                        sendR1AReply ( true );
-                } else {
-                        errorReply ( ERR_NOTAUTHORIZED );
-                }
-                break;
-        default:
-                cout << command << endl;
-                assert ( false );
-        }
-        m_blocksize = 0;
-}
-
-void ContestantConnection::errorReply ( ERROR_MESSAGES err )
-{
-        QByteArray block;
-        QDataStream out ( &block, QIODevice::WriteOnly );
-        out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 100;
-        out << err;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
-        m_socket->write ( block );
-}
-
-void ContestantConnection::disconnected()
-{
-        //do something about our disconnection here
-}
-
-void ContestantConnection::authenticationReply ( bool res )
-{
-        //construct the packet and send it
-        m_authenticated = res;
-        QByteArray block;
-        QDataStream out ( &block, QIODevice::WriteOnly );
-        out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_AUTHENTICATE;
-        out << res;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
-        m_socket->write ( block );
-}
-
-void ContestantConnection::sendR1QData ( const QString& xml )
-{
-        QByteArray block;
-        QDataStream out ( &block, QIODevice::WriteOnly );
-        out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_QUESTION_DATA;
-        // TODO: insert round number here
-        out << xml;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
-        m_socket->write ( block );
-}
-
-void ContestantConnection::sendR1AReply ( bool res )
-{
-        QByteArray block;
-        QDataStream out ( &block, QIODevice::WriteOnly );
-        out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_ANSWER_REPLY;
-        out << res;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
-        m_socket->write ( block );
-}
-
-void ContestantConnection::sendContestState ( quint16 state )
-{
-        QByteArray block;
-        QDataStream out ( &block, QIODevice::WriteOnly );
-        out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_CONTEST_STATE;
-        out << state;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
-        m_socket->write ( block );
-}
-
-void ContestantConnection::setR1QData ( const QString* xml )
-{
-        m_r1qdata = xml;
-}
 
 ServerNetwork::ServerNetwork ( QObject* parent ) : QObject ( parent )
 {
         //initialize stuff here
         m_server = new QTcpServer ( this );
         connect ( m_server, SIGNAL ( newConnection() ), this, SLOT ( newConnection() ) );
-        connect ( m_server, SIGNAL ( newConnection() ), this, SIGNAL ( onNewConnection() ) );
 }
 
 ServerNetwork::~ServerNetwork()
@@ -205,21 +44,20 @@ void ServerNetwork::listen ( quint16 port )
 
 void ServerNetwork::newConnection()
 {
-        ContestantConnection* cc = new ContestantConnection ( this );
-        cc->setSocket ( m_server->nextPendingConnection() );
-        cc->setR1QData ( &m_r1qdata );
-        connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
-                  this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
-        m_contestants.insert ( m_contestants.end(), cc );
-        //TODO: add more stuff here for when a new client connects
+        // shove it into a tempconnection
+        TempConnection* tc = new TempConnection ( this, m_server->nextPendingConnection() );
+        connect ( tc, SIGNAL ( newClient ( TempConnection*, CLIENT_ID ) ),
+                  this, SLOT ( newClient ( TempConnection*, CLIENT_ID ) ) );
+        connect ( tc, SIGNAL ( invalidClient ( TempConnection* ) ),
+                  this, SLOT ( invalidClient ( TempConnection* ) ) );
+	connect(tc, SIGNAL(invalidClient(TempConnection*)), this, SIGNAL(badClient(TempConnection*)));
+        m_tempconnections.insert ( m_tempconnections.end(), tc );
 }
 
 void ServerNetwork::contestantDisconnect ( ContestantConnection* c )
 {
-        //TODO: insert penalty calculation here
-
         //remove it from the list
-        concon_list::iterator i = m_contestants.begin();
+        contestant_list::iterator i = m_contestants.begin();
         while ( i != m_contestants.end() ) {
                 if ( *i == c ) {
                         break;
@@ -232,7 +70,50 @@ void ServerNetwork::contestantDisconnect ( ContestantConnection* c )
         }
 }
 
-void ServerNetwork::setR1QData ( const QString& xml )
+void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id )
 {
-        m_r1qdata = xml;
+        switch ( id ) {
+        case CLIENT_CONTESTANT: {
+                QTcpSocket* temp_sock = con->getSocket();
+                ContestantConnection* cc = new ContestantConnection ( this, temp_sock );
+                connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
+                          this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+                m_contestants.insert ( m_contestants.end(), cc );
+                emit newContestant ( cc );
+        }
+        break;
+        case CLIENT_ADMIN:
+                // TODO: add code here for creating a new admin connection
+                break;
+        case CLIENT_PRESENTER:
+                // TODO: add code here for creating a new presenter connection
+                break;
+        }
+
+        tmpcon_list::iterator i = m_tempconnections.begin();
+        while ( i != m_tempconnections.end() ) {
+                if ( *i == con ) {
+                        break;
+                }
+                i++;
+        }
+        if ( *i == con ) {
+                delete *i;
+                m_tempconnections.erase ( i );
+        }
+}
+
+void ServerNetwork::invalidClient ( TempConnection* con )
+{
+        tmpcon_list::iterator i = m_tempconnections.begin();
+        while ( i != m_tempconnections.end() ) {
+                if ( *i == con ) {
+                        break;
+                }
+                i++;
+        }
+        if ( *i == con ) {
+                delete *i;
+                m_tempconnections.erase ( i );
+        }
 }

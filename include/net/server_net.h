@@ -21,98 +21,20 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <list>
 #include "protocol.h"
 #include "patterns/singleton.h"
-#include "error_defs.h"
 #include "util/sql_util.h"
 
 using std::list;
 
-/*!
-\brief A class representing a connection with a contestant's client.
-This class is created for each client connection that is made to the server.
-*/
-class ContestantConnection : public QObject
-{
-        Q_OBJECT;
-public:
-        /*!
-        Constructor.
-        \param parent Set the parent of this class.
-        */
-        ContestantConnection ( QObject* parent = 0 );
+class ContestantConnection;
+class PresenterConnection;
+class AdminConnection;
+class TempConnection;
 
-        /*!
-        Set the socket that this connection will use.
-        Only the ServerNetwork class should call this.
-        \param socket The socket that this connectin should use.
-        */
-        void setSocket ( QTcpSocket* socket );
+typedef list<ContestantConnection*> contestant_list;
+typedef list<PresenterConnection*> presenter_list;
+typedef list<AdminConnection*> admin_list;
+typedef list<TempConnection*> tmpcon_list;
 
-        /*!
-        Set the round 1 question data that should be sent.
-        \TODO: remove this later in place of a better system
-        \param xml QString for the data.
-        */
-        void setR1QData ( const QString* xml );
-public slots:
-        /*!
-        Called when there's a socket error.
-        \param err The error
-        */
-        void error ( const QAbstractSocket::SocketError& err );
-
-        /*!
-        Called when there's data ready in the socket for reading.
-        */
-        void ready();
-
-        /*!
-        Called when the connection is disconnected by the client.
-        */
-        void disconnected();
-signals:
-        /*!
-        */
-        void contestantDisconnect ( ContestantConnection* cc );
-private:
-        //some private functions
-        /*!
-        Send a reply to the authentication request.
-        \param res The result of the authentication.
-        */
-        void authenticationReply ( bool res );
-
-        /*!
-        Send a reply that an error has occurred.
-        \param err The error message.
-        */
-        void errorReply ( ERROR_MESSAGES err );
-
-        /*!
-        Send the round 1 questin data.
-        \param xml QString containing the xml data.
-        */
-        void sendR1QData ( const QString& xml );
-
-        /*!
-        Send a reply to the answer submission.
-        \param res The result of the submission (not very relevant).
-        */
-        void sendR1AReply ( bool res );
-
-        /*!
-        Send a command to change the contest state.
-        \param state The state (or contest round).
-        */
-        void sendContestState ( quint16 state );
-
-        //private fields
-        const QString* m_r1qdata;
-        QTcpSocket* m_socket;
-        quint16 m_blocksize;
-        bool m_authenticated;
-};
-
-typedef list<ContestantConnection*> concon_list;
 
 /*!
 \brief Networking class to be used by the server.
@@ -140,12 +62,17 @@ public:
         */
         void listen ( quint16 port );
 
-        /*!
-        Set the Round 1 question data.
-        \TODO Remove this once a better system is in place.
-        \param xml The xml data for the questions in round 1.
-        */
-        void setR1QData ( const QString& xml );
+        inline const contestant_list& getContestantList() {
+                return m_contestants;
+        }
+
+        inline const admin_list& getAdminList() {
+                return m_admins;
+        }
+
+        inline const presenter_list& getPresenters() {
+                return m_presenters;
+        }
 public slots:
 
         /*!
@@ -158,19 +85,23 @@ public slots:
         \param c A pointer to the ContestantConnection class that disconnected.
         */
         void contestantDisconnect ( ContestantConnection* c );
-signals:
 
-        /*!
-        Emitted when a new connection has been made.
-        */
-        void onNewConnection();
+        void newClient ( TempConnection* con, CLIENT_ID id );
+        void invalidClient ( TempConnection* con );
+signals:
+        // TODO: add signals here
+	void badClient(TempConnection* con);
+        void newContestant ( ContestantConnection* cc );
+        void newAdmin ( AdminConnection* ac );
+        void newPresenter ( PresenterConnection* pc );
 protected:
         //server socket
         QTcpServer* m_server;
-        //extra data, we may need a resource manager for these
-        QString m_r1qdata;
         //connections
-        concon_list m_contestants;
+        contestant_list m_contestants;
+        admin_list m_admins;
+        presenter_list m_presenters;
+        tmpcon_list m_tempconnections;
 };
 
 #endif //SERVER_NET_H
