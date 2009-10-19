@@ -19,11 +19,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define SERVER_NET_H
 #include <QtNetwork/QtNetwork>
 #include <list>
+#include <vector>
 #include "protocol.h"
 #include "patterns/singleton.h"
 #include "util/sql_util.h"
 
 using std::list;
+using std::vector;
 
 class ContestantConnection;
 class PresenterConnection;
@@ -117,6 +119,12 @@ public:
         inline const presenter_list& getPresenters() {
                 return m_presenters;
         }
+
+        /*!
+        Set the question data to be sent to contestants.
+        \param qdata A pointer to a vector of QStrings.
+        */
+        void setQData ( const vector<QString>* qdata );
 public slots:
 
         /*!
@@ -160,6 +168,7 @@ protected:
         admin_list m_admins;
         presenter_list m_presenters;
         tmpcon_list m_tempconnections;
+        const vector<QString>* m_questiondata;
 };
 
 #endif //SERVER_NET_H

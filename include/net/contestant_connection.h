@@ -18,10 +18,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef CONTESTANT_CONNECTION_H
 #define CONTESTANT_CONNECTION_H
 #include <QtNetwork>
+#include <vector>
 #include "protocol.h"
 #include "error_defs.h"
 
-using std::list;
+using std::vector;
 
 /*!
 \brief A class representing a connection with a contestant's client.
@@ -43,6 +44,10 @@ public:
 	
 	inline void setStatus(CONTEST_STATUS s){
 		m_con_status = s;
+	}
+	
+	inline void setQData(const vector<QString>* qdata){
+		m_qdata = qdata;
 	}
 public slots:
         /*!
@@ -79,16 +84,16 @@ private:
         void errorReply ( ERROR_MESSAGES err );
 
         /*!
-        Send the round 1 questin data.
+        Send the question data
         \param xml QString containing the xml data.
         */
-        void sendR1QData ( const QString& xml );
+        void sendQData ( const QString& xml );
 
         /*!
         Send a reply to the answer submission.
         \param res The result of the submission (not very relevant).
         */
-        void sendR1AReply ( bool res );
+        void sendAReply ( bool res );
 
         /*!
         Send a command to change the contest state.
@@ -101,6 +106,7 @@ private:
         bool m_authenticated;
 	CONTEST_STATUS m_con_status;
 	int m_round;
+	const vector<QString>* m_qdata;
 };
 
 #endif

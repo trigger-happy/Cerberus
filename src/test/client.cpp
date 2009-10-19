@@ -44,6 +44,8 @@ void ClientDlg::onContestStateChange ( int round, CONTEST_STATUS s )
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "Status: " + QString ( "%1 %2\n" ).arg ( round ).arg ( s );
         m_dlg->log_tedt->setText ( buffer );
+        //get the question data
+        m_net->qDataRequest ( round );
 }
 
 
@@ -75,11 +77,11 @@ void ClientDlg::onAuthReply ( bool result )
                 buffer += "Authenticated!\n";
         }
         if ( result ) {
-		// get the contest state next
-		buffer += "Getting contest state...\n";
+                // get the contest state next
+                buffer += "Getting contest state...\n";
                 m_net->getContestState();
-	}
-	m_dlg->log_tedt->setText ( buffer );
+        }
+        m_dlg->log_tedt->setText ( buffer );
 }
 
 void ClientDlg::onConnect()

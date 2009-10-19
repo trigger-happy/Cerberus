@@ -80,14 +80,14 @@ public:
         Request for the question data from the server.
         \return true if the data was sent, false otherwise.
         */
-        bool QDataRequest ( int round );
+        bool qDataRequest ( int round );
 
         /*!
         Send the answer data for 1st round to the server.
         \param xml QString containing the xml answer data to be sent.
         \return true if the data was sent, false otherwise.
         */
-        bool ADataSend ( const QString& xml );
+        bool aDataSend ( const QString& xml );
 
 protected slots:
 

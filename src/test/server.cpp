@@ -26,6 +26,13 @@ using namespace std;
 
 ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg() )
 {
+        //load up the question data
+        for ( int i = 1; i <= 4; i++ ) {
+                QFile file ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
+                file.open ( QIODevice::ReadOnly );
+                m_questions.push_back ( file.readAll() );
+        }
+
         m_dlg->setupUi ( this );
         connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
         m_server = new ServerNetwork ( this );
@@ -34,6 +41,7 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         m_server->listen ( 2652 );
         m_server->setRound ( 1 );
         m_server->setStatus ( CONTEST_STOPPED );
+        m_server->setQData ( &m_questions );
         bool result = SqlUtil::getInstance().init ( "resources/test.db" );
         if ( !result ) {
                 QMessageBox msg ( this );

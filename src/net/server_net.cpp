@@ -102,6 +102,7 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id )
                 ContestantConnection* cc = new ContestantConnection ( this, temp_sock );
                 cc->setStatus ( m_con_status );
                 cc->setRound ( m_round );
+		cc->setQData(m_questiondata);
                 connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
                           this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
                 m_contestants.insert ( m_contestants.end(), cc );
@@ -130,4 +131,9 @@ void ServerNetwork::invalidClient ( TempConnection* con )
                 delete *i;
                 m_tempconnections.erase ( i );
         }
+}
+
+void ServerNetwork::setQData ( const vector<QString>* qdata )
+{
+        m_questiondata = qdata;
 }

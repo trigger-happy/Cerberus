@@ -15,9 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
+#include <iostream>
 #include "net/contestant_connection.h"
 #include "util/sql_util.h"
 #include "error_defs.h"
+
+using namespace std;
 
 ContestantConnection::ContestantConnection ( QObject* parent, QTcpSocket* socket ) : QObject ( parent )
 {
@@ -92,7 +95,7 @@ void ContestantConnection::ready()
                         pass = buffer.right ( buffer.size()-user.size()-1 );
                         bool result = SqlUtil::getInstance().authenticate ( user, pass );
                         authenticationReply ( result );
-			m_authenticated = result;
+                        m_authenticated = result;
                 } else {
                         //TODO: what happens here?
                         authenticationReply ( false );
@@ -101,7 +104,7 @@ void ContestantConnection::ready()
         case QRY_QUESTION_REQUEST:
                 //contestant is asking for question data
                 if ( m_authenticated ) {
-                        // TODO: check for what round and send the relevant data here
+                        sendQData ( m_qdata->at ( m_round-1 ) );
                 } else {
                         //send an error
                         errorReply ( ERR_NOTAUTHORIZED );
@@ -114,7 +117,7 @@ void ContestantConnection::ready()
                         in >> buffer;
                         //TODO: have the buffer contents sent and checked
                         //let's reply with something for now
-                        sendR1AReply ( true );
+                        sendAReply ( true );
                 } else {
                         errorReply ( ERR_NOTAUTHORIZED );
                 }
@@ -162,20 +165,24 @@ void ContestantConnection::authenticationReply ( bool res )
         m_socket->write ( block );
 }
 
-void ContestantConnection::sendR1QData ( const QString& xml )
+void ContestantConnection::sendQData ( const QString& xml )
 {
+        //construct the packet and send it
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_QUESTION_DATA;
-        // TODO: insert round number here
+        // construct the header
+        p_header hdr;
+        hdr.command = INF_QUESTION_DATA;
+        QByteArray hash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+        hdr.length = hash.size()+xml.size();
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out.writeRawData(hash.data(), hash.size());
         out << xml;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
         m_socket->write ( block );
 }
 
-void ContestantConnection::sendR1AReply ( bool res )
+void ContestantConnection::sendAReply ( bool res )
 {
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );

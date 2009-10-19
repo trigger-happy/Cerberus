@@ -78,24 +78,31 @@ bool ContestantNetwork::authenticate ( const QString& user_name, const QString& 
         return true;
 }
 
-bool ContestantNetwork::QDataRequest ( int round )
+bool ContestantNetwork::qDataRequest ( int round )
 {
         if ( !m_socket->isWritable() ) {
                 return false;
         }
-        //construct a question data request packet
-        //packet format is:
-        //(quint16)(quint16)
-        //(packet size)(command)
+
+        // construct the packet
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) sizeof ( quint16 ) << ( quint16 ) 2;
+        p_header hdr;
+        hdr.command = QRY_QUESTION_REQUEST;
+
+        // construct the payload
+        hdr.length = sizeof ( ushort );
+        // write it
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( hdr ) );
+        out << ( ushort ) round;
+
+        // send it
         m_socket->write ( block );
         return true;
 }
 
-bool ContestantNetwork::ADataSend ( const QString& xml )
+bool ContestantNetwork::aDataSend ( const QString& xml )
 {
         if ( !m_socket->isWritable() ) {
                 return false;
@@ -213,12 +220,13 @@ void ContestantNetwork::ready()
                 //we have our question data
         {
                 QString xml;
-                uchar hash[20];
+                uchar hash[21];
                 in.readRawData ( ( char* ) hash, 20 );
+                hash[20] = '\0';
                 in >> xml;
-                QCryptographicHash hasher ( QCryptographicHash::Sha1 );
-                hasher.addData ( xml.toAscii() );
-                if ( strcmp ( ( const char* ) &hash, hasher.result().data() ) == 0 ) {
+                QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+                QByteArray testhash2 ( ( const char* ) &hash );
+                if ( testhash == testhash2 ) {
                         emit onQData ( xml );
                 } else {
                         // TODO: act on invalid data
