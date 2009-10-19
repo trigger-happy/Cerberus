@@ -50,8 +50,9 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	round2model=new QuestionModel(12);
 	q_ui->list_r2->setModel(round2model);
-	connect(q_ui->list_r2, SIGNAL(clicked(QModelIndex)),this, SLOT(on_r2_list()));
-	connect(q_ui->button_addq_r2,SIGNAL(clicked()),this,SLOT(add_question_r2()));
+	connect(q_ui->list_r2, SIGNAL(activated(QModelIndex)),this, SLOT(on_r2_list()));
+	connect(q_ui->button_add_r2,SIGNAL(clicked()),this,SLOT(add_question_r2()));
+	connect(q_ui->button_update_r2,SIGNAL(clicked()),this,SLOT(update_question_r2()));
 	
 }
 QEditor::~QEditor()
@@ -70,8 +71,12 @@ void QEditor::on_first_list()
 void QEditor::on_r2_list()
 {
 	int index=q_ui->list_r2->currentIndex().row();
+	q_ui->question_r2_num->setText("Question "+QString::number(index));
 	q_ui->question_r2_text->setPlainText(q_ui->list_r2->currentIndex().data().toString());
 	q_ui->question_r2_a->setText(round2model->item(index,1)->text());
+	q_ui->question_r2_b->setText(round2model->item(index,2)->text());
+	q_ui->question_r2_c->setText(round2model->item(index,3)->text());
+	q_ui->question_r2_d->setText(round2model->item(index,4)->text());
 	//q_ui->question1_score->setValue(60);
 }
 
@@ -83,6 +88,18 @@ void QEditor::add_question_r1()
 void QEditor::add_question_r2()
 {
 	round2model->addNewQuestion();
+}
+
+void QEditor::update_question_r2()
+{
+	int index=q_ui->list_r2->currentIndex().row();
+	QString question=q_ui->question_r2_text->toPlainText();
+	QString score=QString::number(q_ui->question1_score->value());
+	QString a=q_ui->question_r2_a->text();
+	QString b=q_ui->question_r2_b->text();
+	QString c=q_ui->question_r2_c->text();
+	QString d=q_ui->question_r2_d->text();
+	round2model->updateQuestion(index,question,a,b,c,d);
 }
 
 int main(int argc, char *argv[])

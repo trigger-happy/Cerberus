@@ -26,13 +26,24 @@ QuestionModel::QuestionModel(int column) : QStandardItemModel(0,column)
 
 void QuestionModel::addNewQuestion()
 {
+	/**questionmodel order
+	question score time ansa ansb ansc ansd boola boolb boolc boold boole
+	*/
 	QList<QStandardItem *> temp;
 	temp.append(new QStandardItem("new question"));
 	temp.append(new QStandardItem("my a"));
 	temp.append(new QStandardItem("b"));
 	temp.append(new QStandardItem("c"));
+	temp.append(new QStandardItem("d"));
+	
 	QStandardItemModel::appendRow(temp);
 	
+}
+
+void QuestionModel::updateQuestion(int index,QString question,QString a,QString b,QString c,QString d)
+{
+	QStandardItemModel::item(index,0)->setText(question);
+	QStandardItemModel::item(index,1)->setText(a);
 }
 
 void QuestionModel::swapOrder(int q1,int q2)

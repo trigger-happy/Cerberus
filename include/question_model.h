@@ -28,6 +28,7 @@ public:
 	QuestionModel(int column);
 	void addNewQuestion();
 	void swapOrder(int q1,int q2);
+	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d);
 };
 
 #endif
