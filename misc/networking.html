@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="author" content="Wilhansen Joseph B. Li" />
+
+<title>Cerberus Network Transmission Formats</title>
+<style type="text/css">
+<!--
+#footer {
+	width: 100%;
+	text-align: center;
+	background:#3F0;
+}
+#notice {
+	font-size:xx-large;
+	color:#FF0000;
+	font-family:"Courier New", Courier, monospace;
+}
+.identifier {
+	color:#0000FF;
+	font-family:"Courier New", Courier, monospace;
+}
+
+.datatype {
+	font-family:"Courier New", Courier, monospace;
+	color:#CC3333;
+}
+.constant {
+	font-family:"Courier New", Courier, monospace;
+	color: #309;
+	font-weight:bolder;
+	text-transform:uppercase;
+}
+
+.value {
+	font-family:"Courier New", Courier, monospace;
+	color:#0C0;
+}
+
+.parameter {
+	font-family:"Courier New", Courier, monospace;
+	color:#900;
+	text-decoration:underline;
+}
+.comment {
+	font-family:"Courier New", Courier, monospace;
+	color:#666;
+}
+.toc {
+}
+
+pre.fileformat {
+	margin-left: 2em;
+	margin-right: 2em;
+}
+.fileformat {
+	font-family:"Courier New", Courier, monospace;
+	background:#FFC;
+	font-weight:bolder;
+	font-size: 12px;
+}
+-->
+</style>
+</head>
+<body>
+<h1>Cerberus Network Transmission Formats &mdash; 0.1</h1>
+<h2>Syntax</h2>
+Characters that are part of the syntax are in black font while characters that are to be filled in appropriately are in <span class="identifier">blue</span>.
+<ul>
+	<li>
+    	<pre><span class="fileformat">[<span class="datatype">type</span>(<span class="identifier">arguments</span>) <span class="identifier">name</span> =<span class="parameter">parameter</span> <span class="identifier">versioning</span>]</span></pre>
+        This block represents a single segment of data.
+        <ol>
+        	<li><span class="datatype">type</span> - The type or custom struct of the data (see &quot;Data Types&quot; section for a list of them). </li>
+			<li><span class="identifier">arguments</span> - Passed arguments that the type takes. If there are no arguments to be passed, the parentheses may be omitted. Arguments can be a fixed number <span class="fileformat"><span class="datatype">byte</span>(<span class="value">6</span>)</span> or a length dependent of another segment <span class="fileformat"><span class="datatype">byte</span>(<span class="identifier">char_length</span>)</span>.</li>
+            <li><span class="identifier">name</span> - Optional name of the segment used for referencing the segment.</li>
+			<li><span class="parameter">parameter</span> - The value the block will take.</li>
+            <li><span class="identifier">versioning</span> - One of the following symbols which dictates if the block is deprecated, added, etc.
+            	<ul>
+                	<li>+ - This is block has been added since the last revision</li>
+                    <li>* - This block has been removed since the last revision</li>
+                </ul>
+            </li>
+        </ol>  
+    </li>
+    <li>
+    	<pre><span class="fileformat">{foreach <span class="identifier">name</span>(<span class="identifier">start</span> to <span class="identifier">end</span>) <span class="identifier">blocks</span>}</span></pre>
+		<pre><span class="fileformat">{foreach <span class="identifier">name</span>(<span class="identifier">length</span>) <span class="identifier">blocks</span>}</span></pre>
+        This block doesn't actualy contain data but represents a series of data that must be repeated over a number of times. For example, it might be used for something like &quot;for each entity in the stage&quot;. Note that the range shown is on a closed interval, i.e. [<span class="identifier">start</span>,<span class="identifier">end</span>]. 
+        <ol>
+        	<li><span class="identifier">name</span> - The name, usually identifies what is being looped.</li>
+            <li><span class="identifier">start</span> - The starting index on a closed interval, usually 0 or 1.</li>
+            <li><span class="identifier">end</span> - The ending index on a closed interval. Note that this is usually in the form of n - 1 where n is the number of iterations of the loop.</li>
+			<li><span class="identifier">length</span> - Same as specifying the range to be [0 to <span class="identifier">length</span>-1]</li>
+            <li><span class="identifier">blocks</span> - The series of blocks that are repeated.</li>
+        </ol>
+    </li>
+    <li><pre><span class="fileformat">{switch (<span class="identifier">term</span>) {case (<span class="identifier">match</span>) <span class="identifier">blocks</span>} {case (<span class="identifier">match</span>) <span class="identifier">blocks</span>} ... {default <span class="identifier">blocks</span>} }</span></pre>
+    	Represents branches triggered by a test case.
+          <ol>
+        	<li><span class="identifier">term</span> - The term to test.</li>
+            <li><span class="identifier">match</span> - The solution <span class="identifier">term</span> should evaluate to to take this case, if multiple values are considred, they are separated by commas.</li>
+            <li><span class="identifier">blocks</span> - The next series of blocks if the specified case is taken.</li>
+        </ol>
+    </li>
+	<li><pre><span class="fileformat">&lt;comment&gt;</span></pre>
+	Does not insert anything in the block. This is purely for informative purposes only.
+	</li>
+</ul>
+
+<!-- -------------------------- -->
+<h2>Data Types</h2>
+Note that unless specified, all integral datatypes are stored in <b>LITTLE ENDIAN</b>.
+<ul>
+	<li><span class="datatype">byte</span>(<span class="parameter">n</span>) - A generic data having a length of n-bytes.</li>
+	<li><span class="datatype">bitfield</span>(<span class="parameter">n</span>) - n-bit boolean field padded to the nearest 8-bit boundary.</li>
+    <li><span class="datatype">byte</span> - 8-bit signed integer.</li>
+    <li><span class="datatype">short</span> - 16-bit signed integer.</li>
+    <li><span class="datatype">int</span> - 32-bit signed integer.</li>
+    <li><span class="datatype">ubyte</span> - 8-bit unsigned integer.</li>
+    <li><span class="datatype">ushort</span> - 16-bit unsigned integer.</li>
+    <li><span class="datatype">uint</span> - 32-bit unsigned integer.</li>
+    <li><span class="datatype">float</span> - A 32-bit floating point number.</li>
+    <li><span class="datatype">string</span> - A UTF-8 string prefixed by a ushort length. Note that this is not null-terminated. (i.e. &quot;<span class="fileformat">[<span class="datatype">ushort</span> <span class="identifier">len</span>][<span class="datatype">byte</span>(<span class="identifier">len</span>) string]</span>&quot;)</li>
+</ul>
+
+<!-- -------------------------- -->
+
+<h2>Common Structures</h2>
+<h3>version: 3 bytes</h3>
+<pre class="fileformat">[<span class="datatype">ubyte</span> major][<span class="datatype">ubyte</span> minor][<span class="datatype">ubyte</span> patch]</pre>
+
+<h3>header(<span class="parameter">type</span>): 10 bytes</h3>
+<pre class="fileformat">[<span class="datatype">ushort</span> len] <span class="constant">ident</span> <span class="constant">version</span> [<span class="datatype">ubyte</span> =<span class="parameter">type</span>]</pre>
+<ul>
+	<li>len &mdash; length of this entire packet in bytes, excluding this header.</li>
+	<li>type &mdash; packet type:
+		<ol start="0">
+			<li>NET_INITIATE_CONNECTION</li>
+			<li>NET_DISCONNECT</li>
+			<li>AUTHENTICATE</li>
+			<li>QRY_QUESTION_REQUEST</li>
+			<li>INF_QUESTION_DATA</li>
+			<li>QRY_ANSWER_SUBMIT</li>
+			<li>INF_ANSWER_REPLY</li>
+			<li>CONTEST_STATE</li>
+			<li>QRY_PRESENTER_READY</li>
+		</ol>
+	</li>
+</ul>
+
+<h3>status: 1 byte</h3>
+<pre class="fileformat">[byte status]</pre>
+<ul>
+	<li>status:
+		<ol start="0">
+		<li>running</li><li>stopped</li><li>paused</li>
+		</ol>
+	</li>
+</ul>
+<h2>Constants</h2>
+<ul>
+	<li><span class="datatype">byte</span>(<span class="value">4</span>) <span class="constant">ident</span> = "CERB" &mdash; global identifier that the packet belongs to Cerberus. 
+	<li><span class="datatype">version</span> <span class="constant">ver</span> = <span class="fileformat">[<span class="datatype">ubyte</span> =<span class="value">0</span>][<span class="datatype">ubyte</span> =<span class="value">0</span>][<span class="datatype">ubyte</span> =<span class="value">1</span>]</span> &mdash; global version identifier, it's up to the server to determine what to do with this (accept lower-versioned clients, reject higher-versioned clients, etc). 
+</ul>
+<!-- -------------------------- -->
+<h2>Connection Initialization</h2>
+<h3>Client Request</h3>
+<pre class="fileformat">[header(<span class="constant">NET_INITIATE_CONNECTION</span>)][ubyte clientType]</pre>
+<ul>
+	<li>clientType &mdash; type of the client connecting:
+		<ol start="0">
+			<li>contestant</li>
+			<li>presenter</li>
+			<li>admin</li>
+		</ol>
+	</li>
+</ul>
+<h3>Server Reply</h3>
+<pre class="fileformat">[header(<span class="constant">NET_INITIATE_CONNECTION</span>)][ushort result]</pre>
+
+<h2>Connection Drops</h2>
+<pre class="fileformat">[header(<span class="constant">NET_DISCONNECT</span>)][ushort reason]</pre>
+
+<h2>Contestant-Server</h2>
+<h3>Authenticate</h3>
+<h4>Client</h4>
+<pre class="fileformat">[header(<span class="constant">AUTHENTICATE</span>)][string username][string password]</pre>
+<h4>Server</h4>
+<pre class="fileformat">[header(<span class="constant">AUTHENTICATE</span>)][ubyte result]</pre>
+<ul>
+	<li>result:
+		<ol start="0">
+		<li>fail</li><li>success</li>
+		</ol>
+	</li>
+</ul>
+
+<h3>State Request</h3>
+<h4>Client</h4>
+<pre class="fileformat">[header(<span class="constant">CONTEST_STATE</span>)]</pre>
+<h4>Server</h4>
+<pre class="fileformat">[header(<span class="constant">CONTEST_STATE</span>)][ushort round_number][status]</pre>
+
+<h3>Question Request</h3>
+<h4>Client</h4>
+<pre class="fileformat">[header(<span class="constant">QRY_QUESTION_REQUEST</span>)][ushort round_number]</pre>
+<h4>Server</h4>
+<pre class="fileformat">[header(<span class="constant">INF_QUESTION_DATA</span>) header][ubyte(20) hash][ubyte next][ubyte(header.len - hash.len) xml][attachments]</pre>
+<ul>
+	<li>hash &mdash; The sha-1 hash of the entire data sent (xml and attachments).</li>
+	<li>next &mdash; In case the total data exceeds over 65535 bytes, if this flag is on, there will be follow-up data in the same format as this.</li>
+	<li>xml &mdash; The XML data.</li>
+	<li>attachments &mdash; Binary attachments (images, etc.).</li>
+</ul>
+<h3>Answer Submit</h3>
+<h4>Client</h4>
+<pre class="fileformat">[header(<span class="constant">QRY_ANSWER_SUBMIT</span>) header][ubyte(20) hash][ubyte(header.len - hash.len) xml]</pre>
+<h4>Server</h4>
+<pre class="fileformat">[header(<span class="constant">INF_ANSWER_REPLY</span>)][ubyte result]</pre>
+<ul>
+	<li>result:
+		<ol start="0">
+		<li>fail</li><li>success</li>
+		</ol>
+	</li>
+</ul>
+
+<h3>Contest State Change</h3>
+<pre class="fileformat">[header(<span class="constant">INF_CONTEST_STATE</span>][ubyte round_number][status]</pre>
+
+<h2>Projector-Server</h2>
+
+<h3>Contest State Request</h3>
+<h4>Client</h4>
+<pre class="fileformat">[header(<span class="constant">CONTEST_STATE</span>)]</pre>
+<h4>Server</h4>
+<pre class="fileformat">[header(<span class="constant">CONTEST_STATE</span>)][ushort round_number][status]</pre>
+
+<h3>Command Wait</h3>
+<pre class="fileformat">[header(<span class="constant">QRY_PRESENTER_READY</span>)]</pre>
+At this point, the client merely listens for server commands and replies a result code.
+		
+<div id="footer">Last update by Wilhansen Li on 2009.10.19</div>
+<div id="license">
+<br />
+Copyright &copy; 2009 Wilhansen Li<br />
+<p>
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+</p>
+<p>
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+</p>
+<p>
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+</p>
+</div>
+</body>
+</html>

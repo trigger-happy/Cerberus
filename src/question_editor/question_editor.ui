@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -184,7 +184,7 @@
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <item row="0" column="0">
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="add_q_round_1">
               <property name="text">
                <string>Add</string>
               </property>
@@ -232,12 +232,12 @@
              <string>Question:</string>
             </property>
             <property name="buddy">
-             <cstring>plainTextEdit</cstring>
+             <cstring>question1_text</cstring>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPlainTextEdit" name="plainTextEdit">
+           <widget class="QPlainTextEdit" name="question1_text">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -254,7 +254,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit"/>
+           <widget class="QLineEdit" name="question1_a"/>
           </item>
           <item row="3" column="0">
            <widget class="QRadioButton" name="radioButton_2">
@@ -264,7 +264,11 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="lineEdit_2"/>
+           <widget class="QLineEdit" name="lineEdit_2">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
           <item row="4" column="0">
            <widget class="QRadioButton" name="radioButton_4">
@@ -336,7 +340,7 @@
            </layout>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox_3">
+           <widget class="QSpinBox" name="question1_score">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -351,7 +355,7 @@
              <string>Score:</string>
             </property>
             <property name="buddy">
-             <cstring>spinBox_3</cstring>
+             <cstring>question1_score</cstring>
             </property>
            </widget>
           </item>

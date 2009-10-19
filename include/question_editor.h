@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef QUESTION_EDITOR_H
 #define QUESTION_EDITOR_H
 
+#include <QtGui>
 #include <QtGui/QMainWindow>
 
 namespace Ui
@@ -32,8 +33,12 @@ class QEditor : public QMainWindow
 public:
 	QEditor(QWidget *parent = 0);
 	~QEditor();
+public slots:
+	void on_first_list();
+	void add_question_r1();
 private: 
 	Ui::q_editor *q_ui;
+	QStandardItemModel* model;
 };
 
 #endif
