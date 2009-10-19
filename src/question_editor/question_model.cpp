@@ -15,34 +15,27 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef QUESTION_EDITOR_H
-#define QUESTION_EDITOR_H
 
-#include <QtGui>
+
 #include "question_model.h"
-//#include <QtGui/QMainWindow>
 
-namespace Ui
+QuestionModel::QuestionModel(int column) : QStandardItemModel(0,column)
 {
-class q_editor;
+	//super(9,2);
 }
 
-class QEditor : public QMainWindow
+void QuestionModel::addNewQuestion()
 {
-	Q_OBJECT
+	QList<QStandardItem *> temp;
+	temp.append(new QStandardItem("new question"));
+	temp.append(new QStandardItem("my a"));
+	temp.append(new QStandardItem("b"));
+	temp.append(new QStandardItem("c"));
+	QStandardItemModel::appendRow(temp);
+	
+}
 
-public:
-	QEditor(QWidget *parent = 0);
-	~QEditor();
-public slots:
-	void on_first_list();
-	void on_r2_list();
-	void add_question_r1();
-	void add_question_r2();
-private: 
-	Ui::q_editor *q_ui;
-	QStandardItemModel* model;
-	QuestionModel* round2model;
-};
-
-#endif
+void QuestionModel::swapOrder(int q1,int q2)
+{
+	//swapping goes here
+}

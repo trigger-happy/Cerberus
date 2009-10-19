@@ -27,7 +27,7 @@ using namespace std;
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
 	q_ui->setupUi(this);
-	QFile f ("resources/stage1_q.xml");
+	QFile f ("../resources/stage1_q.xml");
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
 	model=new QStandardItemModel(2,9);
@@ -43,9 +43,15 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		QStandardItem* another =new QStandardItem("This is a.");
 		model->setItem(row,1,another);
 	}
-	q_ui->first_round_list->setModel(model);
-	connect(q_ui->first_round_list, SIGNAL(clicked(QModelIndex)),this, SLOT(on_first_list()));
-	connect(q_ui->add_q_round_1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
+	q_ui->list_r1->setModel(model);
+	connect(q_ui->list_r1, SIGNAL(clicked(QModelIndex)),this, SLOT(on_first_list()));
+	connect(q_ui->button_addq_r1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
+	q_ui->textarea_welcome->setPlainText(xml);
+	
+	round2model=new QuestionModel(12);
+	q_ui->list_r2->setModel(round2model);
+	connect(q_ui->list_r2, SIGNAL(clicked(QModelIndex)),this, SLOT(on_r2_list()));
+	connect(q_ui->button_addq_r2,SIGNAL(clicked()),this,SLOT(add_question_r2()));
 	
 }
 QEditor::~QEditor()
@@ -55,15 +61,28 @@ QEditor::~QEditor()
 
 void QEditor::on_first_list()
 {
-	int index=q_ui->first_round_list->currentIndex().row();
-	q_ui->question1_text->setPlainText(q_ui->first_round_list->currentIndex().data().toString());
+	int index=q_ui->list_r1->currentIndex().row();
+	q_ui->question1_text->setPlainText(q_ui->list_r1->currentIndex().data().toString());
 	q_ui->question1_a->setText(model->item(index,1)->text());
 	q_ui->question1_score->setValue(60);
+}
+
+void QEditor::on_r2_list()
+{
+	int index=q_ui->list_r2->currentIndex().row();
+	q_ui->question_r2_text->setPlainText(q_ui->list_r2->currentIndex().data().toString());
+	q_ui->question_r2_a->setText(round2model->item(index,1)->text());
+	//q_ui->question1_score->setValue(60);
 }
 
 void QEditor::add_question_r1()
 {
 	model->appendRow(new QStandardItem("New Question"));
+}
+
+void QEditor::add_question_r2()
+{
+	round2model->addNewQuestion();
 }
 
 int main(int argc, char *argv[])
