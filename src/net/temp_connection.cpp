@@ -33,25 +33,27 @@ void TempConnection::error ( const QAbstractSocket::SocketError& error )
 
 void TempConnection::ready()
 {
-        //read the socket data
-	quint16 blocksize = 0;
+        p_header hdr;
+        if ( m_socket->bytesAvailable() < ( int ) sizeof ( hdr ) ) {
+                return;
+        }
         QDataStream in ( m_socket );
         in.setVersion ( QDataStream::Qt_4_5 );
-        if ( blocksize == 0 ) {
-                if ( m_socket->bytesAvailable() < ( int ) sizeof ( quint16 ) ) {
-                        return;
-                }
-                in >> blocksize;
+        in.readRawData ( ( char* ) &hdr, sizeof ( p_header ) );
+        //check the packet
+        if ( strcmp ( ( const char* ) &hdr.ident.data, "CERB" ) != 0 ) {
+                // bad packet, do something here
+                return;
         }
-
-        if ( m_socket->bytesAvailable() < blocksize ) {
+        //check the version
+        if ( !is_proto_current ( hdr.ver ) ) {
+                // the version is not the same, do something here
+        }
+        if ( m_socket->bytesAvailable() < hdr.length ) {
                 return;
         }
 
-        // check what command was sent by the server and react accordingly
-        quint16 command;
-	in >> command;
-        if ( command == NET_INITIATE_CONNECTION ) {
+        if ( hdr.command == NET_INITIATE_CONNECTION ) {
                 quint16 client_type;
                 in >> client_type;
                 emit newClient ( this, static_cast<CLIENT_ID> ( client_type ) );

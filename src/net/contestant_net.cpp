@@ -124,10 +124,14 @@ void ContestantNetwork::connected()
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
 	out.setVersion ( QDataStream::Qt_4_5 );
-	out << ( quint16 )0 << ( quint16 ) NET_INITIATE_CONNECTION;
-	out << CLIENT_CONTESTANT;
-	out.device()->seek ( 0 );
-	out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
+	// construct the header
+	p_header hdr;
+	hdr.length = sizeof(uchar);
+	hdr.command = NET_INITIATE_CONNECTION;
+	
+	out.writeRawData((const char*)&hdr, sizeof(p_header));
+	out << (uchar)CLIENT_CONTESTANT;
+	
 	m_socket->write ( block );
 }
 

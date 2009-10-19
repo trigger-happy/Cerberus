@@ -29,6 +29,7 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
         connect ( m_net, SIGNAL ( onR1QData ( QString ) ), this, SLOT ( onR1QData ( QString ) ) );
         connect ( m_net, SIGNAL ( onR1AData ( bool ) ), this, SLOT ( onR1AData ( bool ) ) );
         connect ( m_net, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
+        connect ( m_net, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
 }
 
 ClientDlg::~ClientDlg()
@@ -80,7 +81,17 @@ void ClientDlg::onConnect()
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "Connected\n";
         m_dlg->log_tedt->setText ( buffer );
-        //begin test here
+        // TODO: begin test here
+        // do an authentication test
+        // ask for the contest state
+        // get the question data for the 1st round
+        // send the answer data
+}
+
+void ClientDlg::onDisconnect(){
+	QString buffer = m_dlg->log_tedt->toPlainText();
+	buffer += "Disconnected\n";
+	m_dlg->log_tedt->setText ( buffer );
 }
 
 void ClientDlg::onConnectBtn()

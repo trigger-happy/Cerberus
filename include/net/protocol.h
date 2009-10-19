@@ -17,6 +17,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
+#include <QtGlobal>
+
+#define PROTOCOL_MAJOR 0
+#define PROTOCOL_MINOR 0
+#define PROTOCOL_PATCH 1
 
 enum CLIENT_ID {
         CLIENT_CONTESTANT,
@@ -24,7 +29,7 @@ enum CLIENT_ID {
         CLIENT_PRESENTER
 };
 
-enum PROTOCOL_COMMANDS {
+enum PROTOCOL_COMMAND {
         // error
         INF_ERROR = 0,
 
@@ -53,5 +58,41 @@ enum PROTOCOL_COMMANDS {
 
         // TODO: Add admin commands here
 };
+
+enum CONTEST_STATUS{
+	CONTEST_RUNNING = 0,
+	CONTEST_STOPPED,
+	CONTEST_PAUSED
+};
+
+struct p_version{
+	p_version(){
+		major = PROTOCOL_MAJOR;
+		minor = PROTOCOL_MINOR;
+		patch = PROTOCOL_PATCH;
+	}
+	uchar major;
+	uchar minor;
+	uchar patch;
+};
+
+struct p_ident{
+	p_ident(){
+		data[0] = 'C';
+		data[1] = 'E';
+		data[2] = 'R';
+		data[3] = 'B';
+	}
+	unsigned char data[4];
+};
+
+struct p_header{
+	unsigned short length;
+	p_ident ident;
+	p_version ver;
+	unsigned char command;
+};
+
+bool is_proto_current(const p_version& ver);
 
 #endif //PROTOCOL_H

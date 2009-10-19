@@ -36,6 +36,7 @@ private slots:
         void onAuthReply ( bool result );
         void onConnectBtn();
         void onConnect();
+	void onDisconnect();
         void onError ( QAbstractSocket::SocketError error );
         void onR1QData ( const QString& xml );
         void onR1AData ( bool result );

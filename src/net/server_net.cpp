@@ -26,6 +26,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 
+// TODO: Reconsider placing this in protocol.cpp if ever
+bool is_proto_current ( const p_version& ver )
+{
+        bool result = true;
+        result &= ( ver.major == PROTOCOL_MAJOR );
+        result &= ( ver.minor == PROTOCOL_MINOR );
+        result &= ( ver.patch == PROTOCOL_PATCH );
+        return true;
+}
+
+// servernetwork implementation
 ServerNetwork::ServerNetwork ( QObject* parent ) : QObject ( parent )
 {
         //initialize stuff here
@@ -50,7 +61,7 @@ void ServerNetwork::newConnection()
                   this, SLOT ( newClient ( TempConnection*, CLIENT_ID ) ) );
         connect ( tc, SIGNAL ( invalidClient ( TempConnection* ) ),
                   this, SLOT ( invalidClient ( TempConnection* ) ) );
-	connect(tc, SIGNAL(invalidClient(TempConnection*)), this, SIGNAL(badClient(TempConnection*)));
+        connect ( tc, SIGNAL ( invalidClient ( TempConnection* ) ), this, SIGNAL ( badClient ( TempConnection* ) ) );
         m_tempconnections.insert ( m_tempconnections.end(), tc );
 }
 

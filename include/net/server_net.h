@@ -90,7 +90,7 @@ public slots:
         void invalidClient ( TempConnection* con );
 signals:
         // TODO: add signals here
-	void badClient(TempConnection* con);
+        void badClient ( TempConnection* con );
         void newContestant ( ContestantConnection* cc );
         void newAdmin ( AdminConnection* ac );
         void newPresenter ( PresenterConnection* pc );
