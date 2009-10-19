@@ -103,8 +103,10 @@ void ContestantConnection::ready()
                 break;
         case QRY_QUESTION_REQUEST:
                 //contestant is asking for question data
+		ushort round;
+		in >> round;
                 if ( m_authenticated ) {
-                        sendQData ( m_qdata->at ( m_round-1 ) );
+                        sendQData ( m_qdata->at ( round-1 ) );
                 } else {
                         //send an error
                         errorReply ( ERR_NOTAUTHORIZED );
