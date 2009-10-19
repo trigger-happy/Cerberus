@@ -24,9 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define PROTOCOL_PATCH 1
 
 enum CLIENT_ID {
-        CLIENT_CONTESTANT,
-        CLIENT_ADMIN,
-        CLIENT_PRESENTER
+	CLIENT_CONTESTANT = 0,
+	CLIENT_PRESENTER,
+        CLIENT_ADMIN
 };
 
 enum PROTOCOL_COMMAND {
