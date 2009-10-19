@@ -100,10 +100,9 @@ int SqlUtil::setScore ( const QString& user_name, double score )
 
 bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
 {
-        QString pwd = QCryptographicHash::hash ( password.toAscii(), QCryptographicHash::Sha1 );
         QString sql = QString ( "SELECT username FROM user WHERE username = '%1' AND password = '%2'" )
                       .arg ( user_name )
-                      .arg ( pwd );
+                      .arg ( password );
         query->exec ( sql );
         int size = 0;
         while ( query->next() ) {
