@@ -32,7 +32,6 @@ ContestantNetwork::ContestantNetwork ( QObject* parent ) : QObject ( parent )
                   this, SIGNAL ( onError ( QAbstractSocket::SocketError ) ) );
         connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
         connect ( m_socket, SIGNAL ( disconnected() ), this, SIGNAL ( onDisconnect() ) );
-        m_state = CCS_DISCONNECTED;
         m_authenticated = false;
         m_hdr = NULL;
 }
@@ -60,7 +59,6 @@ bool ContestantNetwork::authenticate ( const QString& user_name, const QString& 
         if ( m_authenticated ) {
                 return false;
         }
-        m_state = CCS_AUTHENTICATING;
         // construct an authentication packet
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
@@ -85,7 +83,6 @@ bool ContestantNetwork::QDataRequest ( int round )
         if ( !m_socket->isWritable() ) {
                 return false;
         }
-        m_state = CCS_QDATA_REQUEST;
         //construct a question data request packet
         //packet format is:
         //(quint16)(quint16)
@@ -103,7 +100,6 @@ bool ContestantNetwork::ADataSend ( const QString& xml )
         if ( !m_socket->isWritable() ) {
                 return false;
         }
-        m_state = CCS_ADATA_SEND;
         //construct an answer data packet
         //packet format:
         //(quint16)(quint16)(QString)
@@ -121,7 +117,6 @@ bool ContestantNetwork::ADataSend ( const QString& xml )
 
 void ContestantNetwork::connected()
 {
-        m_state = CCS_STANDBY;
         // identify ourselves
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
@@ -137,9 +132,21 @@ void ContestantNetwork::connected()
         m_socket->write ( block );
 }
 
+void ContestantNetwork::getContestState()
+{
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        //construct the header
+        p_header hdr;
+        hdr.length = 0;
+        hdr.command = QRY_CONTEST_STATE;
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        m_socket->write ( block );
+}
+
 void ContestantNetwork::disconnected()
 {
-        m_state = CCS_DISCONNECTED;
         m_authenticated = false;
 }
 
@@ -187,7 +194,7 @@ void ContestantNetwork::ready()
         case INF_CONTEST_STATE:
                 //we got info on the contest state
         {
-                uchar round;
+                ushort round;
                 uchar status;
                 in >> round >> status;
                 emit onContestStateChange ( round, ( CONTEST_STATUS ) status );
@@ -241,5 +248,4 @@ void ContestantNetwork::ready()
         }
         delete m_hdr;
         m_hdr = NULL;
-        m_state = CCS_STANDBY;
 }

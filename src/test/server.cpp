@@ -32,6 +32,8 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
         connect ( m_server, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
         m_server->listen ( 2652 );
+        m_server->setRound ( 1 );
+        m_server->setStatus ( CONTEST_STOPPED );
         bool result = SqlUtil::getInstance().init ( "resources/test.db" );
         if ( !result ) {
                 QMessageBox msg ( this );

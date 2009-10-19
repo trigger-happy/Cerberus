@@ -30,6 +30,8 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
         connect ( m_net, SIGNAL ( onAData ( bool ) ), this, SLOT ( onAData ( bool ) ) );
         connect ( m_net, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
         connect ( m_net, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
+        connect ( m_net, SIGNAL ( onContestStateChange ( int,CONTEST_STATUS ) ),
+                  this, SLOT ( onContestStateChange ( int, CONTEST_STATUS ) ) );
 }
 
 ClientDlg::~ClientDlg()
@@ -37,11 +39,11 @@ ClientDlg::~ClientDlg()
         delete m_dlg;
 }
 
-void ClientDlg::onContestStateChange ( int s )
+void ClientDlg::onContestStateChange ( int round, CONTEST_STATUS s )
 {
-        QMessageBox msg ( this );
-        msg.setText ( QString ( "State change to %1" ).arg ( s ) );
-        msg.exec();
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Status: " + QString ( "%1 %2\n" ).arg ( round ).arg ( s );
+        m_dlg->log_tedt->setText ( buffer );
 }
 
 
@@ -66,14 +68,18 @@ void ClientDlg::onAData ( bool result )
 
 void ClientDlg::onAuthReply ( bool result )
 {
-        QMessageBox msg ( this );
+        QString buffer = m_dlg->log_tedt->toPlainText();
         if ( !result ) {
-                msg.setText ( "Failed to authenticate" );
-                msg.exec();
+                buffer += "Failed to authenticate\n";
         } else {
-                msg.setText ( "Authenticated" );
-                msg.exec();
+                buffer += "Authenticated!\n";
         }
+        if ( result ) {
+		// get the contest state next
+		buffer += "Getting contest state...\n";
+                m_net->getContestState();
+	}
+	m_dlg->log_tedt->setText ( buffer );
 }
 
 void ClientDlg::onConnect()
@@ -82,12 +88,9 @@ void ClientDlg::onConnect()
         buffer += "Connected\n";
         // TODO: begin test here
         // do an authentication test
-        buffer += "Authenticating\n";
+        buffer += "Authenticating...\n";
         m_dlg->log_tedt->setText ( buffer );
         m_net->authenticate ( "user", "pass" );
-        // ask for the contest state
-        // get the question data for the 1st round
-        // send the answer data
 }
 
 void ClientDlg::onDisconnect()

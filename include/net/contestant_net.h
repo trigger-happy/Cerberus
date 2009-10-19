@@ -21,14 +21,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "error_defs.h"
 #include "protocol.h"
 
-enum CCSTATE {
-        CCS_DISCONNECTED = 0,
-        CCS_AUTHENTICATING,
-        CCS_QDATA_REQUEST,
-        CCS_ADATA_SEND,
-        CCS_STANDBY
-};
-
 /*!
 \brief This class provides a simple communication layer with the server.
 The ContestantNetwork class provides a networking layer for the contest client.
@@ -80,10 +72,15 @@ public:
         bool authenticate ( const QString& user_name, const QString& pw );
 
         /*!
+        Request for the current contest state.
+        */
+        void getContestState();
+
+        /*!
         Request for the question data from the server.
         \return true if the data was sent, false otherwise.
         */
-        bool QDataRequest(int round);
+        bool QDataRequest ( int round );
 
         /*!
         Send the answer data for 1st round to the server.
@@ -92,12 +89,6 @@ public:
         */
         bool ADataSend ( const QString& xml );
 
-        /*!
-        Get the current state of the connection class.
-        */
-        inline CCSTATE getState() const {
-                return m_state;
-        }
 protected slots:
 
         /*!
@@ -172,7 +163,6 @@ protected:
         QTcpSocket* m_socket;
         p_header* m_hdr;
         bool m_authenticated;
-        CCSTATE m_state;
 private:
 };
 

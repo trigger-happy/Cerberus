@@ -37,12 +37,13 @@ public:
         */
         ContestantConnection ( QObject* parent = 0, QTcpSocket* socket = 0 );
 
-        /*!
-        Set the round 1 question data that should be sent.
-        \TODO: remove this later in place of a better system
-        \param xml QString for the data.
-        */
-        void setR1QData ( const QString* xml );
+	inline void setRound(int r){
+		m_round = r;
+	}
+	
+	inline void setStatus(CONTEST_STATUS s){
+		m_con_status = s;
+	}
 public slots:
         /*!
         Called when there's a socket error.
@@ -91,15 +92,15 @@ private:
 
         /*!
         Send a command to change the contest state.
-        \param state The state (or contest round).
         */
-        void sendContestState ( quint16 state );
+        void sendContestState ();
 
         //private fields
-        const QString* m_r1qdata;
         QTcpSocket* m_socket;
         p_header* m_hdr;
         bool m_authenticated;
+	CONTEST_STATUS m_con_status;
+	int m_round;
 };
 
 #endif

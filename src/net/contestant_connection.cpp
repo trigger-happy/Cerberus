@@ -76,7 +76,7 @@ void ContestantConnection::ready()
         case QRY_CONTEST_STATE:
                 //contestant is asking for the contest state.
                 if ( m_authenticated ) {
-                        //send a reply
+                        sendContestState();
                 } else {
                         //send an error
                         errorReply ( ERR_NOTAUTHORIZED );
@@ -92,6 +92,7 @@ void ContestantConnection::ready()
                         pass = buffer.right ( buffer.size()-user.size()-1 );
                         bool result = SqlUtil::getInstance().authenticate ( user, pass );
                         authenticationReply ( result );
+			m_authenticated = result;
                 } else {
                         //TODO: what happens here?
                         authenticationReply ( false );
@@ -186,19 +187,18 @@ void ContestantConnection::sendR1AReply ( bool res )
         m_socket->write ( block );
 }
 
-void ContestantConnection::sendContestState ( quint16 state )
+void ContestantConnection::sendContestState ()
 {
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_CONTEST_STATE;
-        out << state;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
-        m_socket->write ( block );
-}
+        // construct the header
+        p_header hdr;
+        hdr.length = sizeof ( ushort ) + sizeof ( uchar );
+        hdr.command = INF_CONTEST_STATE;
 
-void ContestantConnection::setR1QData ( const QString* xml )
-{
-        m_r1qdata = xml;
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( ushort ) m_round << ( uchar ) m_con_status;
+
+        m_socket->write ( block );
 }
