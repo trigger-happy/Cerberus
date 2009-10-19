@@ -136,7 +136,7 @@ private:
         const QString DISCONNECT_INFORMATION;
         const QString UNAUTH_TEXT;
         const QString UNAUTH_INFORMATION;
-
+	int m_round;
 };
 
 #endif //CONTESTANT_APP_H

@@ -67,6 +67,7 @@ void ServerNetwork::newConnection()
 
 void ServerNetwork::contestantDisconnect ( ContestantConnection* c )
 {
+        emit contestantDc ( c );
         //remove it from the list
         contestant_list::iterator i = m_contestants.begin();
         while ( i != m_contestants.end() ) {
@@ -83,9 +84,21 @@ void ServerNetwork::contestantDisconnect ( ContestantConnection* c )
 
 void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id )
 {
+        QTcpSocket* temp_sock = con->getSocket();
+
+        tmpcon_list::iterator i = m_tempconnections.begin();
+        while ( i != m_tempconnections.end() ) {
+                if ( *i == con ) {
+                        break;
+                }
+                i++;
+        }
+        if ( *i == con ) {
+                delete *i;
+                m_tempconnections.erase ( i );
+        }
         switch ( id ) {
         case CLIENT_CONTESTANT: {
-                QTcpSocket* temp_sock = con->getSocket();
                 ContestantConnection* cc = new ContestantConnection ( this, temp_sock );
                 connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
                           this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
@@ -99,18 +112,6 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id )
         case CLIENT_PRESENTER:
                 // TODO: add code here for creating a new presenter connection
                 break;
-        }
-
-        tmpcon_list::iterator i = m_tempconnections.begin();
-        while ( i != m_tempconnections.end() ) {
-                if ( *i == con ) {
-                        break;
-                }
-                i++;
-        }
-        if ( *i == con ) {
-                delete *i;
-                m_tempconnections.erase ( i );
         }
 }
 

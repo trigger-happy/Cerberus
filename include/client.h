@@ -36,10 +36,10 @@ private slots:
         void onAuthReply ( bool result );
         void onConnectBtn();
         void onConnect();
-	void onDisconnect();
+        void onDisconnect();
         void onError ( QAbstractSocket::SocketError error );
-        void onR1QData ( const QString& xml );
-        void onR1AData ( bool result );
+        void onQData ( const QString& xml );
+        void onAData ( bool result );
         void onContestStateChange ( int c );
 private:
         ContestantNetwork* m_net;

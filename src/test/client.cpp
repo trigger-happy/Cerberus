@@ -26,8 +26,8 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
 
         m_net = new ContestantNetwork ( this );
         connect ( m_net, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( onAuthReply ( bool ) ) );
-        connect ( m_net, SIGNAL ( onR1QData ( QString ) ), this, SLOT ( onR1QData ( QString ) ) );
-        connect ( m_net, SIGNAL ( onR1AData ( bool ) ), this, SLOT ( onR1AData ( bool ) ) );
+        connect ( m_net, SIGNAL ( onQData ( QString ) ), this, SLOT ( onQData ( QString ) ) );
+        connect ( m_net, SIGNAL ( onAData ( bool ) ), this, SLOT ( onAData ( bool ) ) );
         connect ( m_net, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
         connect ( m_net, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
 }
@@ -45,14 +45,14 @@ void ClientDlg::onContestStateChange ( int s )
 }
 
 
-void ClientDlg::onR1QData ( const QString& xml )
+void ClientDlg::onQData ( const QString& xml )
 {
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "Q: " + xml + "\n";
         m_dlg->log_tedt->setText ( buffer );
 }
 
-void ClientDlg::onR1AData ( bool result )
+void ClientDlg::onAData ( bool result )
 {
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "R1: ";
@@ -80,18 +80,21 @@ void ClientDlg::onConnect()
 {
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "Connected\n";
-        m_dlg->log_tedt->setText ( buffer );
         // TODO: begin test here
         // do an authentication test
+        buffer += "Authenticating\n";
+        m_dlg->log_tedt->setText ( buffer );
+        m_net->authenticate ( "user", "pass" );
         // ask for the contest state
         // get the question data for the 1st round
         // send the answer data
 }
 
-void ClientDlg::onDisconnect(){
-	QString buffer = m_dlg->log_tedt->toPlainText();
-	buffer += "Disconnected\n";
-	m_dlg->log_tedt->setText ( buffer );
+void ClientDlg::onDisconnect()
+{
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Disconnected\n";
+        m_dlg->log_tedt->setText ( buffer );
 }
 
 void ClientDlg::onConnectBtn()

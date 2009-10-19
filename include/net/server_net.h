@@ -92,6 +92,7 @@ signals:
         // TODO: add signals here
         void badClient ( TempConnection* con );
         void newContestant ( ContestantConnection* cc );
+        void contestantDc ( ContestantConnection* cc );
         void newAdmin ( AdminConnection* ac );
         void newPresenter ( PresenterConnection* pc );
 protected:

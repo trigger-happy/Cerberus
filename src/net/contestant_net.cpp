@@ -28,14 +28,13 @@ ContestantNetwork::ContestantNetwork ( QObject* parent ) : QObject ( parent )
         connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
         connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
                   this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
-        connect ( m_socket, SIGNAL ( connected() ), this, SIGNAL ( onConnect() ) );
         connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
                   this, SIGNAL ( onError ( QAbstractSocket::SocketError ) ) );
         connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
         connect ( m_socket, SIGNAL ( disconnected() ), this, SIGNAL ( onDisconnect() ) );
-        m_blocksize = 0;
         m_state = CCS_DISCONNECTED;
         m_authenticated = false;
+        m_hdr = NULL;
 }
 
 ContestantNetwork::~ContestantNetwork()
@@ -62,23 +61,26 @@ bool ContestantNetwork::authenticate ( const QString& user_name, const QString& 
                 return false;
         }
         m_state = CCS_AUTHENTICATING;
-        //construct an authentication packet
-        //packet format is:
-        //(quint16)(quint16)(qstring)
-        //(packet size)(command)(user,pw)
+        // construct an authentication packet
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 1;
-        QString data = user_name + "," + pw;
+        p_header hdr;
+        hdr.command = QRY_AUTHENTICATE;
+
+        // construct the payload
+        QString data = user_name + "," + QCryptographicHash::hash ( pw.toAscii(), QCryptographicHash::Sha1 );
+        hdr.length = data.size();
+        // write it
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( hdr ) );
         out << data;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
+
+        // send it
         m_socket->write ( block );
         return true;
 }
 
-bool ContestantNetwork::r1QDataRequest()
+bool ContestantNetwork::QDataRequest ( int round )
 {
         if ( !m_socket->isWritable() ) {
                 return false;
@@ -96,7 +98,7 @@ bool ContestantNetwork::r1QDataRequest()
         return true;
 }
 
-bool ContestantNetwork::r1ADataSend ( const QString& xml )
+bool ContestantNetwork::ADataSend ( const QString& xml )
 {
         if ( !m_socket->isWritable() ) {
                 return false;
@@ -120,19 +122,19 @@ bool ContestantNetwork::r1ADataSend ( const QString& xml )
 void ContestantNetwork::connected()
 {
         m_state = CCS_STANDBY;
-	// identify ourselves
-	QByteArray block;
-	QDataStream out ( &block, QIODevice::WriteOnly );
-	out.setVersion ( QDataStream::Qt_4_5 );
-	// construct the header
-	p_header hdr;
-	hdr.length = sizeof(uchar);
-	hdr.command = NET_INITIATE_CONNECTION;
-	
-	out.writeRawData((const char*)&hdr, sizeof(p_header));
-	out << (uchar)CLIENT_CONTESTANT;
-	
-	m_socket->write ( block );
+        // identify ourselves
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        // construct the header
+        p_header hdr;
+        hdr.length = sizeof ( uchar );
+        hdr.command = NET_INITIATE_CONNECTION;
+
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( uchar ) CLIENT_CONTESTANT;
+
+        m_socket->write ( block );
 }
 
 void ContestantNetwork::disconnected()
@@ -143,6 +145,7 @@ void ContestantNetwork::disconnected()
 
 void ContestantNetwork::error ( const QAbstractSocket::SocketError& err )
 {
+        // TODO: do something better here
         cerr << "Error " << err << endl;
 }
 
@@ -150,33 +153,50 @@ void ContestantNetwork::ready()
 {
         QDataStream in ( m_socket );
         in.setVersion ( QDataStream::Qt_4_5 );
-        if ( m_blocksize == 0 ) {
-                if ( m_socket->bytesAvailable() < ( int ) sizeof ( quint16 ) ) {
+        if ( m_hdr == NULL ) {
+                if ( m_socket->bytesAvailable() < ( int ) sizeof ( p_header ) ) {
                         return;
                 }
-                in >> m_blocksize;
+                m_hdr = new p_header;
+                in.readRawData ( ( char* ) m_hdr, sizeof ( p_header ) );
+                //check the packet
+                if ( strcmp ( ( const char* ) m_hdr->ident.data, "CERB" ) != 0 ) {
+                        // bad packet, do something here
+                        return;
+                }
+                //check the version
+                if ( !is_proto_current ( m_hdr->ver ) ) {
+                        // the version is not the same, do something here
+                }
         }
-
-        if ( m_socket->bytesAvailable() < m_blocksize ) {
+        if ( m_socket->bytesAvailable() < m_hdr->length ) {
                 return;
         }
 
-        // check what command was sent by the server and react accordingly
-        quint16 command;
-        in >> command;
-        switch ( command ) {
+        switch ( m_hdr->command ) {
+        case NET_CONNECTION_RESULT:
+                // check the result
+        {
+                ushort result;
+                in >> result;
+                if ( result ) {
+                        emit onConnect();
+                }
+        }
+        break;
         case INF_CONTEST_STATE:
                 //we got info on the contest state
         {
-                int state;
-                in >> state;
-                emit onContestStateChange ( state );
+                uchar round;
+                uchar status;
+                in >> round >> status;
+                emit onContestStateChange ( round, ( CONTEST_STATUS ) status );
         }
         break;
         case INF_AUTHENTICATE:
                 //it's a reply to the authentication
         {
-                bool result;
+                uchar result;
                 in >> result;
                 emit onAuthenticate ( result );
                 m_authenticated = result;
@@ -186,30 +206,40 @@ void ContestantNetwork::ready()
                 //we have our question data
         {
                 QString xml;
+                uchar hash[20];
+                in.readRawData ( ( char* ) hash, 20 );
                 in >> xml;
-                emit onR1QData ( xml );
+                QCryptographicHash hasher ( QCryptographicHash::Sha1 );
+                hasher.addData ( xml.toAscii() );
+                if ( strcmp ( ( const char* ) &hash, hasher.result().data() ) == 0 ) {
+                        emit onQData ( xml );
+                } else {
+                        // TODO: act on invalid data
+                }
         }
         break;
         case INF_ANSWER_REPLY:
                 //a reply on our submission
         {
-                bool result;
+                uchar result;
                 in >> result;
-                emit onR1AData ( result );
+                emit onAData ( result );
         }
         break;
         case INF_ERROR:
                 // server said there's an error
         {
-                quint16 err;
+                uchar err;
                 in >> err;
                 emit onContestError ( err );
         }
         break;
         default:
-                cout << command << endl;
+                // TODO: we need to handle this more gracefully
+                cout << m_hdr->command << endl;
                 assert ( false );
         }
+        delete m_hdr;
+        m_hdr = NULL;
         m_state = CCS_STANDBY;
-        m_blocksize = 0;
 }

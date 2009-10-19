@@ -98,7 +98,7 @@ private:
         //private fields
         const QString* m_r1qdata;
         QTcpSocket* m_socket;
-        quint16 m_blocksize;
+        p_header* m_hdr;
         bool m_authenticated;
 };
 

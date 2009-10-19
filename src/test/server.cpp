@@ -32,7 +32,7 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
         connect ( m_server, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
         m_server->listen ( 2652 );
-        bool result = SqlUtil::getInstance().init ( "resources/server.db" );
+        bool result = SqlUtil::getInstance().init ( "resources/test.db" );
         if ( !result ) {
                 QMessageBox msg ( this );
                 msg.setText ( "Failed to load db" );
@@ -49,6 +49,15 @@ void ServerDlg::newContestant ( ContestantConnection* cc )
 {
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "New Contestant connection\n";
+        m_dlg->log_tedt->setText ( buffer );
+        connect ( m_server, SIGNAL ( contestantDc ( ContestantConnection* ) ),
+                  this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+}
+
+void ServerDlg::contestantDisconnect ( ContestantConnection* cc )
+{
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Contestant Disconnected\n";
         m_dlg->log_tedt->setText ( buffer );
 }
 

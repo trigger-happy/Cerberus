@@ -80,17 +80,17 @@ public:
         bool authenticate ( const QString& user_name, const QString& pw );
 
         /*!
-        Requet for the round 1 question data from the server.
+        Request for the question data from the server.
         \return true if the data was sent, false otherwise.
         */
-        bool r1QDataRequest();
+        bool QDataRequest(int round);
 
         /*!
         Send the answer data for 1st round to the server.
         \param xml QString containing the xml answer data to be sent.
         \return true if the data was sent, false otherwise.
         */
-        bool r1ADataSend ( const QString& xml );
+        bool ADataSend ( const QString& xml );
 
         /*!
         Get the current state of the connection class.
@@ -129,9 +129,10 @@ signals:
 
         /*!
         Signal for when the server states that the contest state has changed.
-        \param state The state that the contest is in now.
+        \param round The current round
+        \param status The current contest status
         */
-        void onContestStateChange ( int state );
+        void onContestStateChange ( int round, CONTEST_STATUS status );
 
         /*!
         Emitted when there's an error with the connection.
@@ -160,18 +161,18 @@ signals:
         Emitted when the question data has arrived.
         \param xml Round 1 question data in xml format.
         */
-        void onR1QData ( const QString& xml );
+        void onQData ( const QString& xml );
 
         /*!
         Emitted when server replies to our submission.
         \param result true on success, false on failure
         */
-        void onR1AData ( bool result );
+        void onAData ( bool result );
 protected:
         QTcpSocket* m_socket;
+        p_header* m_hdr;
         bool m_authenticated;
         CCSTATE m_state;
-        quint16 m_blocksize;
 private:
 };
 

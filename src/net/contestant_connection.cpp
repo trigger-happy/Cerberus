@@ -19,15 +19,28 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "util/sql_util.h"
 #include "error_defs.h"
 
-ContestantConnection::ContestantConnection ( QObject* parent, QTcpSocket* socket ) : QObject ( parent ), m_socket ( socket )
+ContestantConnection::ContestantConnection ( QObject* parent, QTcpSocket* socket ) : QObject ( parent )
 {
-        m_blocksize = 0;
+        m_hdr = NULL;
         m_authenticated = false;
+        m_socket = socket;
         connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
                   this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
         connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
         connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
-        // TODO: write a reply to the client here
+        // reply to client of the now established connection
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        // construct the header
+        p_header hdr;
+        hdr.length = sizeof ( ushort );
+        hdr.command = NET_CONNECTION_RESULT;
+
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( ushort ) true;
+
+        m_socket->write ( block );
 }
 
 void ContestantConnection::error ( const QAbstractSocket::SocketError& err )
@@ -40,21 +53,26 @@ void ContestantConnection::ready()
         //read the socket data
         QDataStream in ( m_socket );
         in.setVersion ( QDataStream::Qt_4_5 );
-        if ( m_blocksize == 0 ) {
-                if ( m_socket->bytesAvailable() < ( int ) sizeof ( quint16 ) ) {
+        if ( m_hdr == NULL ) {
+                if ( m_socket->bytesAvailable() < ( int ) sizeof ( p_header ) ) {
                         return;
                 }
-                in >> m_blocksize;
+                m_hdr = new p_header;
+                in.readRawData ( ( char* ) m_hdr, sizeof ( p_header ) );
+                //check the packet
+                if ( strcmp ( ( const char* ) m_hdr->ident.data, "CERB" ) != 0 ) {
+                        // bad packet, do something here
+                        return;
+                }
+                //check the version
+                if ( !is_proto_current ( m_hdr->ver ) ) {
+                        // the version is not the same, do something here
+                }
         }
-
-        if ( m_socket->bytesAvailable() < m_blocksize ) {
+        if ( m_socket->bytesAvailable() < m_hdr->length ) {
                 return;
         }
-
-        // check what command was sent by the server and react accordingly
-        quint16 command;
-        in >> command;
-        switch ( command ) {
+        switch ( m_hdr->command ) {
         case QRY_CONTEST_STATE:
                 //contestant is asking for the contest state.
                 if ( m_authenticated ) {
@@ -70,7 +88,8 @@ void ContestantConnection::ready()
                         QString buffer, user, pass;
                         in >> buffer;
                         user = buffer.section ( ",", 0, 0 );
-                        pass = buffer.section ( ",", 1, 1 );
+                        // don't split, the password is hashed and may contain ','
+                        pass = buffer.right ( buffer.size()-user.size()-1 );
                         bool result = SqlUtil::getInstance().authenticate ( user, pass );
                         authenticationReply ( result );
                 } else {
@@ -103,7 +122,8 @@ void ContestantConnection::ready()
                 ;
                 // invalid command, do something here
         }
-        m_blocksize = 0;
+        delete m_hdr;
+        m_hdr = NULL;
 }
 
 void ContestantConnection::errorReply ( ERROR_MESSAGES err )
@@ -121,19 +141,23 @@ void ContestantConnection::errorReply ( ERROR_MESSAGES err )
 void ContestantConnection::disconnected()
 {
         //do something about our disconnection here
+        emit contestantDisconnect ( this );
 }
 
 void ContestantConnection::authenticationReply ( bool res )
 {
         //construct the packet and send it
-        m_authenticated = res;
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_AUTHENTICATE;
-        out << res;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
+        // construct the header
+        p_header hdr;
+        hdr.length = sizeof ( uchar );
+        hdr.command = INF_AUTHENTICATE;
+
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( uchar ) res;
+
         m_socket->write ( block );
 }
 

@@ -36,6 +36,7 @@ private slots:
         void onQuitBtn();
         void newContestant ( ContestantConnection* cc );
         void badClient ( TempConnection* tc );
+	void contestantDisconnect ( ContestantConnection* cc );
 private:
         QString log;
         Ui::server_dlg* m_dlg;

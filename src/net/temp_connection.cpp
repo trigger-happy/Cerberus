@@ -24,6 +24,7 @@ TempConnection::TempConnection ( QObject* parent, QTcpSocket* socket ) : QObject
                   this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
         connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
         connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
+        m_hdr = NULL;
 }
 
 void TempConnection::error ( const QAbstractSocket::SocketError& error )
@@ -33,28 +34,30 @@ void TempConnection::error ( const QAbstractSocket::SocketError& error )
 
 void TempConnection::ready()
 {
-        p_header hdr;
-        if ( m_socket->bytesAvailable() < ( int ) sizeof ( hdr ) ) {
-                return;
-        }
         QDataStream in ( m_socket );
         in.setVersion ( QDataStream::Qt_4_5 );
-        in.readRawData ( ( char* ) &hdr, sizeof ( p_header ) );
-        //check the packet
-        if ( strcmp ( ( const char* ) &hdr.ident.data, "CERB" ) != 0 ) {
-                // bad packet, do something here
-                return;
+        if ( m_hdr == NULL ) {
+                if ( m_socket->bytesAvailable() < ( int ) sizeof ( p_header ) ) {
+                        return;
+                }
+                m_hdr = new p_header;
+                in.readRawData ( ( char* ) m_hdr, sizeof ( p_header ) );
+                //check the packet
+                if ( strcmp ( ( const char* ) m_hdr->ident.data, "CERB" ) != 0 ) {
+                        // bad packet, do something here
+                        return;
+                }
+                //check the version
+                if ( !is_proto_current ( m_hdr->ver ) ) {
+                        // the version is not the same, do something here
+                }
         }
-        //check the version
-        if ( !is_proto_current ( hdr.ver ) ) {
-                // the version is not the same, do something here
-        }
-        if ( m_socket->bytesAvailable() < hdr.length ) {
+        if ( m_socket->bytesAvailable() < m_hdr->length ) {
                 return;
         }
 
-        if ( hdr.command == NET_INITIATE_CONNECTION ) {
-                quint16 client_type;
+        if ( m_hdr->command == NET_INITIATE_CONNECTION ) {
+                uchar client_type;
                 in >> client_type;
                 emit newClient ( this, static_cast<CLIENT_ID> ( client_type ) );
         } else {
@@ -62,6 +65,8 @@ void TempConnection::ready()
                 //m_socket->disconnectFromHost();
                 emit invalidClient ( this );
         }
+        delete m_hdr;
+        m_hdr = NULL;
 }
 
 void TempConnection::disconnected()
