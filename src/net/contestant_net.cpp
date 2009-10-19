@@ -137,6 +137,19 @@ void ContestantNetwork::connected()
         m_socket->write ( block );
 }
 
+void ContestantNetwork::getContestState()
+{
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        //construct the header
+        p_header hdr;
+        hdr.length = 0;
+        hdr.command = QRY_CONTEST_STATE;
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        m_socket->write ( block );
+}
+
 void ContestantNetwork::disconnected()
 {
         m_state = CCS_DISCONNECTED;
@@ -187,7 +200,7 @@ void ContestantNetwork::ready()
         case INF_CONTEST_STATE:
                 //we got info on the contest state
         {
-                uchar round;
+                ushort round;
                 uchar status;
                 in >> round >> status;
                 emit onContestStateChange ( round, ( CONTEST_STATUS ) status );

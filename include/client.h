@@ -40,7 +40,7 @@ private slots:
         void onError ( QAbstractSocket::SocketError error );
         void onQData ( const QString& xml );
         void onAData ( bool result );
-        void onContestStateChange ( int c );
+        void onContestStateChange ( int round, CONTEST_STATUS s );
 private:
         ContestantNetwork* m_net;
         Ui::client_dlg* m_dlg;

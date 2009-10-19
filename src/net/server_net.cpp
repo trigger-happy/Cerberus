@@ -100,6 +100,8 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id )
         switch ( id ) {
         case CLIENT_CONTESTANT: {
                 ContestantConnection* cc = new ContestantConnection ( this, temp_sock );
+                cc->setStatus ( m_con_status );
+                cc->setRound ( m_round );
                 connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
                           this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
                 m_contestants.insert ( m_contestants.end(), cc );

@@ -80,10 +80,15 @@ public:
         bool authenticate ( const QString& user_name, const QString& pw );
 
         /*!
+        Request for the current contest state.
+        */
+        void getContestState();
+
+        /*!
         Request for the question data from the server.
         \return true if the data was sent, false otherwise.
         */
-        bool QDataRequest(int round);
+        bool QDataRequest ( int round );
 
         /*!
         Send the answer data for 1st round to the server.
