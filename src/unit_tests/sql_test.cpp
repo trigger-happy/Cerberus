@@ -60,8 +60,10 @@ void SqlTest::getScoreTest()
 void SqlTest::authenticateTest()
 {
         SqlUtil& sql = SqlUtil::getInstance();
-        QVERIFY ( sql.authenticate ( "user", "pass" ) );
-        QVERIFY ( !sql.authenticate ( "user", "notpass" ) );
+        QVERIFY ( sql.authenticate ( "user",
+                                     QCryptographicHash::hash ( "pass", QCryptographicHash::Sha1 ) ) );
+        QVERIFY ( !sql.authenticate ( "user",
+                                      QCryptographicHash::hash ( "notpass", QCryptographicHash::Sha1 ) ) );
 }
 
 QTEST_MAIN ( SqlTest )

@@ -51,7 +51,7 @@ void CCNetTest::R1QDataTest()
 {
         QString xml;
         QSignalSpy spy ( &m_contestant, SIGNAL ( onR1QData ( QString ) ) );
-        m_contestant.r1QDataRequest();
+        m_contestant.QDataRequest();
         QVERIFY ( spy.count() == 1 );
         QList<QVariant> args = spy.takeFirst();
         xml = args.at ( 0 ).toString();
