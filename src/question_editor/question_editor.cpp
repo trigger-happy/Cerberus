@@ -30,8 +30,6 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	QFile f ("resources/stage1_q.xml");
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
-	//q_ui->first_round_list
-	//cout << xml;
 	model=new QStandardItemModel(2,9);
 	/*
 	question score time ansa ansb ansc ansd boola boolb boolc boold boole
@@ -41,14 +39,13 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		QString s="Question ";
 		s.append(QString::number(row+1));
 		QStandardItem* item=new QStandardItem(s);
-		// QStandardItem* child = new QStandardItem(QString("Item %0").arg(i) );
 		model->setItem(row,0,item);
+		QStandardItem* another =new QStandardItem("This is a.");
+		model->setItem(row,1,another);
 	}
 	q_ui->first_round_list->setModel(model);
 	connect(q_ui->first_round_list, SIGNAL(clicked(QModelIndex)),this, SLOT(on_first_list()));
 	connect(q_ui->add_q_round_1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
-	
-	//connect(q_ui->toolButton,SIGNAL(clicked()),this,SLOT(on_first_list()));
 	
 }
 QEditor::~QEditor()
@@ -58,9 +55,9 @@ QEditor::~QEditor()
 
 void QEditor::on_first_list()
 {
+	int index=q_ui->first_round_list->currentIndex().row();
 	q_ui->question1_text->setPlainText(q_ui->first_round_list->currentIndex().data().toString());
-	q_ui->question1_a->setText("@_@");
-	//q_ui->question1_time->;
+	q_ui->question1_a->setText(model->item(index,1)->text());
 	q_ui->question1_score->setValue(60);
 }
 

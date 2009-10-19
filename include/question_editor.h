@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define QUESTION_EDITOR_H
 
 #include <QtGui>
-#include <QtGui/QMainWindow>
+//#include <QtGui/QMainWindow>
 
 namespace Ui
 {
