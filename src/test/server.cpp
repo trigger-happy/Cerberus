@@ -38,6 +38,7 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         m_server = new ServerNetwork ( this );
         connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
         connect ( m_server, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
+        connect ( m_server, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
         m_server->listen ( 2652 );
         m_server->setRound ( 1 );
         m_server->setStatus ( CONTEST_STOPPED );
@@ -60,8 +61,6 @@ void ServerDlg::newContestant ( ContestantConnection* cc )
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "New Contestant connection\n";
         m_dlg->log_tedt->setText ( buffer );
-        connect ( m_server, SIGNAL ( contestantDc ( ContestantConnection* ) ),
-                  this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
 }
 
 void ServerDlg::contestantDisconnect ( ContestantConnection* cc )

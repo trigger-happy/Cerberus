@@ -38,17 +38,25 @@ public:
         */
         ContestantConnection ( QObject* parent = 0, QTcpSocket* socket = 0 );
 
-	inline void setRound(int r){
-		m_round = r;
-	}
-	
-	inline void setStatus(CONTEST_STATUS s){
-		m_con_status = s;
-	}
-	
-	inline void setQData(const vector<QString>* qdata){
-		m_qdata = qdata;
-	}
+        /*!
+        Set the current round of the contest.
+        \param r The round number [1-4]
+        */
+        void setRound ( int r );
+
+        /*!
+        Set the current status of the contest.
+        \param s CONTEST_STATUS
+        */
+        void setStatus ( CONTEST_STATUS s );
+
+        /*!
+        Set the pointer to the question data. This is to be used by ServerNet.
+        \param qdata pointer to a vector of QString containing the xml data.
+        */
+        inline void setQData ( const vector<QString>* qdata ) {
+                m_qdata = qdata;
+        }
 public slots:
         /*!
         Called when there's a socket error.
@@ -65,6 +73,11 @@ public slots:
         Called when the connection is disconnected by the client.
         */
         void disconnected();
+
+        /*!
+        Send a command to change the contest state.
+        */
+        void sendContestState ();
 signals:
         /*!
         */
@@ -95,18 +108,13 @@ private:
         */
         void sendAReply ( bool res );
 
-        /*!
-        Send a command to change the contest state.
-        */
-        void sendContestState ();
-
         //private fields
         QTcpSocket* m_socket;
         p_header* m_hdr;
         bool m_authenticated;
-	CONTEST_STATUS m_con_status;
-	int m_round;
-	const vector<QString>* m_qdata;
+        CONTEST_STATUS m_con_status;
+        int m_round;
+        const vector<QString>* m_qdata;
 };
 
 #endif

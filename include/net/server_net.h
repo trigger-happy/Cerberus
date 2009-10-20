@@ -76,15 +76,13 @@ public:
         Set the current round of the contest.
         \param round The current round.
         */
-        inline void setRound ( int round ) {
-                m_round = round;
-        }
+        void setRound ( int round );
 
         /*!\
         Get the current contest status.
         \return The contest status.
         */
-        inline CONTEST_STATUS getStatus() {
+        CONTEST_STATUS getStatus() {
                 return m_con_status;
         }
 
@@ -92,9 +90,7 @@ public:
         Set the current contest status.
         \param s The contest status.
         */
-        inline void setStatus ( CONTEST_STATUS s ) {
-                m_con_status = s;
-        }
+        void setStatus ( CONTEST_STATUS s );
 
         /*!
         Get the list of ContestantConnections.

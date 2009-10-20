@@ -229,3 +229,11 @@ void ContestantConnection::sendContestState ()
 
         m_socket->write ( block );
 }
+
+void ContestantConnection::setRound(int round){
+	m_round = round;
+}
+
+void ContestantConnection::setStatus(CONTEST_STATUS s){
+	m_con_status = s;
+}

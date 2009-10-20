@@ -253,7 +253,7 @@ void ContestantNetwork::ready()
         {
                 uchar err;
                 in >> err;
-                emit onContestError ( (ERROR_MESSAGES)err );
+                emit onContestError ( ( ERROR_MESSAGES ) err );
         }
         break;
         default:

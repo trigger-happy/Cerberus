@@ -137,3 +137,23 @@ void ServerNetwork::setQData ( const vector<QString>* qdata )
 {
         m_questiondata = qdata;
 }
+
+void ServerNetwork::setRound ( int round )
+{
+        m_round = round;
+        contestant_list::iterator i = m_contestants.begin();
+        for ( ; i != m_contestants.end(); i++ ) {
+                (*i)->setRound ( m_round );
+		(*i)->sendContestState();
+        }
+}
+
+void ServerNetwork::setStatus ( CONTEST_STATUS s )
+{
+        m_con_status = s;
+        contestant_list::iterator i = m_contestants.begin();
+        for ( ; i != m_contestants.end(); i++ ) {
+                (*i)->setStatus ( s );
+		(*i)->sendContestState();
+        }
+}

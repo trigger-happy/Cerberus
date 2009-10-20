@@ -77,13 +77,15 @@ public:
         void getContestState();
 
         /*!
-        Request for the question data from the server.
+        Request for the question data from the server. Use onQdata signal
+	for the xml data.
         \return true if the data was sent, false otherwise.
         */
         bool qDataRequest ( int round );
 
         /*!
-        Send the answer data for 1st round to the server.
+        Send the answer data to the server. Use onAData signal for the
+	server's response.
         \param xml QString containing the xml answer data to be sent.
         \return true if the data was sent, false otherwise.
         */
@@ -119,7 +121,8 @@ signals:
         void onDisconnect();
 
         /*!
-        Signal for when the server states that the contest state has changed.
+        Emitted when there's a change to the contest state or as a reply
+	from the server to our state request.
         \param round The current round
         \param status The current contest status
         */
@@ -150,7 +153,7 @@ signals:
 
         /*!
         Emitted when the question data has arrived.
-        \param xml Round 1 question data in xml format.
+        \param xml Question data in xml format
         */
         void onQData ( const QString& xml );
 
