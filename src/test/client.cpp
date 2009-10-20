@@ -54,12 +54,17 @@ void ClientDlg::onQData ( const QString& xml )
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += "Q: " + xml + "\n";
         m_dlg->log_tedt->setText ( buffer );
+        // try submitting
+        QFile file ( "resources/stage1_a.xml" );
+        file.open ( QIODevice::ReadOnly );
+        QString ans = file.readAll();
+        m_net->aDataSend ( ans );
 }
 
 void ClientDlg::onAData ( bool result )
 {
         QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "R1: ";
+        buffer += "ANS: ";
         if ( result ) {
                 buffer += "true\n";
         } else {

@@ -103,8 +103,8 @@ void ContestantConnection::ready()
                 break;
         case QRY_QUESTION_REQUEST:
                 //contestant is asking for question data
-		ushort round;
-		in >> round;
+                ushort round;
+                in >> round;
                 if ( m_authenticated ) {
                         sendQData ( m_qdata->at ( round-1 ) );
                 } else {
@@ -115,11 +115,21 @@ void ContestantConnection::ready()
         case QRY_ANSWER_SUBMIT:
                 //contestant has submitted their answers
                 if ( m_authenticated ) {
-                        QString buffer;
-                        in >> buffer;
-                        //TODO: have the buffer contents sent and checked
-                        //let's reply with something for now
-                        sendAReply ( true );
+                        QString xml;
+                        uchar hash[20];
+                        in.readRawData ( ( char* ) hash, 20 );
+                        in >> xml;
+                        QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+                        QByteArray testhash2;
+                        for ( int i = 0; i < 20; i++ ) {
+                                testhash2.push_back ( hash[i] );
+                        }
+                        if ( testhash == testhash2 ) {
+                                // TODO: insert code for checker here
+                                sendAReply ( true );
+                        } else {
+                                sendAReply ( false );
+                        }
                 } else {
                         errorReply ( ERR_NOTAUTHORIZED );
                 }
@@ -134,14 +144,19 @@ void ContestantConnection::ready()
 
 void ContestantConnection::errorReply ( ERROR_MESSAGES err )
 {
-        QByteArray block;
-        QDataStream out ( &block, QIODevice::WriteOnly );
-        out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 100;
-        out << err;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
-        m_socket->write ( block );
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.length = sizeof ( uchar );
+	hdr.command = INF_ERROR;
+	
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out << ( uchar ) err;
+	
+	m_socket->write ( block );
 }
 
 void ContestantConnection::disconnected()
@@ -177,22 +192,25 @@ void ContestantConnection::sendQData ( const QString& xml )
         p_header hdr;
         hdr.command = INF_QUESTION_DATA;
         QByteArray hash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
-        hdr.length = hash.size()+xml.size();
+        hdr.length = hash.size() +xml.size();
         out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
-	out.writeRawData(hash.data(), hash.size());
+        out.writeRawData ( hash.data(), hash.size() );
         out << xml;
         m_socket->write ( block );
 }
 
 void ContestantConnection::sendAReply ( bool res )
 {
+        //construct the packet and send it
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) INF_ANSWER_REPLY;
-        out << res;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
+        // construct the header
+        p_header hdr;
+        hdr.command = INF_ANSWER_REPLY;
+        hdr.length = sizeof ( uchar );
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( uchar ) res;
         m_socket->write ( block );
 }
 

@@ -135,7 +135,7 @@ signals:
         Emitted when there's a contest error.
         \param err ERROR_MESSAGES indicating the error.
         */
-        void onContestError ( quint16 err );
+        void onContestError ( ERROR_MESSAGES err );
 
         /*!
         Signal emitted when the connection to the server has been established.

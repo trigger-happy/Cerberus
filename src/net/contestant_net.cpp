@@ -107,17 +107,22 @@ bool ContestantNetwork::aDataSend ( const QString& xml )
         if ( !m_socket->isWritable() ) {
                 return false;
         }
-        //construct an answer data packet
-        //packet format:
-        //(quint16)(quint16)(QString)
-        //(size)(command)(xml data)
+        // construct the packet
         QByteArray block;
         QDataStream out ( &block, QIODevice::WriteOnly );
         out.setVersion ( QDataStream::Qt_4_5 );
-        out << ( quint16 ) 0 << ( quint16 ) 3;
+        p_header hdr;
+        hdr.command = QRY_ANSWER_SUBMIT;
+
+        // construct the payload
+        QByteArray hash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+        hdr.length = hash.size() + xml.size();
+        // write it
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out.writeRawData ( hash.data(), hash.size() );
         out << xml;
-        out.device()->seek ( 0 );
-        out << ( quint16 ) ( block.size()-sizeof ( quint16 ) );
+
+        // send it
         m_socket->write ( block );
         return true;
 }
@@ -220,12 +225,14 @@ void ContestantNetwork::ready()
                 //we have our question data
         {
                 QString xml;
-                uchar hash[21];
+                uchar hash[20];
                 in.readRawData ( ( char* ) hash, 20 );
-                hash[20] = '\0';
                 in >> xml;
                 QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
-                QByteArray testhash2 ( ( const char* ) &hash );
+                QByteArray testhash2;
+                for ( int i = 0; i < 20; i++ ) {
+                        testhash2.push_back ( hash[i] );
+                }
                 if ( testhash == testhash2 ) {
                         emit onQData ( xml );
                 } else {
@@ -246,7 +253,7 @@ void ContestantNetwork::ready()
         {
                 uchar err;
                 in >> err;
-                emit onContestError ( err );
+                emit onContestError ( (ERROR_MESSAGES)err );
         }
         break;
         default:
