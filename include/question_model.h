@@ -24,11 +24,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class QuestionModel : public QStandardItemModel
 {
 	Q_OBJECT
+private:
+	int round;
 public:
-	QuestionModel(int column);
+	QuestionModel(int round);
+	int getRound();
 	void addNewQuestion();
 	void swapOrder(int q1,int q2);
-	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d);
+	QString getA(int index);
+	QString getB(int index);
+	QString getC(int index);
+	QString getD(int index);
+	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score);
 };
 
 #endif
