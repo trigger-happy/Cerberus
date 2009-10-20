@@ -16,26 +16,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <QtGui/QApplication>
-#include <iostream>
 #include "client.h"
 #include "ui_client.h"
-
-using namespace std;
 
 ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::client_dlg )
 {
         m_dlg->setupUi ( this );
         connect ( m_dlg->connect_btn, SIGNAL ( clicked() ), this, SLOT ( onConnectBtn() ) );
-        connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
-        connect ( m_dlg->auth_btn, SIGNAL ( clicked() ), this, SLOT ( onAuthBtn() ) );
-        connect ( m_dlg->ads_btn, SIGNAL ( clicked() ), this, SLOT ( onADS() ) );
-        connect ( m_dlg->qdr_btn, SIGNAL ( clicked() ), this, SLOT ( onQDR() ) );
 
         m_net = new ContestantNetwork ( this );
         connect ( m_net, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( onAuthReply ( bool ) ) );
-        connect ( m_net, SIGNAL ( onR1QData ( QString ) ), this, SLOT ( onR1QData ( QString ) ) );
-        connect ( m_net, SIGNAL ( onR1AData ( bool ) ), this, SLOT ( onR1AData ( bool ) ) );
+        connect ( m_net, SIGNAL ( onQData ( QString ) ), this, SLOT ( onQData ( QString ) ) );
+        connect ( m_net, SIGNAL ( onAData ( bool ) ), this, SLOT ( onAData ( bool ) ) );
         connect ( m_net, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
+        connect ( m_net, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
+        connect ( m_net, SIGNAL ( onContestStateChange ( int,CONTEST_STATUS ) ),
+                  this, SLOT ( onContestStateChange ( int, CONTEST_STATUS ) ) );
 }
 
 ClientDlg::~ClientDlg()
@@ -43,71 +39,87 @@ ClientDlg::~ClientDlg()
         delete m_dlg;
 }
 
-void ClientDlg::onContestStateChange ( int s )
+void ClientDlg::onContestStateChange ( int round, CONTEST_STATUS s )
 {
-        QMessageBox msg ( this );
-        msg.setText ( QString ( "State change to %1" ).arg ( s ) );
-        msg.exec();
-}
-
-void ClientDlg::onQDR()
-{
-        m_net->r1QDataRequest();
-}
-
-void ClientDlg::onADS()
-{
-        QString xml = "<?xml version=\"1.0\"?>";
-        m_net->r1ADataSend ( xml );
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Status: " + QString ( "%1 %2\n" ).arg ( round ).arg ( s );
+        m_dlg->log_tedt->setText ( buffer );
+        //get the question data
+        m_net->qDataRequest ( round );
 }
 
 
-void ClientDlg::onR1QData ( const QString& xml )
+void ClientDlg::onQData ( const QString& xml )
 {
-        cout << "Q: " << xml.toStdString() << endl;
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Q: " + xml + "\n";
+        m_dlg->log_tedt->setText ( buffer );
+        // try submitting
+        QFile file ( "resources/stage1_a.xml" );
+        file.open ( QIODevice::ReadOnly );
+        QString ans = file.readAll();
+        m_net->aDataSend ( ans );
 }
 
-void ClientDlg::onR1AData ( bool result )
+void ClientDlg::onAData ( bool result )
 {
-        cout << "R1: " << result << endl;
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "ANS: ";
+        if ( result ) {
+                buffer += "true\n";
+        } else {
+                buffer += "false\n";
+        }
+        m_dlg->log_tedt->setText ( buffer );;
 }
 
 void ClientDlg::onAuthReply ( bool result )
 {
-        QMessageBox msg ( this );
+        QString buffer = m_dlg->log_tedt->toPlainText();
         if ( !result ) {
-                msg.setText ( "Failed to authenticate" );
-                msg.exec();
+                buffer += "Failed to authenticate\n";
         } else {
-                msg.setText ( "Authenticated" );
-                msg.exec();
+                buffer += "Authenticated!\n";
         }
-}
-
-void ClientDlg::onAuthBtn()
-{
-        m_net->authenticate ( m_dlg->user_ledit->text(), m_dlg->pass_ledit->text() );
+        if ( result ) {
+                // get the contest state next
+                buffer += "Getting contest state...\n";
+                m_net->getContestState();
+        }
+        m_dlg->log_tedt->setText ( buffer );
 }
 
 void ClientDlg::onConnect()
 {
-        cout << "Connected" << endl;
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Connected\n";
+        // TODO: begin test here
+        // do an authentication test
+        buffer += "Authenticating...\n";
+        m_dlg->log_tedt->setText ( buffer );
+        m_net->authenticate ( "user", "pass" );
+}
+
+void ClientDlg::onDisconnect()
+{
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Disconnected\n";
+        m_dlg->log_tedt->setText ( buffer );
 }
 
 void ClientDlg::onConnectBtn()
 {
-        cout << "Connecting..." << endl;
-        m_net->connectToHost ( m_dlg->ip_ledit->text(), m_dlg->port_ledit->text().toInt() );
-}
-
-void ClientDlg::onQuitBtn()
-{
-        this->close();
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Connecting...\n";
+        m_dlg->log_tedt->setText ( buffer );
+        m_net->connectToHost ( "localhost" , 2652 );
 }
 
 void ClientDlg::onError ( QAbstractSocket::SocketError error )
 {
-        cout << "Error" << endl;
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += "Error\n";
+        m_dlg->log_tedt->setText ( buffer );
         QMessageBox msg ( this );
         msg.setText ( QString ( "Socket error: %1" ).arg ( error ) );
 }

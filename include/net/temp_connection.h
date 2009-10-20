@@ -51,8 +51,8 @@ signals:
 	void invalidClient ( TempConnection* tc );
 private:
         // functions for handling connections
-
         QTcpSocket* m_socket;
+	p_header* m_hdr;
 };
 
 #endif //TEMP_CONNECTION_H

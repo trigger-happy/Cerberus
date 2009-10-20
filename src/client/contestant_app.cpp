@@ -130,7 +130,7 @@ void ContestantApp::netAuthenticate ( bool result )
         //TODO: do something here for authorization replies.
 
         if ( result ) {
-                int request = m_network->r1QDataRequest();
+                int request = m_network->qDataRequest(m_round);
         } else {
                 QMessageBox msg;
                 msg.setWindowTitle ( "Error" );

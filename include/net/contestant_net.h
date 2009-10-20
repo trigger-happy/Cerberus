@@ -21,14 +21,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "error_defs.h"
 #include "protocol.h"
 
-enum CCSTATE {
-        CCS_DISCONNECTED = 0,
-        CCS_AUTHENTICATING,
-        CCS_QDATA_REQUEST,
-        CCS_ADATA_SEND,
-        CCS_STANDBY
-};
-
 /*!
 \brief This class provides a simple communication layer with the server.
 The ContestantNetwork class provides a networking layer for the contest client.
@@ -80,24 +72,25 @@ public:
         bool authenticate ( const QString& user_name, const QString& pw );
 
         /*!
-        Requet for the round 1 question data from the server.
-        \return true if the data was sent, false otherwise.
+        Request for the current contest state.
         */
-        bool r1QDataRequest();
+        void getContestState();
 
         /*!
-        Send the answer data for 1st round to the server.
+        Request for the question data from the server. Use onQdata signal
+	for the xml data.
+        \return true if the data was sent, false otherwise.
+        */
+        bool qDataRequest ( int round );
+
+        /*!
+        Send the answer data to the server. Use onAData signal for the
+	server's response.
         \param xml QString containing the xml answer data to be sent.
         \return true if the data was sent, false otherwise.
         */
-        bool r1ADataSend ( const QString& xml );
+        bool aDataSend ( const QString& xml );
 
-        /*!
-        Get the current state of the connection class.
-        */
-        inline CCSTATE getState() const {
-                return m_state;
-        }
 protected slots:
 
         /*!
@@ -128,10 +121,12 @@ signals:
         void onDisconnect();
 
         /*!
-        Signal for when the server states that the contest state has changed.
-        \param state The state that the contest is in now.
+        Emitted when there's a change to the contest state or as a reply
+	from the server to our state request.
+        \param round The current round
+        \param status The current contest status
         */
-        void onContestStateChange ( int state );
+        void onContestStateChange ( int round, CONTEST_STATUS status );
 
         /*!
         Emitted when there's an error with the connection.
@@ -143,7 +138,7 @@ signals:
         Emitted when there's a contest error.
         \param err ERROR_MESSAGES indicating the error.
         */
-        void onContestError ( quint16 err );
+        void onContestError ( ERROR_MESSAGES err );
 
         /*!
         Signal emitted when the connection to the server has been established.
@@ -158,20 +153,19 @@ signals:
 
         /*!
         Emitted when the question data has arrived.
-        \param xml Round 1 question data in xml format.
+        \param xml Question data in xml format
         */
-        void onR1QData ( const QString& xml );
+        void onQData ( const QString& xml );
 
         /*!
         Emitted when server replies to our submission.
         \param result true on success, false on failure
         */
-        void onR1AData ( bool result );
+        void onAData ( bool result );
 protected:
         QTcpSocket* m_socket;
+        p_header* m_hdr;
         bool m_authenticated;
-        CCSTATE m_state;
-        quint16 m_blocksize;
 private:
 };
 

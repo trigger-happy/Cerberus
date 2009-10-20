@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 James Choa
+Copyright (C) 2009 Ken Lee
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,33 +15,32 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef SERVER_H
-#define SERVER_H
+
+#ifndef question_model_h
+#define question_model_h
+
 #include <QtGui>
-#include <QtNetwork>
-#include "net/server_net.h"
 
-namespace Ui
+class QuestionModel : public QStandardItemModel
 {
-class server_dlg;
-}
-
-class ServerDlg : public QDialog
-{
-        Q_OBJECT;
-public:
-        ServerDlg ( QWidget* parent = 0 );
-        ~ServerDlg();
-private slots:
-        void onQuitBtn();
-        void newContestant ( ContestantConnection* cc );
-        void badClient ( TempConnection* tc );
-        void contestantDisconnect ( ContestantConnection* cc );
+	Q_OBJECT
 private:
-        QString log;
-        Ui::server_dlg* m_dlg;
-        ServerNetwork* m_server;
-        vector<QString> m_questions;
+	int round;
+public:
+	QuestionModel(int round);
+	int getRound();
+	void addNewQuestion();
+	void swapOrder(int q1,int q2);
+	QString getQuestion(int index);
+	QString getA(int index);
+	QString getB(int index);
+	QString getC(int index);
+	QString getD(int index);
+	QString getE(int index);
+	bool* getAnskey(int index);
+	int getTime(int index);
+	int getScore(int index);
+	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score);
 };
 
-#endif // SERVER_H
+#endif

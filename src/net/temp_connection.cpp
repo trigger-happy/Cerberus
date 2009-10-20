@@ -24,6 +24,7 @@ TempConnection::TempConnection ( QObject* parent, QTcpSocket* socket ) : QObject
                   this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
         connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
         connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
+        m_hdr = NULL;
 }
 
 void TempConnection::error ( const QAbstractSocket::SocketError& error )
@@ -33,26 +34,30 @@ void TempConnection::error ( const QAbstractSocket::SocketError& error )
 
 void TempConnection::ready()
 {
-        //read the socket data
-	quint16 blocksize = 0;
         QDataStream in ( m_socket );
         in.setVersion ( QDataStream::Qt_4_5 );
-        if ( blocksize == 0 ) {
-                if ( m_socket->bytesAvailable() < ( int ) sizeof ( quint16 ) ) {
+        if ( m_hdr == NULL ) {
+                if ( m_socket->bytesAvailable() < ( int ) sizeof ( p_header ) ) {
                         return;
                 }
-                in >> blocksize;
+                m_hdr = new p_header;
+                in.readRawData ( ( char* ) m_hdr, sizeof ( p_header ) );
+                //check the packet
+                if ( strcmp ( ( const char* ) m_hdr->ident.data, "CERB" ) != 0 ) {
+                        // bad packet, do something here
+                        return;
+                }
+                //check the version
+                if ( !is_proto_current ( m_hdr->ver ) ) {
+                        // the version is not the same, do something here
+                }
         }
-
-        if ( m_socket->bytesAvailable() < blocksize ) {
+        if ( m_socket->bytesAvailable() < m_hdr->length ) {
                 return;
         }
 
-        // check what command was sent by the server and react accordingly
-        quint16 command;
-	in >> command;
-        if ( command == NET_INITIATE_CONNECTION ) {
-                quint16 client_type;
+        if ( m_hdr->command == NET_INITIATE_CONNECTION ) {
+                uchar client_type;
                 in >> client_type;
                 emit newClient ( this, static_cast<CLIENT_ID> ( client_type ) );
         } else {
@@ -60,6 +65,8 @@ void TempConnection::ready()
                 //m_socket->disconnectFromHost();
                 emit invalidClient ( this );
         }
+        delete m_hdr;
+        m_hdr = NULL;
 }
 
 void TempConnection::disconnected()
