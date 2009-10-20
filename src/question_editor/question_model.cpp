@@ -31,22 +31,22 @@ void QuestionModel::addNewQuestion()
 	question ansa ansb ansc ansd anse anskey score time 
 	*/
 	QList<QStandardItem *> temp;
-	temp.append(new QStandardItem("new question"));
-	temp.append(new QStandardItem("my a"));
-	temp.append(new QStandardItem("b"));
-	temp.append(new QStandardItem("c"));
-	temp.append(new QStandardItem("d"));
-	temp.append(new QStandardItem("e"));
-	temp.append(new QStandardItem("00000"));
-	temp.append(new QStandardItem("1"));
-	temp.append(new QStandardItem("0"));
+	temp.append(new QStandardItem("new question")); //question
+	temp.append(new QStandardItem("")); // choice a
+	temp.append(new QStandardItem("")); // choice b
+	temp.append(new QStandardItem("")); // choice c
+	temp.append(new QStandardItem("")); // choice d
+	temp.append(new QStandardItem("")); // choice e
+	temp.append(new QStandardItem("00000")); // answerkey
+	temp.append(new QStandardItem("1")); // score
+	temp.append(new QStandardItem("0")); // time
 	//temp.append(new QStandardItem)
 	
 	QStandardItemModel::appendRow(temp);
 	
 }
 
-void QuestionModel::updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score)
+void QuestionModel::updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString score,QString time)
 {
 	QStandardItemModel::item(index,0)->setText(question);
 	QStandardItemModel::item(index,1)->setText(a);
@@ -55,8 +55,8 @@ void QuestionModel::updateQuestion(int index,QString question,QString a,QString 
 	QStandardItemModel::item(index,4)->setText(d);
 	QStandardItemModel::item(index,5)->setText(e);
 	QStandardItemModel::item(index,6)->setText(anskey);
-	QStandardItemModel::item(index,7)->setText(time);
-	QStandardItemModel::item(index,8)->setText(score);
+	QStandardItemModel::item(index,7)->setText(score);
+	QStandardItemModel::item(index,8)->setText(time);
 }
 
 void QuestionModel::swapOrder(int q1,int q2)

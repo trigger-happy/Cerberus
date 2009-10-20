@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -220,7 +220,7 @@
           <item>
            <widget class="QLabel" name="question_r1_num">
             <property name="text">
-             <string/>
+             <string> </string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -433,7 +433,7 @@
           <item>
            <widget class="QLabel" name="question_r2_num">
             <property name="text">
-             <string/>
+             <string> </string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -639,7 +639,7 @@
           <item>
            <widget class="QLabel" name="question_r3_num">
             <property name="text">
-             <string/>
+             <string> </string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -878,7 +878,7 @@
           <item>
            <widget class="QLabel" name="question_r4_num">
             <property name="text">
-             <string/>
+             <string> </string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>

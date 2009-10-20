@@ -39,6 +39,7 @@ public slots:
 	void on_r2_list();
 	void add_question_r1();
 	void add_question_r2();
+	void changed_details_r2();
 	void update_question_r2();
 	
 private: 
