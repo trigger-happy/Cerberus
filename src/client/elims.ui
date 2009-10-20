@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>m_elims_dlg</class>
+ <widget class="QDialog" name="m_elims_dlg">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -132,12 +132,6 @@
            </widget>
           </item>
          </layout>
-         <zorder>c_radio</zorder>
-         <zorder>c_radio</zorder>
-         <zorder>a_radio</zorder>
-         <zorder>b_radio</zorder>
-         <zorder>c_radio</zorder>
-         <zorder>d_radio</zorder>
         </widget>
        </item>
       </layout>
