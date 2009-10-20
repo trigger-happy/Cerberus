@@ -31,10 +31,15 @@ public:
 	int getRound();
 	void addNewQuestion();
 	void swapOrder(int q1,int q2);
+	QString getQuestion(int index);
 	QString getA(int index);
 	QString getB(int index);
 	QString getC(int index);
 	QString getD(int index);
+	QString getE(int index);
+	bool* getAnskey(int index);
+	int getTime(int index);
+	int getScore(int index);
 	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score);
 };
 

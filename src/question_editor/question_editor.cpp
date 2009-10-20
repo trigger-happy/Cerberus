@@ -30,10 +30,10 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	QFile f ("../resources/stage1_q.xml");
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
-	model=new QStandardItemModel(2,9);
-	/*
+	/*model=new QStandardItemModel(2,9);
+	
 	question score time ansa ansb ansc ansd boola boolb boolc boold boole
-	*/
+	
 	for (int row=0;row<2;row++)
 	{
 		QString s="Question ";
@@ -42,10 +42,11 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		model->setItem(row,0,item);
 		QStandardItem* another =new QStandardItem("This is a.");
 		model->setItem(row,1,another);
-	}
-	q_ui->list_r1->setModel(model);
+	}*/
+	round1model=new QuestionModel(1);
+	q_ui->list_r1->setModel(round1model);
 	connect(q_ui->list_r1, SIGNAL(clicked(QModelIndex)),this, SLOT(on_first_list()));
-	connect(q_ui->button_addq_r1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
+	connect(q_ui->button_add_r1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
 	q_ui->textarea_welcome->setPlainText(xml);
 	
 	round2model=new QuestionModel(2);
@@ -58,27 +59,35 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 QEditor::~QEditor()
 {
 	delete q_ui;
+	delete round2model;
 }
 
 void QEditor::on_first_list()
 {
 	int index=q_ui->list_r1->currentIndex().row();
-	q_ui->question1_text->setPlainText(q_ui->list_r1->currentIndex().data().toString());
-	q_ui->question1_a->setText(model->item(index,1)->text());
-	q_ui->question1_score->setValue(60);
+	q_ui->question_r1_num->setText("Question "+QString::number(index+1));
+	q_ui->question_r1_text->setPlainText(q_ui->list_r1->currentIndex().data().toString());
+	//q_ui->question1_a->setText(model->item(index,1)->text());
+	//q_ui->question1_score->setValue(60);
 }
 
 void QEditor::on_r2_list()
 {
 	int index=q_ui->list_r2->currentIndex().row();
-	q_ui->question_r2_num->setText("Question "+QString::number(index));
+	q_ui->question_r2_num->setText("Question "+QString::number(index+1));
 	q_ui->question_r2_text->setPlainText(q_ui->list_r2->currentIndex().data().toString());
 	q_ui->question_r2_a->setText(round2model->getA(index));
-	q_ui->question_r2_b->setText(round2model->item(index,2)->text());
-	q_ui->question_r2_c->setText(round2model->item(index,3)->text());
-	q_ui->question_r2_d->setText(round2model->item(index,4)->text());
-	//q
-	//q_ui->question1_score->setValue(60);
+	q_ui->question_r2_b->setText(round2model->getB(index));
+	q_ui->question_r2_c->setText(round2model->getC(index));
+	q_ui->question_r2_d->setText(round2model->getD(index));
+	q_ui->question_r2_score->setValue(round2model->getScore(index));
+	bool* ans=round2model->getAnskey(index);
+	q_ui->question_r2_ans_a->setChecked(ans[0]);
+	q_ui->question_r2_ans_b->setChecked(ans[1]);
+	q_ui->question_r2_ans_c->setChecked(ans[2]);
+	q_ui->question_r2_ans_d->setChecked(ans[3]);
+	delete[] ans;
+	//QString
 }
 
 void QEditor::add_question_r1()
@@ -109,7 +118,7 @@ void QEditor::update_question_r2()
 	if (q_ui->question_r2_ans_d->isChecked()) anskey.append("1");
 	else anskey.append("0");
 	anskey.append("0");
-	QString score=QString::number(q_ui->question_r2_time->value());
+	QString score=QString::number(q_ui->question_r2_score->value());
 	round2model->updateQuestion(index,question,a,b,c,d,"",anskey,score,"0");
 }
 

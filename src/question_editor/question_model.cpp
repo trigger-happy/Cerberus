@@ -64,6 +64,10 @@ void QuestionModel::swapOrder(int q1,int q2)
 	//swapping goes here
 }
 
+QString QuestionModel::getQuestion(int index)
+{
+	return QStandardItemModel::item(index,0)->text();
+}
 QString QuestionModel::getA(int index)
 {
 	return QStandardItemModel::item(index,1)->text();
@@ -80,4 +84,26 @@ QString QuestionModel::getD(int index)
 {
 	return QStandardItemModel::item(index,4)->text();
 }
-
+QString QuestionModel::getE(int index)
+{
+	return QStandardItemModel::item(index,5)->text();
+}
+bool* QuestionModel::getAnskey(int index)
+{
+	bool* temp=new bool[5];
+	
+	QString cheat=QStandardItemModel::item(index,6)->text();
+	for (int ctr=0;ctr<cheat.size();ctr++)
+	{
+		temp[ctr]=(cheat[ctr]==QChar('1'));
+	}
+	return temp;
+}
+int QuestionModel::getScore(int index)
+{
+	return QStandardItemModel::item(index,7)->text().toInt();
+}
+int QuestionModel::getTime(int index)
+{
+	return QStandardItemModel::item(index,8)->text().toInt();
+}

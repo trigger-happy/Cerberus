@@ -40,9 +40,11 @@ public slots:
 	void add_question_r1();
 	void add_question_r2();
 	void update_question_r2();
+	
 private: 
 	Ui::q_editor *q_ui;
 	QStandardItemModel* model;
+	QuestionModel* round1model;
 	QuestionModel* round2model;
 };
 
