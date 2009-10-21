@@ -42,8 +42,12 @@ public slots:
 	void changed_details_r2();
 	void update_question_r2();
 	
-private: 
+private:
 	Ui::q_editor *q_ui;
+	void disable_components(int round);
+	void enable_components(int round);
+	
+	bool enabled_r2;
 	QStandardItemModel* model;
 	QuestionModel* round1model;
 	QuestionModel* round2model;

@@ -30,19 +30,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	QFile f ("../resources/stage1_q.xml");
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
-	/*model=new QStandardItemModel(2,9);
 	
-	question score time ansa ansb ansc ansd boola boolb boolc boold boole
-	
-	for (int row=0;row<2;row++)
-	{
-		QString s="Question ";
-		s.append(QString::number(row+1));
-		QStandardItem* item=new QStandardItem(s);
-		model->setItem(row,0,item);
-		QStandardItem* another =new QStandardItem("This is a.");
-		model->setItem(row,1,another);
-	}*/
 	round1model=new QuestionModel(1);
 	q_ui->list_r1->setModel(round1model);
 	connect(q_ui->list_r1, SIGNAL(clicked(QModelIndex)),this, SLOT(on_first_list()));
@@ -50,9 +38,22 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	q_ui->textarea_welcome->setPlainText(xml);
 	
 	round2model=new QuestionModel(2);
+	
+	enabled_r2=false;
 	q_ui->list_r2->setModel(round2model);
+	disable_components(2);
 	connect(q_ui->list_r2, SIGNAL(activated(QModelIndex)),this, SLOT(on_r2_list()));
 	connect(q_ui->question_r2_text,SIGNAL(textChanged()),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_a,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_b,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_c,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_d,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_score,SIGNAL(valueChanged(int)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_ans_a,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_ans_b,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_ans_c,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_ans_d,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
+	
 	connect(q_ui->button_add_r2,SIGNAL(clicked()),this,SLOT(add_question_r2()));
 	connect(q_ui->button_update_r2,SIGNAL(clicked()),this,SLOT(update_question_r2()));
 	
@@ -143,6 +144,46 @@ void QEditor::update_question_r2()
 	QString score=QString::number(q_ui->question_r2_score->value());
 	round2model->updateQuestion(index,question,a,b,c,d,"",anskey,score,"0");
 	q_ui->button_update_r2->setEnabled(false);
+}
+
+void QEditor::enable_components(int round)
+{
+	if (round==2)
+	{
+		bool enable=false;
+		q_ui->question_r2_num->setEnabled(enable);
+		q_ui->question_r2_text->setEnabled(enable);
+		q_ui->question_r2_a->setEnabled(enable);
+		q_ui->question_r2_b->setEnabled(enable);
+		q_ui->question_r2_c->setEnabled(enable);
+		q_ui->question_r2_d->setEnabled(enable);
+		q_ui->question_r2_score->setEnabled(enable);
+		q_ui->question_r2_ans_a->setEnabled(enable);
+		q_ui->question_r2_ans_b->setEnabled(enable);
+		q_ui->question_r2_ans_c->setEnabled(enable);
+		q_ui->question_r2_ans_d->setEnabled(enable);	
+	}
+}
+
+
+
+void QEditor::disable_components(int round)
+{
+	if (round==2)
+	{
+		bool enable=true;
+		q_ui->question_r2_num->setEnabled(enable);
+		q_ui->question_r2_text->setEnabled(enable);
+		q_ui->question_r2_a->setEnabled(enable);
+		q_ui->question_r2_b->setEnabled(enable);
+		q_ui->question_r2_c->setEnabled(enable);
+		q_ui->question_r2_d->setEnabled(enable);
+		q_ui->question_r2_score->setEnabled(enable);
+		q_ui->question_r2_ans_a->setEnabled(enable);
+		q_ui->question_r2_ans_b->setEnabled(enable);
+		q_ui->question_r2_ans_c->setEnabled(enable);
+		q_ui->question_r2_ans_d->setEnabled(enable);	
+	}
 }
 
 int main(int argc, char *argv[])
