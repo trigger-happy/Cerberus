@@ -20,6 +20,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include <QtGui>
 #include "question_model.h"
+
+#define ROUNDS 4
 //#include <QtGui/QMainWindow>
 
 namespace Ui
@@ -35,6 +37,8 @@ public:
 	QEditor(QWidget *parent = 0);
 	~QEditor();
 public slots:
+	void list_focus(int round);
+	void update_question(int round);
 	void on_first_list();
 	void on_r2_list();
 	void add_question_r1();
@@ -51,6 +55,23 @@ private:
 	QStandardItemModel* model;
 	QuestionModel* round1model;
 	QuestionModel* round2model;
+	QuestionModel* roundmodel[ROUNDS];
+	
+	QListView* question_list[ROUNDS];
+	QLabel* question_num[ROUNDS];
+	QPlainTextEdit* question_text[ROUNDS];
+	QLineEdit* question_a[ROUNDS];
+	QLineEdit* question_b[ROUNDS];
+	QLineEdit* question_c[ROUNDS];
+	QLineEdit* question_d[ROUNDS];
+	QLineEdit* question_e[ROUNDS];
+	QSpinBox* question_score[ROUNDS];
+	QSpinBox* question_time[ROUNDS];
+	QAbstractButton* question_ans_a[ROUNDS];
+	QAbstractButton* question_ans_b[ROUNDS];
+	QAbstractButton* question_ans_c[ROUNDS];
+	QAbstractButton* question_ans_d[ROUNDS];
+	QAbstractButton* question_ans_e[ROUNDS];
 };
 
 #endif
