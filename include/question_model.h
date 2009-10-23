@@ -37,7 +37,7 @@ public:
 	QString getC(int index);
 	QString getD(int index);
 	QString getE(int index);
-	bool* getAnskey(int index);
+	void getAnskey(int index,bool *key);
 	int getTime(int index);
 	int getScore(int index);
 	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score);

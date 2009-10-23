@@ -39,6 +39,7 @@ public:
 public slots:
 	void list_focus(int round);
 	void update_question(int round);
+	void add_question(int round);
 	void on_first_list();
 	void on_r2_list();
 	void add_question_r1();
@@ -50,6 +51,8 @@ private:
 	Ui::q_editor *q_ui;
 	void disable_components(int round);
 	void enable_components(int round);
+	void control_components(int round,bool enable);
+	
 	
 	bool enabled_r2;
 	QStandardItemModel* model;
@@ -72,6 +75,7 @@ private:
 	QAbstractButton* question_ans_c[ROUNDS];
 	QAbstractButton* question_ans_d[ROUNDS];
 	QAbstractButton* question_ans_e[ROUNDS];
+	QSignalMapper* sigmap;
 };
 
 #endif

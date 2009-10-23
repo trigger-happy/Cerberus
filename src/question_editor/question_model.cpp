@@ -88,16 +88,16 @@ QString QuestionModel::getE(int index)
 {
 	return QStandardItemModel::item(index,5)->text();
 }
-bool* QuestionModel::getAnskey(int index)
+void QuestionModel::getAnskey(int index,bool* temp)
 {
-	bool* temp=new bool[5];
+	//bool* temp=new bool[5];
 	
 	QString cheat=QStandardItemModel::item(index,6)->text();
 	for (int ctr=0;ctr<cheat.size();ctr++)
 	{
 		temp[ctr]=(cheat[ctr]==QChar('1'));
 	}
-	return temp;
+	//return temp;
 }
 int QuestionModel::getScore(int index)
 {
