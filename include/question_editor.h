@@ -39,22 +39,19 @@ public:
 public slots:
 	void list_focus(int round);
 	void update_question(int round);
+	void cancel_update(int round);
 	void add_question(int round);
 	void changed_details_r2();
+	void changed_details(int round);
+	void remove_question(int round);
+	void move_up(int round);
+	void move_down(int round);
 	
 private:
 	Ui::q_editor *q_ui;
-	void disable_components(int round);
-	void enable_components(int round);
 	void control_components(int round,bool enable);
 	
-	
-	bool enabled_r2;
-	QStandardItemModel* model;
-	QuestionModel* round1model;
-	QuestionModel* round2model;
 	QuestionModel* roundmodel[ROUNDS];
-	
 	QListView* question_list[ROUNDS];
 	QLabel* question_num[ROUNDS];
 	QPlainTextEdit* question_text[ROUNDS];
@@ -74,10 +71,18 @@ private:
 	QToolButton* button_cancel[ROUNDS+1];
 	QToolButton* button_add[ROUNDS];
 	QToolButton* button_remove[ROUNDS];
+	QToolButton* button_up[ROUNDS];
+	QToolButton* button_down[ROUNDS];
+	QSpinBox* duration[ROUNDS];
 	
 	QSignalMapper* sigToList;
 	QSignalMapper* sigToAdd;
+	QSignalMapper* sigToRemove;
 	QSignalMapper* sigToUpdate;
+	QSignalMapper* sigToCancel;
+	QSignalMapper* sigToDetailUpdate;
+	QSignalMapper* sigToUp;
+	QSignalMapper* sigToDown;
 };
 
 #endif

@@ -31,33 +31,9 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
 	
-	//connect(q_ui->list_r1, SIGNAL(clicked(QModelIndex)),this, SLOT(list_focus((int)1)));
-	//connect(q_ui->button_add_r1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
 	//q_ui->textarea_welcome->setPlainText(xml);
 	
-	//round2model=new QuestionModel(2);
-	//enabled_r2=false;
-	//q_ui->list_r2->setModel(round2model);
-	//disable_components(2);
-	/*connect(q_ui->list_r2, SIGNAL(activated(QModelIndex)),this, SLOT(on_r2_list()));
-	connect(q_ui->question_r2_text,SIGNAL(textChanged()),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_a,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_b,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_c,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_d,SIGNAL(textChanged(QString)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_score,SIGNAL(valueChanged(int)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_ans_a,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_ans_b,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_ans_c,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_ans_d,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
-	
-	connect(q_ui->button_add_r2,SIGNAL(clicked()),this,SLOT(add_question_r2()));
-	connect(q_ui->button_update_r2,SIGNAL(clicked()),this,SLOT(update_question_r2()));
-	
-	q_ui->button_update_r1->setEnabled(false);
-	q_ui->button_update_r2->setEnabled(false);
-	q_ui->button_update_r3->setEnabled(false);
-	q_ui->button_update_r4->setEnabled(false);*/
+	//declaration of pointers to components frequently accessed
 	
 	roundmodel[0]=new QuestionModel(1);
 	roundmodel[1]=new QuestionModel(2);
@@ -161,45 +137,123 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	button_remove[2]=q_ui->button_remove_r3;
 	button_remove[3]=q_ui->button_remove_r4;
 	
+	button_up[0]=q_ui->button_up_r1;
+	button_up[1]=q_ui->button_up_r2;
+	button_up[2]=q_ui->button_up_r3;
+	button_up[3]=q_ui->button_up_r4;
+	
+	button_down[0]=q_ui->button_down_r1;
+	button_down[1]=q_ui->button_down_r2;
+	button_down[2]=q_ui->button_down_r3;
+	button_down[3]=q_ui->button_down_r4;
+	
+	duration[0]=q_ui->duration_r1;
+	duration[1]=q_ui->duration_r2;
+	duration[2]=q_ui->duration_r3;
+	duration[3]=q_ui->duration_r4;
+	
+	//slot and signal connections
+	
 	sigToList=new QSignalMapper(this);
 	sigToAdd=new QSignalMapper(this);
+	sigToRemove=new QSignalMapper(this);
 	sigToUpdate=new QSignalMapper(this);
+	sigToCancel=new QSignalMapper(this);
+	sigToDetailUpdate=new QSignalMapper(this);
+	sigToUp=new QSignalMapper(this);
+	sigToDown=new QSignalMapper(this);
 	
 	connect(sigToList,SIGNAL(mapped(int)),this,SLOT(list_focus(int)));
 	connect(sigToAdd,SIGNAL(mapped(int)),this,SLOT(add_question(int)));
+	connect(sigToRemove,SIGNAL(mapped(int)),this,SLOT(remove_question(int)));
 	connect(sigToUpdate,SIGNAL(mapped(int)),this,SLOT(update_question(int)));
+	connect(sigToCancel,SIGNAL(mapped(int)),this,SLOT(cancel_update(int)));
+	connect(sigToDetailUpdate,SIGNAL(mapped(int)),this,SLOT(changed_details(int)));
+	connect(sigToUp,SIGNAL(mapped(int)),this,SLOT(move_up(int)));
+	connect(sigToDown,SIGNAL(mapped(int)),this,SLOT(move_down(int)));
 	
-	//round1model=new QuestionModel(1);
-	//q_ui->list_r1->setModel(round1model);
+	sigToDetailUpdate->setMapping(q_ui->textarea_welcome,0);
+	connect(q_ui->textarea_welcome,SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
+	
+	
 	for (int ctr=0;ctr<4;ctr++)
 	{
 		sigToList->setMapping(question_list[ctr],ctr+1);
 		sigToAdd->setMapping(button_add[ctr],ctr+1);
+		sigToRemove->setMapping(button_remove[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_text[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_a[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_b[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_c[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_d[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_score[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_ans_a[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_ans_b[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_ans_c[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(question_ans_d[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(duration[ctr],0);
+		sigToUp->setMapping(button_up[ctr],ctr+1);
+		sigToDown->setMapping(button_down[ctr],ctr+1);
 		
-		connect(question_list[ctr],SIGNAL(clicked(QModelIndex)),sigToList,SLOT(map()));
+		connect(question_list[ctr],SIGNAL(activated(QModelIndex)),sigToList,SLOT(map()));
 		connect(button_add[ctr],SIGNAL(clicked(bool)),sigToAdd,SLOT(map()));
+		connect(button_remove[ctr],SIGNAL(clicked(bool)),sigToRemove,SLOT(map()));
+		connect(question_text[ctr],SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
+		connect(question_a[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
+		connect(question_b[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
+		connect(question_c[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
+		connect(question_d[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
+		connect(question_score[ctr],SIGNAL(valueChanged(int)),sigToDetailUpdate,SLOT(map()));
+		connect(question_ans_a[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
+		connect(question_ans_b[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
+		connect(question_ans_c[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
+		connect(question_ans_d[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
+		connect(duration[ctr],SIGNAL(valueChanged(int)),sigToDetailUpdate,SLOT(map()));
+		connect(button_up[ctr],SIGNAL(clicked(bool)),sigToUp,SLOT(map()));
+		connect(button_down[ctr],SIGNAL(clicked(bool)),sigToDown,SLOT(map()));
+		
+		if (ctr>1)
+		{
+			sigToDetailUpdate->setMapping(question_e[ctr],ctr+1);
+			sigToDetailUpdate->setMapping(question_ans_e[ctr],ctr+1);
+			sigToDetailUpdate->setMapping(question_time[ctr],ctr+1);
+			
+			connect(question_e[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
+			connect(question_ans_e[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
+			connect(question_time[ctr],SIGNAL(valueChanged(int)),sigToDetailUpdate,SLOT(map()));
+		}
+		
+		question_list[ctr]->setModel(roundmodel[ctr]);
 	}
 	for (int ctr=0;ctr<5;ctr++)
 	{
 		sigToUpdate->setMapping(button_update[ctr],ctr);
-	
+		sigToCancel->setMapping(button_cancel[ctr],ctr);
+		
 		connect(button_update[ctr],SIGNAL(clicked(bool)),sigToUpdate,SLOT(map()));
+		connect(button_cancel[ctr],SIGNAL(clicked(bool)),sigToCancel,SLOT(map()));
+		
+		button_update[ctr]->setEnabled(false);
+		button_cancel[ctr]->setEnabled(false);
 	}
 	
-	for (int ctr=0;ctr<4;ctr++)
-	{
-		question_list[ctr]->setModel(roundmodel[ctr]);
-	}
+	control_components(1,false);
 	
-	
-	//control_components(2,false);
-	
+	/*connect(q_ui->question_r2_ans_a,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_ans_b,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_ans_c,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
+	connect(q_ui->question_r2_ans_d,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));*/
 }
 QEditor::~QEditor()
 {
 	delete sigToAdd;
+	delete sigToRemove;
 	delete sigToList;
 	delete sigToUpdate;
+	delete sigToCancel;
+	delete sigToDetailUpdate;
+	delete sigToUp;
+	delete sigToDown;
 	delete q_ui;
 	//delete round1model;
 	//delete round2model;
@@ -212,32 +266,64 @@ QEditor::~QEditor()
 void QEditor::list_focus(int round)
 {
 	int ptr=round-1;
+	//control_components(ptr,true);
 	int index=question_list[ptr]->currentIndex().row();
-	question_num[ptr]->setText("Question "+QString::number(index+1));
-	question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
-	question_a[ptr]->setText(roundmodel[ptr]->getA(index));
-	question_b[ptr]->setText(roundmodel[ptr]->getB(index));
-	question_c[ptr]->setText(roundmodel[ptr]->getC(index));
-	question_d[ptr]->setText(roundmodel[ptr]->getD(index));
-	if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
-	question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
-	if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
-	bool* ans=new bool[5];
-	roundmodel[ptr]->getAnskey(index,ans);
-	question_ans_a[ptr]->setChecked(ans[0]);
-	question_ans_b[ptr]->setChecked(ans[1]);
-	question_ans_c[ptr]->setChecked(ans[2]);
-	question_ans_d[ptr]->setChecked(ans[3]);
-	if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
-	delete ans;
+	
+	if (index!=-1)
+	{
+		question_num[ptr]->setText("Question "+QString::number(index+1));
+		question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
+		question_a[ptr]->setText(roundmodel[ptr]->getA(index));
+		question_b[ptr]->setText(roundmodel[ptr]->getB(index));
+		question_c[ptr]->setText(roundmodel[ptr]->getC(index));
+		question_d[ptr]->setText(roundmodel[ptr]->getD(index));
+		if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
+		question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
+		if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
+		bool* ans=new bool[5];
+		roundmodel[ptr]->getAnskey(index,ans);
+		question_ans_a[ptr]->setChecked(ans[0]);
+		question_ans_b[ptr]->setChecked(ans[1]);
+		question_ans_c[ptr]->setChecked(ans[2]);
+		question_ans_d[ptr]->setChecked(ans[3]);
+		if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
+		delete ans;
+		control_components(round,true);
+		button_update[round]->setDisabled(true);
+		button_cancel[round]->setDisabled(true);
+		
+	}
+	else
+	{
+		question_num[ptr]->setText("No question selected");
+		question_text[ptr]->setPlainText("");
+		question_a[ptr]->setText("");
+		question_b[ptr]->setText("");
+		question_c[ptr]->setText("");
+		question_d[ptr]->setText("");
+		if (round > 2) question_e[ptr]->setText("");
+		question_score[ptr]->setValue(0);
+		if (round > 2) question_time[ptr]->setValue(0);
+		question_ans_a[ptr]->setDown(true);
+		question_ans_b[ptr]->setDown(true);
+		question_ans_c[ptr]->setDown(true);
+		question_ans_d[ptr]->setDown(true);
+		if (round > 2) question_ans_e[ptr]->setChecked(false);
+		control_components(round,false);
+	}
 }
 
 void QEditor::add_question(int round)
 {
-	//cout << round;
 	roundmodel[round-1]->addNewQuestion();
 }
 
+void QEditor::remove_question(int round)
+{
+	int index=question_list[round-1]->currentIndex().row();
+	roundmodel[round-1]->removeQuestion(index);
+	list_focus(round);
+}
 
 void QEditor::changed_details_r2()
 {
@@ -245,11 +331,17 @@ void QEditor::changed_details_r2()
 		q_ui->button_update_r2->setEnabled(true);
 }
 
+void QEditor::changed_details(int round)
+{
+	button_update[round]->setEnabled(true);
+	button_cancel[round]->setEnabled(true);
+}
+
 void QEditor::update_question(int round)
 {
 	if (round==0)
 	{
-	      
+		
 	}
 	else
 	{ 
@@ -285,37 +377,49 @@ void QEditor::update_question(int round)
 			time="0";
 		}
 		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
+		
+	}
+	button_update[round]->setDisabled(true);
+	button_cancel[round]->setDisabled(true);
+}
+
+void QEditor::cancel_update(int round)
+{
+	list_focus(round);
+}
+
+void QEditor::move_up(int round)
+{
+	//cout << "up!";
+	int ptr=round-1;
+	int index=question_list[ptr]->currentIndex().row();
+	if (index!=0 && index!=-1)
+	{
+		roundmodel[ptr]->swapOrder(index,index-1);
+		QModelIndex curr=question_list[ptr]->currentIndex();
+		curr.child(0,0);
+		question_list[ptr]->selectionModel()->select(curr,QItemSelectionModel::Select);
 	}
 }
 
-void QEditor::enable_components(int round)
+void QEditor::move_down(int round)
 {
-	
-	if (round==2)
-	{
-		bool enable=false;
-		q_ui->question_r2_num->setEnabled(enable);
-		q_ui->question_r2_text->setEnabled(enable);
-		q_ui->question_r2_a->setEnabled(enable);
-		q_ui->question_r2_b->setEnabled(enable);
-		q_ui->question_r2_c->setEnabled(enable);
-		q_ui->question_r2_d->setEnabled(enable);
-		q_ui->question_r2_score->setEnabled(enable);
-		q_ui->question_r2_ans_a->setEnabled(enable);
-		q_ui->question_r2_ans_b->setEnabled(enable);
-		q_ui->question_r2_ans_c->setEnabled(enable);
-		q_ui->question_r2_ans_d->setEnabled(enable);	
-	}
+      int ptr=round-1;
+      int index=question_list[ptr]->currentIndex().row();
+      if (index!=roundmodel[ptr]->rowCount()-1 && index!=-1)
+      {
+	      roundmodel[ptr]->swapOrder(index,index+1);
+      }
 }
 
 void QEditor::control_components(int round,bool enable)
 {
 	int ptr=round-1;
-	question_text[ptr]->setEnabled(enable);
-	question_a[ptr]->setEnabled(enable);
-	question_b[ptr]->setEnabled(enable);
-	question_c[ptr]->setEnabled(enable);
-	question_d[ptr]->setEnabled(enable);
+	question_text[ptr]->setReadOnly(!enable);
+	question_a[ptr]->setReadOnly(!enable);
+	question_b[ptr]->setReadOnly(!enable);
+	question_c[ptr]->setReadOnly(!enable);
+	question_d[ptr]->setReadOnly(!enable);
 	question_ans_a[ptr]->setEnabled(enable);
 	question_ans_b[ptr]->setEnabled(enable);
 	question_ans_c[ptr]->setEnabled(enable);
@@ -323,32 +427,11 @@ void QEditor::control_components(int round,bool enable)
 	question_score[ptr]->setEnabled(enable);
 	if (round > 2)
 	{
-		question_e[ptr]->setEnabled(enable);
+		question_e[ptr]->setReadOnly(enable);
 		question_ans_e[ptr]->setEnabled(enable);
 		question_time[ptr]->setEnabled(enable);
 	}
-}
-
-void QEditor::disable_components(int round)
-{
-	//int ptr=round-1;
-	//question_num[ptr]->setEnabled(
-  
-	if (round==2)
-	{
-		bool enable=true;
-		q_ui->question_r2_num->setEnabled(enable);
-		q_ui->question_r2_text->setEnabled(enable);
-		q_ui->question_r2_a->setEnabled(enable);
-		q_ui->question_r2_b->setEnabled(enable);
-		q_ui->question_r2_c->setEnabled(enable);
-		q_ui->question_r2_d->setEnabled(enable);
-		q_ui->question_r2_score->setEnabled(enable);
-		q_ui->question_r2_ans_a->setEnabled(enable);
-		q_ui->question_r2_ans_b->setEnabled(enable);
-		q_ui->question_r2_ans_c->setEnabled(enable);
-		q_ui->question_r2_ans_d->setEnabled(enable);	
-	}
+	
 }
 
 int main(int argc, char *argv[])

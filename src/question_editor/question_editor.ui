@@ -244,7 +244,7 @@
           <item>
            <widget class="QLabel" name="question_r1_num">
             <property name="text">
-             <string/>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -484,7 +484,7 @@
           <item>
            <widget class="QLabel" name="question_r2_num">
             <property name="text">
-             <string/>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -714,7 +714,7 @@
           <item>
            <widget class="QLabel" name="question_r3_num">
             <property name="text">
-             <string/>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -977,7 +977,7 @@
           <item>
            <widget class="QLabel" name="question_r4_num">
             <property name="text">
-             <string/>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
