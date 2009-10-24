@@ -33,7 +33,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	QString xml = f.readAll();
 	
 	//connect(q_ui->list_r1, SIGNAL(clicked(QModelIndex)),this, SLOT(list_focus((int)1)));
-	connect(q_ui->button_add_r1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
+	//connect(q_ui->button_add_r1,SIGNAL(clicked()),this,SLOT(add_question_r1()));
 	//q_ui->textarea_welcome->setPlainText(xml);
 	
 	//round2model=new QuestionModel(2);
@@ -140,15 +140,41 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	question_ans_e[2]=q_ui->question_r3_ans_e;
 	question_ans_e[3]=q_ui->question_r4_ans_e;
 	
-	sigmap=new QSignalMapper(this);
-	connect(sigmap,SIGNAL(mapped(int)),this,SLOT(list_focus(int)));
+	button_update[0]=q_ui->button_update_pre;
+	button_update[1]=q_ui->button_update_r1;
+	button_update[2]=q_ui->button_update_r2;
+	button_update[3]=q_ui->button_update_r3;
+	button_update[4]=q_ui->button_update_r4;
+	
+	button_cancel[0]=q_ui->button_cancel_pre;
+	button_cancel[1]=q_ui->button_cancel_r1;
+	button_cancel[2]=q_ui->button_cancel_r2;
+	button_cancel[3]=q_ui->button_cancel_r3;
+	button_cancel[4]=q_ui->button_cancel_r4;
+	
+	button_add[0]=q_ui->button_add_r1;
+	button_add[1]=q_ui->button_add_r2;
+	button_add[2]=q_ui->button_add_r3;
+	button_add[3]=q_ui->button_add_r4;
+	
+	button_remove[0]=q_ui->button_remove_r1;
+	button_remove[1]=q_ui->button_remove_r2;
+	button_remove[2]=q_ui->button_remove_r3;
+	button_remove[3]=q_ui->button_remove_r4;
+	
+	sigToList=new QSignalMapper(this);
+	sigToAdd=new QSignalMapper(this);
+	connect(sigToList,SIGNAL(mapped(int)),this,SLOT(list_focus(int)));
+	connect(sigToAdd,SIGNAL(mapped(int)),this,SLOT(add_question(int)));
 	
 	//round1model=new QuestionModel(1);
 	//q_ui->list_r1->setModel(round1model);
 	for (int ctr=0;ctr<4;ctr++)
 	{
-		sigmap->setMapping(question_list[ctr],ctr+1);
-		connect(question_list[ctr],SIGNAL(clicked(QModelIndex)),sigmap,SLOT(map()));
+		sigToList->setMapping(question_list[ctr],ctr+1);
+		sigToAdd->setMapping(button_add[ctr],ctr+1);
+		connect(question_list[ctr],SIGNAL(clicked(QModelIndex)),sigToList,SLOT(map()));
+		connect(button_add[ctr],SIGNAL(clicked(bool)),sigToAdd,SLOT(map()));
 	}
 	for (int ctr=0;ctr<4;ctr++)
 	{
@@ -156,13 +182,14 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	}
 	
 	
-	control_components(2,false);
+	//control_components(2,false);
 	
 	cout << "const complete";
 }
 QEditor::~QEditor()
 {
-	delete sigmap;
+	delete sigToAdd;
+	delete sigToList;
 	delete q_ui;
 	//delete round1model;
 	//delete round2model;
@@ -235,6 +262,7 @@ void QEditor::on_r2_list()
 
 void QEditor::add_question(int round)
 {
+	//cout << round;
 	roundmodel[round-1]->addNewQuestion();
 }
 

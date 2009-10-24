@@ -75,7 +75,13 @@ private:
 	QAbstractButton* question_ans_c[ROUNDS];
 	QAbstractButton* question_ans_d[ROUNDS];
 	QAbstractButton* question_ans_e[ROUNDS];
-	QSignalMapper* sigmap;
+	QToolButton* button_update[ROUNDS+1];
+	QToolButton* button_cancel[ROUNDS+1];
+	QToolButton* button_add[ROUNDS];
+	QToolButton* button_remove[ROUNDS];
+	
+	QSignalMapper* sigToList;
+	QSignalMapper* sigToAdd;
 };
 
 #endif
