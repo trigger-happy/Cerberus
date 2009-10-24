@@ -26,7 +26,6 @@ using namespace std;
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
-	cout << "const begin";
 	q_ui->setupUi(this);
 	QFile f ("../resources/stage1_q.xml");
 	f.open ( QIODevice::ReadOnly );
@@ -164,8 +163,11 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	sigToList=new QSignalMapper(this);
 	sigToAdd=new QSignalMapper(this);
+	sigToUpdate=new QSignalMapper(this);
+	
 	connect(sigToList,SIGNAL(mapped(int)),this,SLOT(list_focus(int)));
 	connect(sigToAdd,SIGNAL(mapped(int)),this,SLOT(add_question(int)));
+	connect(sigToUpdate,SIGNAL(mapped(int)),this,SLOT(update_question(int)));
 	
 	//round1model=new QuestionModel(1);
 	//q_ui->list_r1->setModel(round1model);
@@ -173,9 +175,17 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	{
 		sigToList->setMapping(question_list[ctr],ctr+1);
 		sigToAdd->setMapping(button_add[ctr],ctr+1);
+		
 		connect(question_list[ctr],SIGNAL(clicked(QModelIndex)),sigToList,SLOT(map()));
 		connect(button_add[ctr],SIGNAL(clicked(bool)),sigToAdd,SLOT(map()));
 	}
+	for (int ctr=0;ctr<5;ctr++)
+	{
+		sigToUpdate->setMapping(button_update[ctr],ctr);
+	
+		connect(button_update[ctr],SIGNAL(clicked(bool)),sigToUpdate,SLOT(map()));
+	}
+	
 	for (int ctr=0;ctr<4;ctr++)
 	{
 		question_list[ctr]->setModel(roundmodel[ctr]);
@@ -184,12 +194,12 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	//control_components(2,false);
 	
-	cout << "const complete";
 }
 QEditor::~QEditor()
 {
 	delete sigToAdd;
 	delete sigToList;
+	delete sigToUpdate;
 	delete q_ui;
 	//delete round1model;
 	//delete round2model;
@@ -201,7 +211,6 @@ QEditor::~QEditor()
 
 void QEditor::list_focus(int round)
 {
-	cout << round;
 	int ptr=round-1;
 	int index=question_list[ptr]->currentIndex().row();
 	question_num[ptr]->setText("Question "+QString::number(index+1));
@@ -303,24 +312,21 @@ void QEditor::update_question(int round)
 	else anskey.append("0");
 	if (question_ans_d[ptr]->isChecked()) anskey.append("1");
 	else anskey.append("0");
-	if (round>2) {
-		if (question_ans_e[ptr]->isChecked()) anskey.append("1");
-		else anskey.append("0");
-	}
-	else {
-		anskey.append("0");
-	}
 	
 	QString score=QString::number(question_score[ptr]->value());
 	QString time;
 	if (round>2) {
+		if (question_ans_e[ptr]->isChecked()) anskey.append("1");
+		else anskey.append("0");
 		time=QString::number(question_time[ptr]->value());
 	}
 	else {
+		anskey.append("0");
 		time="0";
 	}
+	q_ui->textarea_welcome->setPlainText(QString::number(index));
 	roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
-	q_ui->button_update_r2->setEnabled(false);
+	//q_ui->button_update->setEnabled(false);
 }
 
 void QEditor::update_question_r2()

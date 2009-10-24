@@ -82,6 +82,7 @@ private:
 	
 	QSignalMapper* sigToList;
 	QSignalMapper* sigToAdd;
+	QSignalMapper* sigToUpdate;
 };
 
 #endif
