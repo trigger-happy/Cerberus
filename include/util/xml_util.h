@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtXml/QtXml>
 #include "data_types.h"
 #include "patterns/singleton.h"
+#include <stdexcept>
 
 /*!
 \brief Handles the reading/writing of Xml data.
@@ -29,6 +30,33 @@ The XmlUtil class provides a utility interface for dealing with Xml data.
 class XmlUtil : public Singleton<XmlUtil>
 {
 public:
+
+	class XmlException : public runtime_error {
+		public:
+		const QString message;
+		const qint64 lineNumber, columnNumber, characterOffset;
+		XmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
+				: message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset)
+		{}
+		const char* what() const throw() {
+			static const QByteArray &ret = message.toUtf8();
+			return ret.data();
+		}
+	};
+
+	class IllFormedXmlException : public XmlException {
+		IllFormedXmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
+				: XmlException(message, lineNumber, columnNumber, characterOffset)
+		{}
+	};
+
+	class InvalidXmlException : public XmlException {
+		InvalidXmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
+				: XmlException(message, lineNumber, columnNumber, characterOffset)
+		{}
+	};
+
+
         /*!
         */
         bool readQuestionData ( int round, const QString& xml, QuestionData& qd );
