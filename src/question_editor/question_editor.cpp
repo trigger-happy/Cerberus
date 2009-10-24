@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iostream>
 
 using namespace std;
+//TODO: update function for pre-contest, read/saving xml files
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
@@ -265,51 +266,58 @@ QEditor::~QEditor()
 
 void QEditor::list_focus(int round)
 {
-	int ptr=round-1;
-	//control_components(ptr,true);
-	int index=question_list[ptr]->currentIndex().row();
-	
-	if (index!=-1)
+	if (round!=0)
 	{
-		question_num[ptr]->setText("Question "+QString::number(index+1));
-		question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
-		question_a[ptr]->setText(roundmodel[ptr]->getA(index));
-		question_b[ptr]->setText(roundmodel[ptr]->getB(index));
-		question_c[ptr]->setText(roundmodel[ptr]->getC(index));
-		question_d[ptr]->setText(roundmodel[ptr]->getD(index));
-		if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
-		question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
-		if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
-		bool* ans=new bool[5];
-		roundmodel[ptr]->getAnskey(index,ans);
-		question_ans_a[ptr]->setChecked(ans[0]);
-		question_ans_b[ptr]->setChecked(ans[1]);
-		question_ans_c[ptr]->setChecked(ans[2]);
-		question_ans_d[ptr]->setChecked(ans[3]);
-		if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
-		delete ans;
-		control_components(round,true);
-		button_update[round]->setDisabled(true);
-		button_cancel[round]->setDisabled(true);
+		int ptr=round-1;
+		//control_components(ptr,true);
+		int index=question_list[ptr]->currentIndex().row();
 		
+		if (index!=-1)
+		{
+			question_num[ptr]->setText("Question "+QString::number(index+1));
+			question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
+			question_a[ptr]->setText(roundmodel[ptr]->getA(index));
+			question_b[ptr]->setText(roundmodel[ptr]->getB(index));
+			question_c[ptr]->setText(roundmodel[ptr]->getC(index));
+			question_d[ptr]->setText(roundmodel[ptr]->getD(index));
+			if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
+			question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
+			if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
+			bool* ans=new bool[5];
+			roundmodel[ptr]->getAnskey(index,ans);
+			question_ans_a[ptr]->setChecked(ans[0]);
+			question_ans_b[ptr]->setChecked(ans[1]);
+			question_ans_c[ptr]->setChecked(ans[2]);
+			question_ans_d[ptr]->setChecked(ans[3]);
+			if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
+			delete ans;
+			control_components(round,true);
+			button_update[round]->setDisabled(true);
+			button_cancel[round]->setDisabled(true);
+			
+		}
+		else
+		{
+			question_num[ptr]->setText("No question selected");
+			question_text[ptr]->setPlainText("");
+			question_a[ptr]->setText("");
+			question_b[ptr]->setText("");
+			question_c[ptr]->setText("");
+			question_d[ptr]->setText("");
+			if (round > 2) question_e[ptr]->setText("");
+			question_score[ptr]->setValue(0);
+			if (round > 2) question_time[ptr]->setValue(0);
+			question_ans_a[ptr]->setDown(true);
+			question_ans_b[ptr]->setDown(true);
+			question_ans_c[ptr]->setDown(true);
+			question_ans_d[ptr]->setDown(true);
+			if (round > 2) question_ans_e[ptr]->setChecked(false);
+			control_components(round,false);
+		}
 	}
 	else
 	{
-		question_num[ptr]->setText("No question selected");
-		question_text[ptr]->setPlainText("");
-		question_a[ptr]->setText("");
-		question_b[ptr]->setText("");
-		question_c[ptr]->setText("");
-		question_d[ptr]->setText("");
-		if (round > 2) question_e[ptr]->setText("");
-		question_score[ptr]->setValue(0);
-		if (round > 2) question_time[ptr]->setValue(0);
-		question_ans_a[ptr]->setDown(true);
-		question_ans_b[ptr]->setDown(true);
-		question_ans_c[ptr]->setDown(true);
-		question_ans_d[ptr]->setDown(true);
-		if (round > 2) question_ans_e[ptr]->setChecked(false);
-		control_components(round,false);
+	  
 	}
 }
 
@@ -386,6 +394,8 @@ void QEditor::update_question(int round)
 void QEditor::cancel_update(int round)
 {
 	list_focus(round);
+	button_update[round]->setDisabled(true);
+	button_cancel[round]->setDisabled(true);
 }
 
 void QEditor::move_up(int round)
@@ -397,8 +407,8 @@ void QEditor::move_up(int round)
 	{
 		roundmodel[ptr]->swapOrder(index,index-1);
 		QModelIndex curr=question_list[ptr]->currentIndex();
-		curr.child(0,0);
-		question_list[ptr]->selectionModel()->select(curr,QItemSelectionModel::Select);
+		QModelIndex child=roundmodel[ptr]->index(curr.row()-1,0);
+		question_list[ptr]->setCurrentIndex(child);
 	}
 }
 
@@ -408,7 +418,10 @@ void QEditor::move_down(int round)
       int index=question_list[ptr]->currentIndex().row();
       if (index!=roundmodel[ptr]->rowCount()-1 && index!=-1)
       {
-	      roundmodel[ptr]->swapOrder(index,index+1);
+		roundmodel[ptr]->swapOrder(index,index+1);
+		QModelIndex curr=question_list[ptr]->currentIndex();
+		QModelIndex child=roundmodel[ptr]->index(curr.row()+1,0);
+		question_list[ptr]->setCurrentIndex(child);
       }
 }
 
