@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
+    <width>658</width>
     <height>595</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -184,30 +184,54 @@
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <item row="0" column="0">
-             <widget class="QPushButton" name="button_add_r1">
+             <widget class="QToolButton" name="button_add_r1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Add</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QPushButton" name="button_up_r1">
+             <widget class="QToolButton" name="button_up_r1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Up</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="button_remove_r1">
+            <item row="1" column="1">
+             <widget class="QToolButton" name="button_down_r1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Remove</string>
+               <string>Down</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="button_down_r1">
+            <item row="1" column="0">
+             <widget class="QToolButton" name="button_remove_r1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Down</string>
+               <string>Remove</string>
               </property>
              </widget>
             </item>
@@ -220,7 +244,7 @@
           <item>
            <widget class="QLabel" name="question_r1_num">
             <property name="text">
-             <string> </string>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -359,6 +383,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximum">
+               <number>10</number>
+              </property>
              </widget>
             </item>
             <item row="1" column="0">
@@ -396,29 +423,53 @@
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
-             <widget class="QPushButton" name="button_add_r2">
-              <property name="text">
-               <string>Add</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
-             <widget class="QPushButton" name="button_up_r2">
+             <widget class="QToolButton" name="button_up_r2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Up</string>
               </property>
              </widget>
             </item>
+            <item row="0" column="0">
+             <widget class="QToolButton" name="button_add_r2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="0">
-             <widget class="QPushButton" name="button_remove_r2">
+             <widget class="QToolButton" name="button_remove_r2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Remove</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QPushButton" name="button_down_r2">
+             <widget class="QToolButton" name="button_down_r2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Down</string>
               </property>
@@ -433,7 +484,7 @@
           <item>
            <widget class="QLabel" name="question_r2_num">
             <property name="text">
-             <string> </string>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -603,30 +654,54 @@
           <item>
            <layout class="QGridLayout" name="gridLayout_6">
             <item row="0" column="0">
-             <widget class="QPushButton" name="button_add_r3">
+             <widget class="QToolButton" name="button_add_r3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Add</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QPushButton" name="button_up_r3">
+             <widget class="QToolButton" name="button_up_r3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Up</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="button_remove_r3">
+            <item row="1" column="1">
+             <widget class="QToolButton" name="button_down_r3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Remove</string>
+               <string>Down</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="button_down_r3">
+            <item row="1" column="0">
+             <widget class="QToolButton" name="button_remove_r3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Down</string>
+               <string>Remove</string>
               </property>
              </widget>
             </item>
@@ -639,7 +714,7 @@
           <item>
            <widget class="QLabel" name="question_r3_num">
             <property name="text">
-             <string> </string>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -842,30 +917,54 @@
           <item>
            <layout class="QGridLayout" name="gridLayout_8">
             <item row="0" column="0">
-             <widget class="QPushButton" name="button_add_r4">
+             <widget class="QToolButton" name="button_add_r4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Add</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QPushButton" name="button_up_r4">
+             <widget class="QToolButton" name="button_up_r4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Up</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="button_remove_r4">
+            <item row="1" column="1">
+             <widget class="QToolButton" name="button_down_r4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Remove</string>
+               <string>Down</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="button_down_r4">
+            <item row="1" column="0">
+             <widget class="QToolButton" name="button_remove_r4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Down</string>
+               <string>Remove</string>
               </property>
              </widget>
             </item>
@@ -878,7 +977,7 @@
           <item>
            <widget class="QLabel" name="question_r4_num">
             <property name="text">
-             <string> </string>
+             <string>No question selected</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1070,7 +1169,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>643</width>
+     <width>658</width>
      <height>24</height>
     </rect>
    </property>

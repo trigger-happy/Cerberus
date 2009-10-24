@@ -37,13 +37,21 @@ void QuestionModel::addNewQuestion()
 	temp.append(new QStandardItem("")); // choice c
 	temp.append(new QStandardItem("")); // choice d
 	temp.append(new QStandardItem("")); // choice e
-	temp.append(new QStandardItem("00000")); // answerkey
+	if (round>1)
+		temp.append(new QStandardItem("00000")); // answerkey
+	else
+		temp.append(new QStandardItem("10000")); 
 	temp.append(new QStandardItem("1")); // score
 	temp.append(new QStandardItem("0")); // time
 	//temp.append(new QStandardItem)
 	
 	QStandardItemModel::appendRow(temp);
 	
+}
+
+void QuestionModel::removeQuestion(int index)
+{
+	QStandardItemModel::removeRow(index);
 }
 
 void QuestionModel::updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString score,QString time)
@@ -61,7 +69,35 @@ void QuestionModel::updateQuestion(int index,QString question,QString a,QString 
 
 void QuestionModel::swapOrder(int q1,int q2)
 {
-	//swapping goes here
+	QString question=getQuestion(q1);
+	QString a=getA(q1);
+	QString b=getB(q1);
+	QString c=getC(q1);
+	QString d=getD(q1);
+	QString e=getE(q1);
+	QString anskey=QStandardItemModel::item(q1,6)->text();
+	QString score=QStandardItemModel::item(q1,7)->text();
+	QString time=QStandardItemModel::item(q1,8)->text();
+	
+	QStandardItemModel::item(q1,0)->setText(getQuestion(q2));
+	QStandardItemModel::item(q1,1)->setText(getA(q2));
+	QStandardItemModel::item(q1,2)->setText(getB(q2));
+	QStandardItemModel::item(q1,3)->setText(getC(q2));
+	QStandardItemModel::item(q1,4)->setText(getD(q2));
+	QStandardItemModel::item(q1,5)->setText(getE(q2));
+	QStandardItemModel::item(q1,6)->setText(QStandardItemModel::item(q2,6)->text());
+	QStandardItemModel::item(q1,7)->setText(QStandardItemModel::item(q2,7)->text());
+	QStandardItemModel::item(q1,8)->setText(QStandardItemModel::item(q2,8)->text());
+	
+	QStandardItemModel::item(q2,0)->setText(question);
+	QStandardItemModel::item(q2,1)->setText(a);
+	QStandardItemModel::item(q2,2)->setText(b);
+	QStandardItemModel::item(q2,3)->setText(c);
+	QStandardItemModel::item(q2,4)->setText(d);
+	QStandardItemModel::item(q2,5)->setText(e);
+	QStandardItemModel::item(q2,6)->setText(anskey);
+	QStandardItemModel::item(q2,7)->setText(score);
+	QStandardItemModel::item(q2,8)->setText(time);
 }
 
 QString QuestionModel::getQuestion(int index)
@@ -88,16 +124,16 @@ QString QuestionModel::getE(int index)
 {
 	return QStandardItemModel::item(index,5)->text();
 }
-bool* QuestionModel::getAnskey(int index)
+void QuestionModel::getAnskey(int index,bool* temp)
 {
-	bool* temp=new bool[5];
+	//bool* temp=new bool[5];
 	
 	QString cheat=QStandardItemModel::item(index,6)->text();
 	for (int ctr=0;ctr<cheat.size();ctr++)
 	{
 		temp[ctr]=(cheat[ctr]==QChar('1'));
 	}
-	return temp;
+	//return temp;
 }
 int QuestionModel::getScore(int index)
 {
