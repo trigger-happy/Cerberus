@@ -40,12 +40,7 @@ public slots:
 	void list_focus(int round);
 	void update_question(int round);
 	void add_question(int round);
-	void on_first_list();
-	void on_r2_list();
-	void add_question_r1();
-	void add_question_r2();
 	void changed_details_r2();
-	void update_question_r2();
 	
 private:
 	Ui::q_editor *q_ui;

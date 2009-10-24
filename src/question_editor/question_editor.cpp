@@ -232,58 +232,12 @@ void QEditor::list_focus(int round)
 	delete ans;
 }
 
-void QEditor::on_first_list()
-{
-	int index=q_ui->list_r1->currentIndex().row();
-	q_ui->question_r1_num->setText("Question "+QString::number(index+1));
-	q_ui->question_r1_text->setPlainText(q_ui->list_r1->currentIndex().data().toString());
-	q_ui->question_r1_a->setText(round1model->getA(index));
-	q_ui->question_r1_b->setText(round1model->getB(index));
-	q_ui->question_r1_c->setText(round1model->getC(index));
-	q_ui->question_r1_d->setText(round1model->getD(index));
-	q_ui->question_r1_score->setValue(round1model->getScore(index));
-	/*bool* ans=round1model->getAnskey(index);
-	q_ui->question_r1_ans_a->setChecked(ans[0]);
-	q_ui->question_r1_ans_b->setChecked(ans[1]);
-	q_ui->question_r1_ans_c->setChecked(ans[2]);
-	q_ui->question_r1_ans_d->setChecked(ans[3]);*/
-	//delete[] ans;
-}
-
-void QEditor::on_r2_list()
-{
-	int index=q_ui->list_r2->currentIndex().row();
-	q_ui->question_r2_num->setText("Question "+QString::number(index+1));
-	q_ui->question_r2_text->setPlainText(q_ui->list_r2->currentIndex().data().toString());
-	q_ui->question_r2_a->setText(round2model->getA(index));
-	q_ui->question_r2_b->setText(round2model->getB(index));
-	q_ui->question_r2_c->setText(round2model->getC(index));
-	q_ui->question_r2_d->setText(round2model->getD(index));
-	q_ui->question_r2_score->setValue(round2model->getScore(index));
-	/*bool* ans=round2model->getAnskey(index);
-	q_ui->question_r2_ans_a->setChecked(ans[0]);
-	q_ui->question_r2_ans_b->setChecked(ans[1]);
-	q_ui->question_r2_ans_c->setChecked(ans[2]);
-	q_ui->question_r2_ans_d->setChecked(ans[3]);*/
-	//delete[] ans;
-	//QString
-}
-
 void QEditor::add_question(int round)
 {
 	//cout << round;
 	roundmodel[round-1]->addNewQuestion();
 }
 
-void QEditor::add_question_r1()
-{
-	roundmodel[0]->addNewQuestion();
-}
-
-void QEditor::add_question_r2()
-{
-	round2model->addNewQuestion();
-}
 
 void QEditor::changed_details_r2()
 {
@@ -293,63 +247,45 @@ void QEditor::changed_details_r2()
 
 void QEditor::update_question(int round)
 {
-	int ptr=round-1;
-	int index=question_list[ptr]->currentIndex().row();
-	QString question=question_text[ptr]->toPlainText();
-	QString a=question_a[ptr]->text();
-	QString b=question_b[ptr]->text();
-	QString c=question_c[ptr]->text();
-	QString d=question_d[ptr]->text();
-	QString e;
-	if (round > 2) e=question_e[ptr]->text();
-	else e="";
-	QString anskey="";
-	if (question_ans_a[ptr]->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	if (question_ans_b[ptr]->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	if (question_ans_c[ptr]->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	if (question_ans_d[ptr]->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	
-	QString score=QString::number(question_score[ptr]->value());
-	QString time;
-	if (round>2) {
-		if (question_ans_e[ptr]->isChecked()) anskey.append("1");
+	if (round==0)
+	{
+	      
+	}
+	else
+	{ 
+		int ptr=round-1;
+		int index=question_list[ptr]->currentIndex().row();
+		QString question=question_text[ptr]->toPlainText();
+		QString a=question_a[ptr]->text();
+		QString b=question_b[ptr]->text();
+		QString c=question_c[ptr]->text();
+		QString d=question_d[ptr]->text();
+		QString e;
+		if (round > 2) e=question_e[ptr]->text();
+		else e="";
+		QString anskey="";
+		if (question_ans_a[ptr]->isChecked()) anskey.append("1");
 		else anskey.append("0");
-		time=QString::number(question_time[ptr]->value());
+		if (question_ans_b[ptr]->isChecked()) anskey.append("1");
+		else anskey.append("0");
+		if (question_ans_c[ptr]->isChecked()) anskey.append("1");
+		else anskey.append("0");
+		if (question_ans_d[ptr]->isChecked()) anskey.append("1");
+		else anskey.append("0");
+		
+		QString score=QString::number(question_score[ptr]->value());
+		QString time;
+		if (round>2) {
+			if (question_ans_e[ptr]->isChecked()) anskey.append("1");
+			else anskey.append("0");
+			time=QString::number(question_time[ptr]->value());
+		}
+		else {
+			anskey.append("0");
+			time="0";
+		}
+		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
 	}
-	else {
-		anskey.append("0");
-		time="0";
-	}
-	q_ui->textarea_welcome->setPlainText(QString::number(index));
-	roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
-	//q_ui->button_update->setEnabled(false);
-}
-
-void QEditor::update_question_r2()
-{
-	int index=q_ui->list_r2->currentIndex().row();
-	QString question=q_ui->question_r2_text->toPlainText();
-	QString a=q_ui->question_r2_a->text();
-	QString b=q_ui->question_r2_b->text();
-	QString c=q_ui->question_r2_c->text();
-	QString d=q_ui->question_r2_d->text();
-	QString anskey="";
-	if (q_ui->question_r2_ans_a->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	if (q_ui->question_r2_ans_b->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	if (q_ui->question_r2_ans_c->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	if (q_ui->question_r2_ans_d->isChecked()) anskey.append("1");
-	else anskey.append("0");
-	anskey.append("0");
-	QString score=QString::number(q_ui->question_r2_score->value());
-	round2model->updateQuestion(index,question,a,b,c,d,"",anskey,score,"0");
-	q_ui->button_update_r2->setEnabled(false);
 }
 
 void QEditor::enable_components(int round)
