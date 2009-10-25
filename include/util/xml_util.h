@@ -39,7 +39,7 @@ public:
 				: message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset)
 		{}
 		const char* what() const throw() {
-			static const QByteArray &ret = message.toUtf8();
+			static const QByteArray ret = message.toUtf8();
 			return ret.data();
 		}
 	};
