@@ -71,86 +71,86 @@ public:
 
 	static const char * const CONFIG_ROOT_TAG;
 
-        /*!
-        */
-        bool readQuestionData ( int round, const QString& xml, QuestionData& qd );
+	/*!
+	*/
+	bool readQuestionData ( int round, const QString& xml, QuestionData& qd );
 
-        /*!
-        */
-        bool writeQuestionData ( int round, const QuestionData& qd, QString& xml );
+	/*!
+	*/
+	bool writeQuestionData ( int round, const QuestionData& qd, QString& xml );
 
-        /*!
-        Read the client config from xml.
-        \param xml Xml data in a QString.
-        \param conf Reference to a ClientConfig struct to fill up.
-        \return true on succes, false on failure.
-        */
-        bool readClientConfig ( const QString& xml, ClientConfig& conf );
+	/*!
+	Read the client config from xml.
+	\param xml Xml data in a QString.
+	\param conf Reference to a ClientConfig struct to fill up.
+	\return true on succes, false on failure.
+	*/
+	bool readClientConfig ( const QString& xml, ClientConfig& conf );
 
-        /*!
-        Write the client config to xml.
-        \param conf The ClientConfig to save to xml.
-        \param xml Reference to QString where the xml data will be saved.
-        \return true on success, false on failure.
-        */
-        bool writeClientConfig ( const ClientConfig& conf, QString& xml );
+	/*!
+	Write the client config to xml.
+	\param conf The ClientConfig to save to xml.
+	\param xml Reference to QString where the xml data will be saved.
+	\return true on success, false on failure.
+	*/
+	bool writeClientConfig ( const ClientConfig& conf, QString& xml );
 
-        /*!
-		Read the network config from an xml string.
-        \param xml Xml data in a QString.
-        \param conf Reference to a NetworkConfig struct to fill up.
-		\throws XmlException
-        */
-		void readNetConfig ( const QString& xml, NetworkConfig& conf );
+	/*!
+	Read the network config from an xml string.
+	\param xml Xml data in a QString.
+	\param conf Reference to a NetworkConfig struct to fill up.
+	\throws XmlException
+	*/
+	void readNetConfig ( const QString& xml, NetworkConfig& conf );
 
-		/*!
-		Read the network config from xml stream.
-		\param xml The xml stream, should be positioned to the 'config' element.
-		\param conf Reference to a NetworkConfig struct to fill up.
-		\throws std::invalid_argument The xml stream is not positioned to the 'config' element.
-		*/
-		void readNetConfig( QXmlStreamReader& xml, NetworkConfig& config);
-        /*!
-        Write the network config to xml.
-        \param conf The NetworkConfig struct to save to xml.
-        \param xml Reference to QString where the xml data will be saved.
-        */
-		void writeNetConfig ( const NetworkConfig& conf, QString& xml );
+	/*!
+	Read the network config from xml stream.
+	\param xml The xml stream, should be positioned to the 'config' element.
+	\param conf Reference to a NetworkConfig struct to fill up.
+	\throws std::invalid_argument The xml stream is not positioned to the 'config' element.
+	*/
+	void readNetConfig( QXmlStreamReader& xml, NetworkConfig& config);
+	/*!
+	Write the network config to xml.
+	\param conf The NetworkConfig struct to save to xml.
+	\param xml Reference to QString where the xml data will be saved.
+	*/
+	void writeNetConfig ( const NetworkConfig& conf, QString& xml );
 
-        /*!
-        Read the server config from xml.
-        \param xml Xml data in a QString.
-        \param conf Reference to a ServerConfig struct to fill up.
-		\throws XmlException
-        */
-		void readServerConfig ( const QString& xml, ServerConfig& conf );
+	/*!
+	Read the server config from xml.
+	\param xml Xml data in a QString.
+	\param conf Reference to a ServerConfig struct to fill up.
+	\throws XmlException
+	*/
+	void readServerConfig ( const QString& xml, ServerConfig& conf );
 
-        /*!
-        Write the server config to xml.
-        \param conf The ServerConfig struct to save to xml.
-		\param xml Reference to QString where the xml data will be appended.
-        */
-		void writeServerConfig ( const ServerConfig& conf, QString& xml );
+	/*!
+	Write the server config to xml.
+	\param conf The ServerConfig struct to save to xml.
+	\param xml Reference to QString where the xml data will be appended.
+	*/
+	void writeServerConfig ( const ServerConfig& conf, QString& xml );
 private:
-        // round 1 related stuff
-        bool readR1QData ( const QString& xml, QuestionData& data );
-        bool writeR1QData ( const QuestionData& data, QString& xml );
-        bool readR1AData ( const QString& xml, AnswerData& data );
-        bool writeR1AData ( const AnswerData& data, QString& xml );
+	// round 1 related stuff
+	bool readR1QData ( const QString& xml, QuestionData& data );
+	bool writeR1QData ( const QuestionData& data, QString& xml );
+	bool readR1AData ( const QString& xml, AnswerData& data );
+	bool writeR1AData ( const AnswerData& data, QString& xml );
 
-        // round 2 related stuff
-        bool readR2QData ( const QString& xml, QuestionData& data );
-        bool writeR2QData ( const QuestionData& data, QString& xml );
-        bool readR2AData ( const QString& xml, AnswerData& data );
-        bool writeR2AData ( const AnswerData& data, QString& xml );
+	// round 2 related stuff
+	bool readR2QData ( const QString& xml, QuestionData& data );
+	bool writeR2QData ( const QuestionData& data, QString& xml );
+	bool readR2AData ( const QString& xml, AnswerData& data );
+	bool writeR2AData ( const AnswerData& data, QString& xml );
 
-        // round 3 and tie-breaker related stuff
-        bool readR3QData ( const QString& xml, QuestionData& data );
-        bool writeR3QData ( const QuestionData& data, QString& xml );
-        bool readR3AData ( const QString& xml, AnswerData& data );
-        bool writeR3AData ( const AnswerData& data, QString& xml );
+	// round 3 and tie-breaker related stuff
+	bool readR3QData ( const QString& xml, QuestionData& data );
+	bool writeR3QData ( const QuestionData& data, QString& xml );
+	bool readR3AData ( const QString& xml, AnswerData& data );
+	bool writeR3AData ( const AnswerData& data, QString& xml );
 
-		StageData readStageData(QXmlStreamReader& stream);
+	StageData readStageData(QXmlStreamReader& stream);
 protected:
 };
 
