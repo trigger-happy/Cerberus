@@ -27,8 +27,21 @@ bool SqlUtil::init ( const QString& dbname )
         db.setPassword ( "admin" );
         bool ok = db.open();
         query = new QSqlQuery ( db );
-
+        QStringList sl = db.tables();
+        if ( !verifyDB ( sl ) ) {
+                createDBTables();
+        }
         return ok;
+}
+
+void SqlUtil::createDBTables()
+{
+        // assume that db is connected but does not contain the valid tables.
+        QFile file ( "resources/server.sql" );
+        QString s;
+        file.open ( QIODevice::ReadOnly );
+        s = file.readAll();
+        query->exec ( s );
 }
 
 int SqlUtil::addTeam ( const QString& team_name, const QString& school )
@@ -64,11 +77,11 @@ int SqlUtil::setScore ( const QString& user_name, double score )
 {
         QString sql = QString ( "" );
         int size = 0;
-        int result = 0;
+        bool result = false;
         result = query->exec ( "SELECT username FROM user "
                                "WHERE username = '" + user_name + "'" );
-        if ( result != 0 ) {
-                return result;
+        if ( !result ) {
+                return -1;
         }
         while ( query->next() ) {
                 size++;
@@ -76,8 +89,8 @@ int SqlUtil::setScore ( const QString& user_name, double score )
         if ( size == 1 ) {
                 result = query->exec ( "SELECT username FROM scores "
                                        "WHERE username = '" + user_name + "'" );
-                if ( result != 0 ) {
-                        return result;
+                if ( !result ) {
+                        return -2;
                 }
                 size = 0;
                 while ( query->next() ) {
@@ -93,9 +106,14 @@ int SqlUtil::setScore ( const QString& user_name, double score )
                               .arg ( score );
                 }
         } else {
-                return -1;
+                return -3;
         }
-        return query->exec( sql );
+        result =  query->exec ( sql );
+        if ( result ) {
+                return 0;
+        } else {
+                return -4;
+        }
 }
 
 bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
@@ -112,4 +130,100 @@ bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
                 return true;
         else
                 return false;
+}
+
+bool SqlUtil::getTeams ( vector<TeamData>& out )
+{
+        out.clear();
+        QString sql = "SELECT school, team_name FROM team";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        TeamData temp;
+                        temp.school = query->value ( 0 ).toString();
+                        temp.teamname = query->value ( 1 ).toString();
+                        out.push_back ( temp );
+                }
+                return true;
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::getUsers ( vector<UserData>& out )
+{
+        out.clear();
+        QString sql = "SELECT username, team_name, firstname, lastname, password FROM user";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        UserData temp;
+                        temp.user_name = query->value ( 0 ).toString();
+                        temp.teamname = query->value ( 1 ).toString();
+                        temp.firstname = query->value ( 2 ).toString();
+                        temp.lastname = query->value ( 3 ).toString();
+                        temp.password = query->value ( 4 ).toString();
+                        out.push_back ( temp );
+                }
+                return true;
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::getScores ( vector<ScoreData>& out )
+{
+        out.clear();
+        QString sql = "SELECT username, score FROM scores";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        ScoreData temp;
+                        temp.user_name = query->value ( 0 ).toString();
+                        temp.score = query->value ( 1 ).toDouble();
+                        out.push_back ( temp );
+                }
+                return true;
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::getAdmins ( vector<AdminData>& out )
+{
+        out.clear();
+        QString sql = "SELECT username, password FROM admin";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        AdminData temp;
+                        temp.user_name = query->value ( 0 ).toString();
+                        temp.password = query->value ( 1 ).toString();
+                        out.push_back ( temp );
+                }
+                return true;
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::addAdmin ( const AdminData& a )
+{
+        QString sql = QString ( "INSERT INTO \"admin\" VALUES('%1', '%2')" )
+                      .arg ( a.user_name ).arg ( a.password );
+        bool result = query->exec ( sql );
+        return result;
+}
+
+bool SqlUtil::verifyDB ( const QStringList& sl )
+{
+        if ( sl.size() < 4 ) {
+                return false;
+        }
+        bool result = true;
+        result &= ( bool ) sl.contains ( "admin" );
+        result &= ( bool ) sl.contains ( "user" );
+        result &= ( bool ) sl.contains ( "scores" );
+        result &= ( bool ) sl.contains ( "team" );
+        return result;
 }

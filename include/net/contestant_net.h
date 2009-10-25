@@ -78,14 +78,14 @@ public:
 
         /*!
         Request for the question data from the server. Use onQdata signal
-	for the xml data.
+        for the xml data.
         \return true if the data was sent, false otherwise.
         */
         bool qDataRequest ( int round );
 
         /*!
         Send the answer data to the server. Use onAData signal for the
-	server's response.
+        server's response.
         \param xml QString containing the xml answer data to be sent.
         \return true if the data was sent, false otherwise.
         */
@@ -122,7 +122,7 @@ signals:
 
         /*!
         Emitted when there's a change to the contest state or as a reply
-	from the server to our state request.
+        from the server to our state request.
         \param round The current round
         \param status The current contest status
         */
