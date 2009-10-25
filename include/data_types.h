@@ -84,19 +84,16 @@ typedef map<int,QString> AnswerData;
 
 struct NetworkConfig {
         bool operator== ( const NetworkConfig& rhs ) {
-                if ( this->ip == rhs.ip && this->port == rhs.port ) {
-                        return true;
-                }
-                return false;
+				return this->ip == rhs.ip && this->port == rhs.port;
         }
         QString ip;
         int port;
 };
 
-struct ClientConfig {
+struct ClientConfig : public NetworkConfig {
 };
 
-struct PresenterConfig {
+struct PresenterConfig : public NetworkConfig {
 };
 
 struct AdminConfig {
