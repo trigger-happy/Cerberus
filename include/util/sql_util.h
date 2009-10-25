@@ -65,7 +65,7 @@ public:
         Set the score for user_name to score.
         \param user_name The user name who's score should be updated.
         \param score The score of the user in double.
-        \return 0 on success, a QSqlQuery error otherwise.
+        \return 0 on success, an error code otherwise.
         */
         int setScore ( const QString& user_name, double score );
 
@@ -112,7 +112,19 @@ public:
         \return true on success, false otherwise.
         */
         bool addAdmin ( const AdminData& a );
+
+        /*!
+        Verify if the database tables are existent.
+        \param sl QStringList of tables.
+        \return true of valid, false otherwise.
+        */
+        bool verifyDB ( const QStringList& sl );
 private:
+        /*!
+        Create the database tables if they don't exist
+        */
+        void createDBTables();
+
         QSqlDatabase db;
         QSqlQuery* query;
 };
