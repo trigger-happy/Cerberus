@@ -265,3 +265,21 @@ void XmlUtil::readServerConfig ( const QString& xml, ServerConfig& conf )
 	if ( reader.hasError() )
 		throw IllFormedXmlException(reader.errorString(), reader);
 }
+
+void XmlUtil::writeServerConfig ( const ServerConfig& conf, QString& xml ) {
+	QXmlStreamWriter writer( &xml );
+	writer.setAutoFormatting(true);
+	writer.writeStartDocument();
+	writer.writeStartElement(CONFIG_ROOT_TAG);
+	writer.writeTextElement("port", QString::number(conf.port));
+	writer.writeTextElement("db", conf.db_path);
+	for ( size_t i = 0; i < conf.stage_data.size(); ++i ) {
+		writer.writeStartElement("stage_data");
+		const StageData &sd = conf.stage_data[i];
+		writer.writeTextElement("question", sd.question_file);
+		writer.writeTextElement("answer", sd.answer_file);
+		writer.writeEndElement();
+	}
+	writer.writeEndElement();
+	writer.writeEndDocument();
+}

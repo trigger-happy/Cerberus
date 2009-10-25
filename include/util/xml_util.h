@@ -129,10 +129,9 @@ public:
         /*!
         Write the server config to xml.
         \param conf The ServerConfig struct to save to xml.
-        \param xml Reference to QString where the xml data will be saved.
-        \return true on success, false on failure.
+		\param xml Reference to QString where the xml data will be appended.
         */
-        bool writeServerConfig ( const ServerConfig& conf, QString& xml );
+		void writeServerConfig ( const ServerConfig& conf, QString& xml );
 private:
         // round 1 related stuff
         bool readR1QData ( const QString& xml, QuestionData& data );
