@@ -144,19 +144,19 @@ void ContestantConnection::ready()
 
 void ContestantConnection::errorReply ( ERROR_MESSAGES err )
 {
-	//construct the packet and send it
-	QByteArray block;
-	QDataStream out ( &block, QIODevice::WriteOnly );
-	out.setVersion ( QDataStream::Qt_4_5 );
-	// construct the header
-	p_header hdr;
-	hdr.length = sizeof ( uchar );
-	hdr.command = INF_ERROR;
-	
-	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
-	out << ( uchar ) err;
-	
-	m_socket->write ( block );
+        //construct the packet and send it
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        // construct the header
+        p_header hdr;
+        hdr.length = sizeof ( uchar );
+        hdr.command = INF_ERROR;
+
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( uchar ) err;
+
+        m_socket->write ( block );
 }
 
 void ContestantConnection::disconnected()
@@ -230,10 +230,12 @@ void ContestantConnection::sendContestState ()
         m_socket->write ( block );
 }
 
-void ContestantConnection::setRound(int round){
-	m_round = round;
+void ContestantConnection::setRound ( int round )
+{
+        m_round = round;
 }
 
-void ContestantConnection::setStatus(CONTEST_STATUS s){
-	m_con_status = s;
+void ContestantConnection::setStatus ( CONTEST_STATUS s )
+{
+        m_con_status = s;
 }
