@@ -210,6 +210,19 @@ void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
 }
 
+void XmlUtil::writeNetConfig(const NetworkConfig &conf, QString &xml) {
+	QXmlStreamWriter writer(&xml);
+	writer.setAutoFormatting(true);
+	writer.writeStartDocument();
+	writer.writeStartElement("config");
+	{
+		writer.writeTextElement("ip", conf.ip);
+		writer.writeTextElement("port", conf.port);
+	}
+	writer.writeEndElement();
+	writer.writeEndDocument();
+}
+
 StageData XmlUtil::readStageData(QXmlStreamReader& stream) {
 	assert(stream.name() == "stage_data");
 	StageData ret;

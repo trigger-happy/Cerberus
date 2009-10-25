@@ -114,9 +114,8 @@ public:
         Write the network config to xml.
         \param conf The NetworkConfig struct to save to xml.
         \param xml Reference to QString where the xml data will be saved.
-        \return true on success, false on failure.
         */
-        bool writeNetConfig ( const NetworkConfig& conf, QString& xml );
+		void writeNetConfig ( const NetworkConfig& conf, QString& xml );
 
         /*!
         Read the server config from xml.
