@@ -46,7 +46,7 @@ void SqlTest::getUsersTest()
         SqlUtil& sql = SqlUtil::getInstance();
         UserData ud;
         ud.user_name = "user";
-        ud.password = QCryptographicHash::hash("pass", QCryptographicHash::Sha1);
+        ud.password = QCryptographicHash::hash ( "pass", QCryptographicHash::Sha1 );
         ud.firstname = "fname";
         ud.lastname = "lname";
         ud.teamname = "test_team";
@@ -80,6 +80,11 @@ void SqlTest::getScoreTest()
 
 void SqlTest::addAdminTest()
 {
+        SqlUtil& sql = SqlUtil::getInstance();
+        AdminData ad;
+        ad.user_name = "admin1";
+        ad.password = QCryptographicHash::hash ( "pass", QCryptographicHash::Sha1 );
+        QVERIFY ( sql.addAdmin ( ad ) );
 }
 
 void SqlTest::getTeamsTest()
@@ -92,6 +97,20 @@ void SqlTest::getScoresTest()
 
 void SqlTest::getAdminsTest()
 {
+        SqlUtil& sql = SqlUtil::getInstance();
+        AdminData ad;
+        ad.user_name = "admin1";
+        ad.password = QCryptographicHash::hash ( "pass", QCryptographicHash::Sha1 );
+        vector<AdminData> v_ad;
+        QVERIFY ( sql.getAdmins ( v_ad ) );
+        bool result = false;
+        for ( int i = 0; i < v_ad.size(); i++ ) {
+                if ( ad.user_name == v_ad[i].user_name
+                     && ad.password == v_ad[i].password ) {
+                        result = true;
+                }
+        }
+        QVERIFY ( result );
 }
 
 void SqlTest::verifyDBTest()
