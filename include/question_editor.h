@@ -87,6 +87,8 @@ private:
 	QSignalMapper* sigToUp;
 	QSignalMapper* sigToDown;
 	
+	int history[ROUNDS];
+	
 	//QAction* act_save;
 	//QAction* act_load;
 	//QAction* act_quit;
