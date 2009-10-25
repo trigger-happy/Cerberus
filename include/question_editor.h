@@ -36,7 +36,7 @@ class QEditor : public QMainWindow
 public:
 	QEditor(QWidget *parent = 0);
 	~QEditor();
-public slots:
+private slots:
 	void list_focus(int round);
 	void update_question(int round);
 	void cancel_update(int round);
@@ -46,6 +46,9 @@ public slots:
 	void remove_question(int round);
 	void move_up(int round);
 	void move_down(int round);
+	void load();
+	void save();
+	void exit();
 	
 private:
 	Ui::q_editor *q_ui;
@@ -83,6 +86,11 @@ private:
 	QSignalMapper* sigToDetailUpdate;
 	QSignalMapper* sigToUp;
 	QSignalMapper* sigToDown;
+	
+	//QAction* act_save;
+	//QAction* act_load;
+	//QAction* act_quit;
+	
 };
 
 #endif

@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iostream>
 
 using namespace std;
-//TODO: update function for pre-contest, read/saving xml files
+//TODO: update function after selected on list had been changed, reading/saving xml files
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
@@ -175,7 +175,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	sigToDetailUpdate->setMapping(q_ui->textarea_welcome,0);
 	connect(q_ui->textarea_welcome,SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
-	
+	q_ui->textarea_welcome->setTabChangesFocus(true);
 	
 	for (int ctr=0;ctr<4;ctr++)
 	{
@@ -225,6 +225,9 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		}
 		
 		question_list[ctr]->setModel(roundmodel[ctr]);
+		question_list[ctr]->setEditTriggers(QAbstractItemView::NoEditTriggers);
+		question_text[ctr]->setTabChangesFocus(true);
+		//question_list[ctr]->setDragDropMode(QAbstractItemView::DragDrop);
 	}
 	for (int ctr=0;ctr<5;ctr++)
 	{
@@ -239,6 +242,18 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	}
 	
 	control_components(1,false);
+	
+	//for menu/keyboard commands
+	q_ui->act_save_xml->setShortcut(QKeySequence::Save);
+	q_ui->act_load_xml->setShortcut(QKeySequence::Open);
+	q_ui->act_exit->setShortcut(QKeySequence::Close);
+	q_ui->act_save_xml->setStatusTip("Saves questions to xml files");
+	q_ui->act_save_xml->setStatusTip("Load xml files containing the questions.");
+	q_ui->act_exit->setStatusTip("Closes the program");
+	
+	connect(q_ui->act_save_xml,SIGNAL(triggered(bool)),this,SLOT(save()));
+	connect(q_ui->act_load_xml,SIGNAL(triggered(bool)),this,SLOT(load()));
+	connect(q_ui->act_exit,SIGNAL(triggered(bool)),this,SLOT(exit()));
 	
 	/*connect(q_ui->question_r2_ans_a,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
 	connect(q_ui->question_r2_ans_b,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
@@ -255,9 +270,8 @@ QEditor::~QEditor()
 	delete sigToDetailUpdate;
 	delete sigToUp;
 	delete sigToDown;
+	
 	delete q_ui;
-	//delete round1model;
-	//delete round2model;
 	for (int ctr=0;ctr<4;ctr++)
 	{
 		delete roundmodel[ctr];
@@ -274,27 +288,44 @@ void QEditor::list_focus(int round)
 		
 		if (index!=-1)
 		{
-			question_num[ptr]->setText("Question "+QString::number(index+1));
-			question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
-			question_a[ptr]->setText(roundmodel[ptr]->getA(index));
-			question_b[ptr]->setText(roundmodel[ptr]->getB(index));
-			question_c[ptr]->setText(roundmodel[ptr]->getC(index));
-			question_d[ptr]->setText(roundmodel[ptr]->getD(index));
-			if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
-			question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
-			if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
-			bool* ans=new bool[5];
-			roundmodel[ptr]->getAnskey(index,ans);
-			question_ans_a[ptr]->setChecked(ans[0]);
-			question_ans_b[ptr]->setChecked(ans[1]);
-			question_ans_c[ptr]->setChecked(ans[2]);
-			question_ans_d[ptr]->setChecked(ans[3]);
-			if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
-			delete ans;
-			control_components(round,true);
-			button_update[round]->setDisabled(true);
-			button_cancel[round]->setDisabled(true);
-			
+			int change=QMessageBox::Ok;
+			if (button_update[round]->isEnabled())
+			{
+				QMessageBox conf;
+				conf.setWindowTitle("Notification");
+				conf.setText("Details of question has been modified, but not yet updated");
+				conf.setInformativeText("Do you want to proceed in updating the changes?");
+				conf.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+				conf.setDefaultButton(QMessageBox::Ok);
+				change=conf.exec();
+				if (change==QMessageBox::Ok)
+				{
+					update_question(round);
+				}
+			}
+			if (change==QMessageBox::Ok)
+			{
+				question_num[ptr]->setText("Question "+QString::number(index+1));
+				question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
+				question_a[ptr]->setText(roundmodel[ptr]->getA(index));
+				question_b[ptr]->setText(roundmodel[ptr]->getB(index));
+				question_c[ptr]->setText(roundmodel[ptr]->getC(index));
+				question_d[ptr]->setText(roundmodel[ptr]->getD(index));
+				if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
+				question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
+				if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
+				bool* ans=new bool[5];
+				roundmodel[ptr]->getAnskey(index,ans);
+				question_ans_a[ptr]->setChecked(ans[0]);
+				question_ans_b[ptr]->setChecked(ans[1]);
+				question_ans_c[ptr]->setChecked(ans[2]);
+				question_ans_d[ptr]->setChecked(ans[3]);
+				if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
+				delete ans;
+				control_components(round,true);
+				button_update[round]->setDisabled(true);
+				button_cancel[round]->setDisabled(true);
+			}
 		}
 		else
 		{
@@ -385,7 +416,7 @@ void QEditor::update_question(int round)
 			time="0";
 		}
 		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
-		
+		//q_ui->statusBar->setStatusTip("Question "+QString::number(index+1)+" of round "+QString::number(round)+" has been updated.");
 	}
 	button_update[round]->setDisabled(true);
 	button_cancel[round]->setDisabled(true);
@@ -445,6 +476,21 @@ void QEditor::control_components(int round,bool enable)
 		question_time[ptr]->setEnabled(enable);
 	}
 	
+}
+
+void QEditor::load()
+{
+	//QMessageBox::
+}
+
+void QEditor::save()
+{
+  
+}
+
+void QEditor::exit()
+{
+  
 }
 
 int main(int argc, char *argv[])
