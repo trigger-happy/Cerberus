@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 
+#include <stdexcept>
+
+const char * const XmlUtil::CONFIG_ROOT_TAG = "config";
+
 bool XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
 {
         QXmlStreamReader reader ( xml );
@@ -163,34 +167,47 @@ bool XmlUtil::writeR1AData ( const AnswerData& data, QString& xml )
         return true;
 }
 
-bool XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
+void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
 {
-        return true;
+	readNetConfig(xml, conf);
 }
 
-bool XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
-{
-        QXmlStreamReader reader ( xml );
-        while ( !reader.atEnd() ) {
-                QXmlStreamReader::TokenType token = reader.readNext();
-                if ( token == QXmlStreamReader::StartElement ) {
-                        if ( reader.name() == "config" ) { // checks for the config tag
-                                token = reader.readNext();
-                                token = reader.readNext();// moves to the ip tag
-                                token = reader.readNext();
-                                QString ip = reader.text().toString(); // reads the ip address
-                                token = reader.readNext();
-                                token = reader.readNext(); // moves to the port tag
-                                token = reader.readNext();
-                                token = reader.readNext(); // moves to the port text
-                                int port = reader.text().toString().toInt(); // reads the text from the port
-                                conf.ip = ip; // stores ip into data
-                                conf.port = port; // stores port into data port
-                        }
-                }
+void XmlUtil::readNetConfig( QXmlStreamReader& xml, NetworkConfig& config) {
+	if ( !reader.isStartElement() || reader.name() != CONFIG_ROOT_TAG )
+		throw std::invalid_argument("Passed XML does not start with 'config' element.");
 
-        }
-        return true;
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
+			if ( reader.name() == "ip" ) {
+				config.ip = reader.readElementText();
+			} else if ( reader.name() == "port" ) {
+				config.port = reader.readElementText().toInt();
+			} else {
+				//Should I barf because of invalid tags in the conf or just
+				//ignore this madness?
+			}
+		} else if ( reader.isEndElement() && reader.name() == CONFIG_ROOT_TAG )
+			break;
+	}
+
+	if ( reader.hasError() )
+		throw IllFormedXmlException(reader.errorString(),
+									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+}
+
+void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
+{
+	QXmlStreamReader reader( xml );
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement &&
+			 reader.name() == CONFIG_ROOT_TAG )
+			break;
+	}
+
+	if ( reader.hasError() )
+		throw IllFormedXmlException(reader.errorString(),
+									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+	readNetConfig(reader, conf);
 }
 
 bool XmlUtil::readServerConfig ( const QString& xml, ServerConfig& conf )

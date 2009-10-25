@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "data_types.h"
 #include "patterns/singleton.h"
 #include <stdexcept>
-#include <string>
-
-using namespace std;
 
 /*!
 \brief Handles the reading/writing of Xml data.
@@ -34,15 +31,17 @@ class XmlUtil : public Singleton<XmlUtil>
 {
 public:
 
-	class XmlException : public runtime_error {
+	class XmlException : public std::runtime_error {
 		public:
 		const QString message;
 		const qint64 lineNumber, columnNumber, characterOffset;
 		XmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
-				: message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset), runtime_error(message.toStdString())
+				: runtime_error(message.toStdString()), message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset)
 		{}
 		const char* what() const throw() {
-			static const QByteArray ret = message.toUtf8();
+			static const QByteArray ret = QString("Error: %1 at line %2 column %3").
+										  arg(message, QString::number(lineNumber), QString::number(columnNumber)).
+										  toUtf8();
 			return ret.data();
 		}
 		~XmlException() throw(){}
@@ -60,6 +59,7 @@ public:
 		{}
 	};
 
+	static const char * const CONFIG_ROOT_TAG;
 
         /*!
         */
@@ -86,13 +86,21 @@ public:
         bool writeClientConfig ( const ClientConfig& conf, QString& xml );
 
         /*!
-        Read the network config from xml.
+		Read the network config from an xml string.
         \param xml Xml data in a QString.
         \param conf Reference to a NetworkConfig struct to fill up.
-        \return true on succes, false on failure.
+		\throws IllFormedXmlException
         */
-        bool readNetConfig ( const QString& xml, NetworkConfig& conf );
+		void readNetConfig ( const QString& xml, NetworkConfig& conf );
 
+		/*!
+		Read the network config from xml stream.
+		\param xml The xml stream, should be positioned to the 'config' element.
+		\param conf Reference to a NetworkConfig struct to fill up.
+		\throws std::invalid_argument The xml stream is not positioned to the 'config' element.
+		\throws IllFormedXmlException
+		*/
+		void readNetConfig( QXmlStreamReader& xml, NetworkConfig& config);
         /*!
         Write the network config to xml.
         \param conf The NetworkConfig struct to save to xml.
