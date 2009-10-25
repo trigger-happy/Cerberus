@@ -132,6 +132,88 @@ bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
                 return false;
 }
 
+bool SqlUtil::getTeams ( vector<TeamData>& out )
+{
+        out.clear();
+        QString sql = "SELECT school, team_name FROM team";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        TeamData temp;
+                        temp.school = query->value ( 0 ).toString();
+                        temp.teamname = query->value ( 1 ).toString();
+                        out.push_back ( temp );
+                }
+                return true;
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::getUsers ( vector<UserData>& out )
+{
+        out.clear();
+        QString sql = "SELECT username, team_name, firstname, lastname, password FROM user";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        UserData temp;
+                        temp.user_name = query->value ( 0 ).toString();
+                        temp.teamname = query->value ( 1 ).toString();
+                        temp.firstname = query->value ( 2 ).toString();
+                        temp.lastname = query->value ( 3 ).toString();
+                        temp.password = query->value ( 4 ).toString();
+                        out.push_back ( temp );
+                }
+                return true;
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::getScores ( vector<ScoreData>& out )
+{
+        out.clear();
+        QString sql = "SELECT username, score FROM scores";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        ScoreData temp;
+                        temp.user_name = query->value ( 0 ).toString();
+                        temp.score = query->value ( 1 ).toDouble();
+                        out.push_back ( temp );
+                }
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::getAdmins ( vector<AdminData>& out )
+{
+        out.clear();
+        QString sql = "SELECT username, password FROM admin";
+        bool result = query->exec ( sql );
+        if ( result ) {
+                while ( query->next() ) {
+                        AdminData temp;
+                        temp.user_name = query->value ( 0 ).toString();
+                        temp.password = query->value ( 1 ).toString();
+                        out.push_back ( temp );
+                }
+                return true;
+        } else {
+                return false;
+        }
+}
+
+bool SqlUtil::addAdmin ( const AdminData& a )
+{
+        QString sql = QString ( "INSERT INTO \"admin\" VALUES('%1', '%2')" )
+                      .arg ( a.user_name ).arg ( a.password );
+        bool result = query->exec ( sql );
+        return result;
+}
+
 bool SqlUtil::verifyDB ( const QStringList& sl )
 {
         if ( sl.size() < 4 ) {
