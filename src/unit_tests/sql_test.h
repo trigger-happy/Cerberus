@@ -27,9 +27,14 @@ private slots:
         void initTestCase();
         void addTeamTest();
         void addUserTest();
-        void getUserTest();
+        void getUsersTest();
         void setScoreTest();
         void getScoreTest();
+        void addAdminTest();
+        void getTeamsTest();
+        void getScoresTest();
+        void getAdminsTest();
+        void verifyDBTest();
         void authenticateTest();
 private:
         SqlUtil m_sqlutil;
