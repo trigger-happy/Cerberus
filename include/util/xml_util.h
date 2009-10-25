@@ -122,9 +122,9 @@ public:
         Read the server config from xml.
         \param xml Xml data in a QString.
         \param conf Reference to a ServerConfig struct to fill up.
-        \return true on success, false on failure.
+		\throws XmlException
         */
-        bool readServerConfig ( const QString& xml, ServerConfig& conf );
+		void readServerConfig ( const QString& xml, ServerConfig& conf );
 
         /*!
         Write the server config to xml.
@@ -151,6 +151,8 @@ private:
         bool writeR3QData ( const QuestionData& data, QString& xml );
         bool readR3AData ( const QString& xml, AnswerData& data );
         bool writeR3AData ( const AnswerData& data, QString& xml );
+
+		StageData readStageData(QXmlStreamReader& stream);
 protected:
 };
 

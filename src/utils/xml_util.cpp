@@ -18,10 +18,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "util/xml_util.h"
 #include "data_types.h"
 #include <iostream>
+#include <stdexcept>
+#include <cassert>
 
 using namespace std;
-
-#include <stdexcept>
 
 const char * const XmlUtil::CONFIG_ROOT_TAG = "config";
 
@@ -210,49 +210,58 @@ void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
 }
 
-bool XmlUtil::readServerConfig ( const QString& xml, ServerConfig& conf )
+StageData XmlUtil::readStageData(QXmlStreamReader& stream) {
+	assert(stream.name() == "stage_data");
+	StageData ret;
+	while ( !stream.atEnd() ) {
+		if ( stream.readNext() == QXmlStreamReader::StartElement ) {
+			if ( stream.name() == "question" ) {
+				ret.question_file = stream.readElementText();
+			} else if ( stream.name() == "answer" ) {
+				ret.answer_file = stream.readElementText();
+			} else if ( stream.name() == "stage_data" ) {
+				//I found me-self again!
+				throw InvalidXmlException("'stage_data' tag found inside 'stage_data'.", stream);
+			} else {
+				//barf?
+			}
+		} else if ( stream.isEndElement() && stream.name() == "stage_data" )
+			break;
+	}
+	return ret;
+}
+
+void XmlUtil::readServerConfig ( const QString& xml, ServerConfig& conf )
 {
-        QXmlStreamReader reader ( xml );
-        while ( !reader.atEnd() ) {
-                QXmlStreamReader::TokenType token = reader.readNext();
-                if ( token == QXmlStreamReader::StartElement ) {
-                        if ( reader.name() == "config" ) {
-                                token = reader.readNext();
-                                token = reader.readNext(); // move token to the port tag
-                                token = reader.readNext();
-                                int port = reader.text().toString().toInt(); // read the port value
-                                token = reader.readNext();
-                                token = reader.readNext();// move token to the db tag
-                                token = reader.readNext();
-                                token = reader.readNext();
-                                QString db = reader.text().toString(); // read the db value
-                                token = reader.readNext(); // exit the db tag
-                                token = reader.readNext();
-                                token = reader.readNext(); // move token to stage_data tag
+	QXmlStreamReader reader ( xml );
 
-                                QXmlStreamAttributes attributes = reader.attributes(); // get the attributes
-                                int round = attributes.value ( "round" ).toString().toInt(); // gets the attribute round from stage_data
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement )
+			break;
+	}
 
-                                token = reader.readNext(); // move token to question_data
-                                token = reader.readNext();
-                                token = reader.readNext(); // move token to question_data value
-                                QString questions = reader.text().toString(); // read the questions value
-                                token = reader.readNext(); // move token to answer_data tag
-                                token = reader.readNext();
-                                token = reader.readNext();
-                                token = reader.readNext(); // move token to answer_data value
-                                QString answers = reader.text().toString(); //read the answers value
+	if ( reader.name() != CONFIG_ROOT_TAG )
+		throw InvalidXmlException("No config root tag found.",
+								  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
 
-                                StageData data;
-                                data.question_file = questions;
-                                data.answer_file = answers;
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
+			if ( reader.name() == "port" ) {
+				bool ok;
+				conf.port = reader.readElementText().toInt(&ok);
+				if ( !ok || conf.port > (1 << 16 - 1) )
+					throw InvalidXmlException("Invalid server port specified.",
+											  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+			} else if ( reader.name() == "db" ) {
+				conf.db_path = reader.readElementText();
+			} else if ( reader.name() == "stage_data" ) {
+				conf.stage_data.push_back( readStageData(reader) );
+			} else {
+				//barf?
+			}
+		}
+	}
 
-                                conf.db_path = db;
-                                conf.port = port;
-
-                                conf.stage_data.push_back ( data );
-                        }
-                }
-        }
-        return true;
+	if ( reader.hasError() )
+		throw IllFormedXmlException(reader.errorString(), reader);
 }
