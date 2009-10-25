@@ -59,6 +59,7 @@ public:
 		{}
 	};
 
+	static const char * const CONFIG_ROOT_TAG;
 
         /*!
         */
@@ -85,13 +86,21 @@ public:
         bool writeClientConfig ( const ClientConfig& conf, QString& xml );
 
         /*!
-        Read the network config from xml.
+		Read the network config from an xml string.
         \param xml Xml data in a QString.
         \param conf Reference to a NetworkConfig struct to fill up.
-        \return true on succes, false on failure.
+		\throws IllFormedXmlException
         */
-        bool readNetConfig ( const QString& xml, NetworkConfig& conf );
+		void readNetConfig ( const QString& xml, NetworkConfig& conf );
 
+		/*!
+		Read the network config from xml stream.
+		\param xml The xml stream, should be positioned to the 'config' element.
+		\param conf Reference to a NetworkConfig struct to fill up.
+		\throws std::invalid_argument The xml stream is not positioned to the 'config' element.
+		\throws IllFormedXmlException
+		*/
+		void readNetConfig( QXmlStreamReader& xml, NetworkConfig& config);
         /*!
         Write the network config to xml.
         \param conf The NetworkConfig struct to save to xml.
