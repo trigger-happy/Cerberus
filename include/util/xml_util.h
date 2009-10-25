@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "data_types.h"
 #include "patterns/singleton.h"
 #include <stdexcept>
+#include <string>
+
+using namespace std;
 
 /*!
 \brief Handles the reading/writing of Xml data.
@@ -36,12 +39,13 @@ public:
 		const QString message;
 		const qint64 lineNumber, columnNumber, characterOffset;
 		XmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
-				: message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset)
+				: message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset), runtime_error(message.toStdString())
 		{}
 		const char* what() const throw() {
 			static const QByteArray &ret = message.toUtf8();
 			return ret.data();
 		}
+		~XmlException() throw(){}
 	};
 
 	class IllFormedXmlException : public XmlException {
