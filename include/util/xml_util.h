@@ -38,6 +38,10 @@ public:
 		XmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
 				: runtime_error(message.toStdString()), message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset)
 		{}
+		XmlException(const QString& message, const QXmlStreamReader& stream) :
+				runtime_error(message.toStdString()), message(message),
+				lineNumber(stream.lineNumber()), columnNumber(stream.columnNumber()), characterOffset(stream.characterOffset()) {}
+
 		const char* what() const throw() {
 			static const QByteArray ret = QString("Error: %1 at line %2 column %3").
 										  arg(message, QString::number(lineNumber), QString::number(columnNumber)).
@@ -48,15 +52,21 @@ public:
 	};
 
 	class IllFormedXmlException : public XmlException {
-		IllFormedXmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
-				: XmlException(message, lineNumber, columnNumber, characterOffset)
+		public:
+		IllFormedXmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset ) :
+				XmlException(message, lineNumber, columnNumber, characterOffset)
 		{}
+		IllFormedXmlException(const QString& message, const QXmlStreamReader& stream) :
+				XmlException(message, stream) {}
 	};
 
 	class InvalidXmlException : public XmlException {
+		public:
 		InvalidXmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
 				: XmlException(message, lineNumber, columnNumber, characterOffset)
 		{}
+		InvalidXmlException(const QString& message, const QXmlStreamReader& stream) :
+				XmlException(message, stream) {}
 	};
 
 	static const char * const CONFIG_ROOT_TAG;
