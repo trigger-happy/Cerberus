@@ -15,7 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
+#include <cmath>
 #include "sql_test.h"
+
+using namespace std;
 
 void SqlTest::initTestCase()
 {
@@ -89,10 +92,41 @@ void SqlTest::addAdminTest()
 
 void SqlTest::getTeamsTest()
 {
+        SqlUtil& sql = SqlUtil::getInstance();
+        TeamData td;
+        td.school = "test_school";
+        td.teamname = "test_team";
+        vector<TeamData> v_td;
+        QVERIFY ( sql.getTeams ( v_td ) );
+        bool result = false;
+        for ( int i = 0; i < v_td.size(); i++ ) {
+                if ( td.school == v_td[i].school
+                     && td.teamname == v_td[i].teamname ) {
+                        result = true;
+                }
+        }
+        QVERIFY ( result );
 }
 
 void SqlTest::getScoresTest()
 {
+        SqlUtil& sql = SqlUtil::getInstance();
+        ScoreData sd;
+        sd.user_name = "user";
+        sd.score = 100.0;
+        vector<ScoreData> v_sd;
+        QVERIFY ( sql.getScores ( v_sd ) );
+        bool result = false;
+        for ( int i = 0; i < v_sd.size(); i++ ) {
+                if ( sd.user_name == v_sd[i].user_name ) {
+                        double d = sd.score-v_sd[i].score;
+                        d = abs ( d );
+                        if ( d < 0.0001 ) {
+                                result = true;
+                        }
+                }
+        }
+        QVERIFY ( result );
 }
 
 void SqlTest::getAdminsTest()
@@ -115,6 +149,15 @@ void SqlTest::getAdminsTest()
 
 void SqlTest::verifyDBTest()
 {
+        SqlUtil& sql = SqlUtil::getInstance();
+        QStringList correct_tables, bad_tables;
+        correct_tables.insert ( correct_tables.size(), "admin" );
+        correct_tables.insert ( correct_tables.size(), "team" );
+        correct_tables.insert ( correct_tables.size(), "user" );
+        correct_tables.insert ( correct_tables.size(), "scores" );
+        bad_tables.insert ( 0, "Blarg" );
+        QVERIFY ( sql.verifyDB ( correct_tables ) );
+        QVERIFY ( !sql.verifyDB ( bad_tables ) );
 }
 
 void SqlTest::authenticateTest()

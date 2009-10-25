@@ -25,6 +25,7 @@ class SqlTest : public QObject
         Q_OBJECT;
 private slots:
         void initTestCase();
+        void verifyDBTest();
         void addTeamTest();
         void addUserTest();
         void getUsersTest();
@@ -34,7 +35,6 @@ private slots:
         void getTeamsTest();
         void getScoresTest();
         void getAdminsTest();
-        void verifyDBTest();
         void authenticateTest();
 private:
         SqlUtil m_sqlutil;

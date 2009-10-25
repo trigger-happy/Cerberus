@@ -183,6 +183,7 @@ bool SqlUtil::getScores ( vector<ScoreData>& out )
                         temp.score = query->value ( 1 ).toDouble();
                         out.push_back ( temp );
                 }
+                return true;
         } else {
                 return false;
         }
