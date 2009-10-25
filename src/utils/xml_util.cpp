@@ -189,10 +189,6 @@ void XmlUtil::readNetConfig( QXmlStreamReader& xml, NetworkConfig& config) {
 		} else if ( reader.isEndElement() && reader.name() == CONFIG_ROOT_TAG )
 			break;
 	}
-
-	if ( reader.hasError() )
-		throw IllFormedXmlException(reader.errorString(),
-									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
 }
 
 void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
@@ -204,10 +200,14 @@ void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 			break;
 	}
 
+	if ( reader.name() != CONFIG_ROOT_TAG )
+		throw InvalidXmlException("No config root tag found.",
+								  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+	readNetConfig(reader, conf);
+
 	if ( reader.hasError() )
 		throw IllFormedXmlException(reader.errorString(),
 									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
-	readNetConfig(reader, conf);
 }
 
 bool XmlUtil::readServerConfig ( const QString& xml, ServerConfig& conf )

@@ -89,7 +89,7 @@ public:
 		Read the network config from an xml string.
         \param xml Xml data in a QString.
         \param conf Reference to a NetworkConfig struct to fill up.
-		\throws IllFormedXmlException
+		\throws XmlException
         */
 		void readNetConfig ( const QString& xml, NetworkConfig& conf );
 
@@ -98,7 +98,6 @@ public:
 		\param xml The xml stream, should be positioned to the 'config' element.
 		\param conf Reference to a NetworkConfig struct to fill up.
 		\throws std::invalid_argument The xml stream is not positioned to the 'config' element.
-		\throws IllFormedXmlException
 		*/
 		void readNetConfig( QXmlStreamReader& xml, NetworkConfig& config);
         /*!
