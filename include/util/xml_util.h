@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "data_types.h"
 #include "patterns/singleton.h"
 #include <stdexcept>
-#include <string>
-
-using namespace std;
 
 /*!
 \brief Handles the reading/writing of Xml data.
@@ -34,15 +31,17 @@ class XmlUtil : public Singleton<XmlUtil>
 {
 public:
 
-	class XmlException : public runtime_error {
+	class XmlException : public std::runtime_error {
 		public:
 		const QString message;
 		const qint64 lineNumber, columnNumber, characterOffset;
 		XmlException(const QString &message, qint64 lineNumber, qint64 columnNumber, qint64 characterOffset )
-				: message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset), runtime_error(message.toStdString())
+				: runtime_error(message.toStdString()), message(message), lineNumber(lineNumber), columnNumber(columnNumber), characterOffset(characterOffset)
 		{}
 		const char* what() const throw() {
-			static const QByteArray ret = message.toUtf8();
+			static const QByteArray ret = QString("Error: %1 at line %2 column %3").
+										  arg(message, QString::number(lineNumber), QString::number(columnNumber)).
+										  toUtf8();
 			return ret.data();
 		}
 		~XmlException() throw(){}
