@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>595</height>
+    <width>679</width>
+    <height>668</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -191,6 +191,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Add</string>
               </property>
@@ -203,6 +209,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Up</string>
@@ -217,6 +229,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Down</string>
               </property>
@@ -229,6 +247,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Remove</string>
@@ -431,6 +455,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Up</string>
               </property>
@@ -443,6 +473,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Add</string>
@@ -457,6 +493,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Remove</string>
               </property>
@@ -469,6 +511,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Down</string>
@@ -661,6 +709,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Add</string>
               </property>
@@ -673,6 +727,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Up</string>
@@ -687,6 +747,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Down</string>
               </property>
@@ -699,6 +765,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Remove</string>
@@ -924,6 +996,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Add</string>
               </property>
@@ -936,6 +1014,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Up</string>
@@ -950,6 +1034,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>Down</string>
               </property>
@@ -962,6 +1052,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
                <string>Remove</string>
@@ -1169,7 +1265,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>658</width>
+     <width>679</width>
      <height>24</height>
     </rect>
    </property>
@@ -1177,8 +1273,10 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionImport_Xml"/>
-    <addaction name="actionExport_Xml"/>
+    <addaction name="act_load_xml"/>
+    <addaction name="act_save_xml"/>
+    <addaction name="separator"/>
+    <addaction name="act_exit"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -1190,14 +1288,20 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <action name="actionImport_Xml">
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="act_load_xml">
    <property name="text">
     <string>Import xml</string>
    </property>
   </action>
-  <action name="actionExport_Xml">
+  <action name="act_save_xml">
    <property name="text">
     <string>Export Xml</string>
+   </property>
+  </action>
+  <action name="act_exit">
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>
