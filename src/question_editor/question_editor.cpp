@@ -288,22 +288,36 @@ void QEditor::list_focus(int round)
 		
 		if (index!=-1)
 		{
-			int change=QMessageBox::Ok;
+			bool change=true;
 			if (button_update[round]->isEnabled())
 			{
 				QMessageBox conf;
 				conf.setWindowTitle("Notification");
-				conf.setText("Details of question has been modified, but not yet updated");
-				conf.setInformativeText("Do you want to proceed in updating the changes?");
-				conf.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
-				conf.setDefaultButton(QMessageBox::Ok);
-				change=conf.exec();
-				if (change==QMessageBox::Ok)
+				conf.setText("Details of question has been modified, but have not been updated");
+				conf.setInformativeText("What do you want to do?");
+				QPushButton *update=conf.addButton(tr("Update then proceed"),QMessageBox::ActionRole);
+				QPushButton *canpro=conf.addButton(tr("Cancel then proceed"),QMessageBox::ActionRole);
+				QPushButton *goback=conf.addButton(tr("Cancel Action"),QMessageBox::ActionRole);
+				conf.setDefaultButton(update);
+				conf.exec();
+				
+				if (conf.clickedButton()==update)
 				{
+					QModelIndex curr=question_list[ptr]->currentIndex();
+					QModelIndex child=roundmodel[ptr]->index(history[ptr],0);
+					question_list[ptr]->setCurrentIndex(child);
 					update_question(round);
+					question_list[ptr]->setCurrentIndex(curr);
+				}
+				else if (conf.clickedButton()==goback)
+				{
+					QModelIndex curr=question_list[ptr]->currentIndex();
+					QModelIndex child=roundmodel[ptr]->index(history[ptr],0);
+					question_list[ptr]->setCurrentIndex(child);
+					change=false;
 				}
 			}
-			if (change==QMessageBox::Ok)
+			if (change)
 			{
 				question_num[ptr]->setText("Question "+QString::number(index+1));
 				question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
@@ -325,6 +339,7 @@ void QEditor::list_focus(int round)
 				control_components(round,true);
 				button_update[round]->setDisabled(true);
 				button_cancel[round]->setDisabled(true);
+				history[ptr]=index;
 			}
 		}
 		else
@@ -490,7 +505,7 @@ void QEditor::save()
 
 void QEditor::exit()
 {
-  
+	this->close();
 }
 
 int main(int argc, char *argv[])
