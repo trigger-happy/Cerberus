@@ -68,6 +68,7 @@ bool ConfigEditor::showInfo() {
 void ConfigEditor::save() {
     //QString *error = new QString("");
     //bool isEmpty = true;
+    ui->error->setText("");
     ui->tabWidget_2->setTabText(0, "Round1");
     ui->tabWidget_2->setTabText(1, "Round2");
     ui->tabWidget_2->setTabText(2, "Round3");
@@ -259,5 +260,81 @@ void ConfigEditor::save() {
     //ui->error->setText(*error);
 }
 void ConfigEditor::load() {
+    ui->error->setText( "" );
+    XmlUtil& xu = XmlUtil::getInstance();
+    bool check = false;
 
+    if( ui->presenterConf->text() != "" ) {
+        NetworkConfig *nc = new NetworkConfig();
+        QString network(ui->presenterConf->text());
+        QFile file( network );
+
+        if( file.exists() ) {
+            check = true;
+            xu.readNetConfig ( network , *nc );
+            ui->serverIP->setText( nc->ip );
+            ui->serverPort1->setText( QString("%1").arg(nc->port) );
+        }
+    }
+
+    else if( ui->adminConf->text() != "" ) {
+        NetworkConfig *nc = new NetworkConfig();
+        QString network(ui->presenterConf->text());
+        QFile file (network);
+
+        if( file.exists() ) {
+            check = true;
+            xu.readNetConfig( network, *nc );
+            ui->serverIP->setText( nc->ip );
+            ui->serverPort1->setText( QString("%1").arg(nc->port) );
+        }
+    }
+
+    else if( ui->constConf->text() != "" ) {
+        ClientConfig *nc = new ClientConfig();
+        QString network(ui->presenterConf->text());
+        QFile file (network);
+
+        if( file.exists() ) {
+            check = true;
+            xu.readClientConfig( network, *nc );
+            ui->serverIP->setText( nc->ip );
+            ui->serverPort1->setText( QString("%1").arg(nc->port) );
+            ui->serverPort2->setText( QString("%1").arg(nc->port) );
+        }
+    }
+
+    if( ui->serverConf->text() != "" ) {
+        ServerConfig *sc = new ServerConfig();
+        QString network( ui->serverConf->text() );
+        QFile file (network);
+
+        if( file.exists() ) {
+            check = true;
+            xu.readServerConfig( network, *sc );
+            ui->sql->setText( sc->db_path );
+            ui->serverPort1->setText( QString("%1").arg(sc->port) );
+            ui->serverPort2->setText( QString("%1").arg(sc->port) );
+
+            StageData s1 = sc->stage_data.at(0);
+            StageData s2 = sc->stage_data.at(1);
+            StageData s3 = sc->stage_data.at(2);
+            StageData s4 = sc->stage_data.at(3);
+
+            ui->q_rnd1->setText(s1.question_file);
+            ui->q_rnd2->setText(s2.question_file);
+            ui->q_rnd3->setText(s3.question_file);
+            ui->q_rnd4->setText(s4.question_file);
+
+            ui->a_rnd1->setText(s1.answer_file);
+            ui->a_rnd2->setText(s2.answer_file);
+            ui->a_rnd3->setText(s3.answer_file);
+            ui->a_rnd4->setText(s4.answer_file);
+        }
+    }
+
+    if( check == false ) {
+
+        ui->error->setText( "Please add at least one correct path to fill something" );
+    }
 }
