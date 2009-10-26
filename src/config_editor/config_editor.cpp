@@ -102,111 +102,113 @@ void ConfigEditor::ButtonPressed() {
     bool cont = true;
 
     QFile file ( server );
-    if( !file.exists() ) {
+    if( file.exists() ) {
         QString temp("server");
         cont = askConfirmation(temp);
-        delete &temp;
-        delete &file;
+
     }
     
     if( cont ) {
         
         QFile sqFile(sql);
         if( !sqFile.exists() ) {
-            ui->sql->setText("SQL File*");
+            ui->label_sql->setText("SQL File*");
             cont = false;
         }
 
         QFile q1File(r1_q);
         if( !q1File.exists() ) {
             ui->tabWidget_2->setTabText(0, "Round1*");
-            ui->q_rnd1->setText("Question File*");
+            ui->label_q1->setText("Question File*");
             cont = false;
         }
 
         QFile a1File( r1_a) ;
         if( !a1File.exists() ) {
             ui->tabWidget_2->setTabText(0, "Round1*");
-            ui->a_rnd1->setText("Answer File*");
+            ui->label_a1->setText("Answer File*");
             cont = false;
         }
 
         QFile q2File(r2_q);
         if( !q2File.exists() ) {
             ui->tabWidget_2->setTabText(1, "Round2*");
-            ui->q_rnd2->setText("Question File*");
+            ui->label_q2->setText("Question File*");
             cont = false;
         }
 
         QFile a2File( r2_a) ;
         if( !a2File.exists() ) {
             ui->tabWidget_2->setTabText(1, "Round2*");
-            ui->a_rnd2->setText("Answer File*");
+            ui->label_a2->setText("Answer File*");
             cont = false;
         }
 
         QFile q3File(r3_q);
         if( !q3File.exists() ) {
             ui->tabWidget_2->setTabText(2, "Round3*");
-            ui->q_rnd3->setText("Question File*");
+            ui->label_q3->setText("Question File*");
             cont = false;
         }
 
         QFile a3File( r3_a) ;
         if( !a3File.exists() ) {
             ui->tabWidget_2->setTabText(2, "Round3*");
-            ui->a_rnd3->setText("Answer File*");
+            ui->label_a3->setText("Answer File*");
             cont = false;
         }
 
         QFile q4File(r4_q);
         if( !q4File.exists() ) {
             ui->tabWidget_2->setTabText(3, "Round4*");
-            ui->q_rnd4->setText("Question File*");
+            ui->label_q4->setText("Question File*");
             cont = false;
         }
 
         QFile a4File( r4_a) ;
         if( !a4File.exists() ) {
             ui->tabWidget_2->setTabText(3, "Round4*");
-            ui->a_rnd4->setText("Answer File*");
+            ui->label_a4->setText("Answer File*");
             cont = false;
         }
 
+    }
 
+    if( !cont) {
+        showInfo();
     }
 
     if( cont ) {
         QFile file2 ( contestant );
-        if( !file2.exists() ) {
+        if( file2.exists() ) {
             QString temp("contestant");
             cont = askConfirmation(temp);
-            delete &temp;
-            delete &file2;
+
         }
     }
     if( cont ) {
         QFile file3 ( admin );
-        if( !file3.exists() ) {
+        if( file3.exists() ) {
             QString temp("admin");
             cont = askConfirmation(temp);
-            delete &temp;
-            delete &file3;
+
         }
     }
 
     if( cont ) {
            QFile file4 ( presenter );
-        if( !file4.exists() ) {
+        if( file4.exists() ) {
             QString temp("presenter");
             cont = askConfirmation(temp);
-            delete &temp;
-            delete &file4;
+
         }
     }
 
     if( cont ) {
         ui->error->setText( "OK" );
+    }
+    else {
+        ui->error->setText( "Change the file paths to avoid overwriting" );
     }
     //ui->error->setText(*error);
 }
