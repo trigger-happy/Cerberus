@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>teammember_edit_wnd</class>
- <widget class="QDialog" name="teammember_edit_wnd">
+ <class>user_table_wnd</class>
+ <widget class="QDialog" name="user_table_wnd">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>288</width>
-    <height>310</height>
+    <width>291</width>
+    <height>332</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>User View</string>
   </property>
   <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
+     <y>10</y>
      <width>271</width>
      <height>62</height>
     </rect>
@@ -41,7 +41,7 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLabel" name="teamnamedisplay">
+     <widget class="QLabel" name="lbl_teamname">
       <property name="text">
        <string>Dragonfruit Dango</string>
       </property>
@@ -55,7 +55,7 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLabel" name="schooldisplay">
+     <widget class="QLabel" name="lbl_schoolname">
       <property name="text">
        <string>Ateneo de Manila University</string>
       </property>
@@ -63,79 +63,95 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="formLayoutWidget_2">
+  <widget class="QPushButton" name="edit_school_btn">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>100</y>
-     <width>271</width>
-     <height>151</height>
-    </rect>
-   </property>
-   <layout class="QFormLayout" name="formLayout_2">
-    <property name="fieldGrowthPolicy">
-     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-    </property>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>First Name:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="firstname"/>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="lastname"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>Last name:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="username"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Username:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLineEdit" name="password"/>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>Password:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QPushButton" name="add_member_btn">
-      <property name="text">
-       <string>Add Team Member</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QPushButton" name="view_team_info_btn">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>270</y>
+     <x>160</x>
+     <y>80</y>
      <width>111</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>View Team Info</string>
+    <string>Edit School Name</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="formLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>110</y>
+     <width>261</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout_2">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Username:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="username_txt"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="add_user_btn">
+      <property name="text">
+       <string>Add User</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QListView" name="user_listview">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>180</y>
+     <width>141</width>
+     <height>141</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="edit_user_btn">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>190</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Edit User</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delete_user_btn">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>220</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Delete User</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="backtoteams_btn">
+   <property name="geometry">
+    <rect>
+     <x>184</x>
+     <y>300</y>
+     <width>91</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Back to Teams</string>
    </property>
   </widget>
  </widget>

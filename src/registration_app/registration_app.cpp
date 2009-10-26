@@ -1,60 +1,112 @@
 #include "registration_app.h"
 
-#include "ui_add_team.h"
-#include "ui_team_view.h"
-#include "ui_teammember_edit.h"
+#include "ui_team_table.h"
+#include "ui_user_table.h"
+#include "ui_user_edit.h"
 #include "util/sql_util.h"
 
-RegistrationApp::RegistrationApp(QWidget* parent) : m_add_team_wnd( new Ui::add_team_wnd ),
-	m_team_view_wnd(new Ui::team_view_wnd),
-	m_teammember_edit_wnd(new Ui::teammember_edit_wnd)
+RegistrationApp::RegistrationApp(QWidget* parent) :
+	m_team_table_wnd( new Ui::team_table_wnd ),
+	m_user_table_wnd(new Ui::user_table_wnd),
+	m_user_edit_wnd(new Ui::user_edit_wnd),
+	m_sql(SqlUtil::getInstance())
 {
-
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("Database Directory"),
+										  tr("Database Path:"), QLineEdit::Normal,
+										  QDir::home().dirName(), &ok);
+	if (!text.isEmpty())
+		 m_sql.init(text);
 	this->hide();
-	m_addteam_w = new QMainWindow(this);
-	m_add_team_wnd->setupUi(m_addteam_w);
-	m_addteam_w->show();
+	m_team_table_w = new QDialog(this);
+	m_team_table_wnd->setupUi(m_team_table_w);
+	m_team_table_w->show();
 
-	m_teammember_w = new QDialog(this);
-	m_teammember_edit_wnd->setupUi(m_teammember_w);
-	m_teammember_w->hide();
+	m_user_table_w = new QDialog(this);
+	m_user_table_wnd->setupUi(m_user_table_w);
+	m_user_table_w->hide();
 
-	m_teamview_w = new QDialog(this);
-	m_team_view_wnd->setupUi(m_teamview_w);
-	m_teamview_w->hide();
+	m_user_edit_w = new QDialog(this);
+	m_user_edit_wnd->setupUi(m_user_edit_w);
+	m_user_edit_w->hide();
 	//network?
 
 	//connecting stuff
 
 	//connections for the buttons
-	connect(m_add_team_wnd->add_team_btn, SIGNAL(clicked()), this, SLOT(addTeam()));
-	connect(m_teammember_edit_wnd->add_member_btn,SIGNAL(clicked()), this, SLOT(addUser()));
-	connect(m_teammember_edit_wnd->view_team_info_btn, SIGNAL(clicked()), this, SLOT(viewTeam()));
-	connect(m_team_view_wnd->back_to_edit_btn, SIGNAL(clicked()), this, SLOT(backToAddTeam()));
 
+	//team table
+	connect(m_team_table_wnd->add_team_btn, SIGNAL(clicked()), this, SLOT(addTeam()));
+	connect(m_team_table_wnd->team_edit_btn, SIGNAL(clicked()), this, SLOT(goToEditTeam()));
+	connect(m_team_table_wnd->team_delete_btn, SIGNAL(clicked()), this, SLOT(deleteTeam()));
+
+	//user table
+	connect(m_user_table_wnd->edit_school_btn, SIGNAL(clicked()), this, SLOT(editTeamSchool()));
+	connect(m_user_table_wnd->add_user_btn, SIGNAL(clicked()), this, SLOT(addUser()));
+	connect(m_user_table_wnd->edit_user_btn, SIGNAL(clicked()), this, SLOT(editUser()));
+	connect(m_user_table_wnd->delete_user_btn, SIGNAL(clicked()), this, SLOT(deleteUser()));
+	connect(m_user_table_wnd->backtoteams_btn, SIGNAL(clicked()), this, SLOT(backToTeam()));
+
+	//user edit
+	connect(m_user_edit_wnd->save_userchange_btn, SIGNAL(clicked()), this, SLOT(saveUserEdit()));
+	connect(m_user_edit_wnd->backtouser_btn, SIGNAL(clicked()), this, SLOT(backToUser()));
+
+	bool result = SqlUtil::getInstance().init ( text );
+		if ( !result ) {
+				QMessageBox msg ( this );
+				msg.setText ( "Failed to load database" );
+				msg.exec();
+		}
+}
+
+bool RegistrationApp::addTeam(){
+	const QString teamname_txt = m_team_table_wnd->teamname_txt->text(),
+	teamschool_txt = m_team_table_wnd->teamschool_txt->text();
+	m_sql.addTeam(teamname_txt, teamschool_txt);
+	//refresh the list view here
 
 }
 
-void RegistrationApp::editTeamMember(){
-	const QString teamname = m_add_team_wnd->teamname->text(),
-	teamschool = m_add_team_wnd->teamschool->text();
-	SqlUtil s;
-	s.addTeam(teamname, teamschool);
-}
-
-void RegistrationApp::addTeam(){
+bool RegistrationApp::goToEditTeam(){
+	//make sure at least one thing in the list view is selected
+	m_team_table_w->hide();
+	m_user_table_w->show();
+	m_user_table_wnd->lbl_schoolname->setText(m_team_table_wnd->teamname_txt->text());
 
 }
 
-void RegistrationApp::addUser(){
+bool RegistrationApp::deleteTeam(){
+	//m_sql.deleteTeam(); //gets the selected school in the list view
+}
+
+bool RegistrationApp::editTeamSchool(){
 
 }
 
-void RegistrationApp::viewTeam(){
+bool RegistrationApp::addUser(){
 }
 
-void RegistrationApp::backToAddTeam(){
+bool RegistrationApp::editUser(){
 }
+
+bool RegistrationApp::deleteUser(){
+}
+
+bool RegistrationApp::backToTeam(){
+}
+
+bool RegistrationApp::saveUserEdit(){
+}
+
+bool RegistrationApp::backToUser(){
+}
+
+
+
+
+
+
+
 
 int main ( int argc, char* argv[] )
 {

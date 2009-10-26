@@ -7,9 +7,9 @@
 
 namespace Ui
 {
-	class add_team_wnd;
-	class team_view_wnd;
-	class teammember_edit_wnd;
+	class team_table_wnd;
+	class user_table_wnd;
+	class user_edit_wnd;
 }
 
 class RegistrationApp : public QDialog
@@ -22,29 +22,36 @@ public:
 
 
 protected slots:
-	/*Slot for the add team button on add_team.ui*/
-	void addTeam();
-	/*Slot once you click a team on the add_team.ui table ... if I can get it to work*/
-	void viewTeam();
-	/*for the add user button while adding to the team.*/
-	void addUser();
-	/*for editing the team member*/
-	void editTeamMember();
-	//returns to the add teammembers screen
-	void backToAddTeam();
+	//team table
+	bool addTeam();
+	bool goToEditTeam();
+	bool deleteTeam();
+
+	//user table
+	bool editTeamSchool();
+	bool addUser();
+	bool editUser();
+	bool deleteUser();
+	bool backToTeam();
+
+	//user edit
+	bool saveUserEdit();
+	bool backToUser();
 
 	//needs no extra signals because you're using the basic ones:
 	// may probably need some new signals because
 
 private:
-	Ui::add_team_wnd* m_add_team_wnd;
-	Ui::teammember_edit_wnd* m_teammember_edit_wnd;
-	Ui::team_view_wnd* m_team_view_wnd;
+	Ui::team_table_wnd* m_team_table_wnd;
+	Ui::user_table_wnd* m_user_table_wnd;
+	Ui::user_edit_wnd* m_user_edit_wnd;
 
-	QMainWindow* m_addteam_w;
-	QDialog* m_teammember_w;
-	QDialog* m_teamview_w;
 
+	QDialog* m_team_table_w;
+	QDialog* m_user_table_w;
+	QDialog* m_user_edit_w;
+
+	SqlUtil& m_sql;
 };
 
 #endif // REGISTRATION_APP_H
