@@ -1,0 +1,27 @@
+Presentor Requirements
+Written: October 26, 2009
+
+The presentor must be able to:
+
+1st round:
+For the first round, the presentor must be able to display the time left for
+the round. This is so that we can display something while the contest is going on.
+At the end of the round, it should also be able to display the rankings of the
+individuals (also displaying the name of that individual's team), or at least the top ones.
+
+2nd round:
+This is very similar to the 1st round, since the mechanics are just the same
+but this time, this deals with the teams. So the presentor need not display the
+name of the individuals anymore, rather only the names of the teams. But it still
+the time left must be displayed, just like the previous round.
+
+3rd round:
+The mechanics change here. This time, there is a time limit for each question, so this
+means that we need a timer that would count down for each question this time, instead of
+the whole round. The presentor must also be able to show the question for each time. It
+also must be able to show the correct answer at the end of each question, and there also
+must be an option to show the rankings at that time. 
+
+tie-breaker:
+The tie breaker is identical to the third round.
+
