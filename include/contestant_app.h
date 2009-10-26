@@ -120,6 +120,11 @@ private slots:
         */
 		void elimsNext();
 
+		/*!
+		Slot for the review button button of the summary dialog
+		*/
+		void review();
+
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
@@ -143,6 +148,7 @@ private:
 
 		QuestionData qd;
 		int round;
+		int r1Count;
 };
 
 #endif //CONTESTANT_APP_H

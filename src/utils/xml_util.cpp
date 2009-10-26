@@ -44,6 +44,24 @@ void XmlUtil::readQuestionData ( int round, const QString& xml, QuestionData& qd
     }
 }
 
+void XmlUtil::writeQuestionData(int round, const QuestionData& qd, QString& xml){
+    switch(round){
+	case 1:
+	    writeR1QData(qd, xml);
+	    break;
+	case 2:
+	    writeR2QData(qd, xml);
+	    break;
+	case 3:
+	case 4:
+	    writeR3QData(qd, xml);
+	    break;
+	default:
+	    //throw
+	    ;
+    }
+}
+
 void XmlUtil::readAnswerData(int round, const QString& xml, AnswerData& ad) {
     switch (round) {
     case 1:
@@ -111,7 +129,10 @@ void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
                             temp.choices[number] = choice;
                             token = reader.readNext();
                         }
-                    }
+                    }else{
+			// don't ask, it's a work around
+			i--;
+		    }
                 }
 
                 token = reader.readNext();
@@ -140,7 +161,7 @@ void XmlUtil::writeR3QData(const QuestionData& qd, QString& xml) {
 
 void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
 {
-    int counter = data.questions.size() - 1; // stores number of elements left
+    int counter = 0; // stores number of elements left
     int offset = 1;
     vector<Question> questions = data.questions;
 
@@ -148,10 +169,11 @@ void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
     writer.setAutoFormatting ( true );
     writer.writeStartDocument();
     writer.writeStartElement ( "stage1" );
+    writer.writeAttribute("contest_time", QString("%1").arg(data.contest_time));
     writer.writeTextElement ( "welcome_msg", QString ( data.welcome_msg ) );
 
     // this writes the questions into the xml
-    while ( counter != 0 ) {
+    while ( counter < data.questions.size() ) {
         QString questionNum = QString ( "%1" ).arg ( data.questions.at ( counter ).number );
         QString scoreNum = QString ( "%1" ).arg ( data.questions.at ( counter ).score );
         writer.writeStartElement ( "question" );
@@ -159,15 +181,17 @@ void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
         writer.writeAttribute ( "score", scoreNum );
 
         writer.writeTextElement ( "q", QString ( data.questions.at ( counter ).question ) );
-
-        int choiceCounter = data.questions.at ( counter ).choices.size() - 1;
-        while ( choiceCounter != 0 ) {
-            QString qAnswer ( data.questions.at ( counter ).choices.find ( choiceCounter )->second );
-            writer.writeTextElement ( "choice", qAnswer );
-            choiceCounter--;
-        }
+	
+	map<int,QString>::const_iterator iter = data.questions[counter].choices.begin();
+	while(iter != data.questions[counter].choices.end()){
+	    writer.writeStartElement("choice");
+	    writer.writeAttribute("id", QString("%1").arg(iter->first));
+	    writer.writeCharacters(iter->second);
+	    writer.writeEndElement();
+	    iter++;
+	}
         writer.writeEndElement();// closes the question tag
-        counter--;
+        counter++;
     }
 
     writer.writeEndElement(); // closes the stage1 tag

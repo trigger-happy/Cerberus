@@ -85,7 +85,11 @@ ContestantApp::ContestantApp ( QWidget* parent )
 		connect ( m_elims_dlg->prev_btn, SIGNAL ( clicked() ), this, SLOT ( elimsPrevious() ) );
 		connect ( m_elims_dlg->next_btn, SIGNAL ( clicked() ), this, SLOT ( elimsNext() ) );
 
-        // TODO: get the client configuration from XmlUtil
+		//connections for summary dialog
+		connect ( m_summary_dlg->review_btn, SIGNAL( clicked() ), this, SLOT( review() ) );
+
+
+		// TODO: get the client configuration from XmlUtil
 
 
         // TODO: connect to the server here
@@ -95,6 +99,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
         /*r1qdata = new QuestionData;
         r1question = new Question;*/
 
+		r1Count = 0;
 }
 
 ContestantApp::~ContestantApp()
@@ -163,6 +168,7 @@ void ContestantApp::netAuthenticate ( bool result )
 void ContestantApp::netQData ( const QString& xml )
 {
 		XmlUtil::getInstance().readQuestionData( round, xml, qd );
+		m_welcome_dlg->instructions_txt->setPlainText( qd.welcome_msg );
 }
 
 void ContestantApp::netAData ( bool result )
@@ -187,17 +193,18 @@ void ContestantApp::welcomeStart()
 		m_elims_w->show();
 
         // changing the question text to the first question
-		Question q = qd.questions[0];
+		Question q = qd.questions[r1Count];
 		m_elims_dlg->question_lbl->setText ( q.question );
-		m_elims_dlg->a_radio->setText ( q.choices[0] );
-		m_elims_dlg->b_radio->setText ( q.choices[1] );
-		m_elims_dlg->c_radio->setText ( q.choices[2] );
-		m_elims_dlg->d_radio->setText ( q.choices[3] );
+		m_elims_dlg->a_radio->setText ( q.choices[1] );
+		m_elims_dlg->b_radio->setText ( q.choices[2] );
+		m_elims_dlg->c_radio->setText ( q.choices[3] );
+		m_elims_dlg->d_radio->setText ( q.choices[4] );
 
 }
 
 void ContestantApp::reconnectTry()
 {
+
 }
 
 void ContestantApp::reconnectCancel()
@@ -223,63 +230,60 @@ void ContestantApp::reconnectCancel()
 
 void ContestantApp::elimsNext()
 {
-        bool atLastQuestion = false;
-
-//         for ( int i = 0; i < r1qdata->questions.size(); i++ ) {
-//                 if ( i == r1qdata->questions.size()-1 ) {
-//                         // check if this is already the last question
-//                         atLastQuestion = true;
-//                         break;
-//                 } else if ( r1qdata->questions[i] == *r1question ) {
-//                         // get next question and make r1question point to this
-//                         r1question = & ( r1qdata->questions[i+1] );
-//                         break;
-//                 }
-//         }
-
-        // if last question, show the summary page
-        if ( atLastQuestion ) {
-				m_elims_w->hide();
-                m_summary_w->show();
-        } else {
-                // for all other questions
-//                 m_elims_dlg->question_lbl->setText ( r1question->question );
-//                 m_elims_dlg->a_radio->setText ( r1question->choices[0] );
-//                 m_elims_dlg->b_radio->setText ( r1question->choices[1] );
-//                 m_elims_dlg->c_radio->setText ( r1question->choices[2] );
-//                 m_elims_dlg->d_radio->setText ( r1question->choices[3] );
-        }
-
+		bool atLastQuestion = ( (qd.questions.size()-1) == r1Count );
+		if ( atLastQuestion )
+		{
+			m_elims_w->hide();
+			m_summary_w->show();
+		}
+		else
+		{
+			r1Count++;
+			Question q = qd.questions[r1Count];
+			m_elims_dlg->question_lbl->setText ( q.question );
+			m_elims_dlg->a_radio->setText ( q.choices[1] );
+			m_elims_dlg->b_radio->setText ( q.choices[2] );
+			m_elims_dlg->c_radio->setText ( q.choices[3] );
+			m_elims_dlg->d_radio->setText ( q.choices[4] );
+		}
 }
 
 void ContestantApp::elimsPrevious()
 {
-        bool atFirstQuestion = false;
-
-//         for ( int i = 1; i < r1qdata->questions.size(); i++ ) {
-//                 if ( r1qdata->questions[0] == *r1question ) {
-//                         // check if this is already the first question
-//                         atFirstQuestion = true;
-//                         break;
-//                 } else if ( r1qdata->questions[i] == *r1question ) {
-//                         // get previous question and make r1question point to this
-//                         r1question = & ( r1qdata->questions[i-1] );
-//                         break;
-//                 }
-//         }
+		bool atFirstQuestion = ( r1Count == 0 );
 
         // if first question, show the welcome/instructions page
         if ( atFirstQuestion ) {
-				m_elims_w->hide();
-                m_welcome_w->show();
+			m_elims_w->hide();
+			m_welcome_w->show();
         } else {
-                // for all other questions
-//                 m_elims_dlg->question_lbl->setText ( r1question->question );
-//                 m_elims_dlg->a_radio->setText ( r1question->choices[0] );
-//                 m_elims_dlg->b_radio->setText ( r1question->choices[1] );
-//                 m_elims_dlg->c_radio->setText ( r1question->choices[2] );
-//                 m_elims_dlg->d_radio->setText ( r1question->choices[3] );
+			r1Count--;
+			Question q = qd.questions[r1Count];
+			m_elims_dlg->question_lbl->setText ( q.question );
+			m_elims_dlg->a_radio->setText ( q.choices[1] );
+			m_elims_dlg->b_radio->setText ( q.choices[2] );
+			m_elims_dlg->c_radio->setText ( q.choices[3] );
+			m_elims_dlg->d_radio->setText ( q.choices[4] );
         }
+}
+
+void ContestantApp::review()
+{
+	m_summary_w->hide();
+	if( round == 1 )
+	{
+		m_elims_w->show();
+		r1Count = qd.questions.size()-1;
+		Question q = qd.questions[r1Count];
+		m_elims_dlg->question_lbl->setText ( q.question );
+		m_elims_dlg->a_radio->setText ( q.choices[1] );
+		m_elims_dlg->b_radio->setText ( q.choices[2] );
+		m_elims_dlg->c_radio->setText ( q.choices[3] );
+		m_elims_dlg->d_radio->setText ( q.choices[4] );
+	}
+
+
+
 }
 
 int main ( int argc, char* argv[] )

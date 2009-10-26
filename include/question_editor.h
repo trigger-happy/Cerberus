@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include <QtGui>
 #include "question_model.h"
+#include "util/xml_util.h"
 
 #define ROUNDS 4
 //#include <QtGui/QMainWindow>
@@ -88,11 +89,9 @@ private:
 	QSignalMapper* sigToDown;
 	
 	int history[ROUNDS];
-	
-	//QAction* act_save;
-	//QAction* act_load;
-	//QAction* act_quit;
-	
+	XmlUtil xml_util;
+	QString save_tar;
+	QString f_prefix;
 };
 
 #endif

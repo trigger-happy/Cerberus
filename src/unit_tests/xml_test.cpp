@@ -33,7 +33,7 @@ void XmlTest::q1ReadTest()
     td.contest_time = 3600;
     td.welcome_msg = "Insert welcome message here.";
     Question q;
-    
+
     q.number = 1;
     q.score = 1;
     q.question = "The answer to this question is choice 1.";
@@ -42,7 +42,7 @@ void XmlTest::q1ReadTest()
     q.choices.insert(pair<int,QString>(3, "Choice 3"));
     q.choices.insert(pair<int,QString>(4, "Choice 4"));
     td.questions.push_back(q);
-    
+
     q.number = 2;
     q.score = 1;
     q.question = "Who is Mr. Shires?";
@@ -51,7 +51,7 @@ void XmlTest::q1ReadTest()
     q.choices.insert(pair<int,QString>(3, "Fr. David"));
     q.choices.insert(pair<int,QString>(4, "Michael Jackson"));
     td.questions.push_back(q);
-    
+
     q.number = 3;
     q.score = 2;
     q.question = "This is a 2 point question, correct answer is choice 3.";
@@ -66,6 +66,18 @@ void XmlTest::q1ReadTest()
 
 void XmlTest::q1WriteTest()
 {
+    XmlUtil& xu = XmlUtil::getInstance();
+    QFile file("resources/stage1_q.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    QuestionData qd;
+    xu.readQuestionData(1, xml, qd);
+    QString test_xml;
+    xml.clear();
+    xu.writeQuestionData(1, qd, test_xml);
+    QuestionData td;
+    xu.readQuestionData(1, test_xml, td);
+    QVERIFY(qd == td);
 }
 
 void XmlTest::q2ReadTest()

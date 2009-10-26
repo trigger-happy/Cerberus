@@ -18,6 +18,8 @@ public:
 
 public slots:
     void ButtonPressed();
+    void Port1Changed();
+    void Port2Changed();
 
 private:
     Ui::config_editor *ui;
