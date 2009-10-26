@@ -28,8 +28,10 @@ Checker::~Checker()
 double
 Checker::check(int round, AnswerData& answerData)
 {
+	double score;
 	if(round == 1)
 	{
+		AnswerData *answerKey = vint[round];
 		/*
 			Put the code for calculating the score
 			of the first round here.
@@ -53,27 +55,20 @@ Checker::check(int round, AnswerData& answerData)
 	{
 		// throw an exception
 	}
+	
+	return score;
 }
 
 void
 Checker::setAnswerKey(int round, AnswerData& answerKey)
 {
-	switch(round)
+	if(round > 0 && round <= 4)
 	{
-		case 1:
-		this.answerKey1 = answerKey;
-		break;
-		case 2:
-		this.answerKey2 = answerKey;
-		break;
-		case 3:
-		this.answerKey3 = answerKey;
-		break;
-		case 4:
-		this.answerKey4 = answerKey;
-		default:
-		// throw an exception
-		
+		vint.push_back(pair<int, AnswerData>(round, answerKey) );
+	}
+	else
+	{
+		// throw and exception
 	}
 }
 
