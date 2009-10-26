@@ -135,8 +135,7 @@ bool XmlUtil::readR1AData ( const QString& xml, AnswerData& data )
 				QXmlStreamAttributes attribute = reader.attributes(); // extracts the attributes
 				int number = attribute.value ( "number" ).toString().toInt(); // gets the number attribute
 				token = reader.readNext();
-				int answer = reader.text().toString().toInt(); // gets the number of the answer
-				data[number] = answer; // stores the number and answer into a map
+				data.insert(pair<int,QString>(number, reader.text().toString())); // stores the number and answer into a map
 			}
 
 		}
