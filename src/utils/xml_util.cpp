@@ -337,8 +337,11 @@ void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
     readNetConfig(xml, conf);
 }
 
-void XmlUtil::readNetConfig( const QString& xml, NetworkConfig& config) {
-    QXmlStreamReader reader ( xml );
+void XmlUtil::writeClientConfig ( const ClientConfig& conf, QString& xml ) {
+	writeNetConfig(conf, xml);
+}
+
+void XmlUtil::readNetConfig( QXmlStreamReader& reader, NetworkConfig& config) {
     if ( !reader.isStartElement() || reader.name() != CONFIG_ROOT_TAG )
         throw std::invalid_argument("Passed XML does not start with 'config' element.");
 
@@ -357,24 +360,26 @@ void XmlUtil::readNetConfig( const QString& xml, NetworkConfig& config) {
     }
 }
 
-/*void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
+void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 {
-	QXmlStreamReader reader( xml );
-	while ( !reader.atEnd() ) {
-		if ( reader.readNext() == QXmlStreamReader::StartElement &&
-			 reader.name() == CONFIG_ROOT_TAG )
-			break;
-	}
+    QXmlStreamReader reader( xml );
+    while ( !reader.atEnd() ) {
+        if ( reader.readNext() == QXmlStreamReader::StartElement) {
+            if ( reader.name() == CONFIG_ROOT_TAG ) {
+                break;
+            }
+        }
+    }
 
-	if ( reader.name() != CONFIG_ROOT_TAG )
-		throw InvalidXmlException("No config root tag found.",
-								  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
-	readNetConfig(reader, conf);
+    if ( reader.name() != CONFIG_ROOT_TAG )
+        throw InvalidXmlException("No config root tag found.",
+                                  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+    readNetConfig(reader, conf);
 
-	if ( reader.hasError() )
-		throw IllFormedXmlException(reader.errorString(),
-									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
-}*/
+    if ( reader.hasError() )
+        throw IllFormedXmlException(reader.errorString(),
+                                    reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+}
 
 void XmlUtil::writeNetConfig(const NetworkConfig &conf, QString &xml) {
     QXmlStreamWriter writer(&xml);
@@ -461,4 +466,11 @@ void XmlUtil::writeServerConfig ( const ServerConfig& conf, QString& xml ) {
     }
     writer.writeEndElement();
     writer.writeEndDocument();
+}
+void XmlUtil::readAdminConfig(const QString &xml, AdminConfig &conf) {
+	readNetConfig(xml, conf);
+}
+
+void XmlUtil::writeAdminConfig(const AdminConfig &conf, QString &xml) {
+	writeNetConfig(conf, xml);
 }

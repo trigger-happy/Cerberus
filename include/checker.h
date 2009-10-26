@@ -20,6 +20,7 @@ class Checker : public Singleton<Checker>
 		// special methods for rounds :D
 		double checkR1(AnswerData& answerData);
 		double checkR2(AnswerData& answerData);
-		double checkR34(AnswerData& answerData);
+		double checkR3(AnswerData& answerData);
+		double checkR4(AnswerData& answerData);
 	
 };

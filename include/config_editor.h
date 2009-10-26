@@ -18,7 +18,8 @@ public:
     bool askConfirmation( QString& s );
     bool showInfo();
 public slots:
-    void ButtonPressed();
+    void save();
+    void load();
     void Port1Changed();
     void Port2Changed();
 
