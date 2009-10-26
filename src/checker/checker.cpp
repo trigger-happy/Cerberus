@@ -28,92 +28,48 @@ Checker::~Checker()
 double
 Checker::check(int round, AnswerData& answerData)
 {
-	switch(round)
+	double score;
+	if(round == 1)
 	{
-		case 1:
-		return checkR1(answerData);
-		case 2:
-		return checkR2(answerData);
-		case 3:
-		return checkR3(answerData);
-		case 4:
-		return checkR4(answerData);
-		default:
-		//throw an exception
+		AnswerData *answerKey = vint[round];
+		/*
+			Put the code for calculating the score
+			of the first round here.
+		*/
 	}
+	else if (round == 2)
+	{
+		/*
+			Put the code for calculating the score
+			for the second round here.
+		*/
+	}
+	else if (round == 3 || round == 4)
+	{
+		/*
+			Put the code for calculating the score
+			for the third and fourth round here.
+		*/
+	}
+	else
+	{
+		// throw an exception
+	}
+	
+	return score;
 }
 
 void
 Checker::setAnswerKey(int round, AnswerData& answerKey)
 {
-	switch(round)
+	if(round > 0 && round <= 4)
 	{
-		case 1:
-		this.answerKey1 = answerKey;
-		break;
-		case 2:
-		this.answerKey2 = answerKey;
-		break;
-		case 3:
-		this.answerKey3 = answerKey;
-		break;
-		case 4:
-		this.answerKey4 = answerKey;
-		default:
-		// throw an exception
-		
+		vint.push_back(pair<int, AnswerData>(round, answerKey) );
+	}
+	else
+	{
+		// throw and exception
 	}
 }
 
-/*
-	checkR1(AnswerData&)
-	The checker for this one will receive
-	a set of values, and the score is the total
-	score for the round.
-*/
 
-double 
-Checker::checkR1(AnswerData& answerData)
-{
-	
-	
-}
-
-/*
-	checkR2(AnswerData&)
-	The checker for this one is open to
-	the possibility of two or more answers
-	in the questions. So, the procedure is
-	quite different.
-*/
-double
-Checker::checkR2(AnswerData& answerData)
-{
-	
-}
-
-
-/*
-	checkR3(AnswerData&)
-	The checker for this one receives one
-	question at a time, while maintaining
-	the mechanics of the previous round.
-*/
-double
-Checker::checkR3(AnswerData& answerData)
-{
-	
-}
-
-/*
-	checkR4(AnswerData&)
-	This is the same as the third round, except
-	that the tie-breaker is really just good
-	for a few questions.
-
-*/
-double
-Checker::checkR4(AnswerData& answerData)
-{
-	
-}
