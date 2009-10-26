@@ -78,6 +78,14 @@ public:
 	/*!
 	*/
 	bool writeQuestionData ( int round, const QuestionData& qd, QString& xml );
+	
+	/*!
+	*/
+	bool readAnswerData( int round, const QString& xml, AnswerData& ad);
+	
+	/*!
+	*/
+	bool writeAnswerData (int round, const AnswerData& ad, QString& xml);
 
 	/*!
 	Read the client config from xml.
