@@ -27,7 +27,7 @@ void XmlTest::q1ReadTest()
 {
     XmlUtil& xu = XmlUtil::getInstance();
     QFile file("resources/stage1_q.xml");
-    file.open(QIODevice::ReadOnly);
+    QVERIFY(file.open(QIODevice::ReadOnly));
     QString xml = file.readAll();
     QuestionData qd, td;
     td.contest_time = 3600;
@@ -83,6 +83,16 @@ void XmlTest::q3WriteTest() {
 
 void XmlTest::a1ReadTest()
 {
+    XmlUtil& xu = XmlUtil::getInstance();
+    AnswerData ad, td;
+    QFile file("resources/stage1_a.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    td.insert(pair<int, QString>(1, "1"));
+    td.insert(pair<int, QString>(2, "4"));
+    td.insert(pair<int, QString>(3, "3"));
+    xu.readAnswerData(1, xml, ad);
+    QVERIFY(ad == td);
 }
 
 void XmlTest::a1WriteTest()
