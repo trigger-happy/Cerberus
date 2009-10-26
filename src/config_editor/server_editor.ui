@@ -19,9 +19,9 @@
      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
     </property>
     <item row="0" column="0" colspan="2">
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="tabWidget_1">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -144,19 +144,19 @@
          <widget class="QLineEdit" name="serverConf"/>
         </item>
         <item>
-         <widget class="QLabel" name="label_15">
+         <widget class="QLabel" name="label_sql">
           <property name="text">
            <string>SQL File</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit"/>
+         <widget class="QLineEdit" name="sql"/>
         </item>
         <item>
          <widget class="QTabWidget" name="tabWidget_2">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tab_4">
            <attribute name="title">
@@ -164,7 +164,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
-             <widget class="QLabel" name="label_7">
+             <widget class="QLabel" name="label_q1">
               <property name="text">
                <string>Question File</string>
               </property>
@@ -174,7 +174,7 @@
              <widget class="QLineEdit" name="q_rnd1"/>
             </item>
             <item>
-             <widget class="QLabel" name="label_8">
+             <widget class="QLabel" name="label_a1">
               <property name="text">
                <string>Answer File</string>
               </property>
@@ -191,7 +191,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QLabel" name="label_10">
+             <widget class="QLabel" name="label_q2">
               <property name="text">
                <string>Question File</string>
               </property>
@@ -201,7 +201,7 @@
              <widget class="QLineEdit" name="q_rnd2"/>
             </item>
             <item>
-             <widget class="QLabel" name="label_9">
+             <widget class="QLabel" name="label_a2">
               <property name="text">
                <string>Answer File</string>
               </property>
@@ -218,7 +218,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QLabel" name="label_12">
+             <widget class="QLabel" name="label_q3">
               <property name="text">
                <string>Question File</string>
               </property>
@@ -228,7 +228,7 @@
              <widget class="QLineEdit" name="q_rnd3"/>
             </item>
             <item>
-             <widget class="QLabel" name="label_11">
+             <widget class="QLabel" name="label_a3">
               <property name="text">
                <string>Answer File</string>
               </property>
@@ -245,7 +245,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <widget class="QLabel" name="label_14">
+             <widget class="QLabel" name="label_q4">
               <property name="text">
                <string>Question File</string>
               </property>
@@ -255,7 +255,7 @@
              <widget class="QLineEdit" name="q_rnd4"/>
             </item>
             <item>
-             <widget class="QLabel" name="label_13">
+             <widget class="QLabel" name="label_a4">
               <property name="text">
                <string>Answer File</string>
               </property>

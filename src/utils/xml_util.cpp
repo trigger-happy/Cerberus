@@ -80,6 +80,24 @@ void XmlUtil::readAnswerData(int round, const QString& xml, AnswerData& ad) {
     }
 }
 
+void XmlUtil::writeAnswerData(int round, const AnswerData& ad, QString& xml){
+    switch(round){
+	case 1:
+	    writeR1AData(ad, xml);
+	    break;
+	case 2:
+	    writeR2AData(ad, xml);
+	    break;
+	case 3:
+	case 4:
+	    writeR3AData(ad, xml);
+	    break;
+	default:
+	    // throw
+	    ;
+    }
+}
+
 void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
 {
     QXmlStreamReader reader ( xml );
@@ -241,6 +259,12 @@ void XmlUtil::writeR1AData ( const AnswerData& data, QString& xml )
 
     writer.writeEndElement(); // closes the stage1_ans tag
     writer.writeEndDocument();
+}
+
+void XmlUtil::writeR2AData ( const AnswerData& data, QString& xml ){
+}
+
+void XmlUtil::writeR3AData ( const AnswerData& data, QString& xml ){
 }
 
 void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
