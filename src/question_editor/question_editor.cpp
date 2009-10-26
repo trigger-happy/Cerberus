@@ -495,7 +495,30 @@ void QEditor::control_components(int round,bool enable)
 
 void QEditor::load()
 {
-	//QMessageBox::
+	if (save_tar!="")
+	{
+		//warning here
+	}
+	else
+	{
+		QFileDialog load_dlg;
+		load_dlg.setAcceptMode(QFileDialog::AcceptOpen);
+		load_dlg.setFileMode(QFileDialog::ExistingFiles);
+		load_dlg.setFilter(tr("Group XML files (*.xgrp)"));
+		load_dlg.exec();
+		
+		save_tar=load_dlg.selectedFiles().join("");
+		save_tar.replace(QString(".xgrp"),QString(""));
+		
+		for (int ctr=0;ctr<4;ctr++)
+		{
+			QFile f(save_tar+QString::number(ctr+1)+"_q.xml");
+			f.open(QIODevice::ReadOnly);
+			QString xml=f.readAll();
+			QuestionData qd;
+			xml_util.readQuestionData(ctr+1,xml,qd);
+		}
+	}
 }
 
 void QEditor::save()
@@ -539,8 +562,9 @@ void QEditor::save()
 			else
 			{
 				QTextStream out(&file_q);
-				//xml_util.writeQuestionData(roundctr+1,rounddata[roundctr],xml_q);
-				out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_q
+				xml_util.writeQuestionData(roundctr+1,rounddata[roundctr],xml_q);
+				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_q
+				out << xml_q;
 			}
 			
 			QFile file_a(save_tar+QString::number(roundctr+1)+"_a.xml");

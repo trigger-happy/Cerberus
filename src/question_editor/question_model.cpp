@@ -43,7 +43,6 @@ void QuestionModel::addNewQuestion()
 		temp.append(new QStandardItem("10000")); 
 	temp.append(new QStandardItem("1")); // score
 	temp.append(new QStandardItem("0")); // time
-	//temp.append(new QStandardItem)
 	
 	QStandardItemModel::appendRow(temp);
 	
@@ -158,5 +157,33 @@ void QuestionModel::getFullQuestion(int index, Question* q)
 	if (round>2)
 	{
 		q->choices[5]=getE(index);
+	}
+}
+
+void QuestionModel::feedData(QuestionData qd,AnswerData ad)
+{
+	for(int ctr=0;ctr<qd.questions.size();ctr++)
+	{
+		Question q=qd.questions[ctr];
+		QList<QStandardItem *> temp;
+		temp.append(new QStandardItem(q.question)); //question
+		temp.append(new QStandardItem(q.choices[1])); // choice a
+		temp.append(new QStandardItem(q.choices[2])); // choice b
+		temp.append(new QStandardItem(q.choices[3])); // choice c
+		temp.append(new QStandardItem(q.choices[4])); // choice d
+		if (round>2)
+		{
+			temp.append(new QStandardItem(q.choices[5]));
+		}
+		else
+		{
+			temp.append(new QStandardItem("")); // choice e
+		}
+		temp.append(new QStandardItem("00000")); //temp only!!!!!!!!!!!!!!!!!!!!!
+		
+		temp.append(new QStandardItem(QString::number(q.score))); // score
+		temp.append(new QStandardItem(QString::number(q.time))); // time
+		
+		QStandardItemModel::appendRow(temp);
 	}
 }
