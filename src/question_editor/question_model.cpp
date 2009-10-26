@@ -179,7 +179,20 @@ void QuestionModel::feedData(QuestionData qd,AnswerData ad)
 		{
 			temp.append(new QStandardItem("")); // choice e
 		}
-		temp.append(new QStandardItem("00000")); //temp only!!!!!!!!!!!!!!!!!!!!!
+		
+		pair<AnswerData::iterator,AnswerData::iterator> ret;
+		AnswerData::iterator it;
+		ret=ad.equal_range(ctr+1);
+		QString cheat="00000";
+		for (it=ret.first;it!=ret.second;it++)
+		{
+			int index;
+			index=(*it).second.toInt();
+			if (index==0) index=5;
+			cheat.replace(index-1,1,"1");
+		}
+		
+		temp.append(new QStandardItem(cheat)); //temp only!!!!!!!!!!!!!!!!!!!!!
 		
 		temp.append(new QStandardItem(QString::number(q.score))); // score
 		temp.append(new QStandardItem(QString::number(q.time))); // time

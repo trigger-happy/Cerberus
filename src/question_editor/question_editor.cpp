@@ -228,6 +228,8 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		question_list[ctr]->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		question_text[ctr]->setTabChangesFocus(true);
 		//question_list[ctr]->setDragDropMode(QAbstractItemView::DragDrop);
+		
+		control_components(ctr+1,false);
 	}
 	for (int ctr=0;ctr<5;ctr++)
 	{
@@ -241,7 +243,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		button_cancel[ctr]->setEnabled(false);
 	}
 	
-	control_components(1,false);
+	
 	
 	//for menu/keyboard commands
 	q_ui->act_save_xml->setShortcut(QKeySequence::Save);
@@ -512,11 +514,19 @@ void QEditor::load()
 		
 		for (int ctr=0;ctr<4;ctr++)
 		{
-			QFile f(save_tar+QString::number(ctr+1)+"_q.xml");
-			f.open(QIODevice::ReadOnly);
-			QString xml=f.readAll();
+			QFile fq(save_tar+QString::number(ctr+1)+"_q.xml");
+			fq.open(QIODevice::ReadOnly);
+			QString xml_q=fq.readAll();
 			QuestionData qd;
-			xml_util.readQuestionData(ctr+1,xml,qd);
+			xml_util.readQuestionData(ctr+1,xml_q,qd);
+			
+			QFile fa(save_tar+QString::number(ctr+1)+"_a.xml");
+			fa.open(QIODevice::ReadOnly);
+			QString xml_a=fa.readAll();
+			AnswerData ad;
+			xml_util.readAnswerData(ctr+1,xml_a,ad);
+			
+			roundmodel[ctr]->feedData(qd,ad);
 		}
 	}
 }
@@ -540,10 +550,11 @@ void QEditor::save()
 	}
 	if (save_tar!="")
 	{
-		QuestionData rounddata[4];
 		
 		for (int roundctr=0;roundctr<4;roundctr++)
 		{
+			QuestionData rounddata;
+			AnswerData ansdata;
 			QString xml_q;
 			QString xml_a;
 			int question_cnt=roundmodel[roundctr]->rowCount();
@@ -551,8 +562,23 @@ void QEditor::save()
 			{
 				Question temp;
 				roundmodel[roundctr]->getFullQuestion(qctr,&temp);
-				rounddata[roundctr].questions.push_back(temp);
+				rounddata.questions.push_back(temp);
+				
+				bool* cheat=new bool[5];
+				roundmodel[roundctr]->getAnskey(qctr,cheat);
+				for (int cctr=0;cctr<5;cctr++)
+				{
+					if (cheat[cctr])
+					{
+						QString temp=QString::number(cctr+1);
+						if (roundctr>1)
+							temp+=" "+roundmodel[roundctr]->getE(qctr);
+						ansdata.insert(pair<int,QString>(qctr+1,temp));
+					}
+				}
+				delete cheat;
 			}
+			
 			
 			//uncomment this part if its completed;
 			
@@ -562,7 +588,7 @@ void QEditor::save()
 			else
 			{
 				QTextStream out(&file_q);
-				xml_util.writeQuestionData(roundctr+1,rounddata[roundctr],xml_q);
+				xml_util.writeQuestionData(roundctr+1,rounddata,xml_q);
 				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_q
 				out << xml_q;
 			}
@@ -573,8 +599,9 @@ void QEditor::save()
 			else
 			{
 				QTextStream out(&file_a);
-				//todo:
-				out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_a
+				xml_util.writeAnswerData(roundctr+1,ansdata,xml_a);
+				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_a
+				out << xml_a;
 			}
 		}
 	}
