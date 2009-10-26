@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 James Choa
+Copyright (C) 2009 Joshua Cheng
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -18,11 +18,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "server_app.h"
 #include "ui_server_app.h"
 #include "net/server_net.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
 
 ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg )
 {
-        m_dlg->setupUi ( this );
+		m_dlg->setupUi ( this );
         m_network = new ServerNetwork ( this );
+		connect(m_dlg->stopButton,SIGNAL(clicked()),this,SLOT(stop()));
 }
 
 ServerApp::~ServerApp()
@@ -35,10 +40,17 @@ void ServerApp::netNewConnection()
         //TODO: Stuff here for when a new connection is made
 }
 
+void ServerApp::stop()
+{
+		m_dlg->textBrowser->append("Stopped.");
+}
+
 int main ( int argc, char* argv[] )
 {
+		int x = 2 + 3;
+		cout << x << endl;
         QApplication a ( argc, argv );
         ServerApp server;
-        server.show();
-        return a.exec();
+		server.show();
+		return a.exec();
 }

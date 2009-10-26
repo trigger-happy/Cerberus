@@ -18,6 +18,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef SERVER_APP_H
 #define SERVER_APP_H
 #include <QtGui/QtGui>
+#include <QtNetwork>
+#include "net/server_net.h"
 
 namespace Ui
 {
@@ -37,9 +39,15 @@ private slots:
         Called when there is a new connection
         */
         void netNewConnection();
+        /*
+        Called when the stop button is pressed
+        */
+        void stop();
 private:
+		QString log;
         ServerNetwork* m_network;
         Ui::server_dlg* m_dlg;
+		vector<QString> m_questions;
 
 };
 

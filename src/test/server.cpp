@@ -32,7 +32,6 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
                 file.open ( QIODevice::ReadOnly );
                 m_questions.push_back ( file.readAll() );
         }
-
         m_dlg->setupUi ( this );
         connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
         m_server = new ServerNetwork ( this );
