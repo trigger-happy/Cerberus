@@ -15,7 +15,8 @@ class ConfigEditor : public QMainWindow
 public:
     ConfigEditor(QWidget *parent = 0);
     ~ConfigEditor();
-
+    bool askConfirmation( QString& s );
+    bool showInfo();
 public slots:
     void ButtonPressed();
     void Port1Changed();
