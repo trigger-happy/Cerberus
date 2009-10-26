@@ -1,49 +1,113 @@
 Initial connection:
-	client: NET_INITIATE_CONNECTION <quint16 client type>
-	server: NET_CONNECTION_RESULT <quint16 result>
+    client: NET_INITIATE_CONNECTION <quint16 client type>
+    server: NET_CONNECTION_RESULT <quint16 result>
 
 Server drop:
-	server: NET_DISCONNECT <quint16 reason>
-	*<reason> = disqualified, admin drop, client quit, [more here]
+    server: NET_DISCONNECT <quint16 reason>
+    *<reason> = disqualified, admin drop, client quit, [more here]
 
 Client drop:
-	client: NET_DISCONNECT <quint16 reason>
-	*<reason> = see above
+    client: NET_DISCONNECT <quint16 reason>
+    *<reason> = see above
 
 Point above this line is done by all apps. Below this lines, it's up to the subcomponent.
 
 contestant-server network:
-	authenticate
+    authenticate
 		client: QRY_AUTHENTICATE <user name>,<password> // note the comma separator: user,password
 		server: INF_AUTHENTICATE <quint16 result> // 1 or 0, nothing more
-    
-	contest state request (ask for the round and the current contest state)
+
+    contest state request (ask for the round and the current contest state)
 		client: QRY_CONTEST_STATE
 		server: INF_CONTEST_STATE <quint16 round number> <quint16 status>
 		*<status> = running, stopped, paused
-    
-	round n question request
+
+    round n question request
 		client: QRY_QUESTION_REQUEST <quint16 round number>
 		server: INF_QUESTION_DATA <xml data>
-    
-	round 1,2,3 answer submit
+
+    round 1,2,3 answer submit
 		client: QRY_ANSWER_SUBMIT <xml data>
 		server: INF_ANSWER_REPLY <quint16 result> // 1 or 0, nothing more
-	
-	server contest state change
+    
+    server contest state change
 		server: INF_CONTEST_STATE <quint16 round number> <quint16 status>
 		*<status> = see above
     
+    contest time request
+		client: QRY_CONTEST_TIME
+		server: INF_CONTEST_TIME <ushort time> //in seconds
+
+    contest time info //normally when time is changed
+		server: INF_CONTEST_TIME <ushort time> //in seconds
+	
+    round 3/4 question change // it's for pacing
+		server: INF_QUESTION_CHANGE <question number>
+
 presenter-server network:
-	contest state request:
+    contest state request:
 		client: QRY_CONTEST_STATE
-		server: INF_CONTEST_STATE <quint16 round number> <quint16 status>
+		server: INF_CONTEST_STATE <ushort round number> <ushort status>
 		*<status> = running, stopped, paused
-	command wait:
+		
+    command wait:
 		client: QRY_PRESENTER_READY
 		// at this point, the client merely listens for server commands and replies a result code
+	
 	server command:
 		//insert server commands here
 
 admin-server network:
-	// nothing here yet.
+    // nothing here yet.
+    contest state request:
+		client: QRY_CONTEST_STATE
+		server: INF_CONTEST_STATE <ushort round number> <ushort status>
+		*<status> = running, stopped, paused
+    
+	contest start/stop:
+		client: CMD_CONTEST_STATE_CHANGE <ushort round number> <ushort status>
+		server: INF_CONTEST_STATE_CHANGE <ushort result> // 1 or 0, nothing more
+		*same as above for status
+    
+	list contestants:
+		client: CMD_GET_CONTESTANTS
+		server: INF_CONTESTANTS <ushort n>
+			// repeated n times:
+			<ushort size> <ushort id> <ushort rank> <double score> <QString str_info>
+			size = payload size starting from id to str_info
+			rank = current rank in the leaderboard
+			str_info = user_name,team_name //note it's comma separated
+    
+	get answer data:
+		client: CMD_GET_ANSWER_DATA
+		server: INF_ANSWER_DATA <ushort n>
+			// repeated n times:
+			<ushort qn> <ushort size> <char[size] user_name> 
+				// repeated qn times
+				<ushort number> <ushort str_size> <char[str_size] answer>
+	
+	show team scores (presenter):
+		client: CMD_SHOW_SCORES
+		server: INF_SHOW_SCORES <bool result>
+	
+	show round 3/4 question (presenter):
+		client: CMD_SHOW_QUESTION <ushort question number>
+		server: INF_SHOW_QUESTION <bool result>
+		
+	send new question data:
+		client: CMD_NEW_QDATA <ushort round number> <char[] xml_data>
+		server: INF_NEW_QDATA <bool result>
+		
+	send new answer data:
+		client: CMD_NEW_ADATA <ushort round number> <char[] xml_data>
+		server: INF_NEW_ADATA <bool result>
+	
+	drop contestant:
+		client: CMD_DROP_CONTESTANT <ushort id> <char[] reason>
+		server: INF_DROP_CONTESTANT <bool result>
+		
+	set contestant score:
+		client: CMD_CHANGE_SCORE <ushort id> <double score>
+		server: INF_CHANGE_SCORE <bool result>
+	
+	// stuff here for controlling more of presenter view's stuff

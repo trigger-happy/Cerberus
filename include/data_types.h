@@ -107,7 +107,7 @@ struct ClientConfig : public NetworkConfig {
 struct PresenterConfig : public NetworkConfig {
 };
 
-struct AdminConfig {
+struct AdminConfig : public NetworkConfig {
 };
 
 struct StageData {

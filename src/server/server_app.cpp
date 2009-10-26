@@ -20,21 +20,32 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "net/server_net.h"
 #include <iostream>
 #include <string>
+#include "util/sql_util.h"
+#include "util/xml_util.h"
 
 using namespace std;
 
 ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg )
 {
-		//What does this do?
+		//Fills up the m_questions vector with the question data for each stage.
 		for ( int i = 1; i <= 4; i++ ) {
-				QFile file ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
-				file.open ( QIODevice::ReadOnly );
-				m_questions.push_back ( file.readAll() );
+				QFile file1 ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
+				QFile file2 ( QString ( "resources/stage%1_a.xml" ).arg ( i ) );
+				file1.open ( QIODevice::ReadOnly );
+				file2.open ( QIODevice::ReadOnly );
+				m_questions.push_back ( file1.readAll() );
+				m_answers.push_back ( file2.readAll() );
 		}
+
+		QFile file ( QString ( "resources/server_config.xml" ));
+		file.open ( QIODevice::ReadOnly );
+		QString serverConfigXML = file.readAll();
+		XmlUtil::getInstance().readServerConfig(serverConfigXML,m_config);
 
 		m_dlg->setupUi ( this );
 		connect(m_dlg->stopButton,SIGNAL(clicked()),this,SLOT(stop()));
-        m_network = new ServerNetwork ( this );
+
+		m_network = new ServerNetwork ( this );
 		connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
 		connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
 		connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
@@ -48,6 +59,7 @@ ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 				msg.setText ( "Failed to load db" );
 				msg.exec();
 		}
+		num=0;
 }
 
 ServerApp::~ServerApp()
@@ -74,6 +86,8 @@ void ServerApp::contestantDisconnect( ContestantConnection* cc )
 void ServerApp::stop()
 {
 		m_dlg->textBrowser->append("Stopped.");
+		m_dlg->textBrowser->append(m_questions.at(num));
+		num++;
 }
 
 int main ( int argc, char* argv[] )

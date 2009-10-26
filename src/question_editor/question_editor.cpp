@@ -163,6 +163,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	sigToDetailUpdate=new QSignalMapper(this);
 	sigToUp=new QSignalMapper(this);
 	sigToDown=new QSignalMapper(this);
+	sigToChoices=new QSignalMapper(this);
 	
 	connect(sigToList,SIGNAL(mapped(int)),this,SLOT(list_focus(int)));
 	connect(sigToAdd,SIGNAL(mapped(int)),this,SLOT(add_question(int)));
@@ -172,6 +173,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	connect(sigToDetailUpdate,SIGNAL(mapped(int)),this,SLOT(changed_details(int)));
 	connect(sigToUp,SIGNAL(mapped(int)),this,SLOT(move_up(int)));
 	connect(sigToDown,SIGNAL(mapped(int)),this,SLOT(move_down(int)));
+	connect(sigToChoices,SIGNAL(mapped(int)),this,SLOT(disableDuplicates(int)));
 	
 	sigToDetailUpdate->setMapping(q_ui->textarea_welcome,0);
 	connect(q_ui->textarea_welcome,SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
@@ -195,6 +197,10 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		sigToDetailUpdate->setMapping(duration[ctr],0);
 		sigToUp->setMapping(button_up[ctr],ctr+1);
 		sigToDown->setMapping(button_down[ctr],ctr+1);
+		sigToChoices->setMapping(question_ans_a[ctr],ctr+1);
+		sigToChoices->setMapping(question_ans_b[ctr],ctr+1);
+		sigToChoices->setMapping(question_ans_c[ctr],ctr+1);
+		sigToChoices->setMapping(question_ans_d[ctr],ctr+1);
 		
 		connect(question_list[ctr],SIGNAL(activated(QModelIndex)),sigToList,SLOT(map()));
 		connect(button_add[ctr],SIGNAL(clicked(bool)),sigToAdd,SLOT(map()));
@@ -212,16 +218,24 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		connect(duration[ctr],SIGNAL(valueChanged(int)),sigToDetailUpdate,SLOT(map()));
 		connect(button_up[ctr],SIGNAL(clicked(bool)),sigToUp,SLOT(map()));
 		connect(button_down[ctr],SIGNAL(clicked(bool)),sigToDown,SLOT(map()));
+		connect(question_ans_a[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
+		connect(question_ans_b[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
+		connect(question_ans_c[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
+		connect(question_ans_d[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
+		
+		
 		
 		if (ctr>1)
 		{
 			sigToDetailUpdate->setMapping(question_e[ctr],ctr+1);
 			sigToDetailUpdate->setMapping(question_ans_e[ctr],ctr+1);
 			sigToDetailUpdate->setMapping(question_time[ctr],ctr+1);
+			sigToChoices->setMapping(question_ans_e[ctr],ctr+1);
 			
 			connect(question_e[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
 			connect(question_ans_e[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
 			connect(question_time[ctr],SIGNAL(valueChanged(int)),sigToDetailUpdate,SLOT(map()));
+			connect(question_ans_e[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
 		}
 		
 		question_list[ctr]->setModel(roundmodel[ctr]);
@@ -488,11 +502,29 @@ void QEditor::control_components(int round,bool enable)
 	question_score[ptr]->setEnabled(enable);
 	if (round > 2)
 	{
-		question_e[ptr]->setReadOnly(enable);
+		question_e[ptr]->setReadOnly(!enable);
 		question_ans_e[ptr]->setEnabled(enable);
 		question_time[ptr]->setEnabled(enable);
 	}
 	
+}
+
+void QEditor::disableDuplicates(int round)
+{
+	if(round>2)
+	{
+		bool activated=false;
+		int ptr=round-1;
+		if (question_ans_a[ptr]->isChecked() || question_ans_b[ptr]->isChecked()
+		    || question_ans_c[ptr]->isChecked() || question_ans_d[ptr]->isChecked())
+			activated=true;
+		question_ans_e[ptr]->setDisabled(activated);
+		bool specify=question_ans_e[ptr]->isChecked();
+		question_ans_a[ptr]->setDisabled(specify);
+		question_ans_b[ptr]->setDisabled(specify);
+		question_ans_c[ptr]->setDisabled(specify);
+		question_ans_d[ptr]->setDisabled(specify);
+	}
 }
 
 void QEditor::load()

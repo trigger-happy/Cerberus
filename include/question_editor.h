@@ -47,6 +47,7 @@ private slots:
 	void remove_question(int round);
 	void move_up(int round);
 	void move_down(int round);
+	void disableDuplicates(int round);
 	void load();
 	void save();
 	void exit();
@@ -87,6 +88,7 @@ private:
 	QSignalMapper* sigToDetailUpdate;
 	QSignalMapper* sigToUp;
 	QSignalMapper* sigToDown;
+	QSignalMapper* sigToChoices;
 	
 	int history[ROUNDS];
 	XmlUtil xml_util;
