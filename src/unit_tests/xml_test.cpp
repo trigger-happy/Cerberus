@@ -162,7 +162,19 @@ void XmlTest::a1WriteTest()
     QVERIFY(ad == td);
 }
 
-void XmlTest::a2ReadTest() {
+void XmlTest::a2ReadTest()
+{
+    XmlUtil& xu = XmlUtil::getInstance();
+    AnswerData ad, td;
+    QFile file("resources/stage2_a.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    td.insert(pair<int, QString>(1, "1"));
+    td.insert(pair<int, QString>(2, "4"));
+    td.insert(pair<int, QString>(3, "3"));
+    td.insert(pair<int, QString>(3, "4"));
+    xu.readAnswerData(2, xml, ad);
+    QVERIFY(ad == td);
 }
 
 void XmlTest::a2WriteTest() {

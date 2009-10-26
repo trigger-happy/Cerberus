@@ -300,6 +300,7 @@ void XmlUtil::readR1AData ( const QString& xml, AnswerData& data )
 }
 
 void XmlUtil::readR2AData(const QString& xml, AnswerData& data) {
+    readR1AData(xml, data);
 }
 
 void XmlUtil::readR3AData(const QString& xml, AnswerData& data) {
