@@ -49,6 +49,7 @@ bool ConfigEditor::askConfirmation( QString& s ) {
            break;
        case QMessageBox::No:
            return false;
+           cout << "false" << endl;
            break;
 
     }
@@ -70,7 +71,7 @@ void ConfigEditor::ButtonPressed() {
     ui->tabWidget_2->setTabText(1, "Round2");
     ui->tabWidget_2->setTabText(2, "Round3");
     ui->tabWidget_2->setTabText(3, "Round4");
-    ui->sql->setText("SQL File");
+    ui->label_sql->setText("SQL File");
     ui->label_q1->setText("Question File");
     ui->label_q2->setText("Question File");
     ui->label_q3->setText("Question File");
@@ -79,7 +80,7 @@ void ConfigEditor::ButtonPressed() {
     ui->label_a2->setText("Answer File");
     ui->label_a3->setText("Answer File");
     ui->label_a4->setText("Answer File");
-
+    ui->error->setText("");
 
     QString port(ui->serverPort1->text());
     QString ip( ui->serverIP->text());
@@ -105,7 +106,8 @@ void ConfigEditor::ButtonPressed() {
     if( file.exists() ) {
         QString temp("server");
         cont = askConfirmation(temp);
-
+        //delete &temp;
+       // delete &file;
     }
     
     if( cont ) {
@@ -172,18 +174,19 @@ void ConfigEditor::ButtonPressed() {
             cont = false;
         }
 
+        if( !cont) {
+            showInfo();
+        }
     }
 
-    if( !cont) {
-        showInfo();
-    }
 
     if( cont ) {
         QFile file2 ( contestant );
         if( file2.exists() ) {
             QString temp("contestant");
             cont = askConfirmation(temp);
-
+            //delete &temp;
+           // delete &file2;
         }
     }
     if( cont ) {
@@ -191,7 +194,8 @@ void ConfigEditor::ButtonPressed() {
         if( file3.exists() ) {
             QString temp("admin");
             cont = askConfirmation(temp);
-
+            //delete &temp;
+           // delete &file3;
         }
     }
 
@@ -200,15 +204,13 @@ void ConfigEditor::ButtonPressed() {
         if( file4.exists() ) {
             QString temp("presenter");
             cont = askConfirmation(temp);
-
+            //delete &temp;
+           // delete &file4;
         }
     }
 
     if( cont ) {
         ui->error->setText( "OK" );
-    }
-    else {
-        ui->error->setText( "Change the file paths to avoid overwriting" );
     }
     //ui->error->setText(*error);
 }
