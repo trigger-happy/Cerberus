@@ -26,6 +26,13 @@
     <property name="fieldGrowthPolicy">
      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
     </property>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Team Summary</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <widget class="QLabel" name="teamnamelabel">
       <property name="text">
@@ -51,13 +58,6 @@
      <widget class="QLabel" name="schooldisplay">
       <property name="text">
        <string>Ateneo de Manila University</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Team Summary</string>
       </property>
      </widget>
     </item>
@@ -117,7 +117,7 @@
      </widget>
     </item>
     <item row="6" column="1">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="add_member">
       <property name="text">
        <string>Add Team Member</string>
       </property>
@@ -125,7 +125,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="view_team_info">
    <property name="geometry">
     <rect>
      <x>10</x>

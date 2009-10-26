@@ -63,7 +63,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="back_to_edit">
    <property name="geometry">
     <rect>
      <x>160</x>
