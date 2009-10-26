@@ -50,12 +50,35 @@ presenter-server network:
 		server: INF_CONTEST_STATE <ushort round number> <ushort status>
 		*<status> = running, stopped, paused
 		
+	contest state change:
+		server: INF_CONTEST_STATE <ushort round number> <ushort status>
+		
     command wait:
 		client: QRY_PRESENTER_READY
 		// at this point, the client merely listens for server commands and replies a result code
 	
-	server command:
-		//insert server commands here
+	// server initiated commands here
+	contest time info:
+		server: INF_CONTEST_TIME <ushort time> // in seconds
+	
+	round 1/2 show contest time
+		server: PSN_SHOW_TIME
+	
+	round 1/2/3/4 show rankings
+		server: PSN_SHOW_RANKS <ushort entries>
+			// repeated the same number as entries
+			<ushort rank> <double score> <ushort uname_s> <char[uname_s] user_name> <ushort team_s> <char[team_s] team_name>
+	
+	//might remove this one
+	question time info (round 3 and 4):
+		server: INF_QUESTION_TIME <ushort time> // in seconds
+		
+	question state change (round 3 and 4):
+		server: INF_QUESTION_STATE <ushort question number> <ushort time> <ushort status>
+		*status = running, stopped, paused
+		
+	answer show (round 3 and 4):
+		server: PSN_SHOW_ANSWER <char[] answer>
 
 admin-server network:
     // nothing here yet.
@@ -111,3 +134,4 @@ admin-server network:
 		server: INF_CHANGE_SCORE <bool result>
 	
 	// stuff here for controlling more of presenter view's stuff
+	// we might make the presenter autonomous to what the server has though.
