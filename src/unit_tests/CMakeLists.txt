@@ -7,11 +7,11 @@
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 
 #set(CMAKE_EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
-#set(XML_UT_SRCS xml_test.cpp)
-#set(XML_UT_MHDRS ${INCLUDE_DIR}/tests/xml_test.h)
-#qt4_wrap_cpp(XML_UT_MSRCS ${XML_UT_MHDRS})
-#add_executable(xml_test ${XML_UT_SRCS} ${XML_UT_MSRCS})
-#add_test(xml_ut xml_test)
+set(XML_UT_SRCS xml_test.cpp)
+set(XML_UT_MHDRS xml_test.h)
+qt4_wrap_cpp(XML_UT_MSRCS ${XML_UT_MHDRS})
+add_executable(xml_test ${XML_UT_SRCS} ${XML_UT_MSRCS})
+add_test(xml_ut xml_test)
 
 set(SQL_UT_SRCS sql_test.cpp)
 set(SQL_UT_MHDRS sql_test.h)
