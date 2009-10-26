@@ -29,68 +29,76 @@ using std::pair;
 using std::equal;
 
 struct Question {
-        bool operator== ( const Question& rhs ) {
-                if ( this->question != rhs.question ) {
-                        return false;
-                }
-                if ( this->time != rhs.time ) {
-                        return false;
-                }
-                if ( this->choices.size() == rhs.choices.size() ) {
-                        map<int, QString>::const_iterator lit, rit;
-                        lit = this->choices.begin();
-                        rit = rhs.choices.begin();
-                        while ( lit != this->choices.end() ) {
-                                if ( lit->first != rit->first || lit->second != rit->second ) {
-                                        return false;
-                                }
-                                lit++;
-                                rit++;
-                        }
-                }
-                return true;
+    Question(){
+	number = 0;
+	score = 0;
+	time = 0;
+    }
+    bool operator== ( const Question& rhs ) {
+        if ( this->question != rhs.question ) {
+            return false;
         }
-        int number;
-        int score;
-        int time;
-        QString question;
-        map<int, QString> choices;
+        if ( this->time != rhs.time ) {
+            return false;
+        }
+        if ( this->choices.size() == rhs.choices.size() ) {
+            map<int, QString>::const_iterator lit, rit;
+            lit = this->choices.begin();
+            rit = rhs.choices.begin();
+            while ( lit != this->choices.end() ) {
+                if ( lit->first != rit->first || lit->second != rit->second ) {
+                    return false;
+                }
+                lit++;
+                rit++;
+            }
+        }
+        return true;
+    }
+    int number;
+    int score;
+    int time;
+    QString question;
+    map<int, QString> choices;
 };
 
 struct QuestionData {
-        bool operator== ( const QuestionData& rhs ) {
-                if ( this->welcome_msg != rhs.welcome_msg ) {
-                        return false;
-                }
-                if ( this->contest_time != rhs.contest_time ) {
-                        return false;
-                }
-                if ( this->questions.size() == rhs.questions.size() ) {
-                        for ( int i = 0; i < this->questions.size(); i++ ) {
-                                if ( ! ( this->questions[i] == rhs.questions[i] ) ) {
-                                        return false;
-                                }
-                        }
-                } else {
-                        return false;
-                }
-                return true;
+    QuestionData(){
+	contest_time = 0;
+    }
+    bool operator== ( const QuestionData& rhs ) {
+        if ( this->welcome_msg != rhs.welcome_msg ) {
+            return false;
         }
-        QString welcome_msg;
-        vector<Question> questions;
-        int contest_time;
+        if ( this->contest_time != rhs.contest_time ) {
+            return false;
+        }
+        if ( this->questions.size() == rhs.questions.size() ) {
+            for ( int i = 0; i < this->questions.size(); i++ ) {
+                if ( ! ( this->questions[i] == rhs.questions[i] ) ) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+    QString welcome_msg;
+    vector<Question> questions;
+    int contest_time;
 };
 
 typedef multimap<int,QString> AnswerData;
 
 struct NetworkConfig {
-        bool operator== ( const NetworkConfig& rhs ) {
-				return this->ip == rhs.ip && this->port == rhs.port;
-        }
-        QString ip;
-        int port;
+    bool operator== ( const NetworkConfig& rhs ) {
+        return this->ip == rhs.ip && this->port == rhs.port;
+    }
+    QString ip;
+    int port;
 
-	virtual ~NetworkConfig() {}
+    virtual ~NetworkConfig() {}
 };
 
 struct ClientConfig : public NetworkConfig {
@@ -103,55 +111,55 @@ struct AdminConfig {
 };
 
 struct StageData {
-        bool operator== ( const StageData& rhs ) {
-                if ( question_file == rhs.question_file
-                     && answer_file == rhs.answer_file ) {
-                        return true;
-                }
-                return false;
+    bool operator== ( const StageData& rhs ) {
+        if ( question_file == rhs.question_file
+                && answer_file == rhs.answer_file ) {
+            return true;
         }
-        QString question_file;
-        QString answer_file;
+        return false;
+    }
+    QString question_file;
+    QString answer_file;
 };
 
 struct ServerConfig {
-        bool operator== ( const ServerConfig& rhs ) {
-                if ( port == rhs.port && db_path == rhs.db_path ) {
-                        if ( stage_data.size() != rhs.stage_data.size() ) {
-                                return false;
-                        }
-                        if ( equal ( stage_data.begin() ,stage_data.end(), rhs.stage_data.begin() ) ) {
-                                return true;
-                        }
-                }
+    bool operator== ( const ServerConfig& rhs ) {
+        if ( port == rhs.port && db_path == rhs.db_path ) {
+            if ( stage_data.size() != rhs.stage_data.size() ) {
                 return false;
+            }
+            if ( equal ( stage_data.begin() ,stage_data.end(), rhs.stage_data.begin() ) ) {
+                return true;
+            }
         }
-        int port;
-        QString db_path;
-        vector<StageData> stage_data;
+        return false;
+    }
+    int port;
+    QString db_path;
+    vector<StageData> stage_data;
 };
 
 struct UserData {
-        QString user_name;
-        QString password;
-        QString firstname;
-        QString lastname;
-        QString teamname;
+    QString user_name;
+    QString password;
+    QString firstname;
+    QString lastname;
+    QString teamname;
 };
 
 struct TeamData {
-        QString teamname;
-        QString school;
+    QString teamname;
+    QString school;
 };
 
 struct ScoreData {
-        QString user_name;
-        double score;
+    QString user_name;
+    double score;
 };
 
 struct AdminData {
-        QString user_name;
-        QString password;
+    QString user_name;
+    QString password;
 };
 
 #endif //DATA_TYPES_H

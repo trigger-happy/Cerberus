@@ -25,115 +25,98 @@ using namespace std;
 
 void XmlTest::q1ReadTest()
 {
-        QFile file ( "resources/stage1_q.xml" );
-        file.open ( QIODevice::ReadOnly );
-        QVERIFY ( file.isOpen() );
-        QString xml = file.readAll();
-        QVERIFY ( xml.size() != 0 );
-        R1QData qd;
-        R1QData td;
-	qd.welcome_msg = "Insert welcome message here.";
-        R1Question qtemp;
-	qtemp.question = "The answer to this question is choice 1.";
-        qtemp.number = 1;
-        qtemp.score = 1;
-        qtemp.choices.insert ( pair<int, QString> ( 1, "Choice 1" ) );
-	qtemp.choices.insert ( pair<int, QString> ( 2, "Choice 2" ) );
-	qtemp.choices.insert ( pair<int, QString> ( 3, "Choice 3" ) );
-	qtemp.choices.insert ( pair<int, QString> ( 4, "Choice 4" ) );
-        qd.questions.push_back ( qtemp );
-        qtemp.choices.clear();
-        qtemp.question = "Who is Mr. Shires?";
-        qtemp.number = 2;
-        qtemp.score = 1;
-        qtemp.choices.insert ( pair<int, QString> ( 1, "Sir Diy" ) );
-        qtemp.choices.insert ( pair<int, QString> ( 2, "Doc Mana" ) );
-        qtemp.choices.insert ( pair<int, QString> ( 3, "Fr. David" ) );
-        qtemp.choices.insert ( pair<int, QString> ( 4, "Michael Jackson" ) );
-	qd.questions.push_back ( qtemp );
-	qtemp.choices.clear();
-	qtemp.question = "This is a 2 point question, correct answer is choice 3.";
-	qtemp.number = 3;
-	qtemp.score = 2;
-	qtemp.choices.insert ( pair<int, QString> ( 1, "Choice 1" ) );
-	qtemp.choices.insert ( pair<int, QString> ( 2, "Choice 2" ) );
-	qtemp.choices.insert ( pair<int, QString> ( 3, "Choice 3" ) );
-	qtemp.choices.insert ( pair<int, QString> ( 4, "Choice 4" ) );
-	qd.questions.push_back ( qtemp );
-        bool result = m_util.readR1QData ( xml, td );
-        QVERIFY ( result );
-        QVERIFY ( td == qd );
+    XmlUtil& xu = XmlUtil::getInstance();
+    QFile file("resources/stage1_q.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    QuestionData qd, td;
+    td.contest_time = 3600;
+    td.welcome_msg = "Insert welcome message here.";
+    Question q;
+    
+    q.number = 1;
+    q.score = 1;
+    q.question = "The answer to this question is choice 1.";
+    q.choices.insert(pair<int,QString>(1, "Choice 1"));
+    q.choices.insert(pair<int,QString>(2, "Choice 2"));
+    q.choices.insert(pair<int,QString>(3, "Choice 3"));
+    q.choices.insert(pair<int,QString>(4, "Choice 4"));
+    td.questions.push_back(q);
+    
+    q.number = 2;
+    q.score = 1;
+    q.question = "Who is Mr. Shires?";
+    q.choices.insert(pair<int,QString>(1, "Sir Diy"));
+    q.choices.insert(pair<int,QString>(2, "Doc Mana"));
+    q.choices.insert(pair<int,QString>(3, "Fr. David"));
+    q.choices.insert(pair<int,QString>(4, "Michael Jackson"));
+    td.questions.push_back(q);
+    
+    q.number = 3;
+    q.score = 2;
+    q.question = "This is a 2 point question, correct answer is choice 3.";
+    q.choices.insert(pair<int,QString>(1, "Choice 1"));
+    q.choices.insert(pair<int,QString>(2, "Choice 2"));
+    q.choices.insert(pair<int,QString>(3, "Choice 3"));
+    q.choices.insert(pair<int,QString>(4, "Choice 4"));
+    td.questions.push_back(q);
+    xu.readQuestionData(1, xml, qd);
+    QVERIFY(td == qd);
 }
 
 void XmlTest::q1WriteTest()
 {
-        //TODO: Add a test case wherein the xml output is what's intended
+}
+
+void XmlTest::q2ReadTest()
+{
+}
+
+void XmlTest::q2WriteTest() {
+}
+
+void XmlTest::q3ReadTest() {
+}
+
+void XmlTest::q3WriteTest() {
 }
 
 void XmlTest::a1ReadTest()
 {
-        QFile file ( "resources/stage1_a.xml" );
-        file.open ( QIODevice::ReadOnly );
-        QVERIFY ( file.isOpen() );
-        QString xml = file.readAll();
-        QVERIFY ( xml.size() > 0 );
-        R1Answers ad, td;
-        ad.insert ( pair<int, int> ( 1,1 ) );
-	ad.insert ( pair<int, int> ( 2,4 ) );
-	ad.insert ( pair<int, int> ( 3,3 ) );
-        bool result = m_util.readR1AData ( xml, td );
-        QVERIFY ( result );
-        QVERIFY ( td == ad );
+    XmlUtil& xu = XmlUtil::getInstance();
+    AnswerData ad, td;
+    QFile file("resources/stage1_a.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    td.insert(pair<int, QString>(1, "1"));
+    td.insert(pair<int, QString>(2, "4"));
+    td.insert(pair<int, QString>(3, "3"));
+    xu.readAnswerData(1, xml, ad);
+    QVERIFY(ad == td);
 }
 
 void XmlTest::a1WriteTest()
 {
-        //TODO: Add a test case wherein the xml output is what's intended
-        QFile file ( "resources/stage1_a.xml" );
-        file.open ( QIODevice::ReadOnly );
-        QVERIFY ( file.isOpen() );
-        QString xml_base = file.readAll();
-        R1Answers ad;
-        ad.insert ( pair<int, int> ( 1,1 ) );
-	ad.insert ( pair<int, int> ( 2,4 ) );
-	ad.insert ( pair<int, int> ( 3,3 ) );
-        QString out;
-        bool result = m_util.writeR1AData ( ad, out );
-        QVERIFY ( out.size() > 0 );
-        // it's impossible to compare through QString comparator
-        // there are minute formatting differences, just use cout
+}
+
+void XmlTest::a2ReadTest() {
+}
+
+void XmlTest::a2WriteTest() {
+}
+
+void XmlTest::a3ReadTest() {
+}
+
+void XmlTest::a3WriteTest() {
 }
 
 void XmlTest::netConfReadTest()
 {
-        QFile file ( "resources/net_config.xml" );
-        file.open ( QIODevice::ReadOnly );
-        QVERIFY ( file.isOpen() );
-        QString xml = file.readAll();
-        QVERIFY ( xml.size() > 0 );
-        NetworkConfig nd, td;
-        nd.ip = "127.0.0.1";
-        nd.port = 2652;
-        m_util.readNetConfig ( xml, td );
-        QVERIFY ( td == nd );
 }
 
 void XmlTest::serverConfReadTest()
 {
-        QFile file ( "resources/server_config.xml" );
-        file.open ( QIODevice::ReadOnly );
-        QVERIFY ( file.isOpen() );
-        QString xml = file.readAll();
-        QVERIFY ( xml.size() > 0 );
-        ServerConfig sd, td;
-        sd.db_path = "resources/server.db";
-        sd.port = 2652;
-        StageData stemp;
-        stemp.answer_file = "resources/stage1_a.xml";
-        stemp.question_file = "resources/stage1_q.xml";
-        sd.stage_data.push_back ( stemp );
-        m_util.readServerConfig ( xml, td );
-        QVERIFY ( td == sd );
 }
 
 QTEST_MAIN ( XmlTest );
