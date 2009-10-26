@@ -28,19 +28,37 @@ const char * const XmlUtil::CONFIG_ROOT_TAG = "config";
 void XmlUtil::readQuestionData ( int round, const QString& xml, QuestionData& qd )
 {
     switch (round) {
-	case 1:
-	    readR1QData(xml, qd);
-	    break;
-	case 2:
-	    readR2QData(xml, qd);
-	    break;
-	case 3: // round 3 and 4 are identical anyway.
-	case 4:
-	    readR3QData(xml, qd);
-	    break;
-	default:
-	    ;
-	    // throw
+    case 1:
+        readR1QData(xml, qd);
+        break;
+    case 2:
+        readR2QData(xml, qd);
+        break;
+    case 3: // round 3 and 4 are identical anyway.
+    case 4:
+        readR3QData(xml, qd);
+        break;
+    default:
+        // throw
+        ;
+    }
+}
+
+void XmlUtil::readAnswerData(int round, const QString& xml, AnswerData& ad) {
+    switch (round) {
+    case 1:
+        readR1AData(xml, ad);
+        break;
+    case 2:
+        readR2AData(xml, ad);
+        break;
+    case 3:
+    case 4:
+        readR3AData(xml, ad);
+        break;
+    default:
+        // throw
+        ;
     }
 }
 
@@ -75,7 +93,7 @@ void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
                 if ( attributes.hasAttribute ( "score" ) ) {
                     temp.score =  attributes.value ( "score" ).toString().toInt();
                 } else {
-		    // throw
+                    // throw
                 }
 
                 for ( int i = 0; i < 5; i++ ) {
@@ -99,25 +117,25 @@ void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
                 token = reader.readNext();
                 data.questions.push_back ( temp );
             } else if ( reader.name() == "stage1" ) {
-		QXmlStreamAttributes attributes = reader.attributes();
-		if(attributes.hasAttribute("contest_time")){
-		    data.contest_time = attributes.value("contest_time").toString().toInt();
-		}
-	    }
+                QXmlStreamAttributes attributes = reader.attributes();
+                if (attributes.hasAttribute("contest_time")) {
+                    data.contest_time = attributes.value("contest_time").toString().toInt();
+                }
+            }
         }
     }
 }
 
-void XmlUtil::readR2QData(const QString& xml, QuestionData& qd){
+void XmlUtil::readR2QData(const QString& xml, QuestionData& qd) {
 }
 
-void XmlUtil::writeR2QData(const QuestionData& qd, QString& xml){
+void XmlUtil::writeR2QData(const QuestionData& qd, QString& xml) {
 }
 
-void XmlUtil::readR3QData(const QString& xml, QuestionData& qd){
+void XmlUtil::readR3QData(const QString& xml, QuestionData& qd) {
 }
 
-void XmlUtil::writeR3QData(const QuestionData& qd, QString& xml){
+void XmlUtil::writeR3QData(const QuestionData& qd, QString& xml) {
 }
 
 void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
@@ -173,6 +191,12 @@ void XmlUtil::readR1AData ( const QString& xml, AnswerData& data )
         }
         token = reader.readNext();
     }
+}
+
+void XmlUtil::readR2AData(const QString& xml, AnswerData& data) {
+}
+
+void XmlUtil::readR3AData(const QString& xml, AnswerData& data) {
 }
 
 void XmlUtil::writeR1AData ( const AnswerData& data, QString& xml )
