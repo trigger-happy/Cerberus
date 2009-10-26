@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>add_team_wnd</class>
+ <widget class="QMainWindow" name="add_team_wnd">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -48,7 +48,7 @@
       <widget class="QLineEdit" name="teamname_2"/>
      </item>
      <item row="3" column="1">
-      <widget class="QPushButton" name="add_team">
+      <widget class="QPushButton" name="add_team_btn">
        <property name="text">
         <string>Add Team</string>
        </property>

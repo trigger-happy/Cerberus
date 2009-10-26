@@ -5,11 +5,10 @@
 #include "ui_teammember_edit.h"
 #include "util/sql_util.h"
 
-RegistrationApp::RegistrationApp (QWidget* parent)
+RegistrationApp::RegistrationApp(QWidget* parent) : m_add_team_wnd( new Ui::add_team_wnd ),
+	m_team_view_wnd(new Ui::team_view_wnd),
+	m_teammember_edit_wnd(new Ui::teammember_edit_wnd)
 {
-	m_add_team_wnd = new Ui::add_team_wnd;
-	m_team_view_wnd = new Ui::team_view_wnd;
-	m_teammember_edit_wnd = new Ui::teammember_edit_wnd;
 
 	//stuff for dialogs
 
@@ -21,9 +20,36 @@ RegistrationApp::RegistrationApp (QWidget* parent)
 	connect(m_add_team_wnd->add_team_btn, SIGNAL(clicked()), this, SLOT(addTeam()));
 	connect(m_teammember_edit_wnd->add_member_btn,SIGNAL(clicked()), this, SLOT(addUser()));
 	connect(m_teammember_edit_wnd->view_team_info_btn, SIGNAL(clicked()), this, SLOT(viewTeam()));
-	connect(m_teammember_edit_wnd->back_to_edit_btn, SIGNAL(clicked()), this, SLOT(backToAddTeam()));
+	connect(m_team_view_wnd->back_to_edit_btn, SIGNAL(clicked()), this, SLOT(backToAddTeam()));
 
 
 }
 
-//void RegistrationApp::
+void RegistrationApp::editTeamMember(){
+}
+
+void RegistrationApp::addTeam(){
+
+}
+
+void RegistrationApp::addUser(){
+
+}
+
+void RegistrationApp::viewTeam(){
+}
+
+void RegistrationApp::backToAddTeam(){
+}
+
+int main ( int argc, char* argv[] )
+{
+		//TODO: implement the app stuff here
+
+		QApplication app ( argc, argv );
+
+		RegistrationApp r_app;
+		//c_app.show();
+
+		return app.exec();
+}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>teammember_edit_wnd</class>
+ <widget class="QDialog" name="teammember_edit_wnd">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -117,7 +117,7 @@
      </widget>
     </item>
     <item row="6" column="1">
-     <widget class="QPushButton" name="add_member">
+     <widget class="QPushButton" name="add_member_btn">
       <property name="text">
        <string>Add Team Member</string>
       </property>
@@ -125,7 +125,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="view_team_info">
+  <widget class="QPushButton" name="view_team_info_btn">
    <property name="geometry">
     <rect>
      <x>10</x>
