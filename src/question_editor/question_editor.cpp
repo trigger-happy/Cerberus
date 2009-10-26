@@ -248,7 +248,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	q_ui->act_load_xml->setShortcut(QKeySequence::Open);
 	q_ui->act_exit->setShortcut(QKeySequence::Close);
 	q_ui->act_save_xml->setStatusTip("Saves questions to xml files");
-	q_ui->act_save_xml->setStatusTip("Load xml files containing the questions.");
+	q_ui->act_load_xml->setStatusTip("Load xml files containing the questions.");
 	q_ui->act_exit->setStatusTip("Closes the program");
 	
 	connect(q_ui->act_save_xml,SIGNAL(triggered(bool)),this,SLOT(save()));
@@ -289,7 +289,7 @@ void QEditor::list_focus(int round)
 		if (index!=-1)
 		{
 			bool change=true;
-			if (button_update[round]->isEnabled())
+			if (button_update[round]->isEnabled() && index!=history[ptr])
 			{
 				QMessageBox conf;
 				conf.setWindowTitle("Notification");
