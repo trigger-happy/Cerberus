@@ -46,6 +46,7 @@ void XmlTest::q1ReadTest()
     q.number = 2;
     q.score = 1;
     q.question = "Who is Mr. Shires?";
+    q.choices.clear();
     q.choices.insert(pair<int,QString>(1, "Sir Diy"));
     q.choices.insert(pair<int,QString>(2, "Doc Mana"));
     q.choices.insert(pair<int,QString>(3, "Fr. David"));
@@ -55,6 +56,7 @@ void XmlTest::q1ReadTest()
     q.number = 3;
     q.score = 2;
     q.question = "This is a 2 point question, correct answer is choice 3.";
+    q.choices.clear();
     q.choices.insert(pair<int,QString>(1, "Choice 1"));
     q.choices.insert(pair<int,QString>(2, "Choice 2"));
     q.choices.insert(pair<int,QString>(3, "Choice 3"));
@@ -109,6 +111,16 @@ void XmlTest::a1ReadTest()
 
 void XmlTest::a1WriteTest()
 {
+    XmlUtil& xu = XmlUtil::getInstance();
+    AnswerData ad, td;
+    QFile file("resources/stage1_a.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    xu.readAnswerData(1, xml, ad);
+    QString test_xml;
+    xu.writeAnswerData(1, ad, test_xml);
+    xu.readAnswerData(1, test_xml, td);
+    QVERIFY(ad == td);
 }
 
 void XmlTest::a2ReadTest() {
