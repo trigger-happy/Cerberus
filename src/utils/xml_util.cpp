@@ -172,7 +172,8 @@ void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
 	readNetConfig(xml, conf);
 }
 
-void XmlUtil::readNetConfig( QXmlStreamReader& xml, NetworkConfig& config) {
+void XmlUtil::readNetConfig( const QString& xml, NetworkConfig& config) {
+	QXmlStreamReader reader ( xml );
 	if ( !reader.isStartElement() || reader.name() != CONFIG_ROOT_TAG )
 		throw std::invalid_argument("Passed XML does not start with 'config' element.");
 
@@ -191,7 +192,7 @@ void XmlUtil::readNetConfig( QXmlStreamReader& xml, NetworkConfig& config) {
 	}
 }
 
-void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
+/*void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 {
 	QXmlStreamReader reader( xml );
 	while ( !reader.atEnd() ) {
@@ -208,7 +209,7 @@ void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 	if ( reader.hasError() )
 		throw IllFormedXmlException(reader.errorString(),
 									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
-}
+}*/
 
 void XmlUtil::writeNetConfig(const NetworkConfig &conf, QString &xml) {
 	QXmlStreamWriter writer(&xml);
@@ -216,8 +217,8 @@ void XmlUtil::writeNetConfig(const NetworkConfig &conf, QString &xml) {
 	writer.writeStartDocument();
 	writer.writeStartElement("config");
 	{
-		writer.writeTextElement("ip", conf.ip);
-		writer.writeTextElement("port", conf.port);
+		writer.writeTextElement("ip", QString("%1").arg(conf.ip));
+		writer.writeTextElement("port", QString("%1").arg(conf.port));
 	}
 	writer.writeEndElement();
 	writer.writeEndDocument();

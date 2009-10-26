@@ -89,7 +89,7 @@ struct NetworkConfig {
         QString ip;
         int port;
 
-		virtual void ~NetworkConfig() {}
+	virtual ~NetworkConfig() {}
 };
 
 struct ClientConfig : public NetworkConfig {

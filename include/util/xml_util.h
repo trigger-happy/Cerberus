@@ -83,9 +83,8 @@ public:
 	Read the client config from xml.
 	\param xml Xml data in a QString.
 	\param conf Reference to a ClientConfig struct to fill up.
-	\return true on succes, false on failure.
 	*/
-	bool readClientConfig ( const QString& xml, ClientConfig& conf );
+	void readClientConfig ( const QString& xml, ClientConfig& conf );
 
 	/*!
 	Write the client config to xml.
@@ -102,14 +101,7 @@ public:
 	\throws XmlException
 	*/
 	void readNetConfig ( const QString& xml, NetworkConfig& conf );
-
-	/*!
-	Read the network config from xml stream.
-	\param xml The xml stream, should be positioned to the 'config' element.
-	\param conf Reference to a NetworkConfig struct to fill up.
-	\throws std::invalid_argument The xml stream is not positioned to the 'config' element.
-	*/
-	void readNetConfig( QXmlStreamReader& xml, NetworkConfig& config);
+	
 	/*!
 	Write the network config to xml.
 	\param conf The NetworkConfig struct to save to xml.
