@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QString>
 
 using std::vector;
+using std::multimap;
 using std::map;
 using std::pair;
 using std::equal;
@@ -80,7 +81,7 @@ struct QuestionData {
         int contest_time;
 };
 
-typedef map<int,QString> AnswerData;
+typedef multimap<int,QString> AnswerData;
 
 struct NetworkConfig {
         bool operator== ( const NetworkConfig& rhs ) {

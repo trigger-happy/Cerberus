@@ -5,3 +5,18 @@
 #QT4_WRAP_UI(UIS_H ${UIS})
 #link_libraries(${QT_LIBRARIES})
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+#set(Q_EDITOR_SRC question_editor.cpp question_model.cpp)
+#set(Q_EDITOR_MHDR ${INCLUDE_DIR}/question_editor.h ${INCLUDE_DIR}/question_model.h )
+#qt4_wrap_cpp(Q_EDITOR_MSRC ${Q_EDITOR_MHDR})
+#set(Q_EDITOR_UIS question_editor.ui)
+#qt4_wrap_ui(Q_EDITOR_UIS_H ${Q_EDITOR_UIS})
+#add_executable(qeditor ${Q_EDITOR_SRC} ${Q_EDITOR_MSRC} ${Q_EDITOR_UIS_H})
+
+set(C_EDITOR_SRC config_editor.cpp main.cpp)
+set(C_EDITOR_MHDR ${INCLUDE_DIR}/config_editor.h )
+qt4_wrap_cpp(C_EDITOR_MSRC ${C_EDITOR_MHDR})
+set(C_EDITOR_UIS server_editor.ui)
+qt4_wrap_ui(C_EDITOR_UIS_H ${C_EDITOR_UIS})
+add_executable(conf_editor ${C_EDITOR_SRC} ${C_EDITOR_MSRC} ${C_EDITOR_UIS_H})
