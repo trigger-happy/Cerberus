@@ -44,6 +44,7 @@ public:
 	int getScore(int index);
 	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score);
 	void getFullQuestion(int index, Question* q);
+	void feedData(QuestionData qd,AnswerData ad);
 };
 
 #endif
