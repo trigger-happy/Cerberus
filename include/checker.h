@@ -1,5 +1,6 @@
 #include <iostream>
 #include <xml_util.h>
+#include <vector>
 
 class Checker : public Singleton<Checker>
 {
@@ -12,15 +13,12 @@ class Checker : public Singleton<Checker>
 		void setAnswerKey(int round, AnswerData& answerKey);
 	
 	private:
-		AnswerData answerKey1;
-		AnswerData answerKey2;
-		AnswerData answerKey3;
-		AnswerData answerKey4;
+		vector<int, AnswerData> vint;
 
 		// special methods for rounds :D
-		double checkR1(AnswerData& answerData);
-		double checkR2(AnswerData& answerData);
-		double checkR3(AnswerData& answerData);
-		double checkR4(AnswerData& answerData);
+		//double checkR1(AnswerData& answerData);
+		//double checkR2(AnswerData& answerData);
+		//double checkR3(AnswerData& answerData);
+		//double checkR4(AnswerData& answerData);
 	
 };
