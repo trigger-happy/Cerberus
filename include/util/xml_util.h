@@ -72,25 +72,44 @@ public:
 	static const char * const CONFIG_ROOT_TAG;
 
 	/*!
+	Parse the question xml and fill the QuestionData struct with the question data.
+	\param round The current round [1-4]
+	\param xml QString containing the xml data.
+	\param qd Reference to a QuestionData struct to fill the question data with.
+	\throws XmlException
 	*/
-	bool readQuestionData ( int round, const QString& xml, QuestionData& qd );
+	void readQuestionData ( int round, const QString& xml, QuestionData& qd );
 
 	/*!
+	Write the xml data to a QString based on the QuestionData passed in.
+	\param round The current rount [1-4].
+	\param qd QuestionData to save to an xml.
+	\param xml Reference to a QString to save the data into.
 	*/
-	bool writeQuestionData ( int round, const QuestionData& qd, QString& xml );
+	void writeQuestionData ( int round, const QuestionData& qd, QString& xml );
 	
 	/*!
+	Parse the answer xml and fill the AnswerData struct with the answer data.
+	\param round The current round [1-4].
+	\param xml QString containing the xml data.
+	\param ad Reference to an AnswerData struct to fill the answer data into.
+	\throws XmlException
 	*/
-	bool readAnswerData( int round, const QString& xml, AnswerData& ad);
+	void readAnswerData( int round, const QString& xml, AnswerData& ad);
 	
 	/*!
+	Write the contents of an AnswerData structure into xml.
+	\param round The current rond [1-4].
+	\param ad The AnswerData to save into xml.
+	\param xml Reference to QString to save the xml into.
 	*/
-	bool writeAnswerData (int round, const AnswerData& ad, QString& xml);
+	void writeAnswerData (int round, const AnswerData& ad, QString& xml);
 
 	/*!
 	Read the client config from xml.
 	\param xml Xml data in a QString.
 	\param conf Reference to a ClientConfig struct to fill up.
+	\throws XmlException
 	*/
 	void readClientConfig ( const QString& xml, ClientConfig& conf );
 
@@ -98,9 +117,8 @@ public:
 	Write the client config to xml.
 	\param conf The ClientConfig to save to xml.
 	\param xml Reference to QString where the xml data will be saved.
-	\return true on success, false on failure.
 	*/
-	bool writeClientConfig ( const ClientConfig& conf, QString& xml );
+	void writeClientConfig ( const ClientConfig& conf, QString& xml );
 
 	/*!
 	Read the network config from an xml string.
