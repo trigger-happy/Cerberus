@@ -41,8 +41,9 @@ private:
 	Ui::teammember_edit_wnd* m_teammember_edit_wnd;
 	Ui::team_view_wnd* m_team_view_wnd;
 
-	//add QDialogs for any pop up windows?
-
+	QMainWindow* m_addteam_w;
+	QDialog* m_teammember_w;
+	QDialog* m_teamview_w;
 
 };
 

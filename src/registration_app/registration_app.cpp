@@ -9,11 +9,19 @@ RegistrationApp::RegistrationApp(QWidget* parent) : m_add_team_wnd( new Ui::add_
 	m_team_view_wnd(new Ui::team_view_wnd),
 	m_teammember_edit_wnd(new Ui::teammember_edit_wnd)
 {
-	m_add_team_wnd->setVisible(true);
-	m_team_view_wnd->setVisible(false);
-	m_teammember_edit_wnd->setVisible(false);
-	//stuff for dialogs
 
+	this->hide();
+	m_addteam_w = new QMainWindow(this);
+	m_add_team_wnd->setupUi(m_addteam_w);
+	m_addteam_w->show();
+
+	m_teammember_w = new QDialog(this);
+	m_teammember_edit_wnd->setupUi(m_teammember_w);
+	m_teammember_w->hide();
+
+	m_teamview_w = new QDialog(this);
+	m_team_view_wnd->setupUi(m_teamview_w);
+	m_teamview_w->hide();
 	//network?
 
 	//connecting stuff
