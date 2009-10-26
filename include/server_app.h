@@ -55,9 +55,12 @@ private slots:
         void stop();
 private:
 		QString log;
-        ServerNetwork* m_network;
+		int num;
+		ServerNetwork* m_network;
+		ServerConfig m_config;
         Ui::server_dlg* m_dlg;
 		vector<QString> m_questions;
+		vector<QString> m_answers;
 
 };
 
