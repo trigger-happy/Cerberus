@@ -17,7 +17,7 @@ public:
     ~ConfigEditor();
 
 public slots:
-    void TextChange();
+    void ButtonPressed();
 
 private:
     Ui::config_editor *ui;

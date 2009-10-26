@@ -36,7 +36,7 @@
         </widget>
        </item>
        <item row="4" column="3">
-        <widget class="QLineEdit" name="lineEdit_3"/>
+        <widget class="QLineEdit" name="serverConf"/>
        </item>
        <item row="9" column="3">
         <widget class="QPushButton" name="pushButton">
@@ -53,7 +53,7 @@
         </widget>
        </item>
        <item row="5" column="3">
-        <widget class="QLineEdit" name="lineEdit_4"/>
+        <widget class="QLineEdit" name="constConf"/>
        </item>
        <item row="7" column="2">
         <widget class="QLabel" name="label_5">
@@ -63,7 +63,7 @@
         </widget>
        </item>
        <item row="7" column="3">
-        <widget class="QLineEdit" name="lineEdit_5"/>
+        <widget class="QLineEdit" name="presenterConf"/>
        </item>
        <item row="8" column="2">
         <widget class="QLabel" name="label_6">
@@ -73,7 +73,7 @@
         </widget>
        </item>
        <item row="8" column="3">
-        <widget class="QLineEdit" name="lineEdit_6"/>
+        <widget class="QLineEdit" name="adminConf"/>
        </item>
        <item row="2" column="1" rowspan="2" colspan="3">
         <widget class="QGroupBox" name="groupBox">
@@ -96,10 +96,10 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_2"/>
+           <widget class="QLineEdit" name="serverIP"/>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit"/>
+           <widget class="QLineEdit" name="serverPort"/>
           </item>
          </layout>
         </widget>
