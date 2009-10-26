@@ -169,6 +169,7 @@ private:
     void writeR3AData ( const AnswerData& data, QString& xml );
 
     StageData readStageData(QXmlStreamReader& stream);
+    void readNetConfig ( QXmlStreamReader& reader, NetworkConfig& conf );
 protected:
 };
 
