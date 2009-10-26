@@ -16,19 +16,21 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "contestant_app.h"
-#include "net/contestant_net.h"
 #include "error_defs.h"
 #include "ui_login.h"
 #include "ui_welcome.h"
 #include "ui_reconnect.h"
 #include "ui_elims.h"
 #include "ui_summary.h"
+#include "util/xml_util.h"
+#include <iostream>
 
 ContestantApp::ContestantApp ( QWidget* parent )
                 : QDialog ( parent ),
                 DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
                 DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) ),
-                UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
+				CON_TEXT ( tr ( "Connected to Server." ) ),
+				UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
                 UNAUTH_INFORMATION ( tr ( "Username or password may be incorrect." ) )
 {
         m_login_dlg = new Ui::login_dlg;
@@ -62,11 +64,11 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
         connect ( m_network, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( netAuthenticate ( bool ) ) );
         connect ( m_network, SIGNAL ( onConnect() ), this, SLOT ( netConnect() ) );
-        connect ( m_network, SIGNAL ( onContestStateChange ( int ) ), this, SLOT ( netContestStateChange ( int ) ) );
+		connect ( m_network, SIGNAL ( onContestStateChange ( int, CONTEST_STATUS ) ), this, SLOT ( netContestStateChange ( int, CONTEST_STATUS ) ) );
         connect ( m_network, SIGNAL ( onContestError ( quint16 ) ), this, SLOT ( netContestError ( quint16 ) ) );
         connect ( m_network, SIGNAL ( onError ( QAbstractSocket::SocketError ) ), this, SLOT ( netError ( QAbstractSocket::SocketError ) ) );
-        connect ( m_network, SIGNAL ( onR1AData ( bool ) ), this, SLOT ( netR1AData ( bool ) ) );
-        connect ( m_network, SIGNAL ( onR1QData ( QString ) ), this, SLOT ( netR1QData ( QString ) ) );
+		connect ( m_network, SIGNAL ( onAData ( bool ) ), this, SLOT ( netAData ( bool ) ) );
+		connect ( m_network, SIGNAL ( onQData ( QString ) ), this, SLOT ( netQData ( QString ) ) );
 
         // connections for the login dialog
         connect ( m_login_dlg->login_btn, SIGNAL ( clicked() ), this, SLOT ( loginLogin() ) );
@@ -85,7 +87,9 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
         // TODO: get the client configuration from XmlUtil
 
+
         // TODO: connect to the server here
+		m_network->connectToHost ( "localhost" , 2652 );
 
         // question data types, to be used all throughout the round
         /*r1qdata = new QuestionData;
@@ -105,9 +109,11 @@ ContestantApp::~ContestantApp()
         delete r1question;*/
 }
 
-void ContestantApp::netContestStateChange ( int state )
+void ContestantApp::netContestStateChange ( int r, CONTEST_STATUS s )
 {
         //TODO: do something here for when the contest state changes
+		m_network->qDataRequest( r );
+		round = r;
 }
 
 void ContestantApp::netError ( const QAbstractSocket::SocketError& err )
@@ -118,19 +124,29 @@ void ContestantApp::netError ( const QAbstractSocket::SocketError& err )
 void ContestantApp::netContestError ( quint16 err )
 {
         //TODO: do something here for contest errors.
+		//Undefined, ignore for now
 }
 
 void ContestantApp::netConnect()
 {
         //TODO: implement actions for when we have a connection
+		QMessageBox msg;
+		msg.setWindowTitle ( "Information" );
+		msg.setText ( CON_TEXT );
+		msg.setStandardButtons ( QMessageBox::Ok );
+		msg.setDefaultButton ( QMessageBox::Ok );
+		msg.setIcon ( QMessageBox::Information );
+		msg.exec();
 }
 
 void ContestantApp::netAuthenticate ( bool result )
 {
         //TODO: do something here for authorization replies.
 
-        if ( result ) {
-                int request = m_network->qDataRequest(m_round);
+		if ( result ) {
+				m_login_w->hide();
+				m_welcome_w->show();
+				m_network->getContestState();
         } else {
                 QMessageBox msg;
                 msg.setWindowTitle ( "Error" );
@@ -144,15 +160,12 @@ void ContestantApp::netAuthenticate ( bool result )
 
 }
 
-void ContestantApp::netR1QData ( const QString& xml )
+void ContestantApp::netQData ( const QString& xml )
 {
-        m_login_w->hide();
-        m_welcome_w->show();
-
-        // where will the instructions text field's text be changed? here?
+		XmlUtil::getInstance().readQuestionData( round, xml, qd );
 }
 
-void ContestantApp::netR1AData ( bool result )
+void ContestantApp::netAData ( bool result )
 {
         //TODO: do something here for replies to answer uploads.
 }
@@ -174,12 +187,13 @@ void ContestantApp::welcomeStart()
 		m_elims_w->show();
 
         // changing the question text to the first question
-        /*r1question = & ( r1qdata->questions[0] );
-		m_elims_dlg->question_lbl->setText ( r1question->question );
-		m_elims_dlg->a_radio->setText ( r1question->choices[0] );
-		m_elims_dlg->b_radio->setText ( r1question->choices[1] );
-		m_elims_dlg->c_radio->setText ( r1question->choices[2] );
-		m_elims_dlg->d_radio->setText ( r1question->choices[3] );*/
+		Question q = qd.questions[0];
+		m_elims_dlg->question_lbl->setText ( q.question );
+		m_elims_dlg->a_radio->setText ( q.choices[0] );
+		m_elims_dlg->b_radio->setText ( q.choices[1] );
+		m_elims_dlg->c_radio->setText ( q.choices[2] );
+		m_elims_dlg->d_radio->setText ( q.choices[3] );
+
 }
 
 void ContestantApp::reconnectTry()
@@ -275,7 +289,7 @@ int main ( int argc, char* argv[] )
         QApplication app ( argc, argv );
 
         ContestantApp c_app;
-        //c_app.show();
+		c_app.show();
 
         return app.exec();
 }

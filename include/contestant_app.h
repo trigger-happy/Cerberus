@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define CONTESTANT_APP_H
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+#include "net/contestant_net.h"
+#include "data_types.h"
 #include "util/xml_util.h"
 
 namespace Ui
@@ -44,7 +46,7 @@ private slots:
         Slot for when the server says the contest state changes.
         \param state The state that the contest is in now.
         */
-        void netContestStateChange ( int state );
+		void netContestStateChange ( int round, CONTEST_STATUS s );
 
         /*!
         Emitted when there's an error with the connection.
@@ -73,13 +75,13 @@ private slots:
         When round 1 questions arrive, this gets called.
         \param xml Round 1 question data in xml format.
         */
-        void netR1QData ( const QString& xml );
+		void netQData ( const QString& xml );
 
         /*!
         Slot for when the server replies to our sent answers.
         \param result true on success, false on failure
         */
-        void netR1AData ( bool result );
+		void netAData ( bool result );
 
         /*!
         Slot for when the user clicks the login button on the log-in screen.
@@ -134,9 +136,13 @@ private:
 
         const QString DISCONNECT_QUESTION;
         const QString DISCONNECT_INFORMATION;
+		const QString CON_TEXT;
         const QString UNAUTH_TEXT;
         const QString UNAUTH_INFORMATION;
-	int m_round;
+
+
+		QuestionData qd;
+		int round;
 };
 
 #endif //CONTESTANT_APP_H
