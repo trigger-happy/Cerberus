@@ -8,7 +8,7 @@ class Checker : public Singleton<Checker>
 		Checker();
 		~Checker();
 	//int check(int round, AnswerData& ad, AnswerData& ak);
-		double check(int round, AnswerData& answerData);
+		double check(int round, QuestionData& qdata, AnswerData& answerData);
 		
 		void setAnswerKey(int round, AnswerData& answerKey);
 	
