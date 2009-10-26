@@ -41,6 +41,7 @@ private slots:
     void a3WriteTest();
     // configuration test
     void netConfReadTest();
+    void netConfWriteTest();
     void serverConfReadTest();
 private:
     XmlUtil m_util;

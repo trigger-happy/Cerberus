@@ -84,6 +84,45 @@ void XmlTest::q1WriteTest()
 
 void XmlTest::q2ReadTest()
 {
+    XmlUtil& xu = XmlUtil::getInstance();
+    QFile file("resources/stage2_q.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    QuestionData qd, td;
+    td.contest_time = 3600;
+    td.welcome_msg = "Insert welcome message here.";
+    Question q;
+
+    q.number = 1;
+    q.score = 1;
+    q.question = "The answer to this question is choice 1.";
+    q.choices.insert(pair<int,QString>(1, "Choice 1"));
+    q.choices.insert(pair<int,QString>(2, "Choice 2"));
+    q.choices.insert(pair<int,QString>(3, "Choice 3"));
+    q.choices.insert(pair<int,QString>(4, "Choice 4"));
+    td.questions.push_back(q);
+
+    q.number = 2;
+    q.score = 1;
+    q.question = "Who is Mr. Shires?";
+    q.choices.clear();
+    q.choices.insert(pair<int,QString>(1, "Sir Diy"));
+    q.choices.insert(pair<int,QString>(2, "Doc Mana"));
+    q.choices.insert(pair<int,QString>(3, "Fr. David"));
+    q.choices.insert(pair<int,QString>(4, "Michael Jackson"));
+    td.questions.push_back(q);
+
+    q.number = 3;
+    q.score = 2;
+    q.question = "This is a 2 point question, correct answers are choice 3 and 4.";
+    q.choices.clear();
+    q.choices.insert(pair<int,QString>(1, "Choice 1"));
+    q.choices.insert(pair<int,QString>(2, "Choice 2"));
+    q.choices.insert(pair<int,QString>(3, "Choice 3"));
+    q.choices.insert(pair<int,QString>(4, "Choice 4"));
+    td.questions.push_back(q);
+    xu.readQuestionData(2, xml, qd);
+    QVERIFY(qd == td);
 }
 
 void XmlTest::q2WriteTest() {
@@ -123,7 +162,19 @@ void XmlTest::a1WriteTest()
     QVERIFY(ad == td);
 }
 
-void XmlTest::a2ReadTest() {
+void XmlTest::a2ReadTest()
+{
+    XmlUtil& xu = XmlUtil::getInstance();
+    AnswerData ad, td;
+    QFile file("resources/stage2_a.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    td.insert(pair<int, QString>(1, "1"));
+    td.insert(pair<int, QString>(2, "4"));
+    td.insert(pair<int, QString>(3, "3"));
+    td.insert(pair<int, QString>(3, "4"));
+    xu.readAnswerData(2, xml, ad);
+    QVERIFY(ad == td);
 }
 
 void XmlTest::a2WriteTest() {
@@ -136,6 +187,23 @@ void XmlTest::a3WriteTest() {
 }
 
 void XmlTest::netConfReadTest()
+{
+    XmlUtil& xu = XmlUtil::getInstance();
+    NetworkConfig tc, nc;
+    tc.ip = "127.0.0.1";
+    tc.port = 2652;
+    QFile file("resources/net_config.xml");
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QString xml = file.readAll();
+    try {
+        xu.readNetConfig(xml, nc);
+    } catch (XmlUtil::XmlException e) {
+        cout << e.what() << endl;
+    }
+    QVERIFY(nc == tc);
+}
+
+void XmlTest::netConfWriteTest()
 {
 }
 

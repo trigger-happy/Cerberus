@@ -35,10 +35,11 @@ Checker::check(int round, AnswerData& answerData)
 		case 2:
 		return checkR2(answerData);
 		case 3:
+		return checkR3(answerData);
 		case 4:
-		return checkR34(answerData);
+		return checkR4(answerData);
 		default:
-		return 0.0;
+		//throw an exception
 	}
 }
 
@@ -54,25 +55,65 @@ Checker::setAnswerKey(int round, AnswerData& answerKey)
 		this.answerKey2 = answerKey;
 		break;
 		case 3:
-		this.answerKey3 = answerKay;
+		this.answerKey3 = answerKey;
 		break;
 		case 4:
 		this.answerKey4 = answerKey;
-		break;
+		default:
+		// throw an exception
+		
 	}
 }
+
+/*
+	checkR1(AnswerData&)
+	The checker for this one will receive
+	a set of values, and the score is the total
+	score for the round.
+*/
 
 double 
 Checker::checkR1(AnswerData& answerData)
 {
+	
+	
 }
 
+/*
+	checkR2(AnswerData&)
+	The checker for this one is open to
+	the possibility of two or more answers
+	in the questions. So, the procedure is
+	quite different.
+*/
 double
 Checker::checkR2(AnswerData& answerData)
 {
+	
 }
 
+
+/*
+	checkR3(AnswerData&)
+	The checker for this one receives one
+	question at a time, while maintaining
+	the mechanics of the previous round.
+*/
 double
-Checker::checkR34(AnswerData& answerData)
+Checker::checkR3(AnswerData& answerData)
 {
+	
+}
+
+/*
+	checkR4(AnswerData&)
+	This is the same as the third round, except
+	that the tie-breaker is really just good
+	for a few questions.
+
+*/
+double
+Checker::checkR4(AnswerData& answerData)
+{
+	
 }
