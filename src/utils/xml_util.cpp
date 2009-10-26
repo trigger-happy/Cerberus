@@ -337,6 +337,10 @@ void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
     readNetConfig(xml, conf);
 }
 
+void XmlUtil::writeClientConfig ( const ClientConfig& conf, QString& xml ) {
+	writeNetConfig(conf, xml);
+}
+
 void XmlUtil::readNetConfig( QXmlStreamReader& reader, NetworkConfig& config) {
     if ( !reader.isStartElement() || reader.name() != CONFIG_ROOT_TAG )
         throw std::invalid_argument("Passed XML does not start with 'config' element.");
@@ -462,4 +466,11 @@ void XmlUtil::writeServerConfig ( const ServerConfig& conf, QString& xml ) {
     }
     writer.writeEndElement();
     writer.writeEndDocument();
+}
+void XmlUtil::readAdminConfig(const QString &xml, AdminConfig &conf) {
+	readNetConfig(xml, conf);
+}
+
+void XmlUtil::writeAdminConfig(const AdminConfig &conf, QString &xml) {
+	writeNetConfig(conf, xml);
 }

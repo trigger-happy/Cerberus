@@ -149,6 +149,10 @@ public:
     \param xml Reference to QString where the xml data will be appended.
     */
     void writeServerConfig ( const ServerConfig& conf, QString& xml );
+
+
+	void readAdminConfig(const QString &xml, AdminConfig &conf);
+	void writeAdminConfig(const AdminConfig &conf, QString &xml);
 private:
     // round 1 related stuff
     void readR1QData ( const QString& xml, QuestionData& data );
