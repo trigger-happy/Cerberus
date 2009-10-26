@@ -25,9 +25,29 @@ using namespace std;
 
 ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg )
 {
+		//What does this do?
+		for ( int i = 1; i <= 4; i++ ) {
+				QFile file ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
+				file.open ( QIODevice::ReadOnly );
+				m_questions.push_back ( file.readAll() );
+		}
+
 		m_dlg->setupUi ( this );
-        m_network = new ServerNetwork ( this );
 		connect(m_dlg->stopButton,SIGNAL(clicked()),this,SLOT(stop()));
+        m_network = new ServerNetwork ( this );
+		connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
+		connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
+		connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+		m_network->listen ( 2652 );
+		m_network->setRound ( 1 );
+		m_network->setStatus ( CONTEST_STOPPED );
+		m_network->setQData ( &m_questions );
+		bool result = SqlUtil::getInstance().init ( "resources/test.db" );
+		if ( !result ) {
+				QMessageBox msg ( this );
+				msg.setText ( "Failed to load db" );
+				msg.exec();
+		}
 }
 
 ServerApp::~ServerApp()
@@ -35,9 +55,20 @@ ServerApp::~ServerApp()
         delete m_network;
 }
 
-void ServerApp::netNewConnection()
+void ServerApp::newContestant( ContestantConnection* cc )
 {
-        //TODO: Stuff here for when a new connection is made
+		//TODO: Stuff here for when a new connection is made
+		m_dlg->textBrowser->append("New Contestant connection.");
+}
+
+void ServerApp::badClient ( TempConnection* tc )
+{
+		m_dlg->textBrowser->setText("Bad client.");
+}
+
+void ServerApp::contestantDisconnect( ContestantConnection* cc )
+{
+		m_dlg->textBrowser->append("Contestant disconnected.");
 }
 
 void ServerApp::stop()
@@ -47,8 +78,8 @@ void ServerApp::stop()
 
 int main ( int argc, char* argv[] )
 {
-		int x = 2 + 3;
-		cout << x << endl;
+		/*int x = 2 + 3;
+		cout << x << endl;*/
         QApplication a ( argc, argv );
         ServerApp server;
 		server.show();
