@@ -26,7 +26,7 @@ namespace Ui
 class login_dlg;
 class welcome_dlg;
 class reconnect_dlg;
-class round1_dlg;
+class elims_dlg;
 class summary_dlg;
 }
 
@@ -111,25 +111,25 @@ private slots:
         /*!
         Slot for the Previous button on the round 1 dialog.
         */
-        void round1Previous();
+		void elimsPrevious();
 
         /*!
         Slot for the Next button on the round 1 dialog.
         */
-        void round1Next();
+		void elimsNext();
 
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
         Ui::welcome_dlg* m_welcome_dlg;
         Ui::reconnect_dlg* m_reconnect_dlg;
-        Ui::round1_dlg* m_round1_dlg;
+		Ui::elims_dlg* m_elims_dlg;
         Ui::summary_dlg* m_summary_dlg;
 
         QDialog* m_login_w;
         QDialog* m_welcome_w;
         QDialog* m_reconnect_w;
-        QDialog* m_round1_w;
+		QDialog* m_elims_w;
         QDialog* m_summary_w;
 
         const QString DISCONNECT_QUESTION;

@@ -14,26 +14,6 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="round_lbl">
-     <property name="text">
-      <string>Semi-Final Round</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="time_lbl">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>timer</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
@@ -60,22 +40,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <spacer name="verticalSpacer_3">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>379</width>
-       <height>28</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -154,6 +118,37 @@
      </item>
     </layout>
    </item>
+   <item row="5" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <widget class="QPushButton" name="prev_btn_3">
+       <property name="text">
+        <string>Previous</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="next_btn_3">
+       <property name="text">
+        <string>Next</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="time_lbl">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>timer</string>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="0" colspan="2">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
@@ -167,32 +162,33 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_9">
-     <item>
-      <widget class="QPushButton" name="next_btn_3">
-       <property name="text">
-        <string>Next</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="prev_btn_3">
-       <property name="text">
-        <string>Previous</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="0" column="0">
+    <widget class="QLabel" name="round_lbl">
+     <property name="text">
+      <string>Semi-Final Round</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>379</width>
+       <height>28</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
-  <zorder>layoutWidget</zorder>
   <zorder>time_lbl</zorder>
-  <zorder>layoutWidget_2</zorder>
   <zorder>verticalSpacer_2</zorder>
-  <zorder>layoutWidget_3</zorder>
   <zorder>round_lbl</zorder>
-  <zorder>prev_btn_3</zorder>
   <zorder>verticalSpacer_3</zorder>
  </widget>
  <resources/>

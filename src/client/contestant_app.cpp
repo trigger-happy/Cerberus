@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_login.h"
 #include "ui_welcome.h"
 #include "ui_reconnect.h"
-#include "ui_round1.h"
+#include "ui_elims.h"
 #include "ui_summary.h"
 
 ContestantApp::ContestantApp ( QWidget* parent )
@@ -34,7 +34,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
         m_login_dlg = new Ui::login_dlg;
         m_welcome_dlg = new Ui::welcome_dlg;
         m_reconnect_dlg = new Ui::reconnect_dlg;
-        m_round1_dlg = new Ui::round1_dlg;
+		m_elims_dlg = new Ui::elims_dlg;
         m_summary_dlg = new Ui::summary_dlg;
 
         this->hide();
@@ -46,9 +46,9 @@ ContestantApp::ContestantApp ( QWidget* parent )
         m_reconnect_dlg->setupUi ( m_reconnect_w );
         m_reconnect_w->hide();
 
-        m_round1_w = new QDialog ( this );
-        m_round1_dlg->setupUi ( m_round1_w );
-        m_round1_w->hide();
+		m_elims_w = new QDialog ( this );
+		m_elims_dlg->setupUi ( m_elims_w );
+		m_elims_w->hide();
 
         m_summary_w = new QDialog ( this );
         m_summary_dlg->setupUi ( m_summary_w );
@@ -80,8 +80,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
         connect ( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
 
         // connections for the round 1 dialog
-        connect ( m_round1_dlg->previous_btn, SIGNAL ( clicked() ), this, SLOT ( round1Previous() ) );
-        connect ( m_round1_dlg->next_btn, SIGNAL ( clicked() ), this, SLOT ( round1Next() ) );
+		connect ( m_elims_dlg->prev_btn, SIGNAL ( clicked() ), this, SLOT ( elimsPrevious() ) );
+		connect ( m_elims_dlg->next_btn, SIGNAL ( clicked() ), this, SLOT ( elimsNext() ) );
 
         // TODO: get the client configuration from XmlUtil
 
@@ -99,7 +99,7 @@ ContestantApp::~ContestantApp()
         delete m_login_w;
         delete m_welcome_w;
         delete m_reconnect_w;
-        delete m_round1_w;
+		delete m_elims_w;
 
         /*delete r1qdata;
         delete r1question;*/
@@ -171,15 +171,15 @@ void ContestantApp::welcomeStart()
 {
         // to do later
         m_welcome_w->hide();
-        m_round1_w->show();
+		m_elims_w->show();
 
         // changing the question text to the first question
         /*r1question = & ( r1qdata->questions[0] );
-        m_round1_dlg->question_lbl->setText ( r1question->question );
-        m_round1_dlg->a_radio->setText ( r1question->choices[0] );
-        m_round1_dlg->b_radio->setText ( r1question->choices[1] );
-        m_round1_dlg->c_radio->setText ( r1question->choices[2] );
-        m_round1_dlg->d_radio->setText ( r1question->choices[3] );*/
+		m_elims_dlg->question_lbl->setText ( r1question->question );
+		m_elims_dlg->a_radio->setText ( r1question->choices[0] );
+		m_elims_dlg->b_radio->setText ( r1question->choices[1] );
+		m_elims_dlg->c_radio->setText ( r1question->choices[2] );
+		m_elims_dlg->d_radio->setText ( r1question->choices[3] );*/
 }
 
 void ContestantApp::reconnectTry()
@@ -207,7 +207,7 @@ void ContestantApp::reconnectCancel()
         }
 }
 
-void ContestantApp::round1Next()
+void ContestantApp::elimsNext()
 {
         bool atLastQuestion = false;
 
@@ -225,20 +225,20 @@ void ContestantApp::round1Next()
 
         // if last question, show the summary page
         if ( atLastQuestion ) {
-                m_round1_w->hide();
+				m_elims_w->hide();
                 m_summary_w->show();
         } else {
                 // for all other questions
-//                 m_round1_dlg->question_lbl->setText ( r1question->question );
-//                 m_round1_dlg->a_radio->setText ( r1question->choices[0] );
-//                 m_round1_dlg->b_radio->setText ( r1question->choices[1] );
-//                 m_round1_dlg->c_radio->setText ( r1question->choices[2] );
-//                 m_round1_dlg->d_radio->setText ( r1question->choices[3] );
+//                 m_elims_dlg->question_lbl->setText ( r1question->question );
+//                 m_elims_dlg->a_radio->setText ( r1question->choices[0] );
+//                 m_elims_dlg->b_radio->setText ( r1question->choices[1] );
+//                 m_elims_dlg->c_radio->setText ( r1question->choices[2] );
+//                 m_elims_dlg->d_radio->setText ( r1question->choices[3] );
         }
 
 }
 
-void ContestantApp::round1Previous()
+void ContestantApp::elimsPrevious()
 {
         bool atFirstQuestion = false;
 
@@ -256,15 +256,15 @@ void ContestantApp::round1Previous()
 
         // if first question, show the welcome/instructions page
         if ( atFirstQuestion ) {
-                m_round1_w->hide();
+				m_elims_w->hide();
                 m_welcome_w->show();
         } else {
                 // for all other questions
-//                 m_round1_dlg->question_lbl->setText ( r1question->question );
-//                 m_round1_dlg->a_radio->setText ( r1question->choices[0] );
-//                 m_round1_dlg->b_radio->setText ( r1question->choices[1] );
-//                 m_round1_dlg->c_radio->setText ( r1question->choices[2] );
-//                 m_round1_dlg->d_radio->setText ( r1question->choices[3] );
+//                 m_elims_dlg->question_lbl->setText ( r1question->question );
+//                 m_elims_dlg->a_radio->setText ( r1question->choices[0] );
+//                 m_elims_dlg->b_radio->setText ( r1question->choices[1] );
+//                 m_elims_dlg->c_radio->setText ( r1question->choices[2] );
+//                 m_elims_dlg->d_radio->setText ( r1question->choices[3] );
         }
 }
 
