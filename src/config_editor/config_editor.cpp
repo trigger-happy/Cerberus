@@ -4,13 +4,15 @@
 #include "config_editor.h"
 #include "ui_server_editor.h"
 #include <iostream>
+#include <data_types.h>
+#include <util/xml_util.h>
 using namespace std;
 
 ConfigEditor::ConfigEditor(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::config_editor)
 {
     ui->setupUi(this);
-    connect( ui->save, SIGNAL(pressed()), this, SLOT(ButtonPressed()) );
+    connect( ui->save, SIGNAL(pressed()), this, SLOT(save()) );
     connect( ui->serverPort1, SIGNAL( textChanged(QString)), this, SLOT(Port1Changed()) );
     connect( ui->serverPort2, SIGNAL( textChanged(QString)), this, SLOT(Port2Changed()) );
     //connect(ui->line1, SIGNAL(textChanged(QString)), this, SLOT(TextChange()) );
@@ -49,7 +51,6 @@ bool ConfigEditor::askConfirmation( QString& s ) {
            break;
        case QMessageBox::No:
            return false;
-           cout << "false" << endl;
            break;
 
     }
@@ -64,14 +65,14 @@ bool ConfigEditor::showInfo() {
      int ret = msgBox.exec();
 
 }
-void ConfigEditor::ButtonPressed() {
+void ConfigEditor::save() {
     //QString *error = new QString("");
     //bool isEmpty = true;
     ui->tabWidget_2->setTabText(0, "Round1");
     ui->tabWidget_2->setTabText(1, "Round2");
     ui->tabWidget_2->setTabText(2, "Round3");
     ui->tabWidget_2->setTabText(3, "Round4");
-    ui->label_sql->setText("SQL File");
+    ui->sql->setText("SQL File");
     ui->label_q1->setText("Question File");
     ui->label_q2->setText("Question File");
     ui->label_q3->setText("Question File");
@@ -80,7 +81,7 @@ void ConfigEditor::ButtonPressed() {
     ui->label_a2->setText("Answer File");
     ui->label_a3->setText("Answer File");
     ui->label_a4->setText("Answer File");
-    ui->error->setText("");
+
 
     QString port(ui->serverPort1->text());
     QString ip( ui->serverIP->text());
@@ -106,8 +107,7 @@ void ConfigEditor::ButtonPressed() {
     if( file.exists() ) {
         QString temp("server");
         cont = askConfirmation(temp);
-        //delete &temp;
-       // delete &file;
+
     }
     
     if( cont ) {
@@ -174,19 +174,18 @@ void ConfigEditor::ButtonPressed() {
             cont = false;
         }
 
-        if( !cont) {
-            showInfo();
-        }
     }
 
+    if( !cont) {
+        showInfo();
+    }
 
     if( cont ) {
         QFile file2 ( contestant );
         if( file2.exists() ) {
             QString temp("contestant");
             cont = askConfirmation(temp);
-            //delete &temp;
-           // delete &file2;
+
         }
     }
     if( cont ) {
@@ -194,8 +193,7 @@ void ConfigEditor::ButtonPressed() {
         if( file3.exists() ) {
             QString temp("admin");
             cont = askConfirmation(temp);
-            //delete &temp;
-           // delete &file3;
+
         }
     }
 
@@ -204,13 +202,62 @@ void ConfigEditor::ButtonPressed() {
         if( file4.exists() ) {
             QString temp("presenter");
             cont = askConfirmation(temp);
-            //delete &temp;
-           // delete &file4;
+
         }
     }
 
     if( cont ) {
         ui->error->setText( "OK" );
+        XmlUtil& xu = XmlUtil::getInstance();
+
+        //Save everything...
+
+        //ClientConfig *cc = new ClientConfig();
+        PresenterConfig *pc = new PresenterConfig();
+        ClientConfig *cc = new ClientConfig();
+        AdminConfig *ac = new AdminConfig();
+
+        cc->ip = ip;
+        cc->port = port.toInt();
+        pc->ip = ip;
+        pc->port = port.toInt();
+        ac->ip = ip;
+        ac->port = port.toInt();
+
+
+
+        StageData *s1 = new StageData();
+        StageData *s2 = new StageData();
+        StageData *s3 = new StageData();
+        StageData *s4 = new StageData();
+
+        s1->answer_file = r1_a;
+        s1->question_file = r1_q;
+        s2->answer_file = r2_a;
+        s2->question_file = r2_q;
+        s3->answer_file = r3_a;
+        s3->question_file = r3_q;
+        s4->answer_file = r4_a;
+        s4->question_file = r4_q;
+
+        ServerConfig *sc = new ServerConfig();
+        sc->db_path = sql;
+        sc->port = port.toInt();
+        sc->stage_data.push_back(*s1);
+        sc->stage_data.push_back(*s2);
+        sc->stage_data.push_back(*s3);
+        sc->stage_data.push_back(*s4);
+
+        xu.writeNetConfig ( *pc, presenter );
+        //xu.writeClientConfig ( *cc, contestant );
+        xu.writeNetConfig ( *ac, admin );
+        xu.writeServerConfig ( *sc, server );
+    }
+    else {
+        ui->error->setText( "Change the file paths to avoid overwriting" );
     }
     //ui->error->setText(*error);
+}
+void ConfigEditor::load() {
+
 }
