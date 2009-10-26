@@ -16,9 +16,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <iostream>
-#include "xml_util.h"
-#include "data_types.h"
-#include "checker.h"
+#include <util/xml_util.h>
+#include <data_types.h>
+#include <checker.h>
 
 using namespace std;
 
@@ -51,10 +51,14 @@ Checker::check(int round, QuestionData& qdata, AnswerData& answerData)
 			Put the code for calculating the score
 			for the second round here.
 		*/
+		double den;
+		double num;
 		for(int i=0; i<answerKey->end(); i++)
 		{
-			
+			den=q.data.questions[i].score;
+			score+=num/den;
 		}
+
 		
 	}
 	else if (round == 3 || round == 4)
