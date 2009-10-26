@@ -10,8 +10,18 @@ RegistrationApp::RegistrationApp(QWidget* parent) : m_add_team_wnd( new Ui::add_
 	m_teammember_edit_wnd(new Ui::teammember_edit_wnd)
 {
 
-	//stuff for dialogs
+	this->hide();
+	m_addteam_w = new QMainWindow(this);
+	m_add_team_wnd->setupUi(m_addteam_w);
+	m_addteam_w->show();
 
+	m_teammember_w = new QDialog(this);
+	m_teammember_edit_wnd->setupUi(m_teammember_w);
+	m_teammember_w->hide();
+
+	m_teamview_w = new QDialog(this);
+	m_team_view_wnd->setupUi(m_teamview_w);
+	m_teamview_w->hide();
 	//network?
 
 	//connecting stuff
@@ -26,6 +36,10 @@ RegistrationApp::RegistrationApp(QWidget* parent) : m_add_team_wnd( new Ui::add_
 }
 
 void RegistrationApp::editTeamMember(){
+	const QString teamname = m_add_team_wnd->teamname->text(),
+	teamschool = m_add_team_wnd->teamschool->text();
+	SqlUtil s;
+	s.addTeam(teamname, teamschool);
 }
 
 void RegistrationApp::addTeam(){
@@ -49,7 +63,7 @@ int main ( int argc, char* argv[] )
 		QApplication app ( argc, argv );
 
 		RegistrationApp r_app;
-		//c_app.show();
+		r_app.show();
 
 		return app.exec();
 }

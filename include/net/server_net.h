@@ -37,7 +37,6 @@ typedef list<PresenterConnection*> presenter_list;
 typedef list<AdminConnection*> admin_list;
 typedef list<TempConnection*> tmpcon_list;
 
-
 /*!
 \brief Networking class to be used by the server.
 This class handles the communication with various clients.
@@ -78,7 +77,7 @@ public:
         */
         void setRound ( int round );
 
-        /*!\
+		/*!\
         Get the current contest status.
         \return The contest status.
         */

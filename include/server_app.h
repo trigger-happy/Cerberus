@@ -38,7 +38,17 @@ private slots:
         /*!
         Called when there is a new connection
         */
-        void netNewConnection();
+		void newContestant( ContestantConnection* cc );
+
+		/*
+		Called when a client connects but is not a Cerberus client.
+		  */
+		void badClient ( TempConnection* tc );
+		/*
+		Called when there is a disconnection
+		*/
+		void contestantDisconnect( ContestantConnection* cc );
+
         /*
         Called when the stop button is pressed
         */

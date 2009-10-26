@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define question_model_h
 
 #include <QtGui>
+#include "data_types.h"
 
 class QuestionModel : public QStandardItemModel
 {
@@ -38,11 +39,11 @@ public:
 	QString getC(int index);
 	QString getD(int index);
 	QString getE(int index);
-	void getAnskey(int index,bool *key);
+	void getAnskey(int index,bool* key);
 	int getTime(int index);
 	int getScore(int index);
 	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score);
-	
+	void getFullQuestion(int index, Question* q);
 };
 
 #endif

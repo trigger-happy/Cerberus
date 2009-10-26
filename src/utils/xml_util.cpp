@@ -44,6 +44,24 @@ void XmlUtil::readQuestionData ( int round, const QString& xml, QuestionData& qd
     }
 }
 
+void XmlUtil::writeQuestionData(int round, const QuestionData& qd, QString& xml) {
+    switch (round) {
+    case 1:
+        writeR1QData(qd, xml);
+        break;
+    case 2:
+        writeR2QData(qd, xml);
+        break;
+    case 3:
+    case 4:
+        writeR3QData(qd, xml);
+        break;
+    default:
+        //throw
+        ;
+    }
+}
+
 void XmlUtil::readAnswerData(int round, const QString& xml, AnswerData& ad) {
     switch (round) {
     case 1:
@@ -55,6 +73,24 @@ void XmlUtil::readAnswerData(int round, const QString& xml, AnswerData& ad) {
     case 3:
     case 4:
         readR3AData(xml, ad);
+        break;
+    default:
+        // throw
+        ;
+    }
+}
+
+void XmlUtil::writeAnswerData(int round, const AnswerData& ad, QString& xml) {
+    switch (round) {
+    case 1:
+        writeR1AData(ad, xml);
+        break;
+    case 2:
+        writeR2AData(ad, xml);
+        break;
+    case 3:
+    case 4:
+        writeR3AData(ad, xml);
         break;
     default:
         // throw
@@ -111,6 +147,9 @@ void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
                             temp.choices[number] = choice;
                             token = reader.readNext();
                         }
+                    } else {
+                        // don't ask, it's a work around
+                        i--;
                     }
                 }
 
@@ -126,7 +165,71 @@ void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
     }
 }
 
-void XmlUtil::readR2QData(const QString& xml, QuestionData& qd) {
+void XmlUtil::readR2QData(const QString& xml, QuestionData& data)
+{
+    QXmlStreamReader reader ( xml );
+
+    while ( !reader.atEnd() ) {
+        QXmlStreamReader::TokenType token = reader.readNext();
+
+        if ( token == QXmlStreamReader::StartElement ) {
+            if ( reader.name() == "welcome_msg" ) { // reads the welcome_msg tag
+                token = reader.readNext();
+                if ( token == QXmlStreamReader::Characters ) {
+                    data.welcome_msg = reader.text().toString(); // reads the characters within the question_msg tag
+                } else {
+                    // throw
+                }
+                token = reader.readNext();
+            } else if ( reader.name() == "question" ) { // reads the question tag
+                QXmlStreamAttributes attributes = reader.attributes();
+                Question temp;
+
+                // reads the number attribute from question
+                if ( attributes.hasAttribute ( "number" ) ) {
+                    temp.number =  attributes.value ( "number" ).toString().toInt();
+                } else {
+                    // throw
+                }
+
+                // reads from the score attribute from question
+                if ( attributes.hasAttribute ( "score" ) ) {
+                    temp.score =  attributes.value ( "score" ).toString().toInt();
+                } else {
+                    // throw
+                }
+
+                for ( int i = 0; i < 5; i++ ) {
+                    token = reader.readNext();
+                    if ( token == QXmlStreamReader::StartElement ) {
+                        if ( reader.name() == "q" ) {
+                            token = reader.readNext();
+                            //error check here
+                            temp.question = reader.text().toString();
+                            token = reader.readNext();
+                        } else if ( reader.name() == "choice" ) {
+                            int number = reader.attributes().value ( "id" ).toString().toInt();
+                            token = reader.readNext();
+                            QString choice = reader.text().toString();
+                            temp.choices[number] = choice;
+                            token = reader.readNext();
+                        }
+                    } else {
+                        // don't ask, it's a work around
+                        i--;
+                    }
+                }
+
+                token = reader.readNext();
+                data.questions.push_back ( temp );
+            } else if ( reader.name() == "stage2" ) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                if (attributes.hasAttribute("contest_time")) {
+                    data.contest_time = attributes.value("contest_time").toString().toInt();
+                }
+            }
+        }
+    }
 }
 
 void XmlUtil::writeR2QData(const QuestionData& qd, QString& xml) {
@@ -140,7 +243,7 @@ void XmlUtil::writeR3QData(const QuestionData& qd, QString& xml) {
 
 void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
 {
-    int counter = data.questions.size() - 1; // stores number of elements left
+    int counter = 0; // stores number of elements left
     int offset = 1;
     vector<Question> questions = data.questions;
 
@@ -148,10 +251,11 @@ void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
     writer.setAutoFormatting ( true );
     writer.writeStartDocument();
     writer.writeStartElement ( "stage1" );
+    writer.writeAttribute("contest_time", QString("%1").arg(data.contest_time));
     writer.writeTextElement ( "welcome_msg", QString ( data.welcome_msg ) );
 
     // this writes the questions into the xml
-    while ( counter != 0 ) {
+    while ( counter < data.questions.size() ) {
         QString questionNum = QString ( "%1" ).arg ( data.questions.at ( counter ).number );
         QString scoreNum = QString ( "%1" ).arg ( data.questions.at ( counter ).score );
         writer.writeStartElement ( "question" );
@@ -160,14 +264,16 @@ void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
 
         writer.writeTextElement ( "q", QString ( data.questions.at ( counter ).question ) );
 
-        int choiceCounter = data.questions.at ( counter ).choices.size() - 1;
-        while ( choiceCounter != 0 ) {
-            QString qAnswer ( data.questions.at ( counter ).choices.find ( choiceCounter )->second );
-            writer.writeTextElement ( "choice", qAnswer );
-            choiceCounter--;
+        map<int,QString>::const_iterator iter = data.questions[counter].choices.begin();
+        while (iter != data.questions[counter].choices.end()) {
+            writer.writeStartElement("choice");
+            writer.writeAttribute("id", QString("%1").arg(iter->first));
+            writer.writeCharacters(iter->second);
+            writer.writeEndElement();
+            iter++;
         }
         writer.writeEndElement();// closes the question tag
-        counter--;
+        counter++;
     }
 
     writer.writeEndElement(); // closes the stage1 tag
@@ -194,6 +300,7 @@ void XmlUtil::readR1AData ( const QString& xml, AnswerData& data )
 }
 
 void XmlUtil::readR2AData(const QString& xml, AnswerData& data) {
+    readR1AData(xml, data);
 }
 
 void XmlUtil::readR3AData(const QString& xml, AnswerData& data) {
@@ -217,6 +324,12 @@ void XmlUtil::writeR1AData ( const AnswerData& data, QString& xml )
 
     writer.writeEndElement(); // closes the stage1_ans tag
     writer.writeEndDocument();
+}
+
+void XmlUtil::writeR2AData ( const AnswerData& data, QString& xml ) {
+}
+
+void XmlUtil::writeR3AData ( const AnswerData& data, QString& xml ) {
 }
 
 void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
