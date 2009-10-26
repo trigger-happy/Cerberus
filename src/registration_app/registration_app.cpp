@@ -9,7 +9,9 @@ RegistrationApp::RegistrationApp(QWidget* parent) : m_add_team_wnd( new Ui::add_
 	m_team_view_wnd(new Ui::team_view_wnd),
 	m_teammember_edit_wnd(new Ui::teammember_edit_wnd)
 {
-
+	m_add_team_wnd->setVisible(true);
+	m_team_view_wnd->setVisible(false);
+	m_teammember_edit_wnd->setVisible(false);
 	//stuff for dialogs
 
 	//network?
@@ -26,6 +28,10 @@ RegistrationApp::RegistrationApp(QWidget* parent) : m_add_team_wnd( new Ui::add_
 }
 
 void RegistrationApp::editTeamMember(){
+	const QString teamname = m_add_team_wnd->teamname->text(),
+	teamschool = m_add_team_wnd->teamschool->text();
+	SqlUtil s;
+	s.addTeam(teamname, teamschool);
 }
 
 void RegistrationApp::addTeam(){
@@ -49,7 +55,7 @@ int main ( int argc, char* argv[] )
 		QApplication app ( argc, argv );
 
 		RegistrationApp r_app;
-		//c_app.show();
+		r_app.show();
 
 		return app.exec();
 }

@@ -143,3 +143,20 @@ int QuestionModel::getTime(int index)
 {
 	return QStandardItemModel::item(index,8)->text().toInt();
 }
+
+void QuestionModel::getFullQuestion(int index, Question* q)
+{
+	q->number=index+1;
+	q->question=getQuestion(index);
+	q->choices[1]=getA(index);
+	q->choices[2]=getB(index);
+	q->choices[3]=getC(index);
+	q->choices[4]=getD(index);
+	q->score=getScore(index);
+	q->time=getTime(index);
+	
+	if (round>2)
+	{
+		q->choices[5]=getE(index);
+	}
+}

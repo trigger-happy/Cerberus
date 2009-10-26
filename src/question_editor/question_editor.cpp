@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtGui/QApplication>
 #include "question_editor.h"
 #include "ui_question_editor.h"
-#include "util/xml_util.h"
+#include "data_types.h"
 #include <iostream>
 
 using namespace std;
@@ -500,7 +500,61 @@ void QEditor::load()
 
 void QEditor::save()
 {
-  
+	if (save_tar=="")
+	{
+		QFileDialog save_dlg;
+		save_dlg.setAcceptMode(QFileDialog::AcceptSave);
+		save_dlg.setFileMode(QFileDialog::AnyFile);
+		save_dlg.setFilter(tr("Group XML files (*.xgrp)"));
+		save_dlg.exec();
+		save_tar=save_dlg.selectedFiles().join("");
+		save_tar.replace(QString(".xgrp"),QString(""));
+		QFile grp(save_tar+".xgrp");
+		if (!grp.open(QIODevice::ReadWrite))
+			return;
+		QTextStream out(&grp);
+		out << "This file holds no data, this just groups xml files to open/edit them easier.";
+	}
+	if (save_tar!="")
+	{
+		QuestionData rounddata[4];
+		
+		for (int roundctr=0;roundctr<4;roundctr++)
+		{
+			QString xml_q;
+			QString xml_a;
+			int question_cnt=roundmodel[roundctr]->rowCount();
+			for (int qctr=0;qctr<question_cnt;qctr++)
+			{
+				Question temp;
+				roundmodel[roundctr]->getFullQuestion(qctr,&temp);
+				rounddata[roundctr].questions.push_back(temp);
+			}
+			
+			//uncomment this part if its completed;
+			
+			QFile file_q(save_tar+QString::number(roundctr+1)+"_q.xml");
+			if (!file_q.open(QIODevice::ReadWrite))
+				return;
+			else
+			{
+				QTextStream out(&file_q);
+				//xml_util.writeQuestionData(roundctr+1,rounddata[roundctr],xml_q);
+				out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_q
+			}
+			
+			QFile file_a(save_tar+QString::number(roundctr+1)+"_a.xml");
+			if (!file_a.open(QIODevice::ReadWrite))
+				return;
+			else
+			{
+				QTextStream out(&file_a);
+				//todo:
+				out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_a
+			}
+		}
+	}
+	
 }
 
 void QEditor::exit()
