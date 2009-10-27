@@ -59,9 +59,26 @@ enum PROTOCOL_COMMAND {
     INF_CONTEST_TIME,
 
     // contest pacing for round 3 and 4
-    INF_QUESTION_CHANGE
+    INF_QUESTION_CHANGE,
 
-    // TODO: Add presenter commands here
+    // presenter stuff
+    // sent by the presenter when ready
+    QRY_PRESENTER_READY,
+
+    // round 1-2, show contest time
+    PSN_SHOW_TIME,
+
+    // all rounds show rankings
+    PSN_SHOW_RANKS,
+
+    // question time info
+    INF_QUESTION_TIME,
+
+    // question state
+    INF_QUESTION_STATE,
+
+    // show answer
+    PSN_SHOW_ANSWER
 
     // TODO: Add admin commands here
 };
