@@ -168,6 +168,7 @@ private:
 
     // round 3 and tie-breaker related stuff
     void readR3QData ( const QString& xml, QuestionData& data );
+	void readR3QEntry(QXmlStreamReader &reader, Question &q);
     void writeR3QData ( const QuestionData& data, QString& xml );
     void readR3AData ( const QString& xml, AnswerData& data );
     void writeR3AData ( const AnswerData& data, QString& xml );

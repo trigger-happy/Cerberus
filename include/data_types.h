@@ -41,25 +41,13 @@ struct Question {
         if ( this->time != rhs.time ) {
             return false;
         }
-        if ( this->choices.size() == rhs.choices.size() ) {
-            map<int, QString>::const_iterator lit, rit;
-            lit = this->choices.begin();
-            rit = rhs.choices.begin();
-            while ( lit != this->choices.end() ) {
-                if ( lit->first != rit->first || lit->second != rit->second ) {
-                    return false;
-                }
-                lit++;
-                rit++;
-            }
-        }
-        return true;
+		return equal(choices.begin(), choices.end(), rhs.choices.begin());
     }
     int number;
     int score;
     int time;
     QString question;
-    map<int, QString> choices;
+	vector<QString> choices;
 };
 
 struct QuestionData {

@@ -38,9 +38,8 @@ void XmlUtil::readQuestionData ( int round, const QString& xml, QuestionData& qd
     case 4:
         readR3QData(xml, qd);
         break;
-    default:
-        // throw
-        ;
+	default:
+		throw std::invalid_argument("Invalid round argument in readQuestionData.");
     }
 }
 
@@ -56,9 +55,8 @@ void XmlUtil::writeQuestionData(int round, const QuestionData& qd, QString& xml)
     case 4:
         writeR3QData(qd, xml);
         break;
-    default:
-        //throw
-        ;
+	default:
+		throw std::invalid_argument("Invalid round argument in writeQuestionData.");
     }
 }
 
@@ -74,9 +72,8 @@ void XmlUtil::readAnswerData(int round, const QString& xml, AnswerData& ad) {
     case 4:
         readR3AData(xml, ad);
         break;
-    default:
-        // throw
-        ;
+	default:
+		throw std::invalid_argument("Invalid round argument in readAnswerData.");
     }
 }
 
@@ -93,8 +90,7 @@ void XmlUtil::writeAnswerData(int round, const AnswerData& ad, QString& xml) {
         writeR3AData(ad, xml);
         break;
     default:
-        // throw
-        ;
+		throw std::invalid_argument("Invalid round argument in writeAnswerData.");
     }
 }
 
@@ -106,30 +102,24 @@ void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
         QXmlStreamReader::TokenType token = reader.readNext();
 
         if ( token == QXmlStreamReader::StartElement ) {
-            if ( reader.name() == "welcome_msg" ) { // reads the welcome_msg tag
-                token = reader.readNext();
-                if ( token == QXmlStreamReader::Characters ) {
-                    data.welcome_msg = reader.text().toString(); // reads the characters within the question_msg tag
-                } else {
-                    // throw
-                }
-                token = reader.readNext();
+			if ( reader.name() == "welcome_msg" ) { // reads the welcome_msg tag
+				data.welcome_msg = reader.readElementText(); // reads the characters within the question_msg tag
             } else if ( reader.name() == "question" ) { // reads the question tag
                 QXmlStreamAttributes attributes = reader.attributes();
                 Question temp;
 
                 // reads the number attribute from question
                 if ( attributes.hasAttribute ( "number" ) ) {
-                    temp.number =  attributes.value ( "number" ).toString().toInt();
+					temp.number = attributes.value( "number" ).toString().toInt();
                 } else {
-                    // throw
+					throw InvalidXmlException("'number' attribute missing from 'question' element.", reader);
                 }
 
                 // reads from the score attribute from question
                 if ( attributes.hasAttribute ( "score" ) ) {
                     temp.score =  attributes.value ( "score" ).toString().toInt();
                 } else {
-                    // throw
+					throw InvalidXmlException("'score' attribute missing from 'question' element.", reader);
                 }
 
                 for ( int i = 0; i < 5; i++ ) {
@@ -235,7 +225,72 @@ void XmlUtil::readR2QData(const QString& xml, QuestionData& data)
 void XmlUtil::writeR2QData(const QuestionData& qd, QString& xml) {
 }
 
+template <typename T>
+T checked_assign(const QXmlStreamAttributes &attr, const char * key, const QXmlStreamReader &reader) {
+	throw std::logic_error("Unimplemented type passed to checked_assign.");
+	return 0;
+}
+
+template <>
+int checked_assign(const QXmlStreamAttributes &attrs, const char * key, const QXmlStreamReader &reader) {
+	if ( !attrs.hasAttribute(key) ){
+		throw XmlUtil::InvalidXmlException(
+				QString("Required attribute '%1' missing in element %2.").
+				arg(key, reader.name().toString()),
+				reader);
+	}
+	bool ok = true;
+	const int val = attrs.value(key).toString().toInt(&ok);
+	if ( !ok )
+		throw XmlUtil::InvalidXmlException(
+				QString("Invalid value for '%1' (expected integer)").arg(key),
+				reader);
+	return val;
+}
+
+void XmlUtil::readR3QEntry(QXmlStreamReader &reader, Question &q) {
+	assert(reader.name() == "question");
+	{
+		const QXmlStreamAttributes &attrs = reader.attributes();
+		q.score = checked_assign<int>(attrs, "score", reader);
+		q.time = checked_assign<int>(attrs, "time", reader);
+		q.number = checked_assign<int>(attrs, "number", reader);
+	}
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
+			if ( reader.name() == "q" ) {
+				q.question = reader.readElementText();
+			} else if ( reader.name() == "choice" ) {
+				q.choices.push_back(reader.readElementText());
+			} else {
+				throw InvalidXmlException(
+						QString("Unexpected '%1' element found in 'question' element.").
+						arg(reader.name().toString()), reader);
+			}
+		} else if ( reader.isEndElement() && reader.name() == "question" )
+			break;
+	}
+}
+
 void XmlUtil::readR3QData(const QString& xml, QuestionData& qd) {
+	QXmlStreamReader reader(xml);
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
+			if ( reader.name() == "stage3" ) {
+				const QXmlStreamAttributes &attrs = reader.attributes();
+				qd.contest_time = checked_assign<int>(attrs, "contest_time", reader);
+			} else if ( reader.name() == "welcome_msg" ) {
+				qd.welcome_msg = reader.readElementText();
+			} else if ( reader.name() == "question" ) {
+				Question q;
+				readR3QEntry(reader, q);
+				qd.questions.push_back(q);
+			}
+		}
+	}
+
+	if ( reader.hasError() )
+		throw IllFormedXmlException(reader.errorString(), reader);
 }
 
 void XmlUtil::writeR3QData(const QuestionData& qd, QString& xml) {
@@ -264,12 +319,9 @@ void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
 
         writer.writeTextElement ( "q", QString ( data.questions.at ( counter ).question ) );
 
-        map<int,QString>::const_iterator iter = data.questions[counter].choices.begin();
+		vector<QString>::const_iterator iter = data.questions[counter].choices.begin();
         while (iter != data.questions[counter].choices.end()) {
-            writer.writeStartElement("choice");
-            writer.writeAttribute("id", QString("%1").arg(iter->first));
-            writer.writeCharacters(iter->second);
-            writer.writeEndElement();
+			writer.writeTextElement("choice", *iter);
             iter++;
         }
         writer.writeEndElement();// closes the question tag
