@@ -271,10 +271,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	connect(q_ui->act_load_xml,SIGNAL(triggered(bool)),this,SLOT(load()));
 	connect(q_ui->act_exit,SIGNAL(triggered(bool)),this,SLOT(exit()));
 	
-	/*connect(q_ui->question_r2_ans_a,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_ans_b,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_ans_c,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));
-	connect(q_ui->question_r2_ans_d,SIGNAL(toggled(bool)),this,SLOT(changed_details_r2()));*/
+	changed=false;
 }
 QEditor::~QEditor()
 {
@@ -308,9 +305,10 @@ void QEditor::list_focus(int round)
 			if (button_update[round]->isEnabled() && index!=history[ptr])
 			{
 				QMessageBox conf;
-				conf.setWindowTitle("Notification");
+				conf.setWindowTitle("Notification - QEditor");
 				conf.setText("Details of question has been modified, but have not been updated");
 				conf.setInformativeText("What do you want to do?");
+				conf.setIcon(QMessageBox::Question);
 				QPushButton *update=conf.addButton(tr("Update then proceed"),QMessageBox::ActionRole);
 				QPushButton *canpro=conf.addButton(tr("Cancel then proceed"),QMessageBox::ActionRole);
 				QPushButton *goback=conf.addButton(tr("Cancel Action"),QMessageBox::ActionRole);
@@ -395,12 +393,6 @@ void QEditor::remove_question(int round)
 	list_focus(round);
 }
 
-void QEditor::changed_details_r2()
-{
-	if (q_ui->list_r2->currentIndex().row()!=-1)
-		q_ui->button_update_r2->setEnabled(true);
-}
-
 void QEditor::changed_details(int round)
 {
 	button_update[round]->setEnabled(true);
@@ -458,6 +450,7 @@ void QEditor::cancel_update(int round)
 	list_focus(round);
 	button_update[round]->setDisabled(true);
 	button_cancel[round]->setDisabled(true);
+	q_ui->statusBar->showMessage("");
 }
 
 void QEditor::move_up(int round)
@@ -529,7 +522,7 @@ void QEditor::disableDuplicates(int round)
 
 void QEditor::load()
 {
-	if (save_tar!="")
+	if (file_prefix!="")
 	{
 		//warning here
 	}
@@ -541,22 +534,23 @@ void QEditor::load()
 		load_dlg.setFilter(tr("Group XML files (*.xgrp)"));
 		load_dlg.exec();
 		
-		save_tar=load_dlg.selectedFiles().join("");
-		save_tar.replace(QString(".xgrp"),QString(""));
-		
+		file_prefix=load_dlg.selectedFiles().join("");
+		file_prefix.replace(QString(".xgrp"),QString(""));
+		if (file_prefix=="")
+			return;
 		for (int ctr=0;ctr<4;ctr++)
 		{
-			QFile fq(save_tar+QString::number(ctr+1)+"_q.xml");
+			QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
 			fq.open(QIODevice::ReadOnly);
 			QString xml_q=fq.readAll();
 			QuestionData qd;
-			xml_util.readQuestionData(ctr+1,xml_q,qd);
+			//xml_util.readQuestionData(ctr+1,xml_q,qd);
 			
-			QFile fa(save_tar+QString::number(ctr+1)+"_a.xml");
+			QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
 			fa.open(QIODevice::ReadOnly);
 			QString xml_a=fa.readAll();
 			AnswerData ad;
-			xml_util.readAnswerData(ctr+1,xml_a,ad);
+			//xml_util.readAnswerData(ctr+1,xml_a,ad);
 			
 			roundmodel[ctr]->feedData(qd,ad);
 		}
@@ -565,22 +559,24 @@ void QEditor::load()
 
 void QEditor::save()
 {
-	if (save_tar=="")
+	if (file_prefix=="")
 	{
 		QFileDialog save_dlg;
 		save_dlg.setAcceptMode(QFileDialog::AcceptSave);
 		save_dlg.setFileMode(QFileDialog::AnyFile);
 		save_dlg.setFilter(tr("Group XML files (*.xgrp)"));
 		save_dlg.exec();
-		save_tar=save_dlg.selectedFiles().join("");
-		save_tar.replace(QString(".xgrp"),QString(""));
-		QFile grp(save_tar+".xgrp");
+		file_prefix=save_dlg.selectedFiles().join("");
+		file_prefix.replace(QString(".xgrp"),QString(""));
+		if (file_prefix=="")
+			return;
+		QFile grp(file_prefix+".xgrp");
 		if (!grp.open(QIODevice::ReadWrite))
 			return;
 		QTextStream out(&grp);
-		out << "This file holds no data, this just groups xml files to open/edit them easier.";
+		out << "This file holds no data, this just groups xml files to open/edit them easier! ^_^";
 	}
-	if (save_tar!="")
+	if (file_prefix!="")
 	{
 		
 		for (int roundctr=0;roundctr<4;roundctr++)
@@ -590,6 +586,13 @@ void QEditor::save()
 			QString xml_q;
 			QString xml_a;
 			int question_cnt=roundmodel[roundctr]->rowCount();
+			
+			if (round==0)
+			{
+				rounddata.welcome_msg=q_ui->textarea_welcome->toPlainText();
+			}
+			rounddata.contest_time=duration[roundctr]->value();
+			
 			for (int qctr=0;qctr<question_cnt;qctr++)
 			{
 				Question temp;
@@ -614,8 +617,8 @@ void QEditor::save()
 			
 			//uncomment this part if its completed;
 			
-			QFile file_q(save_tar+QString::number(roundctr+1)+"_q.xml");
-			if (!file_q.open(QIODevice::ReadWrite))
+			QFile file_q(file_prefix+QString::number(roundctr+1)+"_q.xml");
+			if (!file_q.open(QIODevice::WriteOnly))
 				return;
 			else
 			{
@@ -625,8 +628,8 @@ void QEditor::save()
 				out << xml_q;
 			}
 			
-			QFile file_a(save_tar+QString::number(roundctr+1)+"_a.xml");
-			if (!file_a.open(QIODevice::ReadWrite))
+			QFile file_a(file_prefix+QString::number(roundctr+1)+"_a.xml");
+			if (!file_a.open(QIODevice::WriteOnly))
 				return;
 			else
 			{
@@ -636,13 +639,65 @@ void QEditor::save()
 				out << xml_a;
 			}
 		}
+		q_ui->statusBar->showMessage("File saved at "+file_prefix);
 	}
 	
 }
 
 void QEditor::exit()
 {
-	this->close();
+	if (file_prefix=="")
+	{
+		QMessageBox conf;
+		conf.setWindowTitle("Notification - QEditor");
+		conf.setText("Questions have not been saved yet");
+		conf.setInformativeText("What do you want to do?");
+		conf.setIcon(QMessageBox::Question);
+		QPushButton *comsave=conf.addButton(tr("Save as..."),QMessageBox::ActionRole);
+		QPushButton *comdiscard=conf.addButton(tr("Discard"),QMessageBox::ActionRole);
+		QPushButton *comback=conf.addButton(tr("Cancel"),QMessageBox::ActionRole);
+		conf.setDefaultButton(comsave);
+		conf.exec();
+		if (conf.clickedButton() == comsave)
+		{
+			save();
+			cout << file_prefix.toStdString() << endl;
+			if (file_prefix=="")
+				return;
+			else 
+				this->close();
+		}
+		else if (conf.clickedButton() == comdiscard)
+		{
+			this->close();
+		}
+	}
+	else if (file_prefix!="" && changed)
+	{
+		QMessageBox conf;
+		conf.setWindowTitle("Notification - QEditor");
+		conf.setText("Details of question has been modified, but have not been saved");
+		conf.setInformativeText("What do you want to do?");
+		conf.setIcon(QMessageBox::Question);
+		QPushButton *comsave=conf.addButton(tr("Save"),QMessageBox::ActionRole);
+		QPushButton *comdiscard=conf.addButton(tr("Discard"),QMessageBox::ActionRole);
+		QPushButton *comback=conf.addButton(tr("Cancel"),QMessageBox::ActionRole);
+		conf.setDefaultButton(comsave);
+		conf.exec();
+		if (conf.clickedButton() == comsave)
+		{
+		  
+		}
+		else if (conf.clickedButton() == comdiscard)
+		{
+			this->close();
+		}
+		
+	}
+	else
+	{
+		this->close();
+	}
 }
 
 int main(int argc, char *argv[])
