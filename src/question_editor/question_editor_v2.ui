@@ -30,55 +30,8 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Pre-contest Setup</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_10">
-        <item row="0" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2"/>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_7"/>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QToolButton" name="button_update_pre">
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Update</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="button_cancel_pre">
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Cancel</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
       <widget class="QWidget" name="firstRound">
        <attribute name="title">
         <string>Round 1</string>
@@ -856,7 +809,7 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QSpinBox" name="duration_r3_2">
+             <widget class="QSpinBox" name="duration_r3">
               <property name="maximum">
                <number>3600</number>
               </property>
@@ -867,7 +820,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="welcome_r2_2">
+         <widget class="QPlainTextEdit" name="welcome_r3">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -1207,7 +1160,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>16</height>
+            <height>3</height>
            </size>
           </property>
          </spacer>
@@ -1251,7 +1204,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="welcome_r2_3">
+         <widget class="QPlainTextEdit" name="welcome_r4">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -1268,7 +1221,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>16</height>
+            <height>3</height>
            </size>
           </property>
          </spacer>
@@ -1577,7 +1530,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>16</height>
+            <height>3</height>
            </size>
           </property>
          </spacer>

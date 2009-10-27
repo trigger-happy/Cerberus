@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtGui>
 #include <QtGui/QApplication>
 #include "question_editor.h"
-#include "ui_question_editor.h"
+#include "ui_question_editor_v2.h"
 #include "data_types.h"
 #include <iostream>
 
@@ -50,6 +50,11 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	question_num[1]=q_ui->question_r2_num;
 	question_num[2]=q_ui->question_r3_num;
 	question_num[3]=q_ui->question_r4_num;
+	
+	welcome[0]=q_ui->welcome_r1;
+	welcome[1]=q_ui->welcome_r2;
+	welcome[2]=q_ui->welcome_r3;
+	welcome[3]=q_ui->welcome_r4;
 	
 	question_text[0]=q_ui->question_r1_text;
 	question_text[1]=q_ui->question_r2_text;
@@ -116,17 +121,15 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	question_ans_e[2]=q_ui->question_r3_ans_e;
 	question_ans_e[3]=q_ui->question_r4_ans_e;
 	
-	button_update[0]=q_ui->button_update_pre;
-	button_update[1]=q_ui->button_update_r1;
-	button_update[2]=q_ui->button_update_r2;
-	button_update[3]=q_ui->button_update_r3;
-	button_update[4]=q_ui->button_update_r4;
+	button_update[0]=q_ui->button_update_r1;
+	button_update[1]=q_ui->button_update_r2;
+	button_update[2]=q_ui->button_update_r3;
+	button_update[3]=q_ui->button_update_r4;
 	
-	button_cancel[0]=q_ui->button_cancel_pre;
-	button_cancel[1]=q_ui->button_cancel_r1;
-	button_cancel[2]=q_ui->button_cancel_r2;
-	button_cancel[3]=q_ui->button_cancel_r3;
-	button_cancel[4]=q_ui->button_cancel_r4;
+	button_cancel[0]=q_ui->button_cancel_r1;
+	button_cancel[1]=q_ui->button_cancel_r2;
+	button_cancel[2]=q_ui->button_cancel_r3;
+	button_cancel[3]=q_ui->button_cancel_r4;
 	
 	button_add[0]=q_ui->button_add_r1;
 	button_add[1]=q_ui->button_add_r2;
@@ -175,15 +178,12 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	connect(sigToDown,SIGNAL(mapped(int)),this,SLOT(move_down(int)));
 	connect(sigToChoices,SIGNAL(mapped(int)),this,SLOT(disableDuplicates(int)));
 	
-	sigToDetailUpdate->setMapping(q_ui->textarea_welcome,0);
-	connect(q_ui->textarea_welcome,SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
-	q_ui->textarea_welcome->setTabChangesFocus(true);
-	
 	for (int ctr=0;ctr<4;ctr++)
 	{
 		sigToList->setMapping(question_list[ctr],ctr+1);
 		sigToAdd->setMapping(button_add[ctr],ctr+1);
 		sigToRemove->setMapping(button_remove[ctr],ctr+1);
+		sigToDetailUpdate->setMapping(welcome[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_text[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_a[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_b[ctr],ctr+1);
@@ -201,10 +201,14 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		sigToChoices->setMapping(question_ans_b[ctr],ctr+1);
 		sigToChoices->setMapping(question_ans_c[ctr],ctr+1);
 		sigToChoices->setMapping(question_ans_d[ctr],ctr+1);
+		sigToUpdate->setMapping(button_update[ctr],ctr+1);
+		sigToCancel->setMapping(button_cancel[ctr],ctr+1);
+
 		
 		connect(question_list[ctr],SIGNAL(activated(QModelIndex)),sigToList,SLOT(map()));
 		connect(button_add[ctr],SIGNAL(clicked(bool)),sigToAdd,SLOT(map()));
 		connect(button_remove[ctr],SIGNAL(clicked(bool)),sigToRemove,SLOT(map()));
+		connect(welcome[ctr],SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
 		connect(question_text[ctr],SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
 		connect(question_a[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
 		connect(question_b[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
@@ -222,7 +226,8 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		connect(question_ans_b[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
 		connect(question_ans_c[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
 		connect(question_ans_d[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
-		
+		connect(button_update[ctr],SIGNAL(clicked(bool)),sigToUpdate,SLOT(map()));
+		connect(button_cancel[ctr],SIGNAL(clicked(bool)),sigToCancel,SLOT(map()));
 		
 		
 		if (ctr>1)
@@ -238,25 +243,16 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 			connect(question_ans_e[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
 		}
 		
+		welcome[ctr]->setTabChangesFocus(true);
 		question_list[ctr]->setModel(roundmodel[ctr]);
 		question_list[ctr]->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		question_text[ctr]->setTabChangesFocus(true);
 		
 		fully_updated[ctr]=true;
 		control_components(ctr+1,false);
-	}
-	for (int ctr=0;ctr<5;ctr++)
-	{
-		sigToUpdate->setMapping(button_update[ctr],ctr);
-		sigToCancel->setMapping(button_cancel[ctr],ctr);
-		
-		connect(button_update[ctr],SIGNAL(clicked(bool)),sigToUpdate,SLOT(map()));
-		connect(button_cancel[ctr],SIGNAL(clicked(bool)),sigToCancel,SLOT(map()));
-		
 		button_update[ctr]->setEnabled(false);
 		button_cancel[ctr]->setEnabled(false);
 	}
-	
 	
 	
 	//for menu/keyboard commands
@@ -273,6 +269,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	changed=false;
 }
+
 QEditor::~QEditor()
 {
 	delete sigToAdd;
@@ -293,91 +290,84 @@ QEditor::~QEditor()
 
 void QEditor::list_focus(int round)
 {
-	if (round!=0)
+	int ptr=round-1;
+	//control_components(ptr,true);
+	int index=question_list[ptr]->currentIndex().row();
+	
+	if (index!=-1)
 	{
-		int ptr=round-1;
-		//control_components(ptr,true);
-		int index=question_list[ptr]->currentIndex().row();
-		
-		if (index!=-1)
+		bool change=true;
+		if (button_update[ptr]->isEnabled() && index!=history[ptr])
 		{
-			bool change=true;
-			if (button_update[round]->isEnabled() && index!=history[ptr])
+			QMessageBox conf;
+			conf.setWindowTitle("Notification - QEditor");
+			conf.setText("Details of question has been modified, but have not been updated");
+			conf.setInformativeText("What do you want to do?");
+			conf.setIcon(QMessageBox::Question);
+			QPushButton *update=conf.addButton(tr("Update then proceed"),QMessageBox::ActionRole);
+			QPushButton *canpro=conf.addButton(tr("Cancel then proceed"),QMessageBox::ActionRole);
+			QPushButton *goback=conf.addButton(tr("Cancel Action"),QMessageBox::ActionRole);
+			conf.setDefaultButton(update);
+			conf.exec();
+			
+			if (conf.clickedButton()==update)
 			{
-				QMessageBox conf;
-				conf.setWindowTitle("Notification - QEditor");
-				conf.setText("Details of question has been modified, but have not been updated");
-				conf.setInformativeText("What do you want to do?");
-				conf.setIcon(QMessageBox::Question);
-				QPushButton *update=conf.addButton(tr("Update then proceed"),QMessageBox::ActionRole);
-				QPushButton *canpro=conf.addButton(tr("Cancel then proceed"),QMessageBox::ActionRole);
-				QPushButton *goback=conf.addButton(tr("Cancel Action"),QMessageBox::ActionRole);
-				conf.setDefaultButton(update);
-				conf.exec();
-				
-				if (conf.clickedButton()==update)
-				{
-					QModelIndex curr=question_list[ptr]->currentIndex();
-					QModelIndex child=roundmodel[ptr]->index(history[ptr],0);
-					question_list[ptr]->setCurrentIndex(child);
-					update_question(round);
-					question_list[ptr]->setCurrentIndex(curr);
-				}
-				else if (conf.clickedButton()==goback)
-				{
-					QModelIndex curr=question_list[ptr]->currentIndex();
-					QModelIndex child=roundmodel[ptr]->index(history[ptr],0);
-					question_list[ptr]->setCurrentIndex(child);
-					change=false;
-				}
+				QModelIndex curr=question_list[ptr]->currentIndex();
+				QModelIndex child=roundmodel[ptr]->index(history[ptr],0);
+				question_list[ptr]->setCurrentIndex(child);
+				update_question(round);
+				question_list[ptr]->setCurrentIndex(curr);
 			}
-			if (change)
+			else if (conf.clickedButton()==goback)
 			{
-				question_num[ptr]->setText("Question "+QString::number(index+1));
-				question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
-				question_a[ptr]->setText(roundmodel[ptr]->getA(index));
-				question_b[ptr]->setText(roundmodel[ptr]->getB(index));
-				question_c[ptr]->setText(roundmodel[ptr]->getC(index));
-				question_d[ptr]->setText(roundmodel[ptr]->getD(index));
-				if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
-				question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
-				if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
-				bool* ans=new bool[5];
-				roundmodel[ptr]->getAnskey(index,ans);
-				question_ans_a[ptr]->setChecked(ans[0]);
-				question_ans_b[ptr]->setChecked(ans[1]);
-				question_ans_c[ptr]->setChecked(ans[2]);
-				question_ans_d[ptr]->setChecked(ans[3]);
-				if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
-				delete ans;
-				control_components(round,true);
-				button_update[round]->setDisabled(true);
-				button_cancel[round]->setDisabled(true);
-				history[ptr]=index;
+				QModelIndex curr=question_list[ptr]->currentIndex();
+				QModelIndex child=roundmodel[ptr]->index(history[ptr],0);
+				question_list[ptr]->setCurrentIndex(child);
+				change=false;
 			}
 		}
-		else
+		if (change)
 		{
-			question_num[ptr]->setText("No question selected");
-			question_text[ptr]->setPlainText("");
-			question_a[ptr]->setText("");
-			question_b[ptr]->setText("");
-			question_c[ptr]->setText("");
-			question_d[ptr]->setText("");
-			if (round > 2) question_e[ptr]->setText("");
-			question_score[ptr]->setValue(0);
-			if (round > 2) question_time[ptr]->setValue(0);
-			question_ans_a[ptr]->setDown(true);
-			question_ans_b[ptr]->setDown(true);
-			question_ans_c[ptr]->setDown(true);
-			question_ans_d[ptr]->setDown(true);
-			if (round > 2) question_ans_e[ptr]->setChecked(false);
-			control_components(round,false);
+			question_num[ptr]->setText("Question "+QString::number(index+1));
+			question_text[ptr]->setPlainText(roundmodel[ptr]->getQuestion(index));
+			question_a[ptr]->setText(roundmodel[ptr]->getA(index));
+			question_b[ptr]->setText(roundmodel[ptr]->getB(index));
+			question_c[ptr]->setText(roundmodel[ptr]->getC(index));
+			question_d[ptr]->setText(roundmodel[ptr]->getD(index));
+			if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
+			question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
+			if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
+			bool* ans=new bool[5];
+			roundmodel[ptr]->getAnskey(index,ans);
+			question_ans_a[ptr]->setChecked(ans[0]);
+			question_ans_b[ptr]->setChecked(ans[1]);
+			question_ans_c[ptr]->setChecked(ans[2]);
+			question_ans_d[ptr]->setChecked(ans[3]);
+			if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
+			delete ans;
+			control_components(round,true);
+			button_update[ptr]->setDisabled(true);
+			button_cancel[ptr]->setDisabled(true);
+			history[ptr]=index;
 		}
 	}
 	else
 	{
-	  
+		question_num[ptr]->setText("No question selected");
+		question_text[ptr]->setPlainText("");
+		question_a[ptr]->setText("");
+		question_b[ptr]->setText("");
+		question_c[ptr]->setText("");
+		question_d[ptr]->setText("");
+		if (round > 2) question_e[ptr]->setText("");
+		question_score[ptr]->setValue(0);
+		if (round > 2) question_time[ptr]->setValue(0);
+		question_ans_a[ptr]->setDown(true);
+		question_ans_b[ptr]->setDown(true);
+		question_ans_c[ptr]->setDown(true);
+		question_ans_d[ptr]->setDown(true);
+		if (round > 2) question_ans_e[ptr]->setChecked(false);
+		control_components(round,false);
 	}
 }
 
@@ -391,25 +381,27 @@ void QEditor::remove_question(int round)
 	int index=question_list[round-1]->currentIndex().row();
 	roundmodel[round-1]->removeQuestion(index);
 	list_focus(round);
+	if (roundmodel[round-1]->rowCount()==0)
+	{
+		control_components(round,false);
+		button_update[round-1]->setDisabled(true);
+		button_cancel[round-1]->setDisabled(true);
+	}
 }
 
 void QEditor::changed_details(int round)
 {
-	button_update[round]->setEnabled(true);
-	button_cancel[round]->setEnabled(true);
+	button_update[round-1]->setEnabled(true);
+	button_cancel[round-1]->setEnabled(true);
 	//fully_updated[round]
 }
 
 void QEditor::update_question(int round)
 {
-	if (round==0)
+	int ptr=round-1;
+	int index=question_list[ptr]->currentIndex().row();
+	if(index!=-1)
 	{
-		
-	}
-	else
-	{ 
-		int ptr=round-1;
-		int index=question_list[ptr]->currentIndex().row();
 		QString question=question_text[ptr]->toPlainText();
 		QString a=question_a[ptr]->text();
 		QString b=question_b[ptr]->text();
@@ -442,15 +434,15 @@ void QEditor::update_question(int round)
 		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
 		//q_ui->statusBar->setStatusTip("Question "+QString::number(index+1)+" of round "+QString::number(round)+" has been updated.");
 	}
-	button_update[round]->setDisabled(true);
-	button_cancel[round]->setDisabled(true);
+	button_update[ptr]->setDisabled(true);
+	button_cancel[ptr]->setDisabled(true);
 }
 
 void QEditor::cancel_update(int round)
 {
 	list_focus(round);
-	button_update[round]->setDisabled(true);
-	button_cancel[round]->setDisabled(true);
+	button_update[round-1]->setDisabled(true);
+	button_cancel[round-1]->setDisabled(true);
 	q_ui->statusBar->showMessage("");
 }
 
@@ -597,7 +589,7 @@ void QEditor::save()
 			
 			if (round==0)
 			{
-				rounddata.welcome_msg=q_ui->textarea_welcome->toPlainText();
+				rounddata.welcome_msg=welcome[roundctr]->toPlainText();
 			}
 			rounddata.contest_time=duration[roundctr]->value();
 			

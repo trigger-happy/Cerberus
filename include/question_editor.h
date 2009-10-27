@@ -58,6 +58,7 @@ private:
 	QuestionModel* roundmodel[ROUNDS];
 	QListView* question_list[ROUNDS];
 	QLabel* question_num[ROUNDS];
+	QPlainTextEdit* welcome[ROUNDS];
 	QPlainTextEdit* question_text[ROUNDS];
 	QLineEdit* question_a[ROUNDS];
 	QLineEdit* question_b[ROUNDS];
@@ -71,8 +72,8 @@ private:
 	QAbstractButton* question_ans_c[ROUNDS];
 	QAbstractButton* question_ans_d[ROUNDS];
 	QAbstractButton* question_ans_e[ROUNDS];
-	QToolButton* button_update[ROUNDS+1];
-	QToolButton* button_cancel[ROUNDS+1];
+	QToolButton* button_update[ROUNDS];
+	QToolButton* button_cancel[ROUNDS];
 	QToolButton* button_add[ROUNDS];
 	QToolButton* button_remove[ROUNDS];
 	QToolButton* button_up[ROUNDS];
