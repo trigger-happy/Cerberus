@@ -93,7 +93,7 @@ private:
 	XmlUtil xml_util;
 	QString file_prefix;
 	bool changed;
-	
+	bool fully_updated[ROUNDS];
 };
 
 #endif

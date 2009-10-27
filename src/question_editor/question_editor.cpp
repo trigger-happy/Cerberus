@@ -241,8 +241,8 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		question_list[ctr]->setModel(roundmodel[ctr]);
 		question_list[ctr]->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		question_text[ctr]->setTabChangesFocus(true);
-		//question_list[ctr]->setDragDropMode(QAbstractItemView::DragDrop);
 		
+		fully_updated[ctr]=true;
 		control_components(ctr+1,false);
 	}
 	for (int ctr=0;ctr<5;ctr++)
@@ -397,6 +397,7 @@ void QEditor::changed_details(int round)
 {
 	button_update[round]->setEnabled(true);
 	button_cancel[round]->setEnabled(true);
+	//fully_updated[round]
 }
 
 void QEditor::update_question(int round)
@@ -455,7 +456,6 @@ void QEditor::cancel_update(int round)
 
 void QEditor::move_up(int round)
 {
-	//cout << "up!";
 	int ptr=round-1;
 	int index=question_list[ptr]->currentIndex().row();
 	if (index!=0 && index!=-1)
@@ -559,17 +559,25 @@ void QEditor::load()
 
 void QEditor::save()
 {
+	q_ui->statusBar->showMessage("");
 	if (file_prefix=="")
 	{
 		QFileDialog save_dlg;
 		save_dlg.setAcceptMode(QFileDialog::AcceptSave);
 		save_dlg.setFileMode(QFileDialog::AnyFile);
 		save_dlg.setFilter(tr("Group XML files (*.xgrp)"));
-		save_dlg.exec();
-		file_prefix=save_dlg.selectedFiles().join("");
-		file_prefix.replace(QString(".xgrp"),QString(""));
+		if (!save_dlg.exec())
+			file_prefix="";
+		else
+		{
+			file_prefix=save_dlg.selectedFiles().join("");
+			file_prefix.replace(QString(".xgrp"),QString(""));
+		}
 		if (file_prefix=="")
+		{
+			q_ui->statusBar->showMessage("File save aborted");
 			return;
+		}
 		QFile grp(file_prefix+".xgrp");
 		if (!grp.open(QIODevice::ReadWrite))
 			return;
@@ -641,7 +649,6 @@ void QEditor::save()
 		}
 		q_ui->statusBar->showMessage("File saved at "+file_prefix);
 	}
-	
 }
 
 void QEditor::exit()
@@ -661,7 +668,6 @@ void QEditor::exit()
 		if (conf.clickedButton() == comsave)
 		{
 			save();
-			cout << file_prefix.toStdString() << endl;
 			if (file_prefix=="")
 				return;
 			else 
