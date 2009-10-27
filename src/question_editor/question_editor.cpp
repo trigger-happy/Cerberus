@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iostream>
 
 using namespace std;
-//TODO: update function after selected on list had been changed, reading/saving xml files
+//TODO: reading/saving xml files, change detection to determine if save should be called when prog quits
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
@@ -257,13 +257,16 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	//for menu/keyboard commands
 	q_ui->act_save_xml->setShortcut(QKeySequence::Save);
+	q_ui->act_save_as->setShortcut(QKeySequence::SaveAs);
 	q_ui->act_load_xml->setShortcut(QKeySequence::Open);
 	q_ui->act_exit->setShortcut(QKeySequence::Close);
 	q_ui->act_save_xml->setStatusTip("Saves questions to xml files");
+	q_ui->act_save_as->setStatusTip("Saves questions to some other xml files");
 	q_ui->act_load_xml->setStatusTip("Load xml files containing the questions.");
 	q_ui->act_exit->setStatusTip("Closes the program");
 	
 	connect(q_ui->act_save_xml,SIGNAL(triggered(bool)),this,SLOT(save()));
+	connect(q_ui->act_save_as,SIGNAL(triggered(bool)),this,SLOT(saveAs()));
 	connect(q_ui->act_load_xml,SIGNAL(triggered(bool)),this,SLOT(load()));
 	connect(q_ui->act_exit,SIGNAL(triggered(bool)),this,SLOT(exit()));
 	
@@ -530,19 +533,19 @@ void QEditor::load()
 		file_prefix.replace(QString(".xgrp"),QString(""));
 		if (file_prefix=="")
 			return;
-		for (int ctr=0;ctr<4;ctr++)
+		for (int ctr=0;ctr<1;ctr++)
 		{
 			QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
 			fq.open(QIODevice::ReadOnly);
 			QString xml_q=fq.readAll();
 			QuestionData qd;
-			//xml_util.readQuestionData(ctr+1,xml_q,qd);
+			xml_util.readQuestionData(ctr+1,xml_q,qd);
 			
 			QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
 			fa.open(QIODevice::ReadOnly);
 			QString xml_a=fa.readAll();
 			AnswerData ad;
-			//xml_util.readAnswerData(ctr+1,xml_a,ad);
+			xml_util.readAnswerData(ctr+1,xml_a,ad);
 			
 			roundmodel[ctr]->feedData(qd,ad);
 		}
@@ -587,10 +590,7 @@ void QEditor::save()
 			QString xml_a;
 			int question_cnt=roundmodel[roundctr]->rowCount();
 			
-			if (round==0)
-			{
-				rounddata.welcome_msg=welcome[roundctr]->toPlainText();
-			}
+			rounddata.welcome_msg=welcome[roundctr]->toPlainText();
 			rounddata.contest_time=duration[roundctr]->value();
 			
 			for (int qctr=0;qctr<question_cnt;qctr++)
@@ -643,10 +643,27 @@ void QEditor::save()
 	}
 }
 
-void QEditor::exit()
+void QEditor::saveAs()
 {
+	QString temp=file_prefix;
+	file_prefix="";
+	save();
 	if (file_prefix=="")
 	{
+	      file_prefix=temp;
+	}
+}
+
+void QEditor::exit()
+{
+	this->close();
+}
+
+void QEditor::closeEvent(QCloseEvent *event)
+{	
+	if (file_prefix=="")
+	{
+		cout << "A"<< endl;
 		QMessageBox conf;
 		conf.setWindowTitle("Notification - QEditor");
 		conf.setText("Questions have not been saved yet");
@@ -661,17 +678,22 @@ void QEditor::exit()
 		{
 			save();
 			if (file_prefix=="")
-				return;
+				event->ignore();
 			else 
-				this->close();
+				event->accept();
 		}
 		else if (conf.clickedButton() == comdiscard)
 		{
-			this->close();
+			event->accept();
+		}
+		else
+		{
+			event->ignore();
 		}
 	}
 	else if (file_prefix!="" && changed)
 	{
+		cout << "B" << endl;
 		QMessageBox conf;
 		conf.setWindowTitle("Notification - QEditor");
 		conf.setText("Details of question has been modified, but have not been saved");
@@ -684,17 +706,23 @@ void QEditor::exit()
 		conf.exec();
 		if (conf.clickedButton() == comsave)
 		{
-		  
+			save();
+			event->accept();
 		}
 		else if (conf.clickedButton() == comdiscard)
 		{
-			this->close();
+			event->accept();
+		}
+		else
+		{
+			event->ignore();
 		}
 		
 	}
 	else
 	{
-		this->close();
+		cout << "c"<< endl;
+		event->accept();
 	}
 }
 
