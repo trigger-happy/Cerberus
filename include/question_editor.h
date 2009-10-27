@@ -42,7 +42,6 @@ private slots:
 	void update_question(int round);
 	void cancel_update(int round);
 	void add_question(int round);
-	void changed_details_r2();
 	void changed_details(int round);
 	void remove_question(int round);
 	void move_up(int round);
@@ -92,8 +91,9 @@ private:
 	
 	int history[ROUNDS];
 	XmlUtil xml_util;
-	QString save_tar;
-	QString f_prefix;
+	QString file_prefix;
+	bool changed;
+	
 };
 
 #endif

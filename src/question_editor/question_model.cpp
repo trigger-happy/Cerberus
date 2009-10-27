@@ -147,16 +147,21 @@ void QuestionModel::getFullQuestion(int index, Question* q)
 {
 	q->number=index+1;
 	q->question=getQuestion(index);
-	q->choices[1]=getA(index);
-	q->choices[2]=getB(index);
-	q->choices[3]=getC(index);
-	q->choices[4]=getD(index);
+	q->choices.push_back(getA(index));
+	q->choices.push_back(getB(index));
+	q->choices.push_back(getC(index));
+	q->choices.push_back(getD(index));
+	//q->choices[1]=getA(index);
+	//q->choices[2]=getB(index);
+	//q->choices[3]=getC(index);
+	//q->choices[4]=getD(index);
 	q->score=getScore(index);
 	q->time=getTime(index);
 	
 	if (round>2)
 	{
-		q->choices[5]=getE(index);
+		q->choices.push_back(getC(index));
+		//q->choices[5]=getE(index);
 	}
 }
 
@@ -167,13 +172,13 @@ void QuestionModel::feedData(QuestionData qd,AnswerData ad)
 		Question q=qd.questions[ctr];
 		QList<QStandardItem *> temp;
 		temp.append(new QStandardItem(q.question)); //question
-		temp.append(new QStandardItem(q.choices[1])); // choice a
-		temp.append(new QStandardItem(q.choices[2])); // choice b
-		temp.append(new QStandardItem(q.choices[3])); // choice c
-		temp.append(new QStandardItem(q.choices[4])); // choice d
+		temp.append(new QStandardItem(q.choices[0])); // choice a
+		temp.append(new QStandardItem(q.choices[1])); // choice b
+		temp.append(new QStandardItem(q.choices[2])); // choice c
+		temp.append(new QStandardItem(q.choices[3])); // choice d
 		if (round>2)
 		{
-			temp.append(new QStandardItem(q.choices[5]));
+			temp.append(new QStandardItem(q.choices[4]));
 		}
 		else
 		{
@@ -189,10 +194,10 @@ void QuestionModel::feedData(QuestionData qd,AnswerData ad)
 			int index;
 			index=(*it).second.toInt();
 			if (index==0) index=5;
-			cheat.replace(index-1,1,"1");
+//			cheat.replace(index-1,1,"1");
 		}
 		
-		temp.append(new QStandardItem(cheat)); //temp only!!!!!!!!!!!!!!!!!!!!!
+		temp.append(new QStandardItem(cheat));
 		
 		temp.append(new QStandardItem(QString::number(q.score))); // score
 		temp.append(new QStandardItem(QString::number(q.time))); // time
