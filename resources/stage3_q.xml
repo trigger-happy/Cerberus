@@ -3,37 +3,37 @@
 	<welcome_msg>Insert welcome message here.</welcome_msg>
 	<question number="1" score="1" time="60">
 		<q>The answer to this question is choice 1.</q>
-		<choice id="1">Choice 1</choice>
-		<choice id="2">Choice 2</choice>
-		<choice id="3">Choice 3</choice>
-		<choice id="4">Choice 4</choice>
+		<choice>Choice 1</choice>
+		<choice>Choice 2</choice>
+		<choice>Choice 3</choice>
+		<choice>Choice 4</choice>
 	</question>
 	<question number="2" score="1" time="60">
 		<q>Who is Mr. Shires?</q>
-		<choice id="1">Sir Diy</choice>
-		<choice id="2">Doc Mana</choice>
-		<choice id="3">Fr. David</choice>
-		<choice id="4">Michael Jackson</choice>
+		<choice>Sir Diy</choice>
+		<choice>Doc Mana</choice>
+		<choice>Fr. David</choice>
+		<choice>Michael Jackson</choice>
 	</question>
 	<question number="3" score="2" time="60">
 		<q>This is a 2 point question, correct answer is choice 3 and 4.</q>
-		<choice id="1">Choice 1</choice>
-		<choice id="2">Choice 2</choice>
-		<choice id="3">Choice 3</choice>
-		<choice id="4">Choice 4</choice>
+		<choice>Choice 1</choice>
+		<choice>Choice 2</choice>
+		<choice>Choice 3</choice>
+		<choice>Choice 4</choice>
 	</question>
 	<question number="4" score="6" time="120">
 		<q>The correct answer is "18" without quotes.</q>
-		<choice id="1">Choice 1</choice>
-		<choice id="2">Choice 2</choice>
-		<choice id="3">Choice 3</choice>
-		<choice id="4">Choice 4</choice>
+		<choice>Choice 1</choice>
+		<choice>Choice 2</choice>
+		<choice>Choice 3</choice>
+		<choice>Choice 4</choice>
 	</question>
 	<question number="5" score="6" time="120">
 		<q>The correct answer is "Intel Corporation" without quotes.</q>
-		<choice id="1">Choice 1</choice>
-		<choice id="2">Choice 2</choice>
-		<choice id="3">Choice 3</choice>
-		<choice id="4">Choice 4</choice>
+		<choice>Choice 1</choice>
+		<choice>Choice 2</choice>
+		<choice>Choice 3</choice>
+		<choice>Choice 4</choice>
 	</question>
 </stage3>
