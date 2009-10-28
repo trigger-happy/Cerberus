@@ -27,7 +27,7 @@ struct Question {
 		QString c;
 		bool is_answer;
 		AnswerKeyEntry() : is_answer(false) {}
-		AnswerKeyEntry(const QString &c, bool is_answer) : c(c), is_answer(is_answer) {}
+		AnswerKeyEntry(const QString &c, bool is_answer = false) : c(c), is_answer(is_answer) {}
 
 		bool operator==(const AnswerKeyEntry &rhs) const {
 			return c == rhs.c && is_answer == rhs.is_answer;
