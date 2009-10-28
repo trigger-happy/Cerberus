@@ -2,10 +2,7 @@
 <config>
 	<port>2652</port>
 	<db>resources/server.db</db>
-	<stage_data>
-		<question>resources/stage1_q.xml</question>
-		<answer>resources/stage1_a.xml</answer>
-	</stage_data>
+	<stage_data>resources/stage1.xml</stage_data>
 	<stage_data>
 		<question>resources/stage2_q.xml</question>
 		<answer>resources/stage2_a.xml</answer>
