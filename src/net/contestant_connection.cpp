@@ -115,20 +115,24 @@ void ContestantConnection::ready()
         case QRY_ANSWER_SUBMIT:
                 //contestant has submitted their answers
                 if ( m_authenticated ) {
-                        QString xml;
-                        uchar hash[20];
-                        in.readRawData ( ( char* ) hash, 20 );
-                        in >> xml;
-                        QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
-                        QByteArray testhash2;
-                        for ( int i = 0; i < 20; i++ ) {
-                                testhash2.push_back ( hash[i] );
-                        }
-                        if ( testhash == testhash2 ) {
-                                // TODO: insert code for checker here
-                                sendAReply ( true );
+                        if ( m_con_status == CONTEST_RUNNING ) {
+                                QString xml;
+                                uchar hash[20];
+                                in.readRawData ( ( char* ) hash, 20 );
+                                in >> xml;
+                                QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+                                QByteArray testhash2;
+                                for ( int i = 0; i < 20; i++ ) {
+                                        testhash2.push_back ( hash[i] );
+                                }
+                                if ( testhash == testhash2 ) {
+                                        // TODO: insert code for checker here
+                                        sendAReply ( true );
+                                } else {
+                                        sendAReply ( false );
+                                }
                         } else {
-                                sendAReply ( false );
+                                errorReply ( ERR_CONTEST_STOPPED );
                         }
                 } else {
                         errorReply ( ERR_NOTAUTHORIZED );

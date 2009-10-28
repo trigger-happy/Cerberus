@@ -16,8 +16,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <QtGui/QApplication>
+#include <cassert>
 #include "client.h"
 #include "ui_client.h"
+
+using namespace std;
 
 ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::client_dlg )
 {
@@ -33,6 +36,8 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
         connect ( m_net, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
         connect ( m_net, SIGNAL ( onContestStateChange ( int,CONTEST_STATUS ) ),
                   this, SLOT ( onContestStateChange ( int, CONTEST_STATUS ) ) );
+        connect ( m_net, SIGNAL ( onContestError ( ERROR_MESSAGES ) ),
+                  this, SLOT ( onContestError ( ERROR_MESSAGES ) ) );
 }
 
 ClientDlg::~ClientDlg()
@@ -120,6 +125,26 @@ void ClientDlg::writeLog ( const QString& s )
 void ClientDlg::onClearBtn()
 {
         m_dlg->log_tedt->clear();
+}
+
+void ClientDlg::onContestError ( ERROR_MESSAGES err )
+{
+        switch ( err ) {
+        case ERR_NOTAUTHORIZED:
+                writeLog ( "Server returned that we're not authorized" );
+                break;
+        case ERR_BADCOMMAND:
+                writeLog ( "Server returned bad command" );
+                break;
+        case ERR_CONTEST_STOPPED:
+                writeLog ( "Contest is stopped" );
+                break;
+        case ERR_UNKNOWN:
+                writeLog ( "Server returned unknown error" );
+                break;
+        default:
+                assert ( false );
+        }
 }
 
 int main ( int argc, char* argv[] )

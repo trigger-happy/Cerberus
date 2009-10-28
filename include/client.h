@@ -40,6 +40,7 @@ private slots:
         void onConnect();
         void onDisconnect();
         void onError ( QAbstractSocket::SocketError error );
+        void onContestError ( ERROR_MESSAGES err );
         void onQData ( const QString& xml );
         void onAData ( bool result );
         void onContestStateChange ( int round, CONTEST_STATUS s );
