@@ -48,6 +48,7 @@ private slots:
 	void move_up(int round);
 	void move_down(int round);
 	void disableDuplicates(int round);
+	void newfile();
 	void import();
 	void load();
 	void save();

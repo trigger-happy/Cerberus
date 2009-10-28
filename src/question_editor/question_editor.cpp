@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iostream>
 
 using namespace std;
-//TODO: reading/saving xml files, handling exceptions
+//TODO: reading/saving xml files
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
@@ -257,17 +257,20 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	
 	//for menu/keyboard commands
+	q_ui->act_new->setShortcut(QKeySequence::New);
 	q_ui->act_import->setShortcut(QKeySequence(tr("ctrl+i")));
 	q_ui->act_save_xml->setShortcut(QKeySequence::Save);
 	q_ui->act_save_as->setShortcut(QKeySequence::SaveAs);
 	q_ui->act_load_xml->setShortcut(QKeySequence::Open);
 	q_ui->act_exit->setShortcut(QKeySequence::Close);
+	q_ui->act_new->setStatusTip("Creates an empty file");
 	q_ui->act_import->setStatusTip("Adds questions read from file");
 	q_ui->act_save_xml->setStatusTip("Saves questions to xml files");
 	q_ui->act_save_as->setStatusTip("Saves questions to some other xml files");
 	q_ui->act_load_xml->setStatusTip("Load xml files containing the questions.");
 	q_ui->act_exit->setStatusTip("Closes the program");
 	
+	connect(q_ui->act_new,SIGNAL(triggered(bool)),this,SLOT(newfile()));
 	connect(q_ui->act_import,SIGNAL(triggered(bool)),this,SLOT(import()));
 	connect(q_ui->act_save_xml,SIGNAL(triggered(bool)),this,SLOT(save()));
 	connect(q_ui->act_save_as,SIGNAL(triggered(bool)),this,SLOT(saveAs()));
@@ -557,6 +560,39 @@ void QEditor::disableDuplicates(int round)
 		question_ans_c[ptr]->setDisabled(specify);
 		question_ans_d[ptr]->setDisabled(specify);
 	}
+}
+
+void QEditor::newfile()
+{
+	if (file_prefix!="" && (!fully_updated[0] || !fully_updated[1] || !fully_updated[2] || !fully_updated[3]))
+	{
+		//warning here
+		QMessageBox conf;
+		conf.setWindowTitle("Notification - QEditor");
+		conf.setText("Details have been modified, but have not been saved.");
+		conf.setInformativeText("What do you want to do?");
+		conf.setIcon(QMessageBox::Question);
+		QPushButton *update=conf.addButton(tr("Save"),QMessageBox::ActionRole);
+		QPushButton *canpro=conf.addButton(tr("Discard changes"),QMessageBox::ActionRole);
+		QPushButton *goback=conf.addButton(tr("Cancel"),QMessageBox::ActionRole);
+		conf.setDefaultButton(update);
+		conf.exec();
+		if (conf.clickedButton()==update)
+			save();
+		else if (conf.clickedButton()==goback)
+			return;
+	}
+	
+	for (int ctr=0;ctr<4;ctr++)
+	{
+		roundmodel[ctr]->clear();
+		fully_updated[ctr]=true;
+		qmod[ctr]=false;
+		duration[ctr]->setValue(0);
+		welcome[ctr]->setPlainText("");
+	}
+	file_prefix="";
+	this->setWindowTitle("untitled - QEditor");
 }
 
 void QEditor::import()

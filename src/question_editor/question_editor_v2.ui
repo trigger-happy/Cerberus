@@ -1579,6 +1579,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="act_new"/>
     <addaction name="act_import"/>
     <addaction name="separator"/>
     <addaction name="act_load_xml"/>
@@ -1622,6 +1623,11 @@
   <action name="act_import">
    <property name="text">
     <string>Import questions</string>
+   </property>
+  </action>
+  <action name="act_new">
+   <property name="text">
+    <string>New</string>
    </property>
   </action>
  </widget>
