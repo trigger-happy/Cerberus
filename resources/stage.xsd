@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://cerberus.compsat.org" targetNamespace="http://cerberus.compsat.org" elementFormDefault="qualified">
+	<xs:attributeGroup name="question_attributes">
+		<xs:attribute name="time_limit" type="xs:positiveInteger"/>
+		<xs:attribute name="score" type="xs:positiveInteger" default="1" />
+		<xs:attribute name="id" type="xs:ID"/>
+	</xs:attributeGroup>
+	<xs:element name="stage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="welcome_msg" type="xs:string" minOccurs="0"/>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="identification">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="q" type="xs:string"/>
+								<xs:element name="a" type="xs:string"/>
+							</xs:sequence>
+							<xs:attributeGroup ref="question_attributes"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="choose">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="q" type="xs:string"/>
+								<xs:element name="choice" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:string">
+												<xs:attribute name="answer" type="xs:boolean" default="false"/>
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:attributeGroup ref="question_attributes"/>
+							<xs:attribute name="multiple" type="xs:boolean" default="false"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="time_limit" type="xs:integer"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
