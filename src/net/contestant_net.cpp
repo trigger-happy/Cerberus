@@ -256,11 +256,33 @@ void ContestantNetwork::ready()
                 emit onContestError ( ( ERROR_MESSAGES ) err );
         }
         break;
+        case INF_CONTEST_TIME: {
+                ushort time;
+                in >> time;
+                emit onContestTime ( time );
+        }
+        break;
         default:
                 // TODO: we need to handle this more gracefully
                 cout << m_hdr->command << endl;
                 assert ( false );
         }
         delete m_hdr;
-        m_hdr = NULL;
+		m_hdr = NULL;
+		if(m_socket->bytesAvailable() > 0){
+			ready();
+		}
+}
+
+bool ContestantNetwork::getContestTime()
+{
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        //construct the header
+        p_header hdr;
+        hdr.length = 0;
+        hdr.command = QRY_CONTEST_TIME;
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        m_socket->write ( block );
 }

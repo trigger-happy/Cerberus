@@ -75,6 +75,7 @@ void ContestantConnection::ready()
         if ( m_socket->bytesAvailable() < m_hdr->length ) {
                 return;
         }
+
         switch ( m_hdr->command ) {
         case QRY_CONTEST_STATE:
                 //contestant is asking for the contest state.
@@ -138,12 +139,20 @@ void ContestantConnection::ready()
                         errorReply ( ERR_NOTAUTHORIZED );
                 }
                 break;
+        case QRY_CONTEST_TIME:
+                if ( m_authenticated ) {
+                        emit onContestTimeRequest ( this );
+                }
+                break;
         default:
                 ;
                 // invalid command, do something here
         }
         delete m_hdr;
         m_hdr = NULL;
+        if ( m_socket->bytesAvailable() > 0 ) {
+                ready();
+        }
 }
 
 void ContestantConnection::errorReply ( ERROR_MESSAGES err )
@@ -215,6 +224,21 @@ void ContestantConnection::sendAReply ( bool res )
         hdr.length = sizeof ( uchar );
         out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
         out << ( uchar ) res;
+        m_socket->write ( block );
+}
+
+void ContestantConnection::setContestTime ( ushort time )
+{
+        //construct the packet and send it
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        // construct the header
+        p_header hdr;
+        hdr.command = INF_CONTEST_TIME;
+        hdr.length = sizeof ( ushort );
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( ushort ) time;
         m_socket->write ( block );
 }
 

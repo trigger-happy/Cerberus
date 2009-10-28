@@ -90,6 +90,13 @@ public:
         \param s The contest status.
         */
         void setStatus ( CONTEST_STATUS s );
+		
+		/*!
+		Set the current contest time. Note that this will broadcast to all
+		clients.
+		\param time The time in an unsigned short.
+		*/
+		void setContestTime(ushort time);
 
         /*!
         Get the list of ContestantConnections.

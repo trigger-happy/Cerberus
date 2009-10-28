@@ -90,6 +90,13 @@ public:
         \return true if the data was sent, false otherwise.
         */
         bool aDataSend ( const QString& xml );
+		
+		/*!
+		Request for the contest time from the server. Use onContestTime
+		signal for the server's response
+		\return true if the data was sent, false otherwise.
+		*/
+		bool getContestTime();
 
 protected slots:
 
@@ -162,6 +169,13 @@ signals:
         \param result true on success, false on failure
         */
         void onAData ( bool result );
+		
+		/*!
+		Emitted when server replies to our request for the current
+		contest time.
+		\param time unsigned int containing the contest time.
+		*/
+		void onContestTime(unsigned int time);
 protected:
         QTcpSocket* m_socket;
         p_header* m_hdr;
