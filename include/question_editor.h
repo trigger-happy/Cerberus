@@ -50,6 +50,7 @@ private slots:
 	void load();
 	void save();
 	void exit();
+	void saveAs();
 	
 private:
 	Ui::q_editor *q_ui;
@@ -95,6 +96,8 @@ private:
 	QString file_prefix;
 	bool changed;
 	bool fully_updated[ROUNDS];
+protected:
+	void closeEvent(QCloseEvent*);
 };
 
 #endif

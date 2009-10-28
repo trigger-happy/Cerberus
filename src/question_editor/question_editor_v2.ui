@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>625</width>
-    <height>577</height>
+    <height>633</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>625</width>
-    <height>577</height>
+    <height>633</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -134,6 +134,9 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
           <item row="0" column="0" rowspan="2">
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
@@ -420,7 +423,7 @@
        <attribute name="title">
         <string>Round 2</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <spacer name="verticalSpacer_4">
           <property name="orientation">
@@ -474,6 +477,12 @@
         </item>
         <item>
          <widget class="QPlainTextEdit" name="welcome_r2">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>125</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -490,7 +499,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>17</width>
-            <height>5</height>
+            <height>10</height>
            </size>
           </property>
          </spacer>
@@ -756,7 +765,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>17</width>
-            <height>6</height>
+            <height>10</height>
            </size>
           </property>
          </spacer>
@@ -776,7 +785,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
          </spacer>
@@ -821,6 +830,12 @@
         </item>
         <item>
          <widget class="QPlainTextEdit" name="welcome_r3">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>125</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -837,7 +852,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
          </spacer>
@@ -968,16 +983,6 @@
                 </property>
                 <property name="buddy">
                  <cstring>question_r3_text</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPlainTextEdit" name="question_r3_text">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>70</height>
-                 </size>
                 </property>
                </widget>
               </item>
@@ -1126,6 +1131,16 @@
                 </item>
                </layout>
               </item>
+              <item row="0" column="1">
+               <widget class="QPlainTextEdit" name="question_r3_text">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>70</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -1140,12 +1155,16 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>11</height>
+            <height>13</height>
            </size>
           </property>
          </spacer>
         </item>
        </layout>
+       <zorder>welcome_r3</zorder>
+       <zorder>verticalSpacer_5</zorder>
+       <zorder>verticalSpacer_10</zorder>
+       <zorder>verticalSpacer_12</zorder>
       </widget>
       <widget class="QWidget" name="tieBreaker">
        <attribute name="title">
@@ -1160,7 +1179,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>3</height>
+            <height>4</height>
            </size>
           </property>
          </spacer>
@@ -1205,6 +1224,12 @@
         </item>
         <item>
          <widget class="QPlainTextEdit" name="welcome_r4">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>125</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -1221,7 +1246,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>3</height>
+            <height>5</height>
            </size>
           </property>
          </spacer>
@@ -1530,7 +1555,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>3</height>
+            <height>4</height>
            </size>
           </property>
          </spacer>
@@ -1557,7 +1582,7 @@
     <addaction name="act_load_xml"/>
     <addaction name="separator"/>
     <addaction name="act_save_xml"/>
-    <addaction name="actionSave_As"/>
+    <addaction name="act_save_as"/>
     <addaction name="separator"/>
     <addaction name="act_exit"/>
    </widget>
@@ -1587,13 +1612,98 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionSave_As">
+  <action name="act_save_as">
    <property name="text">
     <string>Save As...</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>duration_r1</tabstop>
+  <tabstop>welcome_r1</tabstop>
+  <tabstop>list_r1</tabstop>
+  <tabstop>button_add_r1</tabstop>
+  <tabstop>button_remove_r1</tabstop>
+  <tabstop>button_up_r1</tabstop>
+  <tabstop>button_down_r1</tabstop>
+  <tabstop>question_r1_text</tabstop>
+  <tabstop>question_r1_score</tabstop>
+  <tabstop>question_r1_a</tabstop>
+  <tabstop>question_r1_b</tabstop>
+  <tabstop>question_r1_c</tabstop>
+  <tabstop>question_r1_d</tabstop>
+  <tabstop>question_r1_ans_a</tabstop>
+  <tabstop>question_r1_ans_b</tabstop>
+  <tabstop>question_r1_ans_c</tabstop>
+  <tabstop>question_r1_ans_d</tabstop>
+  <tabstop>button_update_r1</tabstop>
+  <tabstop>button_cancel_r1</tabstop>
+  <tabstop>duration_r2</tabstop>
+  <tabstop>welcome_r2</tabstop>
+  <tabstop>list_r2</tabstop>
+  <tabstop>button_add_r2</tabstop>
+  <tabstop>button_remove_r2</tabstop>
+  <tabstop>button_up_r2</tabstop>
+  <tabstop>button_down_r2</tabstop>
+  <tabstop>question_r2_text</tabstop>
+  <tabstop>question_r2_score</tabstop>
+  <tabstop>question_r2_a</tabstop>
+  <tabstop>question_r2_b</tabstop>
+  <tabstop>question_r2_c</tabstop>
+  <tabstop>question_r2_d</tabstop>
+  <tabstop>question_r2_ans_a</tabstop>
+  <tabstop>question_r2_ans_b</tabstop>
+  <tabstop>question_r2_ans_c</tabstop>
+  <tabstop>question_r2_ans_d</tabstop>
+  <tabstop>button_update_r2</tabstop>
+  <tabstop>button_cancel_r2</tabstop>
+  <tabstop>duration_r3</tabstop>
+  <tabstop>welcome_r3</tabstop>
+  <tabstop>list_r3</tabstop>
+  <tabstop>button_add_r3</tabstop>
+  <tabstop>button_remove_r3</tabstop>
+  <tabstop>button_up_r3</tabstop>
+  <tabstop>button_down_r3</tabstop>
+  <tabstop>question_r3_text</tabstop>
+  <tabstop>question_r3_score</tabstop>
+  <tabstop>question_r3_time</tabstop>
+  <tabstop>question_r3_a</tabstop>
+  <tabstop>question_r3_b</tabstop>
+  <tabstop>question_r3_c</tabstop>
+  <tabstop>question_r3_d</tabstop>
+  <tabstop>question_r3_e</tabstop>
+  <tabstop>question_r3_ans_a</tabstop>
+  <tabstop>question_r3_ans_b</tabstop>
+  <tabstop>question_r3_ans_c</tabstop>
+  <tabstop>question_r3_ans_d</tabstop>
+  <tabstop>question_r3_ans_e</tabstop>
+  <tabstop>button_update_r3</tabstop>
+  <tabstop>button_cancel_r3</tabstop>
+  <tabstop>duration_r4</tabstop>
+  <tabstop>welcome_r4</tabstop>
+  <tabstop>list_r4</tabstop>
+  <tabstop>button_add_r4</tabstop>
+  <tabstop>button_remove_r4</tabstop>
+  <tabstop>button_up_r4</tabstop>
+  <tabstop>button_down_r4</tabstop>
+  <tabstop>question_r4_text</tabstop>
+  <tabstop>question_r4_score</tabstop>
+  <tabstop>question_r4_time</tabstop>
+  <tabstop>question_r4_a</tabstop>
+  <tabstop>question_r4_b</tabstop>
+  <tabstop>question_r4_c</tabstop>
+  <tabstop>question_r4_d</tabstop>
+  <tabstop>question_r4_e</tabstop>
+  <tabstop>question_r4_ans_a</tabstop>
+  <tabstop>question_r4_ans_b</tabstop>
+  <tabstop>question_r4_ans_c</tabstop>
+  <tabstop>question_r4_ans_d</tabstop>
+  <tabstop>question_r4_ans_e</tabstop>
+  <tabstop>button_update_r4</tabstop>
+  <tabstop>button_cancel_r4</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
