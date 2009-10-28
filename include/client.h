@@ -33,6 +33,8 @@ public:
         ClientDlg ( QWidget* parent = 0 );
         ~ClientDlg();
 private slots:
+        void writeLog ( const QString& s );
+        void onClearBtn();
         void onAuthReply ( bool result );
         void onConnectBtn();
         void onConnect();

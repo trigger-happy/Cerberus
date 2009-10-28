@@ -7,24 +7,31 @@
     <x>0</x>
     <y>0</y>
     <width>494</width>
-    <height>442</height>
+    <height>505</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
+     <x>1</x>
+     <y>1</y>
      <width>491</width>
-     <height>441</height>
+     <height>501</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QTextEdit" name="log_tedt"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="clear_btn">
+      <property name="text">
+       <string>&amp;Clear log</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QPushButton" name="connect_btn">

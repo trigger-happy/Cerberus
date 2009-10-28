@@ -33,11 +33,16 @@ public:
         ServerDlg ( QWidget* parent = 0 );
         ~ServerDlg();
 private slots:
+        void onStartBtn();
+        void onStopBtn();
+        void onPauseBtn();
+        void onRoundChangeBtn();
         void onQuitBtn();
         void newContestant ( ContestantConnection* cc );
         void badClient ( TempConnection* tc );
         void contestantDisconnect ( ContestantConnection* cc );
 private:
+        void writeLog ( const QString& s );
         QString log;
         Ui::server_dlg* m_dlg;
         ServerNetwork* m_server;
