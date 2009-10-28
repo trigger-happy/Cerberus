@@ -578,26 +578,41 @@ void QEditor::import()
 	
 	if (file_prefix=="")
 		return;
-	for (int ctr=0;ctr<1;ctr++)
+	for (int ctr=0;ctr<4;ctr++)
 	{
 		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
 		QuestionData qd;
-		
 		if(fq.open(QIODevice::ReadOnly))
 		{
 			QString xml_q=fq.readAll();
-			xml_util.readQuestionData(ctr+1,xml_q,qd);
+			try {
+				xml_util.readQuestionData(ctr+1,xml_q,qd);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor ^_^;");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_q.xml");
+				notice.exec();
+			}
 		}
 		
 		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
 		AnswerData ad;
-		
 		if (!fa.open(QIODevice::ReadOnly))
 		{
 			QString xml_a=fa.readAll();
-			xml_util.readAnswerData(ctr+1,xml_a,ad);
+			try {
+				xml_util.readAnswerData(ctr+1,xml_a,ad);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_a.xml");
+				notice.exec();
+			}
 		}
 		
+		welcome[ctr]->setPlainText(qd.welcome_msg);
 		roundmodel[ctr]->feedData(qd,ad);
 		if (roundmodel[ctr]->rowCount()!=rec[ctr]) 
 			fully_updated[ctr]=false;
@@ -640,14 +655,22 @@ void QEditor::load()
 	file_prefix.replace(QString(".xgrp"),QString(""));
 	if (file_prefix=="")
 		return;
-	for (int ctr=0;ctr<1;ctr++)
+	for (int ctr=0;ctr<4;ctr++)
 	{
 		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
 		QuestionData qd;
 		if(fq.open(QIODevice::ReadOnly))
 		{
 			QString xml_q=fq.readAll();
-			xml_util.readQuestionData(ctr+1,xml_q,qd);
+			try {
+				xml_util.readQuestionData(ctr+1,xml_q,qd);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor ^_^;");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_q.xml");
+				notice.exec();
+			}
 		}
 		
 		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
@@ -655,7 +678,15 @@ void QEditor::load()
 		if (!fa.open(QIODevice::ReadOnly))
 		{
 			QString xml_a=fa.readAll();
-			xml_util.readAnswerData(ctr+1,xml_a,ad);
+			try {
+				xml_util.readAnswerData(ctr+1,xml_a,ad);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_a.xml");
+				notice.exec();
+			}
 		}
 		
 		welcome[ctr]->setPlainText(qd.welcome_msg);
