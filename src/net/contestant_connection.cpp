@@ -75,6 +75,7 @@ void ContestantConnection::ready()
         if ( m_socket->bytesAvailable() < m_hdr->length ) {
                 return;
         }
+
         switch ( m_hdr->command ) {
         case QRY_CONTEST_STATE:
                 //contestant is asking for the contest state.
@@ -115,23 +116,32 @@ void ContestantConnection::ready()
         case QRY_ANSWER_SUBMIT:
                 //contestant has submitted their answers
                 if ( m_authenticated ) {
-                        QString xml;
-                        uchar hash[20];
-                        in.readRawData ( ( char* ) hash, 20 );
-                        in >> xml;
-                        QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
-                        QByteArray testhash2;
-                        for ( int i = 0; i < 20; i++ ) {
-                                testhash2.push_back ( hash[i] );
-                        }
-                        if ( testhash == testhash2 ) {
-                                // TODO: insert code for checker here
-                                sendAReply ( true );
+                        if ( m_con_status == CONTEST_RUNNING ) {
+                                QString xml;
+                                uchar hash[20];
+                                in.readRawData ( ( char* ) hash, 20 );
+                                in >> xml;
+                                QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+                                QByteArray testhash2;
+                                for ( int i = 0; i < 20; i++ ) {
+                                        testhash2.push_back ( hash[i] );
+                                }
+                                if ( testhash == testhash2 ) {
+                                        // TODO: insert code for checker here
+                                        sendAReply ( true );
+                                } else {
+                                        sendAReply ( false );
+                                }
                         } else {
-                                sendAReply ( false );
+                                errorReply ( ERR_CONTEST_STOPPED );
                         }
                 } else {
                         errorReply ( ERR_NOTAUTHORIZED );
+                }
+                break;
+        case QRY_CONTEST_TIME:
+                if ( m_authenticated ) {
+                        emit onContestTimeRequest ( this );
                 }
                 break;
         default:
@@ -140,6 +150,9 @@ void ContestantConnection::ready()
         }
         delete m_hdr;
         m_hdr = NULL;
+        if ( m_socket->bytesAvailable() > 0 ) {
+                ready();
+        }
 }
 
 void ContestantConnection::errorReply ( ERROR_MESSAGES err )
@@ -214,6 +227,21 @@ void ContestantConnection::sendAReply ( bool res )
         m_socket->write ( block );
 }
 
+void ContestantConnection::setContestTime ( ushort time )
+{
+        //construct the packet and send it
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        // construct the header
+        p_header hdr;
+        hdr.command = INF_CONTEST_TIME;
+        hdr.length = sizeof ( ushort );
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( ushort ) time;
+        m_socket->write ( block );
+}
+
 void ContestantConnection::sendContestState ()
 {
         QByteArray block;
@@ -238,4 +266,19 @@ void ContestantConnection::setRound ( int round )
 void ContestantConnection::setStatus ( CONTEST_STATUS s )
 {
         m_con_status = s;
+}
+
+void ContestantConnection::setQuestion ( ushort qnum )
+{
+        //construct the packet and send it
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        // construct the header
+        p_header hdr;
+        hdr.command = INF_QUESTION_CHANGE;
+        hdr.length = sizeof ( ushort );
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( ushort ) qnum;
+        m_socket->write ( block );
 }

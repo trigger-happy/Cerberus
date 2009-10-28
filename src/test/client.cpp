@@ -16,13 +16,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <QtGui/QApplication>
+#include <cassert>
 #include "client.h"
 #include "ui_client.h"
+
+using namespace std;
 
 ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::client_dlg )
 {
         m_dlg->setupUi ( this );
         connect ( m_dlg->connect_btn, SIGNAL ( clicked() ), this, SLOT ( onConnectBtn() ) );
+        connect ( m_dlg->clear_btn, SIGNAL ( clicked() ), this, SLOT ( onClearBtn() ) );
 
         m_net = new ContestantNetwork ( this );
         connect ( m_net, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( onAuthReply ( bool ) ) );
@@ -32,6 +36,10 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
         connect ( m_net, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
         connect ( m_net, SIGNAL ( onContestStateChange ( int,CONTEST_STATUS ) ),
                   this, SLOT ( onContestStateChange ( int, CONTEST_STATUS ) ) );
+        connect ( m_net, SIGNAL ( onContestError ( ERROR_MESSAGES ) ),
+                  this, SLOT ( onContestError ( ERROR_MESSAGES ) ) );
+        connect ( m_net, SIGNAL ( onContestTime ( ushort ) ), this, SLOT ( onContestTimeChange ( ushort ) ) );
+        connect ( m_net, SIGNAL ( onQuestionChange ( ushort ) ), this, SLOT ( onQuestionChange ( ushort ) ) );
 }
 
 ClientDlg::~ClientDlg()
@@ -41,9 +49,7 @@ ClientDlg::~ClientDlg()
 
 void ClientDlg::onContestStateChange ( int round, CONTEST_STATUS s )
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "Status: " + QString ( "%1 %2\n" ).arg ( round ).arg ( s );
-        m_dlg->log_tedt->setText ( buffer );
+        writeLog ( QString ( "Current round is %1 and state is %2" ).arg ( round ).arg ( s ) );
         //get the question data
         m_net->qDataRequest ( round );
 }
@@ -63,40 +69,31 @@ void ClientDlg::onQData ( const QString& xml )
 
 void ClientDlg::onAData ( bool result )
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "ANS: ";
         if ( result ) {
-                buffer += "true\n";
+                writeLog ( "Answer submission returned true" );
         } else {
-                buffer += "false\n";
+                writeLog ( "Answer submission returned false" );
         }
-        m_dlg->log_tedt->setText ( buffer );;
 }
 
 void ClientDlg::onAuthReply ( bool result )
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
         if ( !result ) {
-                buffer += "Failed to authenticate\n";
+                writeLog ( "Failed to authenticate" );
         } else {
-                buffer += "Authenticated!\n";
+                writeLog ( "Authenticated" );
         }
         if ( result ) {
                 // get the contest state next
-                buffer += "Getting contest state...\n";
+                writeLog ( "Getting contest state..." );
                 m_net->getContestState();
         }
-        m_dlg->log_tedt->setText ( buffer );
 }
 
 void ClientDlg::onConnect()
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "Connected\n";
-        // TODO: begin test here
-        // do an authentication test
-        buffer += "Authenticating...\n";
-        m_dlg->log_tedt->setText ( buffer );
+        writeLog ( "Connected" );
+        writeLog ( "Authenticating.." );
         m_net->authenticate ( "user", "pass" );
 }
 
@@ -109,19 +106,57 @@ void ClientDlg::onDisconnect()
 
 void ClientDlg::onConnectBtn()
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "Connecting...\n";
-        m_dlg->log_tedt->setText ( buffer );
+        writeLog ( "Connecting.." );
         m_net->connectToHost ( "localhost" , 2652 );
 }
 
 void ClientDlg::onError ( QAbstractSocket::SocketError error )
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "Error\n";
-        m_dlg->log_tedt->setText ( buffer );
+        writeLog ( QString ( "Error: %1" ).arg ( error ) );
         QMessageBox msg ( this );
         msg.setText ( QString ( "Socket error: %1" ).arg ( error ) );
+}
+
+void ClientDlg::writeLog ( const QString& s )
+{
+        QString buffer = m_dlg->log_tedt->toPlainText();
+        buffer += s +"\n";
+        m_dlg->log_tedt->setText ( buffer );
+}
+
+void ClientDlg::onClearBtn()
+{
+        m_dlg->log_tedt->clear();
+}
+
+void ClientDlg::onContestError ( ERROR_MESSAGES err )
+{
+        switch ( err ) {
+        case ERR_NOTAUTHORIZED:
+                writeLog ( "Server returned that we're not authorized" );
+                break;
+        case ERR_BADCOMMAND:
+                writeLog ( "Server returned bad command" );
+                break;
+        case ERR_CONTEST_STOPPED:
+                writeLog ( "Contest is stopped" );
+                break;
+        case ERR_UNKNOWN:
+                writeLog ( "Server returned unknown error" );
+                break;
+        default:
+                assert ( false );
+        }
+}
+
+void ClientDlg::onContestTimeChange ( ushort time )
+{
+        writeLog ( QString ( "Contest time now is: %1" ).arg ( time ) );
+}
+
+void ClientDlg::onQuestionChange ( ushort q )
+{
+        writeLog ( QString ( "Question changed to: %1" ).arg ( q ) );
 }
 
 int main ( int argc, char* argv[] )

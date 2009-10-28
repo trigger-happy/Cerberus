@@ -35,9 +35,19 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         m_dlg->setupUi ( this );
         connect ( m_dlg->quit_btn, SIGNAL ( clicked() ), this, SLOT ( onQuitBtn() ) );
         m_server = new ServerNetwork ( this );
-        connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
-        connect ( m_server, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
-        connect ( m_server, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+        connect ( m_dlg->stop_btn, SIGNAL ( clicked() ), this, SLOT ( onStopBtn() ) );
+        connect ( m_dlg->change_btn, SIGNAL ( clicked() ), this, SLOT ( onRoundChangeBtn() ) );
+        connect ( m_dlg->pause_btn, SIGNAL ( clicked() ), this, SLOT ( onPauseBtn() ) );
+        connect ( m_dlg->start_btn, SIGNAL ( clicked() ), this, SLOT ( onStartBtn() ) );
+        connect ( m_dlg->time_btn, SIGNAL ( clicked() ), this, SLOT ( onTimeBtn() ) );
+        connect ( m_dlg->question_btn, SIGNAL ( clicked() ), this, SLOT ( onQuestionBtn() ) );
+
+        connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ),
+                  this, SLOT ( newContestant ( ContestantConnection* ) ) );
+        connect ( m_server, SIGNAL ( badClient ( TempConnection* ) ),
+                  this, SLOT ( badClient ( TempConnection* ) ) );
+        connect ( m_server, SIGNAL ( contestantDc ( ContestantConnection* ) ),
+                  this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
         m_server->listen ( 2652 );
         m_server->setRound ( 1 );
         m_server->setStatus ( CONTEST_STOPPED );
@@ -55,18 +65,39 @@ ServerDlg::~ServerDlg()
         delete m_dlg;
 }
 
+void ServerDlg::onStopBtn()
+{
+        m_server->setStatus ( CONTEST_STOPPED );
+        writeLog ( "Contest stopped" );
+}
+
+void ServerDlg::onStartBtn()
+{
+        m_server->setStatus ( CONTEST_RUNNING );
+        writeLog ( "Contest running" );
+}
+
+void ServerDlg::onPauseBtn()
+{
+        m_server->setStatus ( CONTEST_PAUSED );
+        writeLog ( "Contest paused" );
+}
+
+void ServerDlg::onRoundChangeBtn()
+{
+        int round = m_dlg->round_line->text().toInt();
+        m_server->setRound ( round );
+        writeLog ( QString ( "Round changed to %1" ).arg ( round ) );
+}
+
 void ServerDlg::newContestant ( ContestantConnection* cc )
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "New Contestant connection\n";
-        m_dlg->log_tedt->setText ( buffer );
+        writeLog ( "New Contestant connection" );
 }
 
 void ServerDlg::contestantDisconnect ( ContestantConnection* cc )
 {
-        QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "Contestant Disconnected\n";
-        m_dlg->log_tedt->setText ( buffer );
+        writeLog ( "Contestant Disconnected" );
 }
 
 void ServerDlg::onQuitBtn()
@@ -76,9 +107,28 @@ void ServerDlg::onQuitBtn()
 
 void ServerDlg::badClient ( TempConnection* tc )
 {
+        writeLog ( "Bad client" );
+}
+
+void ServerDlg::writeLog ( const QString& s )
+{
         QString buffer = m_dlg->log_tedt->toPlainText();
-        buffer += "Bad client\n";
+        buffer += s+"\n";
         m_dlg->log_tedt->setText ( buffer );
+}
+
+void ServerDlg::onQuestionBtn()
+{
+        ushort q = m_dlg->question_line->text().toUShort();
+        writeLog ( QString ( "Question number set to: %1" ).arg ( q ) );
+        m_server->setQuestion ( q );
+}
+
+void ServerDlg::onTimeBtn()
+{
+        ushort time = m_dlg->time_line->text().toUShort();
+        writeLog ( QString ( "Contest time changed to: %1" ).arg ( time ) );
+        m_server->setContestTime ( time );
 }
 
 int main ( int argc, char* argv[] )

@@ -33,14 +33,19 @@ public:
         ClientDlg ( QWidget* parent = 0 );
         ~ClientDlg();
 private slots:
+        void writeLog ( const QString& s );
+        void onClearBtn();
         void onAuthReply ( bool result );
         void onConnectBtn();
         void onConnect();
         void onDisconnect();
         void onError ( QAbstractSocket::SocketError error );
+        void onContestError ( ERROR_MESSAGES err );
         void onQData ( const QString& xml );
         void onAData ( bool result );
         void onContestStateChange ( int round, CONTEST_STATUS s );
+		void onQuestionChange(ushort q);
+		void onContestTimeChange(ushort time);
 private:
         ContestantNetwork* m_net;
         Ui::client_dlg* m_dlg;
