@@ -268,7 +268,7 @@ void ContestantConnection::setStatus ( CONTEST_STATUS s )
         m_con_status = s;
 }
 
-void ContestantConnection::setQuestion ( ushort qnum )
+void ContestantConnection::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state )
 {
         //construct the packet and send it
         QByteArray block;
@@ -276,9 +276,9 @@ void ContestantConnection::setQuestion ( ushort qnum )
         out.setVersion ( QDataStream::Qt_4_5 );
         // construct the header
         p_header hdr;
-        hdr.command = INF_QUESTION_CHANGE;
-        hdr.length = sizeof ( ushort );
+        hdr.command = INF_QUESTION_STATE;
+        hdr.length = sizeof ( ushort ) *3;
         out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
-        out << ( ushort ) qnum;
+        out << ( ushort ) qnum << ( ushort ) time << ( ushort ) state;
         m_socket->write ( block );
 }

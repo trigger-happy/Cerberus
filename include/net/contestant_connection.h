@@ -49,19 +49,21 @@ public:
         \param s CONTEST_STATUS
         */
         void setStatus ( CONTEST_STATUS s );
-		
-		/*!
-		Set the contest time. Note that this will immediately send the information
-		to the client.
+
+        /*!
+        Set the contest time. Note that this will immediately send the information
+        to the client.
         \param time The time of the contest in seconds.
-		*/
-		void setContestTime(ushort time);
-		
-		/*!
-		Set the question for round 3/4 (for contest pacing).
-		\param qnum The question number.
-		*/
-		void setQuestion(ushort qnum);
+        */
+        void setContestTime ( ushort time );
+
+        /*!
+        Set the question state for round 3/4 (for contest pacing).
+        \param qnum The question number.
+        \param time The time left for this question.
+        \param state The state of this question.
+        */
+        void setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state );
 
         /*!
         Set the pointer to the question data. This is to be used by ServerNet.
@@ -93,16 +95,16 @@ public slots:
         void sendContestState ();
 signals:
         /*!
-		Emitted when a contestant disconnects
-		\param cc Pointer to a ContestantConnection with the contestant that disconnected.
+        	Emitted when a contestant disconnects
+        	\param cc Pointer to a ContestantConnection with the contestant that disconnected.
         */
         void contestantDisconnect ( ContestantConnection* cc );
-		
-		/*!
-		Emitted when a contestant requests for the contest time.
-		\param cc Pointer to a ContestantConnectin that made the request.
-		*/
-		void onContestTimeRequest( ContestantConnection* cc );
+
+        /*!
+        Emitted when a contestant requests for the contest time.
+        \param cc Pointer to a ContestantConnectin that made the request.
+        */
+        void onContestTimeRequest ( ContestantConnection* cc );
 private:
         //some private functions
         /*!

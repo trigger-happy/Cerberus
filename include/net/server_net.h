@@ -129,10 +129,12 @@ public:
         void setQData ( const vector<QString>* qdata );
 		
 		/*!
-		Set the next question for the 3rd/4th round.
+		Change the round 3/4 question status.
 		\param qnum The question number.
+		\param time The time left for this question.
+		\param state The status of this question.
 		*/
-		void setQuestion(ushort qnum);
+		void setQuestionState(ushort qnum, ushort time, QUESTION_STATUS state);
 public slots:
 
         /*!

@@ -40,9 +40,10 @@ contestant-server network:
 
     contest time info //normally when time is changed
 		server: INF_CONTEST_TIME <ushort time> //in seconds
-	
-    round 3/4 question change // it's for pacing
-		server: INF_QUESTION_CHANGE < ushort question number>
+		
+	question state change (round 3 and 4):
+		server: INF_QUESTION_STATE <ushort question number> <ushort time> <ushort status>
+		*status = running, stopped, paused
 
 presenter-server network:
     contest state request:

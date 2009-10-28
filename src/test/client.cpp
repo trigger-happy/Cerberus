@@ -39,7 +39,8 @@ ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::c
         connect ( m_net, SIGNAL ( onContestError ( ERROR_MESSAGES ) ),
                   this, SLOT ( onContestError ( ERROR_MESSAGES ) ) );
         connect ( m_net, SIGNAL ( onContestTime ( ushort ) ), this, SLOT ( onContestTimeChange ( ushort ) ) );
-        connect ( m_net, SIGNAL ( onQuestionChange ( ushort ) ), this, SLOT ( onQuestionChange ( ushort ) ) );
+        connect ( m_net, SIGNAL ( onQuestionStateChange ( ushort, ushort, QUESTION_STATUS ) ), 
+				  this, SLOT ( onQuestionChange ( ushort, ushort, QUESTION_STATUS ) ) );
 }
 
 ClientDlg::~ClientDlg()
@@ -154,9 +155,9 @@ void ClientDlg::onContestTimeChange ( ushort time )
         writeLog ( QString ( "Contest time now is: %1" ).arg ( time ) );
 }
 
-void ClientDlg::onQuestionChange ( ushort q )
+void ClientDlg::onQuestionChange ( ushort q, ushort time, QUESTION_STATUS status )
 {
-        writeLog ( QString ( "Question changed to: %1" ).arg ( q ) );
+        writeLog ( QString ( "Question changed to: %1 %2 %3" ).arg ( q ).arg(time).arg((ushort) status) );
 }
 
 int main ( int argc, char* argv[] )

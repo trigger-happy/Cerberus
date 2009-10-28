@@ -58,9 +58,6 @@ enum PROTOCOL_COMMAND {
     QRY_CONTEST_TIME,
     INF_CONTEST_TIME,
 
-    // contest pacing for round 3 and 4
-    INF_QUESTION_CHANGE,
-
     // presenter stuff
     // sent by the presenter when ready
     QRY_PRESENTER_READY,
@@ -87,6 +84,12 @@ enum CONTEST_STATUS {
     CONTEST_RUNNING = 0,
     CONTEST_STOPPED,
     CONTEST_PAUSED
+};
+
+enum QUESTION_STATUS{
+	QUESTION_RUNNING = 0,
+	QUESTION_STOPPED,
+	QUESTION_PAUSED
 };
 
 struct p_version {

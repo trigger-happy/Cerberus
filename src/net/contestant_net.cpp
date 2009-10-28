@@ -264,12 +264,14 @@ void ContestantNetwork::ready()
                 emit onContestTime ( time );
         }
         break;
-        case INF_QUESTION_CHANGE:
-                // time for the next question in round 3/4
+        case INF_QUESTION_STATE:
+                // change in round 3/4 question state
         {
                 ushort qnum;
-                in >> qnum;
-                emit onQuestionChange ( qnum );
+                ushort time;
+                ushort status;
+                in >> qnum >> time >> status;
+                emit onQuestionStateChange ( qnum, time, ( QUESTION_STATUS ) status );
         }
         break;
         default:

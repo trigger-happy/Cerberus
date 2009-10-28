@@ -90,13 +90,13 @@ public:
         \return true if the data was sent, false otherwise.
         */
         bool aDataSend ( const QString& xml );
-		
-		/*!
-		Request for the contest time from the server. Use onContestTime
-		signal for the server's response
-		\return true if the data was sent, false otherwise.
-		*/
-		bool getContestTime();
+
+        /*!
+        Request for the contest time from the server. Use onContestTime
+        signal for the server's response
+        \return true if the data was sent, false otherwise.
+        */
+        bool getContestTime();
 
 protected slots:
 
@@ -169,21 +169,23 @@ signals:
         \param result true on success, false on failure
         */
         void onAData ( bool result );
-		
-		/*!
-		Emitted when server replies to our request for the current
-		contest time.
-		\param time unsigned int containing the contest time.
-		*/
-		void onContestTime(ushort time);
-		
-		/*!
-		Emitted when the question for round 3/4 is changed. The contest
-		pacing for this round is controlled and this basically determines
-		when it's time to move to the next question.
+
+        /*!
+        Emitted when server replies to our request for the current
+        contest time.
+        \param time unsigned int containing the contest time.
+        */
+        void onContestTime ( ushort time );
+
+        /*!
+        Emitted when the question for round 3/4 changes in status.
+        This is either when the question changes, the timer changes
+        or when the timer is started/stopped/paused.
         \param qnum The question number.
-		*/
-		void onQuestionChange(ushort qnum);
+        \param time The time for this question.
+        \param status The current status for this question.
+        */
+        void onQuestionStateChange ( ushort qnum, ushort time, QUESTION_STATUS status );
 protected:
         QTcpSocket* m_socket;
         p_header* m_hdr;

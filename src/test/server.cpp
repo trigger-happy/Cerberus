@@ -121,7 +121,8 @@ void ServerDlg::onQuestionBtn()
 {
         ushort q = m_dlg->question_line->text().toUShort();
         writeLog ( QString ( "Question number set to: %1" ).arg ( q ) );
-        m_server->setQuestion ( q );
+		//TODO: change the ui to accomodate this
+        m_server->setQuestionState ( q, 200, QUESTION_STOPPED );
 }
 
 void ServerDlg::onTimeBtn()

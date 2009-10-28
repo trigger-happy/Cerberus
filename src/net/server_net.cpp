@@ -166,12 +166,12 @@ void ServerNetwork::setContestTime ( ushort time )
         }
 }
 
-void ServerNetwork::setQuestion ( ushort qnum )
+void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state )
 {
         if ( m_round >= 3 ) {
                 contestant_list::iterator i = m_contestants.begin();
                 for ( ; i != m_contestants.end(); i++ ) {
-                        ( *i )->setQuestion ( qnum );
+                        ( *i )->setQuestionState ( qnum, time, state );
                 }
         }
 }
