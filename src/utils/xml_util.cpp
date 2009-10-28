@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 Victor Tanedo
+Copyright (C) 2009 Wilhansen Li
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -24,223 +24,31 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 using namespace std;
 
 const char * const XmlUtil::CONFIG_ROOT_TAG = "config";
-
-void XmlUtil::readQuestionData ( int round, const QString& xml, QuestionData& qd )
-{
-    switch (round) {
-    case 1:
-        readR1QData(xml, qd);
-        break;
-    case 2:
-        readR2QData(xml, qd);
-        break;
-    case 3: // round 3 and 4 are identical anyway.
-    case 4:
-        readR3QData(xml, qd);
-        break;
-	default:
-		throw std::invalid_argument("Invalid round argument in readQuestionData.");
-    }
-}
-
-void XmlUtil::writeQuestionData(int round, const QuestionData& qd, QString& xml) {
-    switch (round) {
-    case 1:
-        writeR1QData(qd, xml);
-        break;
-    case 2:
-        writeR2QData(qd, xml);
-        break;
-    case 3:
-    case 4:
-        writeR3QData(qd, xml);
-        break;
-	default:
-		throw std::invalid_argument("Invalid round argument in writeQuestionData.");
-    }
-}
-
-void XmlUtil::readAnswerData(int round, const QString& xml, AnswerData& ad) {
-    switch (round) {
-    case 1:
-        readR1AData(xml, ad);
-        break;
-    case 2:
-        readR2AData(xml, ad);
-        break;
-    case 3:
-    case 4:
-        readR3AData(xml, ad);
-        break;
-	default:
-		throw std::invalid_argument("Invalid round argument in readAnswerData.");
-    }
-}
-
-void XmlUtil::writeAnswerData(int round, const AnswerData& ad, QString& xml) {
-    switch (round) {
-    case 1:
-        writeR1AData(ad, xml);
-        break;
-    case 2:
-        writeR2AData(ad, xml);
-        break;
-    case 3:
-    case 4:
-        writeR3AData(ad, xml);
-        break;
-    default:
-		throw std::invalid_argument("Invalid round argument in writeAnswerData.");
-    }
-}
-
-void XmlUtil::readR1QData ( const QString& xml, QuestionData& data )
-{
-    QXmlStreamReader reader ( xml );
-
-    while ( !reader.atEnd() ) {
-        QXmlStreamReader::TokenType token = reader.readNext();
-
-        if ( token == QXmlStreamReader::StartElement ) {
-			if ( reader.name() == "welcome_msg" ) { // reads the welcome_msg tag
-				data.welcome_msg = reader.readElementText(); // reads the characters within the question_msg tag
-            } else if ( reader.name() == "question" ) { // reads the question tag
-                QXmlStreamAttributes attributes = reader.attributes();
-                Question temp;
-
-                // reads the number attribute from question
-                if ( attributes.hasAttribute ( "number" ) ) {
-					temp.number = attributes.value( "number" ).toString().toInt();
-                } else {
-					throw InvalidXmlException("'number' attribute missing from 'question' element.", reader);
-                }
-
-                // reads from the score attribute from question
-                if ( attributes.hasAttribute ( "score" ) ) {
-                    temp.score =  attributes.value ( "score" ).toString().toInt();
-                } else {
-					throw InvalidXmlException("'score' attribute missing from 'question' element.", reader);
-                }
-
-                for ( int i = 0; i < 5; i++ ) {
-                    token = reader.readNext();
-                    if ( token == QXmlStreamReader::StartElement ) {
-                        if ( reader.name() == "q" ) {
-                            token = reader.readNext();
-                            //error check here
-                            temp.question = reader.text().toString();
-                            token = reader.readNext();
-                        } else if ( reader.name() == "choice" ) {
-                            int number = reader.attributes().value ( "id" ).toString().toInt();
-                            token = reader.readNext();
-                            QString choice = reader.text().toString();
-                            temp.choices[number] = choice;
-                            token = reader.readNext();
-                        }
-                    } else {
-                        // don't ask, it's a work around
-                        i--;
-                    }
-                }
-
-                token = reader.readNext();
-                data.questions.push_back ( temp );
-            } else if ( reader.name() == "stage1" ) {
-                QXmlStreamAttributes attributes = reader.attributes();
-                if (attributes.hasAttribute("contest_time")) {
-                    data.contest_time = attributes.value("contest_time").toString().toInt();
-                }
-            }
-        }
-    }
-}
-
-void XmlUtil::readR2QData(const QString& xml, QuestionData& data)
-{
-    QXmlStreamReader reader ( xml );
-
-    while ( !reader.atEnd() ) {
-        QXmlStreamReader::TokenType token = reader.readNext();
-
-        if ( token == QXmlStreamReader::StartElement ) {
-            if ( reader.name() == "welcome_msg" ) { // reads the welcome_msg tag
-                token = reader.readNext();
-                if ( token == QXmlStreamReader::Characters ) {
-                    data.welcome_msg = reader.text().toString(); // reads the characters within the question_msg tag
-                } else {
-                    // throw
-                }
-                token = reader.readNext();
-            } else if ( reader.name() == "question" ) { // reads the question tag
-                QXmlStreamAttributes attributes = reader.attributes();
-                Question temp;
-
-                // reads the number attribute from question
-                if ( attributes.hasAttribute ( "number" ) ) {
-                    temp.number =  attributes.value ( "number" ).toString().toInt();
-                } else {
-                    // throw
-                }
-
-                // reads from the score attribute from question
-                if ( attributes.hasAttribute ( "score" ) ) {
-                    temp.score =  attributes.value ( "score" ).toString().toInt();
-                } else {
-                    // throw
-                }
-
-                for ( int i = 0; i < 5; i++ ) {
-                    token = reader.readNext();
-                    if ( token == QXmlStreamReader::StartElement ) {
-                        if ( reader.name() == "q" ) {
-                            token = reader.readNext();
-                            //error check here
-                            temp.question = reader.text().toString();
-                            token = reader.readNext();
-                        } else if ( reader.name() == "choice" ) {
-                            int number = reader.attributes().value ( "id" ).toString().toInt();
-                            token = reader.readNext();
-                            QString choice = reader.text().toString();
-                            temp.choices[number] = choice;
-                            token = reader.readNext();
-                        }
-                    } else {
-                        // don't ask, it's a work around
-                        i--;
-                    }
-                }
-
-                token = reader.readNext();
-                data.questions.push_back ( temp );
-            } else if ( reader.name() == "stage2" ) {
-                QXmlStreamAttributes attributes = reader.attributes();
-                if (attributes.hasAttribute("contest_time")) {
-                    data.contest_time = attributes.value("contest_time").toString().toInt();
-                }
-            }
-        }
-    }
-}
-
-void XmlUtil::writeR2QData(const QuestionData& qd, QString& xml) {
-}
+const char * const XmlUtil::XML_NS = "http://cerberus.compsat.org";
 
 template <typename T>
-T checked_assign(const QXmlStreamAttributes &attr, const char * key, const QXmlStreamReader &reader) {
-	throw std::logic_error("Unimplemented type passed to checked_assign.");
-	return 0;
+T checked_convert(const QString &str, const char *key, const QXmlStreamReader &reader) {
+	throw std::logic_error("Unimplemented type passed to checked_convert.");
 }
 
-template <>
-int checked_assign(const QXmlStreamAttributes &attrs, const char * key, const QXmlStreamReader &reader) {
-	if ( !attrs.hasAttribute(key) ){
-		throw XmlUtil::InvalidXmlException(
-				QString("Required attribute '%1' missing in element %2.").
-				arg(key, reader.name().toString()),
-				reader);
-	}
+template<>
+bool checked_convert(const QString &str, const char *key, const QXmlStreamReader &reader) {
+	const QString &trm = str.trimmed();
+
+	if ( trm.compare("true", Qt::CaseInsensitive) == 0 || trm == "1" )
+		return true;
+	else if ( trm.compare("false", Qt::CaseInsensitive) == 0 || trm == "0")
+		return false;
+
+	throw XmlUtil::InvalidXmlException(
+			QString("Invalid value for '%1' (expected 'true' or 'false')").arg(key),
+			reader);
+}
+
+template<>
+int checked_convert(const QString &str, const char *key, const QXmlStreamReader &reader) {
 	bool ok = true;
-	const int val = attrs.value(key).toString().toInt(&ok);
+	const int val = str.toInt(&ok);
 	if ( !ok )
 		throw XmlUtil::InvalidXmlException(
 				QString("Invalid value for '%1' (expected integer)").arg(key),
@@ -248,43 +56,135 @@ int checked_assign(const QXmlStreamAttributes &attrs, const char * key, const QX
 	return val;
 }
 
-void XmlUtil::readR3QEntry(QXmlStreamReader &reader, Question &q) {
-	assert(reader.name() == "question");
-	{
-		const QXmlStreamAttributes &attrs = reader.attributes();
-		q.score = checked_assign<int>(attrs, "score", reader);
-		q.time = checked_assign<int>(attrs, "time", reader);
-		q.number = checked_assign<int>(attrs, "number", reader);
-	}
-	while ( !reader.atEnd() ) {
-		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
-			if ( reader.name() == "q" ) {
-				q.question = reader.readElementText();
-			} else if ( reader.name() == "choice" ) {
-				q.choices.push_back(reader.readElementText());
-			} else {
-				throw InvalidXmlException(
-						QString("Unexpected '%1' element found in 'question' element.").
-						arg(reader.name().toString()), reader);
-			}
-		} else if ( reader.isEndElement() && reader.name() == "question" )
-			break;
-	}
+template<>
+unsigned int checked_convert(const QString &str, const char *key, const QXmlStreamReader &reader) {
+	bool ok = true;
+	const unsigned int val = str.toUInt(&ok);
+	if ( !ok )
+		throw XmlUtil::InvalidXmlException(
+				QString("Invalid value for '%1' (expected non-negative integer)").arg(key),
+				reader);
+	return val;
 }
 
-void XmlUtil::readR3QData(const QString& xml, QuestionData& qd) {
+template<>
+QString checked_convert(const QString &str, const char *key, const QXmlStreamReader &reader) {
+	return str;
+}
+
+template <typename T>
+bool optional_assign(const QXmlStreamAttributes &attr, const char *key, T &v, const QXmlStreamReader &reader) {
+	if ( attr.hasAttribute(XmlUtil::XML_NS, key) ) {
+		v = checked_convert<T>(attr.value(XmlUtil::XML_NS, key).toString(), key, reader);
+		return true;
+	} else if ( attr.hasAttribute("", key) ) {
+		v = checked_convert<T>(attr.value("", key).toString(), key, reader);
+		return true;
+	}
+	return false;
+}
+
+template <typename T>
+T checked_assign(const QXmlStreamAttributes &attr, const char * key, const QXmlStreamReader &reader) {
+	T tmp;
+	if ( optional_assign<T>(attr, key, &tmp) )
+		return tmp;
+
+	throw XmlUtil::InvalidXmlException(
+			QString("Required attribute '%1' missing in element %2.").
+			arg(key, reader.name().toString()),
+			reader);
+}
+
+Question XmlUtil::parseChooseQuestion(QXmlStreamReader &reader) {
+	assert(reader.name() == "choose");
+
+	const QXmlStreamAttributes &attrs = reader.attributes();
+	Question q;
+	q.type = Question::CHOOSE_ONE;
+	optional_assign(attrs, "score", q.score, reader);
+	optional_assign(attrs, "time_limit", q.time_limit, reader);
+	optional_assign(attrs, "id", q.id, reader);
+
+	{
+		bool multiple = false;
+		optional_assign(attrs, "multiple", multiple, reader);
+		if ( multiple )
+			q.type = Question::CHOOSE_ANY;
+	}
+
+	while ( !reader.atEnd() ) {
+		reader.readNext();
+		{
+			const QStringRef &ns = reader.namespaceUri();
+			if ( !ns.isEmpty() && ns != XML_NS ) continue;
+		}
+		if ( reader.isStartElement() ) {
+			if ( reader.name() == "q" ) {
+				q.question = reader.readElementText();
+			} else if ( reader.name() == "choice" )  {
+				bool is_answer = false;
+				optional_assign(reader.attributes(), "answer", is_answer, reader);
+				q.answer_key.push_back(Question::AnswerKeyEntry(reader.readElementText(), is_answer));
+			} else if ( reader.name() == "choose" ) {
+				throw InvalidXmlException("'choose' tag found inside 'choose'.", reader);
+			} else {
+				//barf?
+			}
+		} else if ( reader.isEndElement() && reader.name() == "choose" )
+			break;
+	}
+	return q;
+}
+
+Question XmlUtil::parseIdentificationQuestion(QXmlStreamReader &reader) {
+	assert(reader.name() == "identification");
+	const QXmlStreamAttributes &attrs = reader.attributes();
+
+	Question q;
+	q.type = Question::IDENTIFICATION;
+	optional_assign(attrs, "score", q.score, reader);
+	optional_assign(attrs, "time_limit", q.time_limit, reader);
+	optional_assign(attrs, "id", q.id, reader);
+
+	while ( !reader.atEnd() ) {
+		reader.readNext();
+		{
+			const QStringRef &ns = reader.namespaceUri();
+			if ( !ns.isEmpty() && ns != XML_NS ) continue;
+		}
+		if ( reader.isStartElement() ) {
+			if ( reader.name() == "q" ) {
+				q.question = reader.readElementText();
+			} else if ( reader.name() == "a" )  {
+				q.answer_key.push_back(Question::AnswerKeyEntry(reader.readElementText(), true));
+			} else if ( reader.name() == "identification" ) {
+				throw InvalidXmlException("'choose' tag found inside 'choose'.", reader);
+			} else {
+				//barf?
+			}
+		} else if ( reader.isEndElement() && reader.name() == "choose" )
+			break;
+	}
+	return q;
+}
+
+void XmlUtil::readStageData(const QString &xml, StageData &qd) {
 	QXmlStreamReader reader(xml);
+
 	while ( !reader.atEnd() ) {
 		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
-			if ( reader.name() == "stage3" ) {
+			if ( !reader.namespaceUri().isEmpty() && reader.namespaceUri() != XML_NS ) continue;
+
+			if ( reader.name() == "stage" ) {
 				const QXmlStreamAttributes &attrs = reader.attributes();
-				qd.contest_time = checked_assign<int>(attrs, "contest_time", reader);
+				optional_assign(attrs, "time_limit", qd.contest_time, reader);
 			} else if ( reader.name() == "welcome_msg" ) {
 				qd.welcome_msg = reader.readElementText();
-			} else if ( reader.name() == "question" ) {
-				Question q;
-				readR3QEntry(reader, q);
-				qd.questions.push_back(q);
+			} else if ( reader.name() == "choose" ) {
+				qd.questions.push_back(parseChooseQuestion(reader));
+			} else if ( reader.name() == "identification" ) {
+				qd.questions.push_back(parseIdentificationQuestion(reader));
 			}
 		}
 	}
@@ -293,100 +193,74 @@ void XmlUtil::readR3QData(const QString& xml, QuestionData& qd) {
 		throw IllFormedXmlException(reader.errorString(), reader);
 }
 
-void XmlUtil::writeR3QData(const QuestionData& qd, QString& xml) {
+void XmlUtil::writeStageData(const StageData &qd, QString &output) {
+	QXmlStreamWriter writer(&output);
+	writer.setAutoFormatting(true);
+	writer.writeStartDocument();
+	writer.writeStartElement("stage");
+	writer.writeDefaultNamespace(XML_NS);
+	writer.writeNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
+	writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
+						  "http://cerberus.compsat.org stage.xsd");
+
+	if ( qd.hasContestTime() )
+		writer.writeAttribute(XML_NS, "time_limit", QString::number(qd.contest_time));
+
+
+	writer.writeTextElement(XML_NS, "welcome_msg", qd.welcome_msg);
+	for ( size_t i = 0; i < qd.questions.size(); ++i ) {
+		const Question &q = qd.questions[i];
+		switch ( q.type ) {
+			case Question::IDENTIFICATION:
+				writer.writeStartElement(XML_NS, "identification");
+				break;
+			case Question::CHOOSE_ANY:
+			case Question::CHOOSE_ONE:
+				writer.writeStartElement(XML_NS, "choose");
+				if ( q.type == Question::CHOOSE_ANY )
+					writer.writeAttribute(XML_NS, "multiple", "true");
+				break;
+		}
+		writer.writeAttribute(XML_NS, "score", QString::number(q.score));
+		if ( q.hasTimeLimit() )
+			writer.writeAttribute(XML_NS, "time_limit", QString::number(q.time_limit));
+		if ( q.hasId() )
+			writer.writeAttribute(XML_NS, "id", q.id);
+		writer.writeTextElement(XML_NS, "q", q.question);
+
+		switch ( q.type ) {
+			case Question::IDENTIFICATION:
+				for ( size_t j = 0; j < q.answer_key.size(); ++j ) {
+					if ( !q.answer_key[j].is_answer ) continue;
+					writer.writeTextElement(XML_NS, "a", q.answer_key[j].c);
+				}
+				break;
+			case Question::CHOOSE_ANY:
+			case Question::CHOOSE_ONE:
+				for ( size_t j = 0; j < q.answer_key.size(); ++j ) {
+					writer.writeStartElement(XML_NS, "choice");
+					if ( q.answer_key[j].is_answer )
+						writer.writeAttribute(XML_NS, "answer", "true");
+					writer.writeCharacters(q.answer_key[j].c);
+					writer.writeEndElement();
+				}
+				break;
+		}
+
+		writer.writeEndElement();
+	}
+
+	writer.writeEndElement();
+	writer.writeEndDocument();
 }
 
-void XmlUtil::writeR1QData ( const QuestionData& data, QString& xml )
-{
-    int counter = 0; // stores number of elements left
-    int offset = 1;
-    vector<Question> questions = data.questions;
-
-    QXmlStreamWriter writer ( &xml );
-    writer.setAutoFormatting ( true );
-    writer.writeStartDocument();
-    writer.writeStartElement ( "stage1" );
-    writer.writeAttribute("contest_time", QString("%1").arg(data.contest_time));
-    writer.writeTextElement ( "welcome_msg", QString ( data.welcome_msg ) );
-
-    // this writes the questions into the xml
-    while ( counter < data.questions.size() ) {
-        QString questionNum = QString ( "%1" ).arg ( data.questions.at ( counter ).number );
-        QString scoreNum = QString ( "%1" ).arg ( data.questions.at ( counter ).score );
-        writer.writeStartElement ( "question" );
-        writer.writeAttribute ( "number", questionNum );
-        writer.writeAttribute ( "score", scoreNum );
-
-        writer.writeTextElement ( "q", QString ( data.questions.at ( counter ).question ) );
-
-		vector<QString>::const_iterator iter = data.questions[counter].choices.begin();
-        while (iter != data.questions[counter].choices.end()) {
-			writer.writeTextElement("choice", *iter);
-            iter++;
-        }
-        writer.writeEndElement();// closes the question tag
-        counter++;
-    }
-
-    writer.writeEndElement(); // closes the stage1 tag
-    writer.writeEndDocument();
-}
-
-void XmlUtil::readR1AData ( const QString& xml, AnswerData& data )
-{
-    QXmlStreamReader reader ( xml );
-    QXmlStreamReader::TokenType token = reader.readNext();
-
-    while ( !reader.atEnd() ) {
-        if ( token == QXmlStreamReader::StartElement ) {
-            if ( reader.name() == "answer" ) { // checks for the answer tag
-                QXmlStreamAttributes attribute = reader.attributes(); // extracts the attributes
-                int number = attribute.value ( "number" ).toString().toInt(); // gets the number attribute
-                token = reader.readNext();
-                data.insert(pair<int,QString>(number, reader.text().toString())); // stores the number and answer into a map
-            }
-
-        }
-        token = reader.readNext();
-    }
-}
-
-void XmlUtil::readR2AData(const QString& xml, AnswerData& data) {
-    readR1AData(xml, data);
-}
-
-void XmlUtil::readR3AData(const QString& xml, AnswerData& data) {
-}
-
-void XmlUtil::writeR1AData ( const AnswerData& data, QString& xml )
-{
-    int counter = data.size();
-    QXmlStreamWriter writer ( &xml );
-    writer.setAutoFormatting ( true );
-    writer.writeStartDocument();
-
-    writer.writeStartElement ( "stage1_ans" );
-    AnswerData::const_iterator iter = data.begin();
-    for ( ; iter != data.end(); iter++ ) {
-        writer.writeStartElement ( "answer" );
-        writer.writeAttribute ( QXmlStreamAttribute ( QString ( "number" ), QString ( "%1" ).arg ( iter->first ) ) );
-        writer.writeCharacters ( QString ( "%1" ).arg ( iter->second ) );
-        writer.writeEndElement();
-    }
-
-    writer.writeEndElement(); // closes the stage1_ans tag
-    writer.writeEndDocument();
-}
-
-void XmlUtil::writeR2AData ( const AnswerData& data, QString& xml ) {
-}
-
-void XmlUtil::writeR3AData ( const AnswerData& data, QString& xml ) {
+QString XmlUtil::stripAnswers(const QString &input) {
+	return input;
 }
 
 void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
 {
-    readNetConfig(xml, conf);
+	readNetConfig(xml, conf);
 }
 
 void XmlUtil::writeClientConfig ( const ClientConfig& conf, QString& xml ) {
@@ -394,130 +268,105 @@ void XmlUtil::writeClientConfig ( const ClientConfig& conf, QString& xml ) {
 }
 
 void XmlUtil::readNetConfig( QXmlStreamReader& reader, NetworkConfig& config) {
-    if ( !reader.isStartElement() || reader.name() != CONFIG_ROOT_TAG )
-        throw std::invalid_argument("Passed XML does not start with 'config' element.");
+	if ( !reader.isStartElement() || reader.name() != CONFIG_ROOT_TAG )
+		throw std::invalid_argument("Passed XML does not start with 'config' element.");
 
-    while ( !reader.atEnd() ) {
-        if ( reader.readNext() == QXmlStreamReader::StartElement ) {
-            if ( reader.name() == "ip" ) {
-                config.ip = reader.readElementText();
-            } else if ( reader.name() == "port" ) {
-                config.port = reader.readElementText().toInt();
-            } else {
-                //Should I barf because of invalid tags in the conf or just
-                //ignore this madness?
-            }
-        } else if ( reader.isEndElement() && reader.name() == CONFIG_ROOT_TAG )
-            break;
-    }
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
+			if ( reader.name() == "ip" ) {
+				config.ip = reader.readElementText();
+			} else if ( reader.name() == "port" ) {
+				config.port = reader.readElementText().toInt();
+			} else {
+				//Should I barf because of invalid tags in the conf or just
+				//ignore this madness?
+			}
+		} else if ( reader.isEndElement() && reader.name() == CONFIG_ROOT_TAG )
+			break;
+	}
 }
 
 void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 {
-    QXmlStreamReader reader( xml );
-    while ( !reader.atEnd() ) {
-        if ( reader.readNext() == QXmlStreamReader::StartElement) {
-            if ( reader.name() == CONFIG_ROOT_TAG ) {
-                break;
-            }
-        }
-    }
+	QXmlStreamReader reader( xml );
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement) {
+			if ( reader.name() == CONFIG_ROOT_TAG ) {
+				break;
+			}
+		}
+	}
 
-    if ( reader.name() != CONFIG_ROOT_TAG )
-        throw InvalidXmlException("No config root tag found.",
-                                  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
-    readNetConfig(reader, conf);
+	if ( reader.name() != CONFIG_ROOT_TAG )
+		throw InvalidXmlException("No config root tag found.",
+								  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+	readNetConfig(reader, conf);
 
-    if ( reader.hasError() )
-        throw IllFormedXmlException(reader.errorString(),
-                                    reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+	if ( reader.hasError() )
+		throw IllFormedXmlException(reader.errorString(),
+									reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
 }
 
 void XmlUtil::writeNetConfig(const NetworkConfig &conf, QString &xml) {
-    QXmlStreamWriter writer(&xml);
-    writer.setAutoFormatting(true);
-    writer.writeStartDocument();
-    writer.writeStartElement("config");
-    {
-        writer.writeTextElement("ip", QString("%1").arg(conf.ip));
-        writer.writeTextElement("port", QString("%1").arg(conf.port));
-    }
-    writer.writeEndElement();
-    writer.writeEndDocument();
-}
-
-StageData XmlUtil::readStageData(QXmlStreamReader& stream) {
-    assert(stream.name() == "stage_data");
-    StageData ret;
-    while ( !stream.atEnd() ) {
-        if ( stream.readNext() == QXmlStreamReader::StartElement ) {
-            if ( stream.name() == "question" ) {
-                ret.question_file = stream.readElementText();
-            } else if ( stream.name() == "answer" ) {
-                ret.answer_file = stream.readElementText();
-            } else if ( stream.name() == "stage_data" ) {
-                //I found me-self again!
-                throw InvalidXmlException("'stage_data' tag found inside 'stage_data'.", stream);
-            } else {
-                //barf?
-            }
-        } else if ( stream.isEndElement() && stream.name() == "stage_data" )
-            break;
-    }
-    return ret;
+	QXmlStreamWriter writer(&xml);
+	writer.setAutoFormatting(true);
+	writer.writeStartDocument();
+	writer.writeStartElement("config");
+	{
+		writer.writeTextElement("ip", QString("%1").arg(conf.ip));
+		writer.writeTextElement("port", QString("%1").arg(conf.port));
+	}
+	writer.writeEndElement();
+	writer.writeEndDocument();
 }
 
 void XmlUtil::readServerConfig ( const QString& xml, ServerConfig& conf )
 {
-    QXmlStreamReader reader ( xml );
+	QXmlStreamReader reader ( xml );
 
-    while ( !reader.atEnd() ) {
-        if ( reader.readNext() == QXmlStreamReader::StartElement )
-            break;
-    }
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement )
+			break;
+	}
 
-    if ( reader.name() != CONFIG_ROOT_TAG )
-        throw InvalidXmlException("No config root tag found.",
-                                  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+	if ( reader.name() != CONFIG_ROOT_TAG )
+		throw InvalidXmlException("No config root tag found.",
+								  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
 
-    while ( !reader.atEnd() ) {
-        if ( reader.readNext() == QXmlStreamReader::StartElement ) {
-            if ( reader.name() == "port" ) {
-                bool ok;
-                conf.port = reader.readElementText().toInt(&ok);
-                if ( !ok || conf.port > (1 << 16 - 1) )
-                    throw InvalidXmlException("Invalid server port specified.",
-                                              reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
-            } else if ( reader.name() == "db" ) {
-                conf.db_path = reader.readElementText();
-            } else if ( reader.name() == "stage_data" ) {
-                conf.stage_data.push_back( readStageData(reader) );
-            } else {
-                //barf?
-            }
-        }
-    }
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
+			if ( reader.name() == "port" ) {
+				bool ok;
+				conf.port = reader.readElementText().toInt(&ok);
+				if ( !ok || conf.port > (1 << 16 - 1) )
+					throw InvalidXmlException("Invalid server port specified.",
+											  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
+			} else if ( reader.name() == "db" ) {
+				conf.db_path = reader.readElementText();
+			} else if ( reader.name() == "stage_file" ) {
+				conf.stage_files.push_back(reader.readElementText());
+			} else {
+				//barf?
+			}
+		}
+	}
 
-    if ( reader.hasError() )
-        throw IllFormedXmlException(reader.errorString(), reader);
+	if ( reader.hasError() )
+		throw IllFormedXmlException(reader.errorString(), reader);
 }
 
 void XmlUtil::writeServerConfig ( const ServerConfig& conf, QString& xml ) {
-    QXmlStreamWriter writer( &xml );
-    writer.setAutoFormatting(true);
-    writer.writeStartDocument();
-    writer.writeStartElement(CONFIG_ROOT_TAG);
-    writer.writeTextElement("port", QString::number(conf.port));
-    writer.writeTextElement("db", conf.db_path);
-    for ( size_t i = 0; i < conf.stage_data.size(); ++i ) {
-        writer.writeStartElement("stage_data");
-        const StageData &sd = conf.stage_data[i];
-        writer.writeTextElement("question", sd.question_file);
-        writer.writeTextElement("answer", sd.answer_file);
-        writer.writeEndElement();
-    }
-    writer.writeEndElement();
-    writer.writeEndDocument();
+	QXmlStreamWriter writer( &xml );
+	writer.setAutoFormatting(true);
+	writer.writeStartDocument();
+	writer.writeStartElement(CONFIG_ROOT_TAG);
+	writer.writeTextElement("port", QString::number(conf.port));
+	writer.writeTextElement("db", conf.db_path);
+	for ( size_t i = 0; i < conf.stage_files.size(); ++i ) {
+		writer.writeTextElement("stage_file", conf.stage_files[i]);
+	}
+	writer.writeEndElement();
+	writer.writeEndDocument();
 }
 void XmlUtil::readAdminConfig(const QString &xml, AdminConfig &conf) {
 	readNetConfig(xml, conf);
