@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iostream>
 
 using namespace std;
-//TODO: reading/saving xml files, change detection to determine if save should be called when prog quits
+//TODO: reading/saving xml files
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
@@ -31,8 +31,6 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	QFile f ("../resources/stage1_q.xml");
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
-	
-	//q_ui->textarea_welcome->setPlainText(xml);
 	
 	//declaration of pointers to components frequently accessed
 	
@@ -163,6 +161,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	sigToRemove=new QSignalMapper(this);
 	sigToUpdate=new QSignalMapper(this);
 	sigToCancel=new QSignalMapper(this);
+	sigToGeneralUpdate=new QSignalMapper(this);
 	sigToDetailUpdate=new QSignalMapper(this);
 	sigToUp=new QSignalMapper(this);
 	sigToDown=new QSignalMapper(this);
@@ -173,6 +172,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	connect(sigToRemove,SIGNAL(mapped(int)),this,SLOT(remove_question(int)));
 	connect(sigToUpdate,SIGNAL(mapped(int)),this,SLOT(update_question(int)));
 	connect(sigToCancel,SIGNAL(mapped(int)),this,SLOT(cancel_update(int)));
+	connect(sigToGeneralUpdate,SIGNAL(mapped(int)),this,SLOT(changed_general(int)));
 	connect(sigToDetailUpdate,SIGNAL(mapped(int)),this,SLOT(changed_details(int)));
 	connect(sigToUp,SIGNAL(mapped(int)),this,SLOT(move_up(int)));
 	connect(sigToDown,SIGNAL(mapped(int)),this,SLOT(move_down(int)));
@@ -183,7 +183,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		sigToList->setMapping(question_list[ctr],ctr+1);
 		sigToAdd->setMapping(button_add[ctr],ctr+1);
 		sigToRemove->setMapping(button_remove[ctr],ctr+1);
-		sigToDetailUpdate->setMapping(welcome[ctr],ctr+1);
+		sigToGeneralUpdate->setMapping(welcome[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_text[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_a[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_b[ctr],ctr+1);
@@ -194,7 +194,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		sigToDetailUpdate->setMapping(question_ans_b[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_ans_c[ctr],ctr+1);
 		sigToDetailUpdate->setMapping(question_ans_d[ctr],ctr+1);
-		sigToDetailUpdate->setMapping(duration[ctr],0);
+		sigToGeneralUpdate->setMapping(duration[ctr],ctr+1);
 		sigToUp->setMapping(button_up[ctr],ctr+1);
 		sigToDown->setMapping(button_down[ctr],ctr+1);
 		sigToChoices->setMapping(question_ans_a[ctr],ctr+1);
@@ -203,12 +203,11 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		sigToChoices->setMapping(question_ans_d[ctr],ctr+1);
 		sigToUpdate->setMapping(button_update[ctr],ctr+1);
 		sigToCancel->setMapping(button_cancel[ctr],ctr+1);
-
 		
 		connect(question_list[ctr],SIGNAL(activated(QModelIndex)),sigToList,SLOT(map()));
 		connect(button_add[ctr],SIGNAL(clicked(bool)),sigToAdd,SLOT(map()));
 		connect(button_remove[ctr],SIGNAL(clicked(bool)),sigToRemove,SLOT(map()));
-		connect(welcome[ctr],SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
+		connect(welcome[ctr],SIGNAL(textChanged()),sigToGeneralUpdate,SLOT(map()));
 		connect(question_text[ctr],SIGNAL(textChanged()),sigToDetailUpdate,SLOT(map()));
 		connect(question_a[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
 		connect(question_b[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
@@ -219,7 +218,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		connect(question_ans_b[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
 		connect(question_ans_c[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
 		connect(question_ans_d[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
-		connect(duration[ctr],SIGNAL(valueChanged(int)),sigToDetailUpdate,SLOT(map()));
+		connect(duration[ctr],SIGNAL(valueChanged(int)),sigToGeneralUpdate,SLOT(map()));
 		connect(button_up[ctr],SIGNAL(clicked(bool)),sigToUp,SLOT(map()));
 		connect(button_down[ctr],SIGNAL(clicked(bool)),sigToDown,SLOT(map()));
 		connect(question_ans_a[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
@@ -249,6 +248,8 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		question_text[ctr]->setTabChangesFocus(true);
 		
 		fully_updated[ctr]=true;
+		qmod[ctr]=false;
+		
 		control_components(ctr+1,false);
 		button_update[ctr]->setEnabled(false);
 		button_cancel[ctr]->setEnabled(false);
@@ -256,21 +257,27 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	
 	
 	//for menu/keyboard commands
+	q_ui->act_new->setShortcut(QKeySequence::New);
+	q_ui->act_import->setShortcut(QKeySequence(tr("ctrl+i")));
 	q_ui->act_save_xml->setShortcut(QKeySequence::Save);
 	q_ui->act_save_as->setShortcut(QKeySequence::SaveAs);
 	q_ui->act_load_xml->setShortcut(QKeySequence::Open);
 	q_ui->act_exit->setShortcut(QKeySequence::Close);
+	q_ui->act_new->setStatusTip("Creates an empty file");
+	q_ui->act_import->setStatusTip("Adds questions read from file");
 	q_ui->act_save_xml->setStatusTip("Saves questions to xml files");
 	q_ui->act_save_as->setStatusTip("Saves questions to some other xml files");
 	q_ui->act_load_xml->setStatusTip("Load xml files containing the questions.");
 	q_ui->act_exit->setStatusTip("Closes the program");
 	
+	connect(q_ui->act_new,SIGNAL(triggered(bool)),this,SLOT(newfile()));
+	connect(q_ui->act_import,SIGNAL(triggered(bool)),this,SLOT(import()));
 	connect(q_ui->act_save_xml,SIGNAL(triggered(bool)),this,SLOT(save()));
 	connect(q_ui->act_save_as,SIGNAL(triggered(bool)),this,SLOT(saveAs()));
 	connect(q_ui->act_load_xml,SIGNAL(triggered(bool)),this,SLOT(load()));
 	connect(q_ui->act_exit,SIGNAL(triggered(bool)),this,SLOT(exit()));
 	
-	changed=false;
+	this->setWindowTitle("untitled - QEditor");
 }
 
 QEditor::~QEditor()
@@ -280,9 +287,11 @@ QEditor::~QEditor()
 	delete sigToList;
 	delete sigToUpdate;
 	delete sigToCancel;
+	delete sigToGeneralUpdate;
 	delete sigToDetailUpdate;
 	delete sigToUp;
 	delete sigToDown;
+	delete sigToChoices;
 	
 	delete q_ui;
 	for (int ctr=0;ctr<4;ctr++)
@@ -300,7 +309,7 @@ void QEditor::list_focus(int round)
 	if (index!=-1)
 	{
 		bool change=true;
-		if (button_update[ptr]->isEnabled() && index!=history[ptr])
+		if (button_update[ptr]->isEnabled() && index!=history[ptr] && qmod[ptr])
 		{
 			QMessageBox conf;
 			conf.setWindowTitle("Notification - QEditor");
@@ -352,6 +361,12 @@ void QEditor::list_focus(int round)
 			button_update[ptr]->setDisabled(true);
 			button_cancel[ptr]->setDisabled(true);
 			history[ptr]=index;
+			
+			qmod[ptr]=false;
+			fully_updated[ptr]=true;
+			if (file_prefix!="")
+				this->setWindowTitle(file_prefix+".xgrp - QEditor");
+
 		}
 	}
 	else
@@ -377,6 +392,9 @@ void QEditor::list_focus(int round)
 void QEditor::add_question(int round)
 {
 	roundmodel[round-1]->addNewQuestion();
+	fully_updated[round-1]=false;
+	if (file_prefix!="")
+		this->setWindowTitle(file_prefix+".xgrp [modified] - QEditor");
 }
 
 void QEditor::remove_question(int round)
@@ -390,13 +408,29 @@ void QEditor::remove_question(int round)
 		button_update[round-1]->setDisabled(true);
 		button_cancel[round-1]->setDisabled(true);
 	}
+	fully_updated[round-1]=false;
+	if (file_prefix!="")
+		this->setWindowTitle(file_prefix+".xgrp [modified] - QEditor");
+}
+
+void QEditor::changed_general(int round)
+{
+	button_update[round-1]->setEnabled(true);
+	button_cancel[round-1]->setEnabled(true);
+	fully_updated[round-1]=false;
+	if (!qmod[round-1]) qmod[round-1]=false; 
+	if (file_prefix!="")
+		this->setWindowTitle(file_prefix+".xgrp [modified] - QEditor");
 }
 
 void QEditor::changed_details(int round)
 {
 	button_update[round-1]->setEnabled(true);
 	button_cancel[round-1]->setEnabled(true);
-	//fully_updated[round]
+	fully_updated[round-1]=false;
+	qmod[round-1]=true;
+	if (file_prefix!="")
+		this->setWindowTitle(file_prefix+".xgrp [modified] - QEditor");
 }
 
 void QEditor::update_question(int round)
@@ -435,7 +469,11 @@ void QEditor::update_question(int round)
 			time="0";
 		}
 		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
-		//q_ui->statusBar->setStatusTip("Question "+QString::number(index+1)+" of round "+QString::number(round)+" has been updated.");
+		
+		fully_updated[ptr]=true;
+		qmod[ptr]=false;
+		
+		q_ui->statusBar->showMessage("Question "+QString::number(index+1)+" of round "+QString::number(round)+" has been updated.");
 	}
 	button_update[ptr]->setDisabled(true);
 	button_cancel[ptr]->setDisabled(true);
@@ -446,6 +484,7 @@ void QEditor::cancel_update(int round)
 	list_focus(round);
 	button_update[round-1]->setDisabled(true);
 	button_cancel[round-1]->setDisabled(true);
+	
 	q_ui->statusBar->showMessage("");
 }
 
@@ -460,19 +499,27 @@ void QEditor::move_up(int round)
 		QModelIndex child=roundmodel[ptr]->index(curr.row()-1,0);
 		question_list[ptr]->setCurrentIndex(child);
 	}
+	if (file_prefix!="")
+	{
+		save();
+	}
 }
 
 void QEditor::move_down(int round)
 {
-      int ptr=round-1;
-      int index=question_list[ptr]->currentIndex().row();
-      if (index!=roundmodel[ptr]->rowCount()-1 && index!=-1)
-      {
+	int ptr=round-1;
+	int index=question_list[ptr]->currentIndex().row();
+	if (index!=roundmodel[ptr]->rowCount()-1 && index!=-1)
+	{
 		roundmodel[ptr]->swapOrder(index,index+1);
 		QModelIndex curr=question_list[ptr]->currentIndex();
 		QModelIndex child=roundmodel[ptr]->index(curr.row()+1,0);
 		question_list[ptr]->setCurrentIndex(child);
-      }
+	}
+	if (file_prefix!="")
+	{
+		save();
+	}
 }
 
 void QEditor::control_components(int round,bool enable)
@@ -515,40 +562,174 @@ void QEditor::disableDuplicates(int round)
 	}
 }
 
-void QEditor::load()
+void QEditor::newfile()
 {
-	if (file_prefix!="")
+	if (file_prefix!="" && (!fully_updated[0] || !fully_updated[1] || !fully_updated[2] || !fully_updated[3]))
 	{
 		//warning here
-	}
-	else
-	{
-		QFileDialog load_dlg;
-		load_dlg.setAcceptMode(QFileDialog::AcceptOpen);
-		load_dlg.setFileMode(QFileDialog::ExistingFiles);
-		load_dlg.setFilter(tr("Group XML files (*.xgrp)"));
-		load_dlg.exec();
-		
-		file_prefix=load_dlg.selectedFiles().join("");
-		file_prefix.replace(QString(".xgrp"),QString(""));
-		if (file_prefix=="")
+		QMessageBox conf;
+		conf.setWindowTitle("Notification - QEditor");
+		conf.setText("Details have been modified, but have not been saved.");
+		conf.setInformativeText("What do you want to do?");
+		conf.setIcon(QMessageBox::Question);
+		QPushButton *update=conf.addButton(tr("Save"),QMessageBox::ActionRole);
+		QPushButton *canpro=conf.addButton(tr("Discard changes"),QMessageBox::ActionRole);
+		QPushButton *goback=conf.addButton(tr("Cancel"),QMessageBox::ActionRole);
+		conf.setDefaultButton(update);
+		conf.exec();
+		if (conf.clickedButton()==update)
+			save();
+		else if (conf.clickedButton()==goback)
 			return;
-		for (int ctr=0;ctr<1;ctr++)
+	}
+	
+	for (int ctr=0;ctr<4;ctr++)
+	{
+		roundmodel[ctr]->clear();
+		fully_updated[ctr]=true;
+		qmod[ctr]=false;
+		duration[ctr]->setValue(0);
+		welcome[ctr]->setPlainText("");
+	}
+	file_prefix="";
+	this->setWindowTitle("untitled - QEditor");
+}
+
+void QEditor::import()
+{
+	QFileDialog load_dlg;
+	load_dlg.setAcceptMode(QFileDialog::AcceptOpen);
+	load_dlg.setFileMode(QFileDialog::ExistingFiles);
+	load_dlg.setFilter(tr("Group XML files (*.xgrp)"));
+	load_dlg.exec();
+	
+	int rec[4];
+	for (int ctr=0;ctr<4;ctr++)
+	{
+		rec[ctr]=roundmodel[ctr]->rowCount();
+	}
+	
+	file_prefix=load_dlg.selectedFiles().join("");
+	file_prefix.replace(QString(".xgrp"),QString(""));
+	
+	if (file_prefix=="")
+		return;
+	for (int ctr=0;ctr<4;ctr++)
+	{
+		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
+		QuestionData qd;
+		if(fq.open(QIODevice::ReadOnly))
 		{
-			QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
-			fq.open(QIODevice::ReadOnly);
 			QString xml_q=fq.readAll();
-			QuestionData qd;
-			xml_util.readQuestionData(ctr+1,xml_q,qd);
-			
-			QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
-			fa.open(QIODevice::ReadOnly);
-			QString xml_a=fa.readAll();
-			AnswerData ad;
-			xml_util.readAnswerData(ctr+1,xml_a,ad);
-			
-			roundmodel[ctr]->feedData(qd,ad);
+			try {
+				xml_util.readQuestionData(ctr+1,xml_q,qd);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor ^_^;");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_q.xml");
+				notice.exec();
+			}
 		}
+		
+		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
+		AnswerData ad;
+		if (!fa.open(QIODevice::ReadOnly))
+		{
+			QString xml_a=fa.readAll();
+			try {
+				xml_util.readAnswerData(ctr+1,xml_a,ad);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_a.xml");
+				notice.exec();
+			}
+		}
+		
+		welcome[ctr]->setPlainText(qd.welcome_msg);
+		roundmodel[ctr]->feedData(qd,ad);
+		if (roundmodel[ctr]->rowCount()!=rec[ctr]) 
+			fully_updated[ctr]=false;
+	}
+}
+
+void QEditor::load()
+{
+	if (file_prefix!="" && (!fully_updated[0] || !fully_updated[1] || !fully_updated[2] || !fully_updated[3]))
+	{
+		//warning here
+		QMessageBox conf;
+		conf.setWindowTitle("Notification - QEditor");
+		conf.setText("Details have been modified, but have not been saved.");
+		conf.setInformativeText("What do you want to do?");
+		conf.setIcon(QMessageBox::Question);
+		QPushButton *update=conf.addButton(tr("Save"),QMessageBox::ActionRole);
+		QPushButton *canpro=conf.addButton(tr("Discard changes"),QMessageBox::ActionRole);
+		QPushButton *goback=conf.addButton(tr("Cancel"),QMessageBox::ActionRole);
+		conf.setDefaultButton(update);
+		conf.exec();
+		if (conf.clickedButton()==update)
+			save();
+		else if (conf.clickedButton()==goback)
+			return;
+	}
+	
+	for (int ctr=0;ctr<4;ctr++)
+	{
+		roundmodel[ctr]->clear();
+	}
+	
+	QFileDialog load_dlg;
+	load_dlg.setAcceptMode(QFileDialog::AcceptOpen);
+	load_dlg.setFileMode(QFileDialog::ExistingFiles);
+	load_dlg.setFilter(tr("Group XML files (*.xgrp)"));
+	load_dlg.exec();
+	
+	file_prefix=load_dlg.selectedFiles().join("");
+	file_prefix.replace(QString(".xgrp"),QString(""));
+	if (file_prefix=="")
+		return;
+	for (int ctr=0;ctr<4;ctr++)
+	{
+		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
+		QuestionData qd;
+		if(fq.open(QIODevice::ReadOnly))
+		{
+			QString xml_q=fq.readAll();
+			try {
+				xml_util.readQuestionData(ctr+1,xml_q,qd);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor ^_^;");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_q.xml");
+				notice.exec();
+			}
+		}
+		
+		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
+		AnswerData ad;
+		if (!fa.open(QIODevice::ReadOnly))
+		{
+			QString xml_a=fa.readAll();
+			try {
+				xml_util.readAnswerData(ctr+1,xml_a,ad);
+			} catch (exception e) {
+				QMessageBox notice;
+				notice.setWindowTitle("Notice - QEditor");
+				notice.setText("^_^; i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+"_a.xml");
+				notice.exec();
+			}
+		}
+		
+		welcome[ctr]->setPlainText(qd.welcome_msg);
+		roundmodel[ctr]->feedData(qd,ad);
+		this->setWindowTitle(file_prefix+".xgrp - QEditor");
+		
+		fully_updated[ctr]=true;
 	}
 }
 
@@ -584,6 +765,30 @@ void QEditor::save()
 		
 		for (int roundctr=0;roundctr<4;roundctr++)
 		{
+			if (!fully_updated[roundctr])
+			{
+				QMessageBox conf;
+				conf.setWindowTitle("Notification - QEditor");
+				conf.setText("Details of round "+QString::number(roundctr+1)+" has been modified, but have not been updated");
+				conf.setInformativeText("What do you want to do?");
+				conf.setIcon(QMessageBox::Question);
+				QPushButton *update=conf.addButton(tr("Update then save"),QMessageBox::ActionRole);
+				QPushButton *canpro=conf.addButton(tr("Cancel then save"),QMessageBox::ActionRole);
+				QPushButton *goback=conf.addButton(tr("Don't Save"),QMessageBox::ActionRole);
+				conf.setDefaultButton(update);
+				conf.exec();
+				    
+				if (conf.clickedButton()==update)
+					update_question(roundctr+1);
+				else if (conf.clickedButton()==canpro)
+					cancel_update(roundctr+1);
+				else {
+					QMessageBox notice;
+					notice.setWindowTitle("Notice - QEditor");
+					notice.setText("Changes of round "+QString::number(roundctr+1)+" won't be changed.");
+					return;
+				}
+			}
 			QuestionData rounddata;
 			AnswerData ansdata;
 			QString xml_q;
@@ -638,6 +843,7 @@ void QEditor::save()
 				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_a
 				out << xml_a;
 			}
+			fully_updated[roundctr]=true;
 		}
 		q_ui->statusBar->showMessage("File saved at "+file_prefix);
 	}
@@ -660,10 +866,12 @@ void QEditor::exit()
 }
 
 void QEditor::closeEvent(QCloseEvent *event)
-{	
-	if (file_prefix=="")
+{
+	if (roundmodel[0]->rowCount()==0 && roundmodel[1]->rowCount()==0 &&
+	    roundmodel[2]->rowCount()==0 && roundmodel[3]->rowCount()==0)
+		event->accept();
+	else if (file_prefix=="")
 	{
-		cout << "A"<< endl;
 		QMessageBox conf;
 		conf.setWindowTitle("Notification - QEditor");
 		conf.setText("Questions have not been saved yet");
@@ -683,20 +891,15 @@ void QEditor::closeEvent(QCloseEvent *event)
 				event->accept();
 		}
 		else if (conf.clickedButton() == comdiscard)
-		{
 			event->accept();
-		}
 		else
-		{
 			event->ignore();
-		}
 	}
-	else if (file_prefix!="" && changed)
+	else if (file_prefix!="" && (!fully_updated[0] || !fully_updated[1] || !fully_updated[2] || !fully_updated[3]))
 	{
-		cout << "B" << endl;
 		QMessageBox conf;
 		conf.setWindowTitle("Notification - QEditor");
-		conf.setText("Details of question has been modified, but have not been saved");
+		conf.setText("Details of file has been modified, but have not been saved");
 		conf.setInformativeText("What do you want to do?");
 		conf.setIcon(QMessageBox::Question);
 		QPushButton *comsave=conf.addButton(tr("Save"),QMessageBox::ActionRole);
@@ -717,11 +920,10 @@ void QEditor::closeEvent(QCloseEvent *event)
 		{
 			event->ignore();
 		}
-		
+		this->setWindowTitle(file_prefix+".xgrp - QEditor");
 	}
 	else
 	{
-		cout << "c"<< endl;
 		event->accept();
 	}
 }

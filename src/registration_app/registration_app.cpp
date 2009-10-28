@@ -41,7 +41,7 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 	connect(m_team_table_wnd->team_delete_btn, SIGNAL(clicked()), this, SLOT(deleteTeam()));
 
 	//user table
-	connect(m_user_table_wnd->edit_school_btn, SIGNAL(clicked()), this, SLOT(editTeamSchool()));
+	connect(m_user_table_wnd->edit_teamname_btn, SIGNAL(clicked()), this, SLOT(editTeamSchool()));
 	connect(m_user_table_wnd->add_user_btn, SIGNAL(clicked()), this, SLOT(addUser()));
 	connect(m_user_table_wnd->edit_user_btn, SIGNAL(clicked()), this, SLOT(editUser()));
 	connect(m_user_table_wnd->delete_user_btn, SIGNAL(clicked()), this, SLOT(deleteUser()));
