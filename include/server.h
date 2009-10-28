@@ -33,6 +33,8 @@ public:
         ServerDlg ( QWidget* parent = 0 );
         ~ServerDlg();
 private slots:
+        void onQuestionBtn();
+        void onTimeBtn();
         void onStartBtn();
         void onStopBtn();
         void onPauseBtn();

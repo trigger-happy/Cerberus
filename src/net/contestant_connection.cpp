@@ -268,7 +268,7 @@ void ContestantConnection::setStatus ( CONTEST_STATUS s )
         m_con_status = s;
 }
 
-void ContestantConnection::setQuestion ( int qnum )
+void ContestantConnection::setQuestion ( ushort qnum )
 {
         //construct the packet and send it
         QByteArray block;

@@ -61,7 +61,7 @@ public:
 		Set the question for round 3/4 (for contest pacing).
 		\param qnum The question number.
 		*/
-		void setQuestion(int qnum);
+		void setQuestion(ushort qnum);
 
         /*!
         Set the pointer to the question data. This is to be used by ServerNet.

@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>344</height>
+    <width>409</width>
+    <height>391</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Test Server</string>
   </property>
   <widget class="QPushButton" name="quit_btn">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>310</y>
+     <x>150</x>
+     <y>360</y>
      <width>105</width>
      <height>27</height>
     </rect>
@@ -29,13 +29,13 @@
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>391</width>
-     <height>301</height>
+     <x>1</x>
+     <y>2</y>
+     <width>405</width>
+     <height>353</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
@@ -66,21 +66,67 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Round:</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Round:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Contest time:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Current Question:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QLineEdit" name="round_line"/>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="round_line"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="time_line"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="question_line"/>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="change_btn">
-        <property name="text">
-         <string>&amp;Change Round</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QPushButton" name="change_btn">
+          <property name="text">
+           <string>&amp;Change Round</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="time_btn">
+          <property name="text">
+           <string>Set &amp;Time</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="question_btn">
+          <property name="text">
+           <string>Set &amp;Question</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>

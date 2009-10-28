@@ -39,6 +39,8 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
         connect ( m_dlg->change_btn, SIGNAL ( clicked() ), this, SLOT ( onRoundChangeBtn() ) );
         connect ( m_dlg->pause_btn, SIGNAL ( clicked() ), this, SLOT ( onPauseBtn() ) );
         connect ( m_dlg->start_btn, SIGNAL ( clicked() ), this, SLOT ( onStartBtn() ) );
+        connect ( m_dlg->time_btn, SIGNAL ( clicked() ), this, SLOT ( onTimeBtn() ) );
+        connect ( m_dlg->question_btn, SIGNAL ( clicked() ), this, SLOT ( onQuestionBtn() ) );
 
         connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ),
                   this, SLOT ( newContestant ( ContestantConnection* ) ) );
@@ -113,6 +115,20 @@ void ServerDlg::writeLog ( const QString& s )
         QString buffer = m_dlg->log_tedt->toPlainText();
         buffer += s+"\n";
         m_dlg->log_tedt->setText ( buffer );
+}
+
+void ServerDlg::onQuestionBtn()
+{
+        ushort q = m_dlg->question_line->text().toUShort();
+        writeLog ( QString ( "Question number set to: %1" ).arg ( q ) );
+        m_server->setQuestion ( q );
+}
+
+void ServerDlg::onTimeBtn()
+{
+        ushort time = m_dlg->time_line->text().toUShort();
+        writeLog ( QString ( "Contest time changed to: %1" ).arg ( time ) );
+        m_server->setContestTime ( time );
 }
 
 int main ( int argc, char* argv[] )

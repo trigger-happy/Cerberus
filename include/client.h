@@ -44,6 +44,8 @@ private slots:
         void onQData ( const QString& xml );
         void onAData ( bool result );
         void onContestStateChange ( int round, CONTEST_STATUS s );
+		void onQuestionChange(ushort q);
+		void onContestTimeChange(ushort time);
 private:
         ContestantNetwork* m_net;
         Ui::client_dlg* m_dlg;

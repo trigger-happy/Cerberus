@@ -175,7 +175,7 @@ signals:
 		contest time.
 		\param time unsigned int containing the contest time.
 		*/
-		void onContestTime(unsigned int time);
+		void onContestTime(ushort time);
 		
 		/*!
 		Emitted when the question for round 3/4 is changed. The contest
@@ -183,7 +183,7 @@ signals:
 		when it's time to move to the next question.
         \param qnum The question number.
 		*/
-		void onQuestionChange(int qnum);
+		void onQuestionChange(ushort qnum);
 protected:
         QTcpSocket* m_socket;
         p_header* m_hdr;

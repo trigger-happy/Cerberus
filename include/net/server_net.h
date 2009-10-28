@@ -132,7 +132,7 @@ public:
 		Set the next question for the 3rd/4th round.
 		\param qnum The question number.
 		*/
-		void setQuestion(int qnum);
+		void setQuestion(ushort qnum);
 public slots:
 
         /*!
