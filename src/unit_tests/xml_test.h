@@ -23,28 +23,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class XmlTest : public QObject
 {
-    Q_OBJECT;
+	Q_OBJECT;
 private slots:
-    // question test
-    void q1ReadTest();
-    void q1WriteTest();
-    void q2ReadTest();
-    void q2WriteTest();
-    void q3ReadTest();
-    void q3WriteTest();
-    // answer test
-    void a1ReadTest();
-    void a1WriteTest();
-    void a2ReadTest();
-    void a2WriteTest();
-    void a3ReadTest();
-    void a3WriteTest();
-    // configuration test
-    void netConfReadTest();
-    void netConfWriteTest();
-    void serverConfReadTest();
+	// question test
+	void q1ReadTest();
+	void q1WriteTest();
+	void q2ReadTest();
+	// configuration test
+	void netConfReadTest();
+	void netConfWriteTest();
+	void serverConfReadTest();
 private:
-    XmlUtil m_util;
+	XmlUtil m_util;
 };
 
 #endif //XML_TEST_H

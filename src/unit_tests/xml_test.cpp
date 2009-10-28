@@ -25,182 +25,112 @@ using namespace std;
 
 void XmlTest::q1ReadTest()
 {
-    XmlUtil& xu = XmlUtil::getInstance();
-    QFile file("resources/stage1_q.xml");
-    QVERIFY(file.open(QIODevice::ReadOnly));
-    QString xml = file.readAll();
-    QuestionData qd, td;
-    td.contest_time = 3600;
-    td.welcome_msg = "Insert welcome message here.";
-    Question q;
+	XmlUtil& xu = XmlUtil::getInstance();
+	QFile file("resources/stage1.xml");
+	QVERIFY(file.open(QIODevice::ReadOnly));
+	QString xml = file.readAll();
+	StageData qd, td;
+	td.contest_time = 3600;
+	td.welcome_msg = "Insert welcome message here.";
+	Question q;
 
-    q.number = 1;
-    q.score = 1;
-    q.question = "The answer to this question is choice 1.";
-	q.choices.push_back("Choice 1");
-	q.choices.push_back("Choice 2");
-	q.choices.push_back("Choice 3");
-	q.choices.push_back("Choice 4");
-    td.questions.push_back(q);
+	q.score = 1;
+	q.question = "The answer to this question is choice 1.";
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 1", true));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 2"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 3"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 4"));
+	td.questions.push_back(q);
 
-    q.number = 2;
-    q.score = 1;
-    q.question = "Who is Mr. Shires?";
-    q.choices.clear();
-	q.choices.push_back("Sir Diy");
-	q.choices.push_back("Doc Mana");
-	q.choices.push_back("Fr. David");
-	q.choices.push_back("Michael Jackson");
-    td.questions.push_back(q);
+	q.score = 1;
+	q.question = "Who is Mr. Shires?";
+	q.answer_key.clear();
+	q.answer_key.push_back(Question::AnswerKeyEntry("Sir Diy"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Doc Mana"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Fr. David"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Michael Jackson", true));
+	td.questions.push_back(q);
 
-    q.number = 3;
-    q.score = 2;
-    q.question = "This is a 2 point question, correct answer is choice 3.";
-    q.choices.clear();
-	q.choices.push_back("Choice 1");
-	q.choices.push_back("Choice 2");
-	q.choices.push_back("Choice 3");
-	q.choices.push_back("Choice 4");
-    td.questions.push_back(q);
-    xu.readQuestionData(1, xml, qd);
-    QVERIFY(td == qd);
+	q.score = 2;
+	q.question = "This is a 2 point question, correct answer is choice 3.";
+	q.answer_key.clear();
+	q.answer_key.push_back(Question::AnswerKeyEntry("3", true));
+	td.questions.push_back(q);
+	xu.readStageData(xml, qd);
+	QVERIFY(td == qd);
 }
 
 void XmlTest::q1WriteTest()
 {
-    XmlUtil& xu = XmlUtil::getInstance();
-    QFile file("resources/stage1_q.xml");
-    QVERIFY(file.open(QIODevice::ReadOnly));
-    QString xml = file.readAll();
-    QuestionData qd;
-    xu.readQuestionData(1, xml, qd);
-    QString test_xml;
-    xml.clear();
-    xu.writeQuestionData(1, qd, test_xml);
-    QuestionData td;
-    xu.readQuestionData(1, test_xml, td);
-    QVERIFY(qd == td);
+	XmlUtil& xu = XmlUtil::getInstance();
+	QFile file("resources/stage1.xml");
+	QVERIFY(file.open(QIODevice::ReadOnly));
+	QString xml = file.readAll();
+	StageData qd;
+	xu.readStageData(xml, qd);
+	QString test_xml;
+	xml.clear();
+	xu.writeStageData(qd, test_xml);
+	StageData td;
+	xu.readStageData(test_xml, td);
+	QVERIFY(qd == td);
 }
 
 void XmlTest::q2ReadTest()
 {
-    XmlUtil& xu = XmlUtil::getInstance();
-    QFile file("resources/stage2_q.xml");
-    QVERIFY(file.open(QIODevice::ReadOnly));
-    QString xml = file.readAll();
-    QuestionData qd, td;
-    td.contest_time = 3600;
-    td.welcome_msg = "Insert welcome message here.";
-    Question q;
+	XmlUtil& xu = XmlUtil::getInstance();
+	QFile file("resources/stage2.xml");
+	QVERIFY(file.open(QIODevice::ReadOnly));
+	QString xml = file.readAll();
+	StageData qd, td;
+	td.contest_time = 3600;
+	td.welcome_msg = "Insert welcome message here.";
+	Question q;
 
-    q.number = 1;
-    q.score = 1;
-    q.question = "The answer to this question is choice 1.";
-	q.choices.push_back("Choice 1");
-	q.choices.push_back("Choice 2");
-	q.choices.push_back("Choice 3");
-	q.choices.push_back("Choice 4");
-    td.questions.push_back(q);
+	q.score = 1;
+	q.question = "The answer to this question is choice 1.";
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 1", true));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 2"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 3"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 4"));
+	td.questions.push_back(q);
 
-    q.number = 2;
-    q.score = 1;
-    q.question = "Who is Mr. Shires?";
-    q.choices.clear();
-	q.choices.push_back("Sir Diy");
-	q.choices.push_back("Doc Mana");
-	q.choices.push_back("Fr. David");
-	q.choices.push_back("Michael Jackson");
-    td.questions.push_back(q);
+	q.score = 1;
+	q.question = "Who is Mr. Shires?";
+	q.answer_key.clear();
+	q.answer_key.push_back(Question::AnswerKeyEntry("Sir Diy"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Doc Mana"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Fr. David"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Michael Jackson", true));
+	td.questions.push_back(q);
 
-    q.number = 3;
-    q.score = 2;
-    q.question = "This is a 2 point question, correct answers are choice 3 and 4.";
-    q.choices.clear();
-	q.choices.push_back("Choice 1");
-	q.choices.push_back("Choice 2");
-	q.choices.push_back("Choice 3");
-	q.choices.push_back("Choice 4");
-    td.questions.push_back(q);
-    xu.readQuestionData(2, xml, qd);
-    QVERIFY(qd == td);
-}
-
-void XmlTest::q2WriteTest() {
-}
-
-void XmlTest::q3ReadTest() {
-}
-
-void XmlTest::q3WriteTest() {
-}
-
-void XmlTest::a1ReadTest()
-{
-    XmlUtil& xu = XmlUtil::getInstance();
-    AnswerData ad, td;
-    QFile file("resources/stage1_a.xml");
-    QVERIFY(file.open(QIODevice::ReadOnly));
-    QString xml = file.readAll();
-    td.insert(pair<int, QString>(1, "1"));
-    td.insert(pair<int, QString>(2, "4"));
-    td.insert(pair<int, QString>(3, "3"));
-    xu.readAnswerData(1, xml, ad);
-    QVERIFY(ad == td);
-}
-
-void XmlTest::a1WriteTest()
-{
-    XmlUtil& xu = XmlUtil::getInstance();
-    AnswerData ad, td;
-    QFile file("resources/stage1_a.xml");
-    QVERIFY(file.open(QIODevice::ReadOnly));
-    QString xml = file.readAll();
-    xu.readAnswerData(1, xml, ad);
-    QString test_xml;
-    xu.writeAnswerData(1, ad, test_xml);
-    xu.readAnswerData(1, test_xml, td);
-    QVERIFY(ad == td);
-}
-
-void XmlTest::a2ReadTest()
-{
-    XmlUtil& xu = XmlUtil::getInstance();
-    AnswerData ad, td;
-    QFile file("resources/stage2_a.xml");
-    QVERIFY(file.open(QIODevice::ReadOnly));
-    QString xml = file.readAll();
-    td.insert(pair<int, QString>(1, "1"));
-    td.insert(pair<int, QString>(2, "4"));
-    td.insert(pair<int, QString>(3, "3"));
-    td.insert(pair<int, QString>(3, "4"));
-    xu.readAnswerData(2, xml, ad);
-    QVERIFY(ad == td);
-}
-
-void XmlTest::a2WriteTest() {
-}
-
-void XmlTest::a3ReadTest() {
-}
-
-void XmlTest::a3WriteTest() {
+	q.score = 2;
+	q.question = "This is a 2 point question, correct answers are choice 3 and 4.";
+	q.answer_key.clear();
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 1"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 2"));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 3", true));
+	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 4", true));
+	td.questions.push_back(q);
+	xu.readStageData(xml, qd);
+	QVERIFY(qd == td);
 }
 
 void XmlTest::netConfReadTest()
 {
-    XmlUtil& xu = XmlUtil::getInstance();
-    NetworkConfig tc, nc;
-    tc.ip = "127.0.0.1";
-    tc.port = 2652;
-    QFile file("resources/net_config.xml");
-    QVERIFY(file.open(QIODevice::ReadOnly));
-    QString xml = file.readAll();
-    try {
-        xu.readNetConfig(xml, nc);
-    } catch (XmlUtil::XmlException e) {
-        cout << e.what() << endl;
-    }
-    QVERIFY(nc == tc);
+	XmlUtil& xu = XmlUtil::getInstance();
+	NetworkConfig tc, nc;
+	tc.ip = "127.0.0.1";
+	tc.port = 2652;
+	QFile file("resources/net_config.xml");
+	QVERIFY(file.open(QIODevice::ReadOnly));
+	QString xml = file.readAll();
+	try {
+		xu.readNetConfig(xml, nc);
+	} catch (XmlUtil::XmlException e) {
+		cout << e.what() << endl;
+	}
+	QVERIFY(nc == tc);
 }
 
 void XmlTest::netConfWriteTest()

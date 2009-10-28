@@ -18,7 +18,7 @@
 		<choice answer="true">Michael Jackson</choice>
 	</choose>
 	<identification  score="2">
-		<q>This is a 2 point question, what is 1 + 1?</q>
-		<a>2</a>
+		<q>This is a 2 point question, correct answer is choice 3.</q>
+		<a>3</a>
 	</identification>
 </stage>
