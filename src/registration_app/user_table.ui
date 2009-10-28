@@ -63,7 +63,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="edit_school_btn">
+  <widget class="QPushButton" name="edit_teamname_btn">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -73,7 +73,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Edit School Name</string>
+    <string>Edit Team Name</string>
    </property>
   </widget>
   <widget class="QWidget" name="formLayoutWidget_2">
