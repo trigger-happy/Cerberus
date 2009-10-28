@@ -50,6 +50,16 @@ int SqlUtil::addTeam ( const QString& team_name, const QString& school )
                              "VALUES ('" + team_name + "', '" + school + "')" );
 }
 
+int SqlUtil::addUser(const QString& user_name, const QString& team_name)
+{
+	//insert into user(username,team_name,firstname,lastname,password) values ('123','team','','','')
+	QString sql = QString ( "INSERT INTO user(username, team_name, firstname, lastname, password) "
+				"VALUES ('%1','%2','','','')" )
+		      .arg ( QString (user_name) )
+		      .arg ( QString (team_name) );
+	return query->exec( sql ); 
+}
+
 int SqlUtil::addUser ( const UserData& ud )
 {
         QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
@@ -62,6 +72,31 @@ int SqlUtil::addUser ( const UserData& ud )
                       .arg ( QString ( ud.lastname ) )
                       .arg ( QString ( pwd ) );
         return query->exec ( sql );
+}
+
+int SqlUtil::editUser ( const QString& user_name, const UserData& ud )
+{
+	//update user set firstname = 'A', lastname = 'B' , password = 'C' where username = 'username';
+	QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
+	QString sql = QString ( "UPDATE user SET firstname = '%1', lastname = '%2', password '%3' WHERE username = '%4'" )
+		      .arg ( QString ( ud.firstname ) )
+		      .arg ( QString ( ud.lastname ) )
+		      .arg ( QString ( pwd ) )
+		      .arg ( QString ( user_name ) );
+	return query->exec ( sql );
+}
+
+int SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_name_new )
+{
+	//UPDATE team SET team_name= 'new' WHERE team_name = 'old'
+	QString sql = QString ("UPDATE team SET team_name = '%1' WHERE team_name = '%2';")
+		      .arg ( QString ( team_name_new ) )
+		      .arg ( QString ( team_name_old ) );
+	//UPDATE user SET team_name= 'new' WHERE team_name = 'team'
+	sql += QString ("UPDATE user SET team_name = '%1' WHERE team_name = '%2'")
+		      .arg ( QString ( team_name_new ) )
+		      .arg ( QString ( team_name_old ) );
+	return query->exec ( sql );
 }
 
 double SqlUtil::getScore ( const QString& user_name )

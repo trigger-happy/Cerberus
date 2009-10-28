@@ -48,7 +48,7 @@ public:
         int addTeam ( const QString& team_name, const QString& school );
 
         /*!
-		  TODO:
+		  TODO: Done
 		Add a user to the database, setting all other values to null.
 		\param user_name the username of the user
 		\param team_name the team to which the user belongs
@@ -59,7 +59,7 @@ public:
 		int addUser ( const UserData& ud ); // i have no need for this one, remove or keep?
 
 		/*!
-		  TODO:
+		  TODO: Done
 		Edits user data in the database.
 		\user_name The current name of the user whose data you want to change.
 		\param ud A const reference to a filled up UserData struct with new data.
@@ -68,7 +68,7 @@ public:
 		int editUser ( const QString& user_name, const UserData& ud );
 
 		/*!
-		  TODO:
+		  TODO: Questionably Done! ^_^;
 		Changes the name of a team in the database. It will:
 			1. change the foreign key team_name of any Users with that team name
 			2. update the Team table itself to change the team_name primary key
@@ -84,7 +84,7 @@ public:
 		\param user_name The current name of the user whose data you want to change.
 		\return 0 on success, a QSqlQuery error otherwise.
 		*/
-		int deleteUser ( const QString& user_name);
+// 		int deleteUser ( const QString& user_name);
 
 		/*!
 		  TODO:
