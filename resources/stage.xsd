@@ -14,7 +14,7 @@
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="q" type="xs:string"/>
-								<xs:element name="a" type="xs:string"/>
+								<xs:element name="a" type="xs:string" maxOccurs="unbounded"/>
 							</xs:sequence>
 							<xs:attributeGroup ref="question_attributes"/>
 						</xs:complexType>
