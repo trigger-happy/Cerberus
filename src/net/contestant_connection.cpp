@@ -267,3 +267,18 @@ void ContestantConnection::setStatus ( CONTEST_STATUS s )
 {
         m_con_status = s;
 }
+
+void ContestantConnection::setQuestion ( int qnum )
+{
+        //construct the packet and send it
+        QByteArray block;
+        QDataStream out ( &block, QIODevice::WriteOnly );
+        out.setVersion ( QDataStream::Qt_4_5 );
+        // construct the header
+        p_header hdr;
+        hdr.command = INF_QUESTION_CHANGE;
+        hdr.length = sizeof ( ushort );
+        out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+        out << ( ushort ) qnum;
+        m_socket->write ( block );
+}

@@ -176,6 +176,14 @@ signals:
 		\param time unsigned int containing the contest time.
 		*/
 		void onContestTime(unsigned int time);
+		
+		/*!
+		Emitted when the question for round 3/4 is changed. The contest
+		pacing for this round is controlled and this basically determines
+		when it's time to move to the next question.
+        \param qnum The question number.
+		*/
+		void onQuestionChange(int qnum);
 protected:
         QTcpSocket* m_socket;
         p_header* m_hdr;

@@ -127,6 +127,12 @@ public:
         \param qdata A pointer to a vector of QStrings.
         */
         void setQData ( const vector<QString>* qdata );
+		
+		/*!
+		Set the next question for the 3rd/4th round.
+		\param qnum The question number.
+		*/
+		void setQuestion(int qnum);
 public slots:
 
         /*!

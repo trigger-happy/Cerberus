@@ -165,3 +165,13 @@ void ServerNetwork::setContestTime ( ushort time )
                 ( *i )->setContestTime ( time );
         }
 }
+
+void ServerNetwork::setQuestion ( int qnum )
+{
+        if ( m_round >= 3 ) {
+                contestant_list::iterator i = m_contestants.begin();
+                for ( ; i != m_contestants.end(); i++ ) {
+                        ( *i )->setQuestion ( qnum );
+                }
+        }
+}

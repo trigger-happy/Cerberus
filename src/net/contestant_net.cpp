@@ -256,10 +256,20 @@ void ContestantNetwork::ready()
                 emit onContestError ( ( ERROR_MESSAGES ) err );
         }
         break;
-        case INF_CONTEST_TIME: {
+        case INF_CONTEST_TIME:
+                // the contest time has changed
+        {
                 ushort time;
                 in >> time;
                 emit onContestTime ( time );
+        }
+        break;
+        case INF_QUESTION_CHANGE:
+                // time for the next question in round 3/4
+        {
+                ushort qnum;
+                in >> qnum;
+                emit onQuestionChange ( qnum );
         }
         break;
         default:
@@ -268,10 +278,10 @@ void ContestantNetwork::ready()
                 assert ( false );
         }
         delete m_hdr;
-		m_hdr = NULL;
-		if(m_socket->bytesAvailable() > 0){
-			ready();
-		}
+        m_hdr = NULL;
+        if ( m_socket->bytesAvailable() > 0 ) {
+                ready();
+        }
 }
 
 bool ContestantNetwork::getContestTime()

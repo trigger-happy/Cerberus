@@ -42,7 +42,7 @@ contestant-server network:
 		server: INF_CONTEST_TIME <ushort time> //in seconds
 	
     round 3/4 question change // it's for pacing
-		server: INF_QUESTION_CHANGE <question number>
+		server: INF_QUESTION_CHANGE < ushort question number>
 
 presenter-server network:
     contest state request:

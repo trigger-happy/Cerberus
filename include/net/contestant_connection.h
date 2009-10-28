@@ -56,6 +56,12 @@ public:
         \param time The time of the contest in seconds.
 		*/
 		void setContestTime(ushort time);
+		
+		/*!
+		Set the question for round 3/4 (for contest pacing).
+		\param qnum The question number.
+		*/
+		void setQuestion(int qnum);
 
         /*!
         Set the pointer to the question data. This is to be used by ServerNet.
