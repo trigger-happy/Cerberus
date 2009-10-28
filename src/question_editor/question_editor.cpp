@@ -32,8 +32,6 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
 	
-	//q_ui->textarea_welcome->setPlainText(xml);
-	
 	//declaration of pointers to components frequently accessed
 	
 	roundmodel[0]=new QuestionModel(1);
@@ -377,6 +375,7 @@ void QEditor::list_focus(int round)
 void QEditor::add_question(int round)
 {
 	roundmodel[round-1]->addNewQuestion();
+	fully_updated[round-1]=false;
 }
 
 void QEditor::remove_question(int round)
@@ -390,13 +389,14 @@ void QEditor::remove_question(int round)
 		button_update[round-1]->setDisabled(true);
 		button_cancel[round-1]->setDisabled(true);
 	}
+	fully_updated[round-1]=false;
 }
 
 void QEditor::changed_details(int round)
 {
 	button_update[round-1]->setEnabled(true);
 	button_cancel[round-1]->setEnabled(true);
-	//fully_updated[round]
+	fully_updated[round-1]=false;
 }
 
 void QEditor::update_question(int round)
@@ -435,7 +435,8 @@ void QEditor::update_question(int round)
 			time="0";
 		}
 		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
-		//q_ui->statusBar->setStatusTip("Question "+QString::number(index+1)+" of round "+QString::number(round)+" has been updated.");
+		fully_updated[ptr]=true;
+		q_ui->statusBar->showMessage("Question "+QString::number(index+1)+" of round "+QString::number(round)+" has been updated.");
 	}
 	button_update[ptr]->setDisabled(true);
 	button_cancel[ptr]->setDisabled(true);
@@ -460,19 +461,27 @@ void QEditor::move_up(int round)
 		QModelIndex child=roundmodel[ptr]->index(curr.row()-1,0);
 		question_list[ptr]->setCurrentIndex(child);
 	}
+	if (file_prefix!="")
+	{
+		save();
+	}
 }
 
 void QEditor::move_down(int round)
 {
-      int ptr=round-1;
-      int index=question_list[ptr]->currentIndex().row();
-      if (index!=roundmodel[ptr]->rowCount()-1 && index!=-1)
-      {
+	int ptr=round-1;
+	int index=question_list[ptr]->currentIndex().row();
+	if (index!=roundmodel[ptr]->rowCount()-1 && index!=-1)
+	{
 		roundmodel[ptr]->swapOrder(index,index+1);
 		QModelIndex curr=question_list[ptr]->currentIndex();
 		QModelIndex child=roundmodel[ptr]->index(curr.row()+1,0);
 		question_list[ptr]->setCurrentIndex(child);
-      }
+	}
+	if (file_prefix!="")
+	{
+		save();
+	}
 }
 
 void QEditor::control_components(int round,bool enable)
@@ -520,35 +529,52 @@ void QEditor::load()
 	if (file_prefix!="")
 	{
 		//warning here
-	}
-	else
-	{
-		QFileDialog load_dlg;
-		load_dlg.setAcceptMode(QFileDialog::AcceptOpen);
-		load_dlg.setFileMode(QFileDialog::ExistingFiles);
-		load_dlg.setFilter(tr("Group XML files (*.xgrp)"));
-		load_dlg.exec();
-		
-		file_prefix=load_dlg.selectedFiles().join("");
-		file_prefix.replace(QString(".xgrp"),QString(""));
-		if (file_prefix=="")
+		QMessageBox conf;
+		conf.setWindowTitle("Notification - QEditor");
+		conf.setText("Details have been modified, but have not been saved.");
+		conf.setInformativeText("What do you want to do?");
+		conf.setIcon(QMessageBox::Question);
+		QPushButton *update=conf.addButton(tr("Save"),QMessageBox::ActionRole);
+		QPushButton *canpro=conf.addButton(tr("Discard changes"),QMessageBox::ActionRole);
+		QPushButton *goback=conf.addButton(tr("Cancel"),QMessageBox::ActionRole);
+		conf.setDefaultButton(update);
+		conf.exec();
+		if (conf.clickedButton()==update)
+			save();
+		else if (conf.clickedButton()==goback)
 			return;
-		for (int ctr=0;ctr<1;ctr++)
-		{
-			QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
-			fq.open(QIODevice::ReadOnly);
-			QString xml_q=fq.readAll();
-			QuestionData qd;
-			xml_util.readQuestionData(ctr+1,xml_q,qd);
-			
-			QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
-			fa.open(QIODevice::ReadOnly);
-			QString xml_a=fa.readAll();
-			AnswerData ad;
-			xml_util.readAnswerData(ctr+1,xml_a,ad);
-			
-			roundmodel[ctr]->feedData(qd,ad);
-		}
+	}
+	
+	for (int ctr=0;ctr<4;ctr++)
+	{
+		roundmodel[ctr]->clear();
+	}
+	
+	QFileDialog load_dlg;
+	load_dlg.setAcceptMode(QFileDialog::AcceptOpen);
+	load_dlg.setFileMode(QFileDialog::ExistingFiles);
+	load_dlg.setFilter(tr("Group XML files (*.xgrp)"));
+	load_dlg.exec();
+	
+	file_prefix=load_dlg.selectedFiles().join("");
+	file_prefix.replace(QString(".xgrp"),QString(""));
+	if (file_prefix=="")
+		return;
+	for (int ctr=0;ctr<1;ctr++)
+	{
+		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
+		fq.open(QIODevice::ReadOnly);
+		QString xml_q=fq.readAll();
+		QuestionData qd;
+		xml_util.readQuestionData(ctr+1,xml_q,qd);
+		
+		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
+		fa.open(QIODevice::ReadOnly);
+		QString xml_a=fa.readAll();
+		AnswerData ad;
+		xml_util.readAnswerData(ctr+1,xml_a,ad);
+		
+		roundmodel[ctr]->feedData(qd,ad);
 	}
 }
 
@@ -584,6 +610,30 @@ void QEditor::save()
 		
 		for (int roundctr=0;roundctr<4;roundctr++)
 		{
+			if (!fully_updated[roundctr])
+			{
+				QMessageBox conf;
+				conf.setWindowTitle("Notification - QEditor");
+				conf.setText("Details of round "+QString::number(roundctr+1)+"has been modified, but have not been updated");
+				conf.setInformativeText("What do you want to do?");
+				conf.setIcon(QMessageBox::Question);
+				QPushButton *update=conf.addButton(tr("Update then save"),QMessageBox::ActionRole);
+				QPushButton *canpro=conf.addButton(tr("Cancel then save"),QMessageBox::ActionRole);
+				QPushButton *goback=conf.addButton(tr("Don't Save"),QMessageBox::ActionRole);
+				conf.setDefaultButton(update);
+				conf.exec();
+				    
+				if (conf.clickedButton()==update)
+					update_question(roundctr+1);
+				else if (conf.clickedButton()==canpro)
+					cancel_update(roundctr+1);
+				else {
+					QMessageBox notice;
+					notice.setWindowTitle("Notice - QEditor");
+					notice.setText("Changes of round "+QString::number(roundctr+1)+" won't be changed.");
+					return;
+				}
+			}
 			QuestionData rounddata;
 			AnswerData ansdata;
 			QString xml_q;
@@ -660,10 +710,12 @@ void QEditor::exit()
 }
 
 void QEditor::closeEvent(QCloseEvent *event)
-{	
-	if (file_prefix=="")
+{
+	if (roundmodel[0]->rowCount()==0 && roundmodel[1]->rowCount()==0 &&
+	    roundmodel[2]->rowCount()==0 && roundmodel[3]->rowCount()==0)
+		event->accept();
+	else if (file_prefix=="")
 	{
-		cout << "A"<< endl;
 		QMessageBox conf;
 		conf.setWindowTitle("Notification - QEditor");
 		conf.setText("Questions have not been saved yet");
@@ -693,7 +745,6 @@ void QEditor::closeEvent(QCloseEvent *event)
 	}
 	else if (file_prefix!="" && changed)
 	{
-		cout << "B" << endl;
 		QMessageBox conf;
 		conf.setWindowTitle("Notification - QEditor");
 		conf.setText("Details of question has been modified, but have not been saved");
@@ -721,7 +772,6 @@ void QEditor::closeEvent(QCloseEvent *event)
 	}
 	else
 	{
-		cout << "c"<< endl;
 		event->accept();
 	}
 }
