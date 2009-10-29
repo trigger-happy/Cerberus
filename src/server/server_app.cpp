@@ -39,8 +39,8 @@ ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 
 		QFile file ( QString ( "resources/server_config.xml" ));
 		file.open ( QIODevice::ReadOnly );
-		QString serverConfigXML = file.readAll();
-		XmlUtil::getInstance().readServerConfig(serverConfigXML,m_config);
+		QString serverConfigXml = file.readAll();
+		XmlUtil::getInstance().readServerConfig(serverConfigXml,m_config);
 
 		m_dlg->setupUi ( this );
 		connect(m_dlg->stopButton,SIGNAL(clicked()),this,SLOT(stop()));
@@ -71,6 +71,7 @@ void ServerApp::newContestant( ContestantConnection* cc )
 {
 		//TODO: Stuff here for when a new connection is made
 		m_dlg->textBrowser->append("New Contestant connection.");
+
 }
 
 void ServerApp::badClient ( TempConnection* tc )
@@ -81,13 +82,17 @@ void ServerApp::badClient ( TempConnection* tc )
 void ServerApp::contestantDisconnect( ContestantConnection* cc )
 {
 		m_dlg->textBrowser->append("Contestant disconnected.");
+
+}
+
+void ServerApp::onAuthentication(ContestantConnection* cc)
+{
+		m_dlg->textBrowser->append("Contestant has logged in.");
 }
 
 void ServerApp::stop()
 {
 		m_dlg->textBrowser->append("Stopped.");
-		m_dlg->textBrowser->append(m_questions.at(num));
-		num++;
 }
 
 int main ( int argc, char* argv[] )

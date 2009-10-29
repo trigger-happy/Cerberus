@@ -38,6 +38,7 @@ public:
 	QEditor(QWidget *parent = 0);
 	~QEditor();
 private slots:
+	void visibility(int round);
 	void list_focus(int round);
 	void update_question(int round);
 	void cancel_update(int round);
@@ -51,9 +52,23 @@ private slots:
 	void newfile();
 	void import();
 	void load();
-	void save();
+	
+	/** returns 0 if completely saved
+	    returns 1 if partically saved
+	    returns 2 if not saved at all
+	*/
+	int save();
+	
 	void exit();
 	void saveAs();
+	
+	/** convenience method:
+	    returns -1 if IOError
+	    returns 0 if saved
+	    returns 1 if discard
+	    returns 2 if abort
+	*/
+	int showUnsavedWarning();
 	
 private:
 	Ui::q_editor *q_ui;
@@ -71,6 +86,8 @@ private:
 	QLineEdit* question_e[ROUNDS];
 	QSpinBox* question_score[ROUNDS];
 	QSpinBox* question_time[ROUNDS];
+	QAbstractButton* question_iden[ROUNDS];
+	QAbstractButton* question_multi[ROUNDS];
 	QAbstractButton* question_ans_a[ROUNDS];
 	QAbstractButton* question_ans_b[ROUNDS];
 	QAbstractButton* question_ans_c[ROUNDS];
@@ -94,6 +111,7 @@ private:
 	QSignalMapper* sigToUp;
 	QSignalMapper* sigToDown;
 	QSignalMapper* sigToChoices;
+	QSignalMapper* sigToVisible;
 	
 	XmlUtil xml_util;
 	QString file_prefix;
