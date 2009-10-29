@@ -154,7 +154,7 @@ struct StageData {
 			   contest_time == rhs.contest_time;
 	}
 
-	bool hasContestTime() const { return contest_time < 0; }
+	bool hasContestTime() const { return contest_time > 0; }
 };
 
 struct NetworkConfig {

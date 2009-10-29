@@ -204,7 +204,7 @@ void XmlUtil::writeStageData(const StageData &qd, QString &output) {
 						  "http://cerberus.compsat.org stage.xsd");
 
 	if ( qd.hasContestTime() )
-		writer.writeAttribute(XML_NS, "time_limit", QString::number(qd.contest_time));
+		writer.writeAttribute("time_limit", QString::number(qd.contest_time));
 
 
 	writer.writeTextElement(XML_NS, "welcome_msg", qd.welcome_msg);
@@ -218,14 +218,14 @@ void XmlUtil::writeStageData(const StageData &qd, QString &output) {
 			case Question::CHOOSE_ONE:
 				writer.writeStartElement(XML_NS, "choose");
 				if ( q.type == Question::CHOOSE_ANY )
-					writer.writeAttribute(XML_NS, "multiple", "true");
+					writer.writeAttribute("multiple", "true");
 				break;
 		}
-		writer.writeAttribute(XML_NS, "score", QString::number(q.score));
+		writer.writeAttribute("score", QString::number(q.score));
 		if ( q.hasTimeLimit() )
-			writer.writeAttribute(XML_NS, "time_limit", QString::number(q.time_limit));
+			writer.writeAttribute("time_limit", QString::number(q.time_limit));
 		if ( q.hasId() )
-			writer.writeAttribute(XML_NS, "id", q.id);
+			writer.writeAttribute("id", q.id);
 		writer.writeTextElement(XML_NS, "q", q.question);
 
 		switch ( q.type ) {
@@ -240,7 +240,7 @@ void XmlUtil::writeStageData(const StageData &qd, QString &output) {
 				for ( size_t j = 0; j < q.answer_key.size(); ++j ) {
 					writer.writeStartElement(XML_NS, "choice");
 					if ( q.answer_key[j].is_answer )
-						writer.writeAttribute(XML_NS, "answer", "true");
+						writer.writeAttribute("answer", "true");
 					writer.writeCharacters(q.answer_key[j].c);
 					writer.writeEndElement();
 				}
