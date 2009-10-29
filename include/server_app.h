@@ -49,6 +49,7 @@ private slots:
 		*/
 		void contestantDisconnect( ContestantConnection* cc );
 
+		void onAuthentication( ContestantConnection* cc );
         /*
         Called when the stop button is pressed
         */
