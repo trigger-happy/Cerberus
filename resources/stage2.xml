@@ -2,7 +2,7 @@
 <stage time_limit="3600" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" xmlns="http://cerberus.compsat.org">
 	<welcome_msg>Insert welcome message here.</welcome_msg>
 	<choose score="1">
-		<q>The answer to this choose is choice 1.</q>
+		<q>The answer to this question is choice 1.</q>
 		<choice answer="true">Choice 1</choice>
 		<choice>Choice 2</choice>
 		<choice>Choice 3</choice>
@@ -16,7 +16,7 @@
 		<choice answer="true">Michael Jackson</choice>
 	</choose>
 	<choose score="2" multiple="true">
-		<q>This is a 2 point choose, correct answers are choice 3 and 4.</q>
+		<q>This is a 2 point question, correct answers are choice 3 and 4.</q>
 		<choice>Choice 1</choice>
 		<choice>Choice 2</choice>
 		<choice answer="true">Choice 3</choice>
