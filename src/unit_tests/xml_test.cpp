@@ -33,6 +33,7 @@ void XmlTest::q1ReadTest()
 	td.contest_time = 3600;
 	td.welcome_msg = "Insert welcome message here.";
 	Question q;
+	q.type = Question::CHOOSE_ONE;
 
 	q.score = 1;
 	q.question = "The answer to this question is choice 1.";
@@ -49,12 +50,14 @@ void XmlTest::q1ReadTest()
 	q.answer_key.push_back(Question::AnswerKeyEntry("Doc Mana"));
 	q.answer_key.push_back(Question::AnswerKeyEntry("Fr. David"));
 	q.answer_key.push_back(Question::AnswerKeyEntry("Michael Jackson", true));
+	q.type = Question::CHOOSE_ANY;
 	td.questions.push_back(q);
 
 	q.score = 2;
 	q.question = "This is a 2 point question, correct answer is choice 3.";
 	q.answer_key.clear();
 	q.answer_key.push_back(Question::AnswerKeyEntry("3", true));
+	q.type = Question::IDENTIFICATION;
 	td.questions.push_back(q);
 	xu.readStageData(xml, qd);
 	QVERIFY(td == qd);
@@ -65,14 +68,16 @@ void XmlTest::q1WriteTest()
 	XmlUtil& xu = XmlUtil::getInstance();
 	QFile file("resources/stage1.xml");
 	QVERIFY(file.open(QIODevice::ReadOnly));
-	QString xml = file.readAll();
+
 	StageData qd;
-	xu.readStageData(xml, qd);
+	xu.readStageData(file.readAll(), qd);
+
 	QString test_xml;
-	xml.clear();
 	xu.writeStageData(qd, test_xml);
+
 	StageData td;
 	xu.readStageData(test_xml, td);
+
 	QVERIFY(qd == td);
 }
 
@@ -87,6 +92,7 @@ void XmlTest::q2ReadTest()
 	td.welcome_msg = "Insert welcome message here.";
 	Question q;
 
+	q.type = Question::CHOOSE_ONE;
 	q.score = 1;
 	q.question = "The answer to this question is choice 1.";
 	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 1", true));
@@ -111,6 +117,7 @@ void XmlTest::q2ReadTest()
 	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 2"));
 	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 3", true));
 	q.answer_key.push_back(Question::AnswerKeyEntry("Choice 4", true));
+	q.type = Question::CHOOSE_ANY;
 	td.questions.push_back(q);
 	xu.readStageData(xml, qd);
 	QVERIFY(qd == td);
