@@ -68,7 +68,7 @@ public:
 		int editUser ( const QString& user_name, const UserData& ud );
 
 		/*!
-		  TODO: Questionably Done! ^_^;
+		  TODO: Done !?
 		Changes the name of a team in the database. It will:
 			1. change the foreign key team_name of any Users with that team name
 			2. update the Team table itself to change the team_name primary key
@@ -79,15 +79,15 @@ public:
 		int editTeamName ( const QString& team_name_old, const QString& team_name_new );
 
 		/*!
-		  TODO:
+		  TODO: Done
 		 deletes a user in the database whose user_name matches the given.
 		\param user_name The current name of the user whose data you want to change.
 		\return 0 on success, a QSqlQuery error otherwise.
 		*/
-// 		int deleteUser ( const QString& user_name);
+ 		int deleteUser ( const QString& user_name);
 
 		/*!
-		  TODO:
+		  TODO: Done !?
 		removes a particular team from the database. It will:
 			1. delete all Users with that team_name as a foreign key
 			2. delete the entry from the Team entity with that primary key.
@@ -97,7 +97,7 @@ public:
 		int deleteTeam ( const QString& team_name );
 
 		/*!
-		  TODO:
+		  TODO: Done... I think ^_^;
 		Get all the available users in the database who fall under a particular team.
 		\param team_name the name of the team whose users are needed
 		\param out A reference to a vector\<UserData\> to output the data to.
@@ -106,21 +106,21 @@ public:
 		bool getTeamUsers ( const QString& team_name, vector<UserData>& out );
 
 		/*!
-		  TODO:
+		  TODO: Done
 		Get the data of a specific user
 		\param user_name The username of the user whose data you want to view
 		\param out A reference to a vector\<UserData\> to output the data to.
 		\return true on success, false otherwise.
 		*/
-		bool getSpecificUser ( const QString& user_name, vector<UserData>& out );
+		bool getSpecificUser ( const QString& user_name, UserData& out );
 
 		/*!
-		  TODO:
+		  TODO: Done
 		  Return the school name of a particular team.
 		\param team_name the team whose school you are searching for
 		\return string of the team's school name
 		*/
-		string getTeamSchool ( const QString& team_name );
+		QString getTeamSchool ( const QString& team_name );
 
 
         /*!

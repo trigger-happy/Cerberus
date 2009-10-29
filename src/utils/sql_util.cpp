@@ -89,14 +89,100 @@ int SqlUtil::editUser ( const QString& user_name, const UserData& ud )
 int SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_name_new )
 {
 	//UPDATE team SET team_name= 'new' WHERE team_name = 'old'
-	QString sql = QString ("UPDATE team SET team_name = '%1' WHERE team_name = '%2';")
+	QString sql = QString ( "UPDATE team SET team_name = '%1' WHERE team_name = '%2'" )
 		      .arg ( QString ( team_name_new ) )
 		      .arg ( QString ( team_name_old ) );
 	//UPDATE user SET team_name= 'new' WHERE team_name = 'team'
-	sql += QString ("UPDATE user SET team_name = '%1' WHERE team_name = '%2'")
+	
+	if ( query->exec ( sql ) != 0)
+		return 1;
+	sql = QString ( "UPDATE user SET team_name = '%1' WHERE team_name = '%2'" )
 		      .arg ( QString ( team_name_new ) )
 		      .arg ( QString ( team_name_old ) );
 	return query->exec ( sql );
+}
+
+int SqlUtil::deleteUser ( const QString& user_name )
+{
+	//DELETE from user where username = '123'
+	QString sql = QString ( "DELETE FROM user WHERE username = '%1'" )
+		      .arg ( QString ( user_name ) );
+	return query->exec ( sql );
+}
+
+int SqlUtil::deleteTeam ( const QString& team_name )
+{
+	//DELETE from user where team_name='B'
+	QString sql = QString ( "DELETE FROM user WHERE team_name = '%1'" )
+		      .arg ( QString ( team_name ) );
+	if ( query->exec ( sql ) != 0)
+		return 1;
+	
+	//DELETE from team where team_name='B'
+	sql = QString ( "DELETE FROM team WHERE team_name = '%1'" )
+		      .arg ( QString ( team_name ) );
+	return query->exec ( sql );
+}
+
+bool SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
+{
+	//SELECT username,team_name,firstname,lastname FROM user WHERE team_name = 'B'
+	QString sql = QString ( "SELECT username, team_name, firstname, lastname"
+				"FROM user WHERE team_name = '%1'" )
+		      .arg ( QString ( team_name ) );
+	if ( !query->exec ( sql ) )
+	      return false;
+	else
+	{
+		while ( query->next() )
+		{
+			UserData ud;
+			ud.user_name = query->value(0).toString();
+			ud.teamname = query->value(1).toString();
+			ud.firstname = query->value(2).toString();
+			ud.lastname = query->value(3).toString();
+			out.push_back(ud);
+		}
+		return true;
+	}
+}
+
+bool SqlUtil::getSpecificUser ( const QString& user_name, UserData& out )
+{
+	//SELECT username,team_name,firstname,lastname FROM user WHERE username = 'D'
+	QString sql = QString ( "SELECT username, team_name, firstname, lastname FROM user WHERE username = '%1'" )
+		      .arg( QString ( user_name ) );
+	if ( !query->exec() )
+		return false;
+	else
+	{
+		if (!query->next())
+			return false;
+		else
+		{
+			out.user_name = query->value(0).toString();
+			out.teamname = query->value(1).toString();
+			out.firstname = query->value(2).toString();
+			out.lastname = query->value(3).toString();
+			return true;
+		}
+	}
+}
+
+QString SqlUtil::getTeamSchool ( const QString& team_name )
+{
+	//select school from team where team_name = 'B'
+	QString sql = QString ( "SELECT school FROM team WHERE team_name = '%1'" )
+		      .arg( QString ( team_name ) );
+	if ( !query->exec() )
+		return "Some weird error occurred. I don't know what ^_^;";
+	else
+	{
+		if (!query->next())
+			return "None";
+		else
+			return query->value(0).toString();
+	}
 }
 
 double SqlUtil::getScore ( const QString& user_name )
