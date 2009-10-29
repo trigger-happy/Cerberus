@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>Question Editor</string>
   </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_14">
     <item>
@@ -30,7 +33,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="firstRound">
        <attribute name="title">
@@ -309,8 +312,11 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>A.</string>
+               <string>A</string>
               </property>
              </widget>
             </item>
@@ -319,8 +325,11 @@
             </item>
             <item row="3" column="0">
              <widget class="QRadioButton" name="question_r1_ans_b">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>B.</string>
+               <string>B</string>
               </property>
              </widget>
             </item>
@@ -333,8 +342,11 @@
             </item>
             <item row="4" column="0">
              <widget class="QRadioButton" name="question_r1_ans_c">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>C.</string>
+               <string>C</string>
               </property>
              </widget>
             </item>
@@ -343,8 +355,11 @@
             </item>
             <item row="5" column="0">
              <widget class="QRadioButton" name="question_r1_ans_d">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>D.</string>
+               <string>D</string>
               </property>
              </widget>
             </item>
@@ -666,8 +681,11 @@
             </item>
             <item row="2" column="0">
              <widget class="QCheckBox" name="question_r2_ans_a">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>A.</string>
+               <string>A</string>
               </property>
              </widget>
             </item>
@@ -676,8 +694,11 @@
             </item>
             <item row="3" column="0">
              <widget class="QCheckBox" name="question_r2_ans_b">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>B.</string>
+               <string>B</string>
               </property>
              </widget>
             </item>
@@ -686,8 +707,11 @@
             </item>
             <item row="4" column="0">
              <widget class="QCheckBox" name="question_r2_ans_c">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>C.</string>
+               <string>C</string>
               </property>
              </widget>
             </item>
@@ -696,8 +720,11 @@
             </item>
             <item row="5" column="0">
              <widget class="QCheckBox" name="question_r2_ans_d">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
               <property name="text">
-               <string>D.</string>
+               <string>D</string>
               </property>
              </widget>
             </item>
@@ -1032,20 +1059,16 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QCheckBox" name="question_r3_ans_a">
-                <property name="text">
-                 <string>A.</string>
-                </property>
-               </widget>
-              </item>
               <item row="3" column="1">
                <widget class="QLineEdit" name="question_r3_a"/>
               </item>
               <item row="4" column="0">
                <widget class="QCheckBox" name="question_r3_ans_b">
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
                 <property name="text">
-                 <string>B.</string>
+                 <string>B</string>
                 </property>
                </widget>
               </item>
@@ -1054,8 +1077,11 @@
               </item>
               <item row="5" column="0">
                <widget class="QCheckBox" name="question_r3_ans_c">
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
                 <property name="text">
-                 <string>C.</string>
+                 <string>C</string>
                 </property>
                </widget>
               </item>
@@ -1064,8 +1090,11 @@
               </item>
               <item row="6" column="0">
                <widget class="QCheckBox" name="question_r3_ans_d">
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
                 <property name="text">
-                 <string>D.</string>
+                 <string>D</string>
                 </property>
                </widget>
               </item>
@@ -1074,8 +1103,11 @@
               </item>
               <item row="7" column="0">
                <widget class="QCheckBox" name="question_r3_ans_e">
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
                 <property name="text">
-                 <string>E.</string>
+                 <string>E</string>
                 </property>
                </widget>
               </item>
@@ -1138,6 +1170,16 @@
                   <width>16777215</width>
                   <height>70</height>
                  </size>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QCheckBox" name="question_r3_ans_a">
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
+                <property name="text">
+                 <string>A</string>
                 </property>
                </widget>
               </item>
