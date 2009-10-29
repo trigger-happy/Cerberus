@@ -254,8 +254,33 @@ void XmlUtil::writeStageData(const StageData &qd, QString &output) {
 	writer.writeEndDocument();
 }
 
+#include <QDomDocument>
 QString XmlUtil::stripAnswers(const QString &input) {
-	return input;
+	QDomDocument doc;
+	doc.setContent(input);
+	QDomElement docElem = doc.documentElement();
+
+	QDomNode n = docElem.firstChild();
+	while ( !n.isNull() ) {
+		QDomElement e = n.toElement();
+		if ( !e.isNull() && (e.namespaceURI().isEmpty() || e.namespaceURI() == XML_NS) ) {
+			if ( e.nodeName() == "choose" ) {
+				QDomElement c = e.firstChildElement("choice");
+				while ( !c.isNull() ) {
+					c.removeAttribute("answer");
+					c = c.nextSiblingElement("choice");
+				}
+			} else if ( e.nodeName() == "identification" ) {
+				QDomElement a = e.firstChildElement("a");
+				while ( !a.isNull() ) {
+					e.removeChild(a);
+					a = e.firstChildElement("a");
+				}
+			}
+		}
+		n = n.nextSibling();
+	}
+	return doc.toString(2);
 }
 
 void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
