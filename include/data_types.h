@@ -86,7 +86,11 @@ struct Question {
 	  Check the choices the contestant selected against the answer key.
 	  \param choices The choices of the user in ASCENDING ORDER (read: SORTED).
 	  \return A double value [0,1] stating the number of correct answers (check what's supposed to be
-			  checked and didn't check what's not supposed to be checked) over total choices. A perfect is exactly 1.0
+			  checked and didn't check what's not supposed to be checked) over total choices. A perfect is exactly 1.0.
+			  If the multiple choice has only one answer, it might be a good idea to floor the result
+			  such that it can only be 0 or 1. Why? Because if the question has 4 answers and 1
+			  out of the 4 is the correct one. If he just left it blank (i.e. 'none of the above'),
+			  then he'll be getting .75 for that question which can be unfair.
 	  \throws std::logic_error The Question's type is not CHOOSE_ANY.
 	  \throws std::length_error There are no entries in the answer_key.
 	*/
