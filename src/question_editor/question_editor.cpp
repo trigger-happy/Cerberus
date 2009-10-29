@@ -32,7 +32,6 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
 	
-	q_ui->tabWidget->setTabPosition(QTabWidget::West);
 	
 	//declaration of pointers to components frequently accessed
 	
@@ -95,6 +94,16 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	question_time[1]=0;
 	question_time[2]=q_ui->question_r3_time;
 	question_time[3]=q_ui->question_r4_time;
+	
+	question_iden[0]=0;
+	question_iden[1]=0;
+	question_iden[2]=q_ui->iden_r3;
+	question_iden[3]=q_ui->iden_r4;
+	
+	question_multi[0]=0;
+	question_multi[1]=0;
+	question_multi[2]=q_ui->multi_r3;
+	question_multi[3]=q_ui->multi_r4;
 	
 	question_ans_a[0]=q_ui->question_r1_ans_a;
 	question_ans_a[1]=q_ui->question_r2_ans_a;
@@ -168,6 +177,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	sigToUp=new QSignalMapper(this);
 	sigToDown=new QSignalMapper(this);
 	sigToChoices=new QSignalMapper(this);
+	sigToVisible=new QSignalMapper(this);
 	
 	connect(sigToList,SIGNAL(mapped(int)),this,SLOT(list_focus(int)));
 	connect(sigToAdd,SIGNAL(mapped(int)),this,SLOT(add_question(int)));
@@ -179,6 +189,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	connect(sigToUp,SIGNAL(mapped(int)),this,SLOT(move_up(int)));
 	connect(sigToDown,SIGNAL(mapped(int)),this,SLOT(move_down(int)));
 	connect(sigToChoices,SIGNAL(mapped(int)),this,SLOT(disableDuplicates(int)));
+	connect(sigToVisible,SIGNAL(mapped(int)),this,SLOT(visibility(int)));
 	
 	for (int ctr=0;ctr<4;ctr++)
 	{
@@ -236,12 +247,20 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 			sigToDetailUpdate->setMapping(question_e[ctr],ctr+1);
 			sigToDetailUpdate->setMapping(question_ans_e[ctr],ctr+1);
 			sigToDetailUpdate->setMapping(question_time[ctr],ctr+1);
+			sigToDetailUpdate->setMapping(question_iden[ctr],ctr+1);
+			sigToDetailUpdate->setMapping(question_multi[ctr],ctr+1);
 			sigToChoices->setMapping(question_ans_e[ctr],ctr+1);
+			sigToVisible->setMapping(question_iden[ctr],ctr+1);
+			sigToVisible->setMapping(question_multi[ctr],ctr+1);
 			
 			connect(question_e[ctr],SIGNAL(textEdited(QString)),sigToDetailUpdate,SLOT(map()));
 			connect(question_ans_e[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
 			connect(question_time[ctr],SIGNAL(valueChanged(int)),sigToDetailUpdate,SLOT(map()));
+			connect(question_iden[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
+			connect(question_multi[ctr],SIGNAL(toggled(bool)),sigToDetailUpdate,SLOT(map()));
 			connect(question_ans_e[ctr],SIGNAL(toggled(bool)),sigToChoices,SLOT(map()));
+			connect(question_iden[ctr],SIGNAL(toggled(bool)),sigToVisible,SLOT(map()));
+			connect(question_multi[ctr],SIGNAL(toggled(bool)),sigToVisible,SLOT(map()));
 		}
 		
 		welcome[ctr]->setTabChangesFocus(true);
@@ -302,6 +321,17 @@ QEditor::~QEditor()
 	}
 }
 
+void QEditor::visibility(int round)
+{
+	int ptr=round -1;
+	bool visi=question_multi[ptr]->isChecked();
+	question_ans_a[ptr]->setVisible(visi);
+	question_ans_b[ptr]->setVisible(visi);
+	question_ans_c[ptr]->setVisible(visi);
+	question_ans_d[ptr]->setVisible(visi);
+	question_ans_e[ptr]->setVisible(visi);
+}
+
 void QEditor::list_focus(int round)
 {
 	int ptr=round-1;
@@ -348,16 +378,23 @@ void QEditor::list_focus(int round)
 			question_b[ptr]->setText(roundmodel[ptr]->getB(index));
 			question_c[ptr]->setText(roundmodel[ptr]->getC(index));
 			question_d[ptr]->setText(roundmodel[ptr]->getD(index));
-			if (round > 2) question_e[ptr]->setText(roundmodel[ptr]->getE(index));
 			question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
-			if (round > 2) question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
 			bool* ans=new bool[5];
 			roundmodel[ptr]->getAnskey(index,ans);
 			question_ans_a[ptr]->setChecked(ans[0]);
 			question_ans_b[ptr]->setChecked(ans[1]);
 			question_ans_c[ptr]->setChecked(ans[2]);
 			question_ans_d[ptr]->setChecked(ans[3]);
-			if (round > 2) question_ans_e[ptr]->setChecked(ans[4]);
+			if (round > 2)
+			{
+				question_e[ptr]->setText(roundmodel[ptr]->getE(index));
+				question_ans_e[ptr]->setChecked(ans[4]);
+				question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
+				if (roundmodel[ptr]->isIdentification(index))
+					question_iden[ptr]->setChecked(true);
+				else
+					question_multi[ptr]->setChecked(true);
+			}
 			delete ans;
 			control_components(round,true);
 			button_update[ptr]->setDisabled(true);
@@ -368,7 +405,6 @@ void QEditor::list_focus(int round)
 			fully_updated[ptr]=true;
 			if (file_prefix!="")
 				this->setWindowTitle(file_prefix+".xgrp - QEditor");
-
 		}
 	}
 	else
@@ -461,16 +497,23 @@ void QEditor::update_question(int round)
 		
 		QString score=QString::number(question_score[ptr]->value());
 		QString time;
+		QString type="0";
+		
 		if (round>2) {
-			if (question_ans_e[ptr]->isChecked()) anskey.append("1");
-			else anskey.append("0");
+			if (question_ans_e[ptr]->isChecked())
+				anskey.append("1");
+			else 
+				anskey.append("0");
 			time=QString::number(question_time[ptr]->value());
+			if (question_iden[ptr]->isChecked()) 
+				type="1";
 		}
 		else {
 			anskey.append("0");
 			time="0";
 		}
-		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time);
+		
+		roundmodel[ptr]->updateQuestion(index,question,a,b,c,d,e,anskey,score,time,type);
 		
 		fully_updated[ptr]=true;
 		qmod[ptr]=false;
@@ -542,6 +585,8 @@ void QEditor::control_components(int round,bool enable)
 		question_e[ptr]->setReadOnly(!enable);
 		question_ans_e[ptr]->setEnabled(enable);
 		question_time[ptr]->setEnabled(enable);
+		question_iden[ptr]->setEnabled(enable);
+		question_multi[ptr]->setEnabled(enable);
 	}
 	
 }
@@ -619,12 +664,12 @@ void QEditor::import()
 	for (int ctr=0;ctr<4;ctr++)
 	{
 		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
-		QuestionData qd;
+		//QuestionData qd;
 		if(fq.open(QIODevice::ReadOnly))
 		{
 			QString xml_q=fq.readAll();
 			try {
-				xml_util.readQuestionData(ctr+1,xml_q,qd);
+				//xml_util.readQuestionData(ctr+1,xml_q,qd);
 			} catch (exception e) {
 				QMessageBox notice;
 				notice.setWindowTitle("Notice - QEditor ^_^;");
@@ -635,12 +680,12 @@ void QEditor::import()
 		}
 		
 		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
-		AnswerData ad;
+		//AnswerData ad;
 		if (!fa.open(QIODevice::ReadOnly))
 		{
 			QString xml_a=fa.readAll();
 			try {
-				xml_util.readAnswerData(ctr+1,xml_a,ad);
+				//xml_util.readAnswerData(ctr+1,xml_a,ad);
 			} catch (exception e) {
 				QMessageBox notice;
 				notice.setWindowTitle("Notice - QEditor");
@@ -650,11 +695,37 @@ void QEditor::import()
 			}
 		}
 		
-		welcome[ctr]->setPlainText(qd.welcome_msg);
-		roundmodel[ctr]->feedData(qd,ad);
+		//welcome[ctr]->setPlainText(qd.welcome_msg);
+		//roundmodel[ctr]->feedData(qd,ad);
 		if (roundmodel[ctr]->rowCount()!=rec[ctr]) 
 			fully_updated[ctr]=false;
 	}
+}
+
+int QEditor::showUnsavedWarning()
+{
+	QMessageBox conf;
+	conf.setWindowTitle("Notification - QEditor");
+	conf.setText("Details have been modified, but have not been saved.");
+	conf.setInformativeText("What do you want to do?");
+	conf.setIcon(QMessageBox::Question);
+	QPushButton *update=conf.addButton(tr("Save"),QMessageBox::ActionRole);
+	QPushButton *discard=conf.addButton(tr("Discard changes"),QMessageBox::ActionRole);
+	QPushButton *abort=conf.addButton(tr("Cancel"),QMessageBox::ActionRole);
+	conf.setDefaultButton(update);
+	conf.exec();
+	if (conf.clickedButton()==update)
+	{
+		int resp=save();
+		if (resp==0)
+			return 0;
+		else
+			return 2;
+	}
+	else if (conf.clickedButton()==discard)
+		return 1;
+	else
+		return 2;
 }
 
 void QEditor::load()
@@ -696,12 +767,12 @@ void QEditor::load()
 	for (int ctr=0;ctr<4;ctr++)
 	{
 		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
-		QuestionData qd;
+		//QuestionData qd;
 		if(fq.open(QIODevice::ReadOnly))
 		{
 			QString xml_q=fq.readAll();
 			try {
-				xml_util.readQuestionData(ctr+1,xml_q,qd);
+				//xml_util.readQuestionData(ctr+1,xml_q,qd);
 			} catch (exception e) {
 				QMessageBox notice;
 				notice.setWindowTitle("Notice - QEditor ^_^;");
@@ -712,12 +783,12 @@ void QEditor::load()
 		}
 		
 		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
-		AnswerData ad;
+		//AnswerData ad;
 		if (!fa.open(QIODevice::ReadOnly))
 		{
 			QString xml_a=fa.readAll();
 			try {
-				xml_util.readAnswerData(ctr+1,xml_a,ad);
+				//xml_util.readAnswerData(ctr+1,xml_a,ad);
 			} catch (exception e) {
 				QMessageBox notice;
 				notice.setWindowTitle("Notice - QEditor");
@@ -727,15 +798,15 @@ void QEditor::load()
 			}
 		}
 		
-		welcome[ctr]->setPlainText(qd.welcome_msg);
-		roundmodel[ctr]->feedData(qd,ad);
+		//welcome[ctr]->setPlainText(qd.welcome_msg);
+		//roundmodel[ctr]->feedData(qd,ad);
 		this->setWindowTitle(file_prefix+".xgrp - QEditor");
 		
 		fully_updated[ctr]=true;
 	}
 }
 
-void QEditor::save()
+int QEditor::save()
 {
 	q_ui->statusBar->showMessage("");
 	if (file_prefix=="")
@@ -754,11 +825,11 @@ void QEditor::save()
 		if (file_prefix=="")
 		{
 			q_ui->statusBar->showMessage("File save aborted");
-			return;
+			return 2;
 		}
 		QFile grp(file_prefix+".xgrp");
 		if (!grp.open(QIODevice::ReadWrite))
-			return;
+			return -1;
 		QTextStream out(&grp);
 		out << "This file holds no data, this just groups xml files to open/edit them easier! ^_^";
 	}
@@ -789,23 +860,25 @@ void QEditor::save()
 					QMessageBox notice;
 					notice.setWindowTitle("Notice - QEditor");
 					notice.setText("Changes of round "+QString::number(roundctr+1)+" won't be changed.");
-					return;
+					//return;
 				}
 			}
-			QuestionData rounddata;
-			AnswerData ansdata;
+			//QuestionData rounddata;
+			//AnswerData ansdata;
+			StageData sd;
+			
 			QString xml_q;
 			QString xml_a;
 			int question_cnt=roundmodel[roundctr]->rowCount();
 			
-			rounddata.welcome_msg=welcome[roundctr]->toPlainText();
-			rounddata.contest_time=duration[roundctr]->value();
+			//rounddata.welcome_msg=welcome[roundctr]->toPlainText();
+			//rounddata.contest_time=duration[roundctr]->value();
 			
 			for (int qctr=0;qctr<question_cnt;qctr++)
 			{
 				Question temp;
-				roundmodel[roundctr]->getFullQuestion(qctr,&temp);
-				rounddata.questions.push_back(temp);
+				//roundmodel[roundctr]->getFullQuestion(qctr,&temp);
+				//rounddata.questions.push_back(temp);
 				
 				bool* cheat=new bool[5];
 				roundmodel[roundctr]->getAnskey(qctr,cheat);
@@ -816,7 +889,7 @@ void QEditor::save()
 						QString temp=QString::number(cctr+1);
 						if (roundctr>1)
 							temp+=" "+roundmodel[roundctr]->getE(qctr);
-						ansdata.insert(pair<int,QString>(qctr+1,temp));
+						//ansdata.insert(pair<int,QString>(qctr+1,temp));
 					}
 				}
 				delete cheat;
@@ -827,29 +900,35 @@ void QEditor::save()
 			
 			QFile file_q(file_prefix+QString::number(roundctr+1)+"_q.xml");
 			if (!file_q.open(QIODevice::WriteOnly))
-				return;
+				return -1;
 			else
 			{
 				QTextStream out(&file_q);
-				xml_util.writeQuestionData(roundctr+1,rounddata,xml_q);
+				//xml_util.writeQuestionData(roundctr+1,rounddata,xml_q);
 				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_q
 				out << xml_q;
 			}
 			
 			QFile file_a(file_prefix+QString::number(roundctr+1)+"_a.xml");
 			if (!file_a.open(QIODevice::WriteOnly))
-				return;
+				return -1;
 			else
 			{
 				QTextStream out(&file_a);
-				xml_util.writeAnswerData(roundctr+1,ansdata,xml_a);
+				//xml_util.writeAnswerData(roundctr+1,ansdata,xml_a);
 				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_a
 				out << xml_a;
 			}
 			fully_updated[roundctr]=true;
 		}
 		q_ui->statusBar->showMessage("File saved at "+file_prefix);
+		
+		if (fully_updated[0] && fully_updated[1] && fully_updated[2] && fully_updated[3])
+			return 0;
+		else
+			return 1;
 	}
+	return 2;
 }
 
 void QEditor::saveAs()
@@ -871,11 +950,12 @@ void QEditor::exit()
 void QEditor::closeEvent(QCloseEvent *event)
 {
 	if (roundmodel[0]->rowCount()==0 && roundmodel[1]->rowCount()==0 &&
-	    roundmodel[2]->rowCount()==0 && roundmodel[3]->rowCount()==0)
+	    roundmodel[2]->rowCount()==0 && roundmodel[3]->rowCount()==0 &&
+	    fully_updated[0] && fully_updated[1] && fully_updated[2] && fully_updated[3])
 		event->accept();
 	else if (file_prefix=="")
 	{
-		QMessageBox conf;
+		/*QMessageBox conf;
 		conf.setWindowTitle("Notification - QEditor");
 		conf.setText("Questions have not been saved yet");
 		conf.setInformativeText("What do you want to do?");
@@ -894,6 +974,11 @@ void QEditor::closeEvent(QCloseEvent *event)
 				event->accept();
 		}
 		else if (conf.clickedButton() == comdiscard)
+			event->accept();
+		else
+			event->ignore();*/
+		int response = showUnsavedWarning();
+		if (response == 0 || response == 1)
 			event->accept();
 		else
 			event->ignore();

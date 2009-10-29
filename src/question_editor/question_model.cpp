@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "question_model.h"
 
-QuestionModel::QuestionModel(int round) : QStandardItemModel(0,9)
+QuestionModel::QuestionModel(int round) : QStandardItemModel(0,10)
 {
 	this->round=round;
 	//super(9,2);
@@ -28,7 +28,7 @@ QuestionModel::QuestionModel(int round) : QStandardItemModel(0,9)
 void QuestionModel::addNewQuestion()
 {
 	/*questionmodel order
-	question ansa ansb ansc ansd anse anskey score time 
+	question ansa ansb ansc ansd anse anskey score time type 
 	*/
 	QList<QStandardItem *> temp;
 	temp.append(new QStandardItem("new question")); //question
@@ -43,6 +43,7 @@ void QuestionModel::addNewQuestion()
 		temp.append(new QStandardItem("10000")); 
 	temp.append(new QStandardItem("1")); // score
 	temp.append(new QStandardItem("0")); // time
+	temp.append(new QStandardItem("0")); // isIdentification
 	
 	QStandardItemModel::appendRow(temp);
 	
@@ -53,7 +54,7 @@ void QuestionModel::removeQuestion(int index)
 	QStandardItemModel::removeRow(index);
 }
 
-void QuestionModel::updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString score,QString time)
+void QuestionModel::updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString score,QString time,QString type)
 {
 	QStandardItemModel::item(index,0)->setText(question);
 	QStandardItemModel::item(index,1)->setText(a);
@@ -64,6 +65,7 @@ void QuestionModel::updateQuestion(int index,QString question,QString a,QString 
 	QStandardItemModel::item(index,6)->setText(anskey);
 	QStandardItemModel::item(index,7)->setText(score);
 	QStandardItemModel::item(index,8)->setText(time);
+	QStandardItemModel::item(index,9)->setText(type);
 }
 
 void QuestionModel::swapOrder(int q1,int q2)
@@ -77,6 +79,7 @@ void QuestionModel::swapOrder(int q1,int q2)
 	QString anskey=QStandardItemModel::item(q1,6)->text();
 	QString score=QStandardItemModel::item(q1,7)->text();
 	QString time=QStandardItemModel::item(q1,8)->text();
+	QString type=QStandardItemModel::item(q1,9)->text();
 	
 	QStandardItemModel::item(q1,0)->setText(getQuestion(q2));
 	QStandardItemModel::item(q1,1)->setText(getA(q2));
@@ -87,6 +90,7 @@ void QuestionModel::swapOrder(int q1,int q2)
 	QStandardItemModel::item(q1,6)->setText(QStandardItemModel::item(q2,6)->text());
 	QStandardItemModel::item(q1,7)->setText(QStandardItemModel::item(q2,7)->text());
 	QStandardItemModel::item(q1,8)->setText(QStandardItemModel::item(q2,8)->text());
+	QStandardItemModel::item(q1,9)->setText(QStandardItemModel::item(q2,9)->text());
 	
 	QStandardItemModel::item(q2,0)->setText(question);
 	QStandardItemModel::item(q2,1)->setText(a);
@@ -97,6 +101,7 @@ void QuestionModel::swapOrder(int q1,int q2)
 	QStandardItemModel::item(q2,6)->setText(anskey);
 	QStandardItemModel::item(q2,7)->setText(score);
 	QStandardItemModel::item(q2,8)->setText(time);
+	QStandardItemModel::item(q2,9)->setText(type);
 }
 
 QString QuestionModel::getQuestion(int index)
@@ -143,7 +148,12 @@ int QuestionModel::getTime(int index)
 	return QStandardItemModel::item(index,8)->text().toInt();
 }
 
-void QuestionModel::getFullQuestion(int index, Question* q)
+bool QuestionModel::isIdentification(int index)
+{
+	return (QStandardItemModel::item(index,9)->text().toInt() != 0);
+}
+
+/*void QuestionModel::getFullQuestion(int index, Question* q)
 {
 	q->number=index+1;
 	q->question=getQuestion(index);
@@ -204,4 +214,4 @@ void QuestionModel::feedData(QuestionData qd,AnswerData ad)
 		
 		QStandardItemModel::appendRow(temp);
 	}
-}
+}*/

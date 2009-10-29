@@ -33,6 +33,7 @@ public:
 	void addNewQuestion();
 	void removeQuestion(int index);
 	void swapOrder(int q1,int q2);
+	bool isIdentification(int index);
 	QString getQuestion(int index);
 	QString getA(int index);
 	QString getB(int index);
@@ -42,9 +43,9 @@ public:
 	void getAnskey(int index,bool* key);
 	int getTime(int index);
 	int getScore(int index);
-	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score);
-	void getFullQuestion(int index, Question* q);
-	void feedData(QuestionData qd,AnswerData ad);
+	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score,QString type);
+	//void getFullQuestion(int index, Question* q);
+	//void feedData(QuestionData qd,AnswerData ad);
 };
 
 #endif
