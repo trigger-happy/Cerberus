@@ -32,6 +32,8 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	f.open ( QIODevice::ReadOnly );
 	QString xml = f.readAll();
 	
+	q_ui->tabWidget->setTabPosition(QTabWidget::West);
+	
 	//declaration of pointers to components frequently accessed
 	
 	roundmodel[0]=new QuestionModel(1);
@@ -767,6 +769,7 @@ void QEditor::save()
 		{
 			if (!fully_updated[roundctr])
 			{
+				q_ui->tabWidget->setCurrentIndex(roundctr);
 				QMessageBox conf;
 				conf.setWindowTitle("Notification - QEditor");
 				conf.setText("Details of round "+QString::number(roundctr+1)+" has been modified, but have not been updated");
@@ -913,13 +916,9 @@ void QEditor::closeEvent(QCloseEvent *event)
 			event->accept();
 		}
 		else if (conf.clickedButton() == comdiscard)
-		{
 			event->accept();
-		}
 		else
-		{
 			event->ignore();
-		}
 		this->setWindowTitle(file_prefix+".xgrp - QEditor");
 	}
 	else
