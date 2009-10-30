@@ -299,7 +299,7 @@ set(CTEMPLATE_SRCS ${GENERATED_HEADERS}
 )
 
 if ( WIN32 )
-	set(CTEMPLATE_SRCS ${SRC_ROOT}/windows/port.cc)
+	set(CTEMPLATE_SRCS ${CTEMPLATE_SRCS} ${SRC_ROOT}/windows/port.cc)
 	set(COMPILE_DEFINITIONS ${COMPILE_DEFINITIONS} "${ac_windows_dllexport}_BUILDING")
 endif()
 
