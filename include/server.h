@@ -21,34 +21,38 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtNetwork>
 #include "net/server_net.h"
 
-namespace Ui
-{
-class server_dlg;
+namespace Ui {
+
+	class server_dlg;
 }
 
-class ServerDlg : public QDialog
-{
-        Q_OBJECT;
+class ServerDlg : public QDialog {
+	Q_OBJECT;
+
 public:
-        ServerDlg ( QWidget* parent = 0 );
-        ~ServerDlg();
+	ServerDlg ( QWidget* parent = 0 );
+	~ServerDlg();
+
 private slots:
-        void onQuestionBtn();
-        void onTimeBtn();
-        void onStartBtn();
-        void onStopBtn();
-        void onPauseBtn();
-        void onRoundChangeBtn();
-        void onQuitBtn();
-        void newContestant ( ContestantConnection* cc );
-        void badClient ( TempConnection* tc );
-        void contestantDisconnect ( ContestantConnection* cc );
+	void onQuestionBtn();
+	void onTimeBtn();
+	void onStartBtn();
+	void onStopBtn();
+	void onPauseBtn();
+	void onRoundChangeBtn();
+	void onQuitBtn();
+	void newContestant ( ContestantConnection* cc );
+	void badClient ( TempConnection* tc );
+	void contestantDisconnect ( ContestantConnection* cc );
+	void onAuthenticate( ContestantConnection* cc, const QString& username );
+	void onAnswerSubmit( ContestantConnection* cc, int round, const AnswerData& data );
+
 private:
-        void writeLog ( const QString& s );
-        QString log;
-        Ui::server_dlg* m_dlg;
-        ServerNetwork* m_server;
-        vector<QString> m_questions;
+	void writeLog ( const QString& s );
+	QString log;
+	Ui::server_dlg* m_dlg;
+	ServerNetwork* m_server;
+	vector<QString> m_questions;
 };
 
 #endif // SERVER_H

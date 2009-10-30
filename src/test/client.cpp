@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 using namespace std;
 
 ClientDlg::ClientDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::client_dlg ) {
+	m_round = 1;
 	m_dlg->setupUi ( this );
 	connect ( m_dlg->connect_btn, SIGNAL ( clicked() ), this, SLOT ( onConnectBtn() ) );
 	connect ( m_dlg->clear_btn, SIGNAL ( clicked() ), this, SLOT ( onClearBtn() ) );
@@ -49,6 +50,7 @@ ClientDlg::~ClientDlg() {
 void ClientDlg::onContestStateChange ( int round, CONTEST_STATUS s ) {
 	writeLog ( QString ( "Current round is %1 and state is %2" ).arg ( round ).arg ( s ) );
 	//get the question data
+	m_round = round;
 	m_net->qDataRequest ( round );
 }
 
@@ -57,9 +59,21 @@ void ClientDlg::onQData ( const QString& xml ) {
 	QString buffer = m_dlg->log_tedt->toPlainText();
 	buffer += "Q: " + xml + "\n";
 	m_dlg->log_tedt->setText ( buffer );
-	// try submitting
-	// TODO: modify this
-	// m_net->aDataSend ( ans );
+
+	//construct the answer
+	Answer temp;
+	temp.ans_type = Question::CHOOSE_ONE;
+	temp.multi_choice.push_back( 1 );
+	AnswerData ans;
+	ans.push_back( temp );
+	temp.multi_choice.clear();
+	temp.multi_choice.push_back( 4 );
+	ans.push_back( temp );
+	temp.multi_choice.clear();
+	temp.ans_type = Question::IDENTIFICATION;
+	temp.id_answer = "Hello";
+	ans.push_back( temp );
+	m_net->aDataSend ( m_round, ans );
 }
 
 void ClientDlg::onAData ( bool result ) {

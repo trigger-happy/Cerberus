@@ -21,34 +21,37 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtNetwork>
 #include "net/contestant_net.h"
 
-namespace Ui
-{
-class client_dlg;
+namespace Ui {
+
+	class client_dlg;
 }
 
-class ClientDlg : public QDialog
-{
-        Q_OBJECT;
+class ClientDlg : public QDialog {
+	Q_OBJECT;
+
 public:
-        ClientDlg ( QWidget* parent = 0 );
-        ~ClientDlg();
+	ClientDlg ( QWidget* parent = 0 );
+	~ClientDlg();
+
 private slots:
-        void writeLog ( const QString& s );
-        void onClearBtn();
-        void onAuthReply ( bool result );
-        void onConnectBtn();
-        void onConnect();
-        void onDisconnect();
-        void onError ( QAbstractSocket::SocketError error );
-        void onContestError ( ERROR_MESSAGES err );
-        void onQData ( const QString& xml );
-        void onAData ( bool result );
-        void onContestStateChange ( int round, CONTEST_STATUS s );
-		void onQuestionChange(ushort q, ushort time, QUESTION_STATUS status);
-		void onContestTimeChange(ushort time);
+	void writeLog ( const QString& s );
+	void onClearBtn();
+	void onAuthReply ( bool result );
+	void onConnectBtn();
+	void onConnect();
+	void onDisconnect();
+	void onError ( QAbstractSocket::SocketError error );
+	void onContestError ( ERROR_MESSAGES err );
+	void onQData ( const QString& xml );
+	void onAData ( bool result );
+	void onContestStateChange ( int round, CONTEST_STATUS s );
+	void onQuestionChange( ushort q, ushort time, QUESTION_STATUS status );
+	void onContestTimeChange( ushort time );
+
 private:
-        ContestantNetwork* m_net;
-        Ui::client_dlg* m_dlg;
+	ContestantNetwork* m_net;
+	Ui::client_dlg* m_dlg;
+	int m_round;
 };
 
 #endif
