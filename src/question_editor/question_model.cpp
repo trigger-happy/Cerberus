@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "iostream"
 #include "question_model.h"
 
+#define CHOICES 4
 #define ENTRIES 5
 
 using namespace std;
@@ -187,17 +188,22 @@ void QuestionModel::getFullQuestion(int index, Question* q)
 			q->type=Question::CHOOSE_ANY;
 	}
 	//for answerkey
-	for (int ctr=0;ctr<ENTRIES;ctr++)
+	
+	if (q->type==Question::IDENTIFICATION)
 	{
-		Question::AnswerKeyEntry akey(ans[ctr],cheat[ctr]);
-		if (q->type==Question::IDENTIFICATION && ans[ctr]!="")
-			akey.is_answer=true;
-		if (ctr<4)
-			q->answer_key.push_back(akey);
-		else
+		for(int ctr=0;ctr<ENTRIES;ctr++)
 		{
-			if (round > 2)
+			Question::AnswerKeyEntry akey(ans[ctr],true);
+			if (ans[ctr]!="")
 				q->answer_key.push_back(akey);
+		}
+	}
+	else
+	{ 
+		for (int ctr=0;ctr<CHOICES;ctr++)
+		{
+			Question::AnswerKeyEntry akey(ans[ctr],cheat[ctr]);
+			q->answer_key.push_back(akey);
 		}
 	}
 	
@@ -212,57 +218,44 @@ void QuestionModel::feedData(StageData sd)
 	for(int ctr=0;ctr<sd.questions.size();ctr++)
 	{
 		Question q=sd.questions[ctr];
-		QList<QStandardItem *> temp;
-		
+		QList<QStandardItem*> temp;
 		temp.append(new QStandardItem(q.question)); //question
-		
-		for (int cctr=0;cctr<q.answer_key.size();cctr++)
-		{
-			temp.append(new QStandardItem(q.answer_key[cctr].c));
-		}
-		
-		if(q.type==Question::IDENTIFICATION)
-		{
-			int empty=5-q.answer_key.size();
-			int count=1;
-			while (empty--)
-			{
-				cout << count++ << endl;
-				temp.append(new QStandardItem(""));
-			}
-		}
-		
-		if (round>2)
-		{
-			//temp.append(new QStandardItem(q.answer_key[4].c));
-		}
-		else
-		{
-			temp.append(new QStandardItem("")); // choice e
-		}
 		if (q.type==Question::IDENTIFICATION)
 		{
-			temp.append(new QStandardItem("00000"));
-		}
-		else
-		{
-			QString ans="00000";
 			
-			for (int ctr=0;ctr<q.answer_key.size();ctr++)
+			for (int cctr=0;cctr<q.answer_key.size();cctr++)
 			{
-				if (q.answer_key[ctr].is_answer)
-					ans.replace(ctr,1,"1");
+				temp.append(new QStandardItem(q.answer_key[cctr].c));
 			}
-			temp.append(new QStandardItem(ans));
+			while (temp.size()!=6)
+				temp.append(new QStandardItem(""));
+			temp.append(new QStandardItem("00000"));
+			temp.append(new QStandardItem(QString::number(q.score)));
+			temp.append(new QStandardItem(QString::number(q.time_limit)));
+			temp.append(new QStandardItem("1")); //type
+		}
+		else
+		{
+			for(int cctr=0;cctr<q.answer_key.size();cctr++)
+				temp.append(new QStandardItem(q.answer_key[cctr].c));
+			while (temp.size()!=6)
+				temp.append(new QStandardItem(""));
+			QString cheat="";
+			for(int cctr=0;cctr<q.answer_key.size();cctr++)
+			{
+				if (q.answer_key[cctr].is_answer)
+					cheat.append("1");
+				else
+					cheat.append("0");
+			}
+			while (cheat.length()!=5)
+				cheat.append("0");
+			temp.append(new QStandardItem(cheat));
+			temp.append(new QStandardItem(QString::number(q.score)));
+			temp.append(new QStandardItem(QString::number(q.time_limit)));
+			temp.append(new QStandardItem("0"));
 		}
 		
-		temp.append(new QStandardItem(QString::number(q.score))); // score
-		temp.append(new QStandardItem(QString::number(q.time_limit))); // time
-		QString type="0";
-		if (q.type==Question::IDENTIFICATION)
-			type="1";
-
-		temp.append(new QStandardItem(type));
 		QStandardItemModel::appendRow(temp);
 	}
 }
