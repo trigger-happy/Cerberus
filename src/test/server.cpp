@@ -28,7 +28,7 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 {
         //load up the question data
         for ( int i = 1; i <= 4; i++ ) {
-                QFile file ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
+                QFile file ( QString ( "resources/stage%1.xml" ).arg ( i ) );
                 file.open ( QIODevice::ReadOnly );
                 m_questions.push_back ( file.readAll() );
         }
