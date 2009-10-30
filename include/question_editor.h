@@ -118,6 +118,7 @@ private:
 	bool fully_updated[ROUNDS];
 protected:
 	void closeEvent(QCloseEvent*);
+	bool eventFilter(QObject* ob, QEvent* ev);
 };
 
 #endif
