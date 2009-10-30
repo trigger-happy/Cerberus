@@ -265,12 +265,12 @@ const GoogleOnceType GOOGLE_ONCE_INIT = 0;
 inline int GoogleOnceInit(GoogleOnceType* once_control,
                           void (*init_routine)(void)) {
   while (1) {
-    LONG prev = InterlockedCompareExchange(once_control, 1, 0);
+    LONG prev = InterlockedCompareExchange(const_cast<long *>(once_control), 1, 0);
     if (prev == 2) {            // We've successfully initted in the past.
       return 0;
     } else if (prev == 0) {     // No init yet, but we have the lock.
       (*init_routine)();
-      InterlockedExchange(once_control, 2);
+      InterlockedExchange(const_cast<long*>(once_control), 2);
       return 0;
     } else {                    // Someone else is holding the lock, so wait.
       assert(1 == prev);
