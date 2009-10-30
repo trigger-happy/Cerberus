@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 using namespace std;
 
 ContestantConnection::ContestantConnection ( QObject* parent, QTcpSocket* socket ) : QObject ( parent ) {
+	m_answer_capable = true;
 	m_hdr = NULL;
 	m_authenticated = false;
 	m_socket = socket;
@@ -136,22 +137,39 @@ void ContestantConnection::ready() {
 
 			if ( m_authenticated ) {
 				if ( m_con_status == CONTEST_RUNNING ) {
-					QString xml;
-					uchar hash[20];
-					in.readRawData ( ( char* ) hash, 20 );
-					in >> xml;
-					QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
-					QByteArray testhash2;
+					ushort round;
+					in >> round;
+					quint16 num_questions;
+					in >> num_questions;
 
-					for ( int i = 0; i < 20; i++ ) {
-						testhash2.push_back ( hash[i] );
+					AnswerData ans;
+
+					for ( int i = 0; i < num_questions; i++ ) {
+						Answer temp;
+						qint16 ans_info;
+						in >> ans_info;
+
+						if ( ans_info < 0 ) {
+							char* buffer = new char[ans_info*-1];
+							in.readRawData( buffer, ans_info* -1 );
+							temp.id_answer = buffer;
+							delete[] buffer;
+						} else {
+							for ( int j = 0; j < ans_info; j++ ) {
+								ushort choice;
+								in >> choice;
+								temp.multi_choice.push_back( choice );
+							}
+						}
+
+						ans.push_back( temp );
 					}
 
-					if ( testhash == testhash2 ) {
-						// TODO: insert code for checker here
-						sendAReply ( true );
+					if ( m_answer_capable ) {
+						emit onAnswerSubmission( round, ans );
+						sendAReply( true );
 					} else {
-						sendAReply ( false );
+						sendAReply( false );
 					}
 				} else {
 					errorReply ( ERR_CONTEST_STOPPED );

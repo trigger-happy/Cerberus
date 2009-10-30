@@ -17,6 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <cassert>
 #include <iostream>
+#include "data_types.h"
 #include "net/contestant_net.h"
 
 using namespace std;
@@ -113,35 +114,42 @@ bool ContestantNetwork::qDataRequest ( int round ) {
 	return true;
 }
 
-bool ContestantNetwork::aDataSend ( const QString& xml ) {
+bool ContestantNetwork::aDataSend ( ushort round, const AnswerData& ans ) {
 	if ( !m_socket->isWritable() ) {
 		return false;
 	}
 
-	// construct the packet
-	QByteArray block;
+	QByteArray block, tempblk;
 
 	QDataStream out ( &block, QIODevice::WriteOnly );
-
 	out.setVersion ( QDataStream::Qt_4_5 );
-
+	QDataStream out2( &block, QIODevice::WriteOnly );
+	out2.setVersion( QDataStream::Qt_4_5 );
+	// construct the header
 	p_header hdr;
-
 	hdr.command = QRY_ANSWER_SUBMIT;
 
-	// construct the payload
-	QByteArray hash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+	//construct the data that we're suppose to send
+	out2 << ( ushort ) round;
+	out2 << ( quint16 ) ans.size();
 
-	hdr.length = hash.size() + xml.size();
+	for ( int i = 0; i < ans.size(); i++ ) {
+		if ( ans[i].ans_type == Question::IDENTIFICATION ) {
+			out2 << ( qint16 ) ans.size()* -1;
+			out2 << ans[i].id_answer;
+		} else {
+			out2 << ( qint16 ) ans[i].multi_choice.size();
 
-	// write it
+			for ( int j = 0; j << ans[i].multi_choice.size(); j++ ) {
+				out2 << ( ushort ) ans[i].multi_choice[j];
+			}
+		}
+	}
+
+	hdr.length = tempblk.size();
+
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
-
-	out.writeRawData ( hash.data(), hash.size() );
-
-	out << xml;
-
-	// send it
+	out << tempblk;
 	m_socket->write ( block );
 
 	return true;

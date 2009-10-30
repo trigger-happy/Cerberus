@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtNetwork/QtNetwork>
 #include "error_defs.h"
 #include "protocol.h"
+#include "data_types.h"
 
 /*!
 \brief This class provides a simple communication layer with the server.
@@ -87,10 +88,11 @@ public:
 	/*!
 	Send the answer data to the server. Use onAData signal for the
 	server's response.
-	\param xml QString containing the xml answer data to be sent.
+	\param round The current round number [1-4].
+	\param ans AnswerData containing the answers for all the questions.
 	\return true if the data was sent, false otherwise.
 	*/
-	bool aDataSend ( const QString& xml );
+	bool aDataSend ( ushort round, const AnswerData& ans );
 
 	/*!
 	Request for the contest time from the server. Use onContestTime
