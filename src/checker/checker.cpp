@@ -1,18 +1,24 @@
-//3 rounds
-//each round has 3 categories of questions
-//each category has its own weight
-//each correct answer for the first round has a corresponding score
-//for the second round, muliple answers are possible
-//dvide the weight by the number of correct answers
-//if a team gets all the correct answers, and only the correct answers, they get the full weight
-//if not, if the answers selected are all correct, but they are incomplete, they will get only the fraction of the weight based
-//on the number of correct answers they got for the question
-//if at least one of the selected answers is wrong, no credit will be given
-//the third round is the same as the second round, except that there will be an option, "None of the above", wherein the question
-//must be given a correct answer that is not in the choices
+/*
+Copyright (C) 2009 Niko Banasihan and Vernon Gutierrez
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 #include <iostream>
-#include <xml_util.h>
-#include "checker.h"
+#include <util/xml_util.h>
+#include <data_types.h>
+#include <checker.h>
 
 using namespace std;
 
@@ -26,94 +32,61 @@ Checker::~Checker()
 }
 
 double
-Checker::check(int round, AnswerData& answerData)
+Checker::check(int round, QuestionData& qdata, AnswerData& answerData)
 {
-	switch(round)
+	double score;
+	if(round == 1)
 	{
-		case 1:
-		return checkR1(answerData);
-		case 2:
-		return checkR2(answerData);
-		case 3:
-		return checkR3(answerData);
-		case 4:
-		return checkR4(answerData);
-		default:
-		//throw an exception
+		AnswerData *answerKey = vint[round];
+		for(int i=0; i<answerKey->size(); i++)
+		{
+			if(answerData[i].compare(answerKey[i]))
+				score+=qdata.questions[i].score;
+		}
 	}
+	else if (round == 2)
+	{
+		AnswerData *answerKey = vint[round];
+		/*
+			Put the code for calculating the score
+			for the second round here.
+		*/
+		double den;
+		double num;
+		for(int i=0; i<answerKey->end(); i++)
+		{
+			den=q.data.questions[i].score;
+			score+=num/den;
+		}
+
+		
+	}
+	else if (round == 3 || round == 4)
+	{
+		/*
+			Put the code for calculating the score
+			for the third and fourth round here.
+		*/
+	}
+	else
+	{
+		// throw an exception
+	}
+	
+	return score;
 }
 
 void
 Checker::setAnswerKey(int round, AnswerData& answerKey)
 {
-	switch(round)
+	if(round > 0 && round <= 4)
 	{
-		case 1:
-		this.answerKey1 = answerKey;
-		break;
-		case 2:
-		this.answerKey2 = answerKey;
-		break;
-		case 3:
-		this.answerKey3 = answerKey;
-		break;
-		case 4:
-		this.answerKey4 = answerKey;
-		default:
-		// throw an exception
-		
+		vint.push_back(pair<int, AnswerData>(round, answerKey) );
+	}
+	else
+	{
+		// throw and exception
 	}
 }
 
-/*
-	checkR1(AnswerData&)
-	The checker for this one will receive
-	a set of values, and the score is the total
-	score for the round.
-*/
 
-double 
-Checker::checkR1(AnswerData& answerData)
-{
-	
-	
-}
-
-/*
-	checkR2(AnswerData&)
-	The checker for this one is open to
-	the possibility of two or more answers
-	in the questions. So, the procedure is
-	quite different.
-*/
-double
-Checker::checkR2(AnswerData& answerData)
-{
-	
-}
-
-
-/*
-	checkR3(AnswerData&)
-	The checker for this one receives one
-	question at a time, while maintaining
-	the mechanics of the previous round.
-*/
-double
-Checker::checkR3(AnswerData& answerData)
-{
-	
-}
-
-/*
-	checkR4(AnswerData&)
-	This is the same as the third round, except
-	that the tie-breaker is really just good
-	for a few questions.
-
-*/
-double
-Checker::checkR4(AnswerData& answerData)
-{
-	
-}

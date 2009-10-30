@@ -12,21 +12,19 @@ ConfigEditor::ConfigEditor(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::config_editor)
 {
     ui->setupUi(this);
+
+    //connects signal to slot
     connect( ui->save, SIGNAL(pressed()), this, SLOT(save()) );
     connect( ui->serverPort1, SIGNAL( textChanged(QString)), this, SLOT(Port1Changed()) );
     connect( ui->serverPort2, SIGNAL( textChanged(QString)), this, SLOT(Port2Changed()) );
-    //connect(ui->line1, SIGNAL(textChanged(QString)), this, SLOT(TextChange()) );
-    //connect(ui->line2, SIGNAL(textChanged(QString)), this, SLOT(TextChange()) );
 }
-
-//void ConfigEditor::TextChange() {
-    //ui->label->setText( ui->line1->text() + " " + ui->line2->text());
-//}
 
 ConfigEditor::~ConfigEditor()
 {
     delete ui;
 }
+
+//line edit1 is changed, change line edit2 as well. And vice versa
 void ConfigEditor:: Port1Changed() {
     ui->serverPort2->setText( ui->serverPort1->text() );
 
@@ -37,6 +35,7 @@ void ConfigEditor:: Port2Changed() {
 
 }
 
+//shows a msg box asking for confirmation to overwrite file
 bool ConfigEditor::askConfirmation( QString& s ) {
     QMessageBox msgBox;
     msgBox.setText(QString("The File for %1 Already Exists.").arg(s));
@@ -56,6 +55,7 @@ bool ConfigEditor::askConfirmation( QString& s ) {
     }
 }
 
+//shows a msg box
 bool ConfigEditor::showInfo() {
     QMessageBox msgBox;
      msgBox.setText("Some Files Doesn't Exist.");
@@ -65,9 +65,12 @@ bool ConfigEditor::showInfo() {
      int ret = msgBox.exec();
 
 }
+
+//Saves to the specific paths given by the user.
+
 void ConfigEditor::save() {
-    //QString *error = new QString("");
-    //bool isEmpty = true;
+
+    /*Resets Labels*/
     ui->error->setText("");
     ui->tabWidget_2->setTabText(0, "Round1");
     ui->tabWidget_2->setTabText(1, "Round2");
@@ -84,6 +87,7 @@ void ConfigEditor::save() {
     ui->label_a4->setText("Answer File");
 
 
+    /*Gets user inputted data from Line Edit*/
     QString port(ui->serverPort1->text());
     QString ip( ui->serverIP->text());
     QString server( ui->serverConf->text() );
@@ -104,6 +108,7 @@ void ConfigEditor::save() {
 
     bool cont = true;
 
+    //checks if server config path exists
     QFile file ( server );
     if( file.exists() ) {
         QString temp("server");
@@ -111,6 +116,7 @@ void ConfigEditor::save() {
 
     }
     
+    //checks if sql and question file paths exist
     if( cont ) {
         
         QFile sqFile(sql);
@@ -181,6 +187,7 @@ void ConfigEditor::save() {
         showInfo();
     }
 
+    //check if contestant config path exists
     if( cont ) {
         QFile file2 ( contestant );
         if( file2.exists() ) {
@@ -189,6 +196,8 @@ void ConfigEditor::save() {
 
         }
     }
+
+    //check if admin config path exists
     if( cont ) {
         QFile file3 ( admin );
         if( file3.exists() ) {
@@ -198,6 +207,7 @@ void ConfigEditor::save() {
         }
     }
 
+    //check if presenter config path exists
     if( cont ) {
            QFile file4 ( presenter );
         if( file4.exists() ) {
@@ -207,6 +217,11 @@ void ConfigEditor::save() {
         }
     }
 
+    /*Creates the config structures for specific paths.
+     *ClientConfig, PresenterConfig, AdminConfig.
+     *StageDatas and ServerConfig
+     *Finally saves in the end using xml_util methods
+     */
     if( cont ) {
         ui->error->setText( "OK" );
         XmlUtil& xu = XmlUtil::getInstance();
@@ -250,7 +265,7 @@ void ConfigEditor::save() {
         sc->stage_data.push_back(*s4);
 
         xu.writeNetConfig ( *pc, presenter );
-        //xu.writeClientConfig ( *cc, contestant );
+        xu.writeClientConfig ( *cc, contestant );
         xu.writeNetConfig ( *ac, admin );
         xu.writeServerConfig ( *sc, server );
     }
@@ -259,6 +274,8 @@ void ConfigEditor::save() {
     }
     //ui->error->setText(*error);
 }
+
+/*Load IP, Port and question paths according to input paths*/
 void ConfigEditor::load() {
     ui->error->setText( "" );
     XmlUtil& xu = XmlUtil::getInstance();
