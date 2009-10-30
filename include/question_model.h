@@ -44,8 +44,8 @@ public:
 	int getTime(int index);
 	int getScore(int index);
 	void updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString time,QString score,QString type);
-	//void getFullQuestion(int index, Question* q);
-	//void feedData(QuestionData qd,AnswerData ad);
+	void getFullQuestion(int index, Question* q);
+	void feedData(StageData sd);
 };
 
 #endif
