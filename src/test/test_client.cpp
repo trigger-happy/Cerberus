@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include <QtGui/QApplication>
 #include <cassert>
-#include "client.h"
+#include "test_client.h"
 #include "ui_client.h"
 
 using namespace std;
