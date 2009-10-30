@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #ifndef SERVER_H
 #define SERVER_H
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <QtNetwork>
 #include "net/server_net.h"
 
@@ -26,29 +26,43 @@ namespace Ui
 class server_dlg;
 }
 
-class ServerDlg : public QDialog
+class ServerNetwork;
+
+class Server : public QDialog
 {
         Q_OBJECT;
 public:
-        ServerDlg ( QWidget* parent = 0 );
-        ~ServerDlg();
+		Server ( QWidget* parent = 0 );
+		~Server();
 private slots:
-        void onQuestionBtn();
-        void onTimeBtn();
-        void onStartBtn();
-        void onStopBtn();
-        void onPauseBtn();
-        void onRoundChangeBtn();
-        void onQuitBtn();
-        void newContestant ( ContestantConnection* cc );
-        void badClient ( TempConnection* tc );
-        void contestantDisconnect ( ContestantConnection* cc );
+        /*!
+        Called when there is a new connection
+        */
+		void newContestant( ContestantConnection* cc );
+
+		/*
+		Called when a client connects but is not a Cerberus client.
+		  */
+		void badClient ( TempConnection* tc );
+		/*
+		Called when there is a disconnection
+		*/
+		void contestantDisconnect( ContestantConnection* cc );
+
+		void onAuthentication( ContestantConnection* cc );
+        /*
+        Called when the stop button is pressed
+        */
+		void stopContest();
 private:
-        void writeLog ( const QString& s );
-        QString log;
+		QString log;
+		int num;
+		ServerNetwork* m_network;
+		ServerConfig m_config;
         Ui::server_dlg* m_dlg;
-        ServerNetwork* m_server;
-        vector<QString> m_questions;
+		vector<QString> m_questions;
+		vector<QString> m_answers;
+
 };
 
-#endif // SERVER_H
+#endif //SERVER_H

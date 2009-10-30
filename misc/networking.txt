@@ -26,8 +26,14 @@ contestant-server network:
 		client: QRY_QUESTION_REQUEST <quint16 round number>
 		server: INF_QUESTION_DATA <xml data>
 
-    round 1,2,3 answer submit
-		client: QRY_ANSWER_SUBMIT <xml data>
+    round 1,2,3,4 answer submit
+		client: QRY_ANSWER_SUBMIT <qushort round number> <quint16 number of questions>
+			from 1 to (number of questions)
+				<qint16 answer_info> // if negative, identification, positive is multiple choice(s)
+				if answer_info < 0
+					<ubyte[] answer string> // the size of this string is the absolute value of answer_info
+				if answer_info > 0
+					<ushort choice> // this is repeated (answer_info) times
 		server: INF_ANSWER_REPLY <quint16 result> // 1 or 0, nothing more
     
     server contest state change
@@ -81,6 +87,7 @@ presenter-server network:
 	answer show (round 3 and 4):
 		server: PSN_SHOW_ANSWER <char[] answer>
 
+// no longer going to be implemented for 1.0
 admin-server network:
     // nothing here yet.
     contest state request:

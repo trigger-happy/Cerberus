@@ -16,8 +16,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-
+#include "iostream"
 #include "question_model.h"
+
+#define CHOICES 4
+#define ENTRIES 5
+
+using namespace std;
 
 QuestionModel::QuestionModel(int round) : QStandardItemModel(0,10)
 {
@@ -153,65 +158,104 @@ bool QuestionModel::isIdentification(int index)
 	return (QStandardItemModel::item(index,9)->text().toInt() != 0);
 }
 
-/*void QuestionModel::getFullQuestion(int index, Question* q)
+void QuestionModel::getFullQuestion(int index, Question* q)
 {
-	q->number=index+1;
+	q->id=QString::number(index+1);
 	q->question=getQuestion(index);
-	q->choices.push_back(getA(index));
-	q->choices.push_back(getB(index));
-	q->choices.push_back(getC(index));
-	q->choices.push_back(getD(index));
-	//q->choices[1]=getA(index);
-	//q->choices[2]=getB(index);
-	//q->choices[3]=getC(index);
-	//q->choices[4]=getD(index);
-	q->score=getScore(index);
-	q->time=getTime(index);
 	
-	if (round>2)
+	QString ans[ENTRIES];
+	ans[0]=getA(index);
+	ans[1]=getB(index);
+	ans[2]=getC(index);
+	ans[3]=getD(index);
+	ans[4]=getE(index);
+	
+	bool* cheat=new bool[ENTRIES];
+	getAnskey(index,cheat);
+	
+	//determine type
+	if (round==1)
+		q->type=Question::CHOOSE_ONE;
+	else if (round==2)
+		q->type=Question::CHOOSE_ANY;
+	else
 	{
-		q->choices.push_back(getC(index));
-		//q->choices[5]=getE(index);
+		if(isIdentification(index))
+		{
+			q->type=Question::IDENTIFICATION;
+		}
+		else
+			q->type=Question::CHOOSE_ANY;
 	}
+	//for answerkey
+	
+	if (q->type==Question::IDENTIFICATION)
+	{
+		for(int ctr=0;ctr<ENTRIES;ctr++)
+		{
+			Question::AnswerKeyEntry akey(ans[ctr],true);
+			if (ans[ctr]!="")
+				q->answer_key.push_back(akey);
+		}
+	}
+	else
+	{ 
+		for (int ctr=0;ctr<CHOICES;ctr++)
+		{
+			Question::AnswerKeyEntry akey(ans[ctr],cheat[ctr]);
+			q->answer_key.push_back(akey);
+		}
+	}
+	
+	q->score=getScore(index);
+	q->time_limit=getTime(index);
+	
+	delete cheat;
 }
 
-void QuestionModel::feedData(QuestionData qd,AnswerData ad)
+void QuestionModel::feedData(StageData sd)
 {
-	for(int ctr=0;ctr<qd.questions.size();ctr++)
+	for(int ctr=0;ctr<sd.questions.size();ctr++)
 	{
-		Question q=qd.questions[ctr];
-		QList<QStandardItem *> temp;
+		Question q=sd.questions[ctr];
+		QList<QStandardItem*> temp;
 		temp.append(new QStandardItem(q.question)); //question
-		temp.append(new QStandardItem(q.choices[0])); // choice a
-		temp.append(new QStandardItem(q.choices[1])); // choice b
-		temp.append(new QStandardItem(q.choices[2])); // choice c
-		temp.append(new QStandardItem(q.choices[3])); // choice d
-		if (round>2)
+		if (q.type==Question::IDENTIFICATION)
 		{
-			temp.append(new QStandardItem(q.choices[4]));
+			
+			for (int cctr=0;cctr<q.answer_key.size();cctr++)
+			{
+				temp.append(new QStandardItem(q.answer_key[cctr].c));
+			}
+			while (temp.size()!=6)
+				temp.append(new QStandardItem(""));
+			temp.append(new QStandardItem("00000"));
+			temp.append(new QStandardItem(QString::number(q.score)));
+			temp.append(new QStandardItem(QString::number(q.time_limit)));
+			temp.append(new QStandardItem("1")); //type
 		}
 		else
 		{
-			temp.append(new QStandardItem("")); // choice e
+			for(int cctr=0;cctr<q.answer_key.size();cctr++)
+				temp.append(new QStandardItem(q.answer_key[cctr].c));
+			while (temp.size()!=6)
+				temp.append(new QStandardItem(""));
+			QString cheat="";
+			for(int cctr=0;cctr<q.answer_key.size();cctr++)
+			{
+				if (q.answer_key[cctr].is_answer)
+					cheat.append("1");
+				else
+					cheat.append("0");
+			}
+			while (cheat.length()!=5)
+				cheat.append("0");
+			temp.append(new QStandardItem(cheat));
+			temp.append(new QStandardItem(QString::number(q.score)));
+			temp.append(new QStandardItem(QString::number(q.time_limit)));
+			temp.append(new QStandardItem("0"));
 		}
-		
-		pair<AnswerData::iterator,AnswerData::iterator> ret;
-		AnswerData::iterator it;
-		ret=ad.equal_range(ctr+1);
-		QString cheat="00000";
-		for (it=ret.first;it!=ret.second;it++)
-		{
-			int index;
-			index=(*it).second.toInt();
-			if (index==0) index=5;
-//			cheat.replace(index-1,1,"1");
-		}
-		
-		temp.append(new QStandardItem(cheat));
-		
-		temp.append(new QStandardItem(QString::number(q.score))); // score
-		temp.append(new QStandardItem(QString::number(q.time))); // time
 		
 		QStandardItemModel::appendRow(temp);
 	}
-}*/
+}

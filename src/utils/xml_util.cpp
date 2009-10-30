@@ -159,11 +159,11 @@ Question XmlUtil::parseIdentificationQuestion(QXmlStreamReader &reader) {
 			} else if ( reader.name() == "a" )  {
 				q.answer_key.push_back(Question::AnswerKeyEntry(reader.readElementText(), true));
 			} else if ( reader.name() == "identification" ) {
-				throw InvalidXmlException("'choose' tag found inside 'choose'.", reader);
+				throw InvalidXmlException("'identification' tag found inside 'identification'.", reader);
 			} else {
 				//barf?
 			}
-		} else if ( reader.isEndElement() && reader.name() == "choose" )
+		} else if ( reader.isEndElement() && reader.name() == "identification" )
 			break;
 	}
 	return q;
