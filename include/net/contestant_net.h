@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtNetwork/QtNetwork>
 #include "error_defs.h"
 #include "protocol.h"
+#include "data_types.h"
 
 /*!
 \brief This class provides a simple communication layer with the server.
@@ -28,168 +29,173 @@ The intended design for this class is to hide away most of the core networking
 stuff from the user. The class aims for a non-blocking approach through the
 use of Qt's signals and slots.
 */
-class ContestantNetwork : public QObject
-{
-        Q_OBJECT;
+
+class ContestantNetwork : public QObject {
+	Q_OBJECT;
+
 public:
-        /*!
-        Constructor
-        \param parent A pointer to a QObject to be set at this class' parent.
-        */
-        ContestantNetwork ( QObject* parent = 0 );
+	/*!
+	Constructor
+	\param parent A pointer to a QObject to be set at this class' parent.
+	*/
+	ContestantNetwork ( QObject* parent = 0 );
 
-        /*!
-        Destructor
-        */
-        virtual ~ContestantNetwork();
+	/*!
+	Destructor
+	*/
+	virtual ~ContestantNetwork();
 
-        /*!
-        Connect to the server using the specified connection info.
-        \param ip QString containing the ip address.
-        \param port integer containing the port.
-        */
-        void connectToHost ( const QString& ip, quint16 port );
+	/*!
+	Connect to the server using the specified connection info.
+	\param ip QString containing the ip address.
+	\param port integer containing the port.
+	*/
+	void connectToHost ( const QString& ip, quint16 port );
 
-        /*!
-        Disconnect from the host.
-        */
-        void disconnectFromHost();
+	/*!
+	Disconnect from the host.
+	*/
+	void disconnectFromHost();
 
-        /*!
-        Returns the authentication status of the client.
-        \return The authentication status.
-        */
-        inline bool isAuthenticated() {
-                return m_authenticated;
-        }
+	/*!
+	Returns the authentication status of the client.
+	\return The authentication status.
+	*/
+	inline bool isAuthenticated() {
+		return m_authenticated;
+	}
 
-        /*!
-        Attempt to authenticate (use the onAuthenticate signal to get the response).
-        \param user_name QString containing the user name.
-        \param pw QString containing the password.
-        \return true if the data was sent, false otherwise.
-        */
-        bool authenticate ( const QString& user_name, const QString& pw );
+	/*!
+	Attempt to authenticate (use the onAuthenticate signal to get the response).
+	\param user_name QString containing the user name.
+	\param pw QString containing the password.
+	\return true if the data was sent, false otherwise.
+	*/
+	bool authenticate ( const QString& user_name, const QString& pw );
 
-        /*!
-        Request for the current contest state.
-        */
-        void getContestState();
+	/*!
+	Request for the current contest state.
+	*/
+	void getContestState();
 
-        /*!
-        Request for the question data from the server. Use onQdata signal
-        for the xml data.
-        \return true if the data was sent, false otherwise.
-        */
-        bool qDataRequest ( int round );
+	/*!
+	Request for the question data from the server. Use onQdata signal
+	for the xml data.
+	\return true if the data was sent, false otherwise.
+	*/
+	bool qDataRequest ( int round );
 
-        /*!
-        Send the answer data to the server. Use onAData signal for the
-        server's response.
-        \param xml QString containing the xml answer data to be sent.
-        \return true if the data was sent, false otherwise.
-        */
-        bool aDataSend ( const QString& xml );
+	/*!
+	Send the answer data to the server. Use onAData signal for the
+	server's response.
+	\param round The current round number [1-4].
+	\param ans AnswerData containing the answers for all the questions.
+	\return true if the data was sent, false otherwise.
+	*/
+	bool aDataSend ( ushort round, const AnswerData& ans );
 
-        /*!
-        Request for the contest time from the server. Use onContestTime
-        signal for the server's response
-        \return true if the data was sent, false otherwise.
-        */
-        bool getContestTime();
+	/*!
+	Request for the contest time from the server. Use onContestTime
+	signal for the server's response
+	\return true if the data was sent, false otherwise.
+	*/
+	bool getContestTime();
 
 protected slots:
 
-        /*!
-        Called internally when the socket connects successfuly.
-        */
-        void connected();
+	/*!
+	Called internally when the socket connects successfuly.
+	*/
+	void connected();
 
-        /*!
-        Called internally when the socket disconnects
-        */
-        void disconnected();
+	/*!
+	Called internally when the socket disconnects
+	*/
+	void disconnected();
 
-        /*!
-        Called internally when there's an error.
-        \param err The socket error
-        */
-        void error ( const QAbstractSocket::SocketError& err );
+	/*!
+	Called internally when there's an error.
+	\param err The socket error
+	*/
+	void error ( const QAbstractSocket::SocketError& err );
 
-        /*!
-        Called internally when there's data to be read in the socket.
-        */
-        void ready();
+	/*!
+	Called internally when there's data to be read in the socket.
+	*/
+	void ready();
+
 signals:
 
-        /*!
-        Signal for disconnections.
-        */
-        void onDisconnect();
+	/*!
+	Signal for disconnections.
+	*/
+	void onDisconnect();
 
-        /*!
-        Emitted when there's a change to the contest state or as a reply
-        from the server to our state request.
-        \param round The current round
-        \param status The current contest status
-        */
-        void onContestStateChange ( int round, CONTEST_STATUS status );
+	/*!
+	Emitted when there's a change to the contest state or as a reply
+	from the server to our state request.
+	\param round The current round
+	\param status The current contest status
+	*/
+	void onContestStateChange ( int round, CONTEST_STATUS status );
 
-        /*!
-        Emitted when there's an error with the connection.
-        \param err SocketError
-        */
-        void onError ( const QAbstractSocket::SocketError& err );
+	/*!
+	Emitted when there's an error with the connection.
+	\param err SocketError
+	*/
+	void onError ( const QAbstractSocket::SocketError& err );
 
-        /*!
-        Emitted when there's a contest error.
-        \param err ERROR_MESSAGES indicating the error.
-        */
-        void onContestError ( ERROR_MESSAGES err );
+	/*!
+	Emitted when there's a contest error.
+	\param err ERROR_MESSAGES indicating the error.
+	*/
+	void onContestError ( ERROR_MESSAGES err );
 
-        /*!
-        Signal emitted when the connection to the server has been established.
-        */
-        void onConnect();
+	/*!
+	Signal emitted when the connection to the server has been established.
+	*/
+	void onConnect();
 
-        /*!
-        Emitted when there's an authentication reply from the server.
-        \param result true if we're in, false if not
-        */
-        void onAuthenticate ( bool result );
+	/*!
+	Emitted when there's an authentication reply from the server.
+	\param result true if we're in, false if not
+	*/
+	void onAuthenticate ( bool result );
 
-        /*!
-        Emitted when the question data has arrived.
-        \param xml Question data in xml format
-        */
-        void onQData ( const QString& xml );
+	/*!
+	Emitted when the question data has arrived.
+	\param xml Question data in xml format
+	*/
+	void onQData ( const QString& xml );
 
-        /*!
-        Emitted when server replies to our submission.
-        \param result true on success, false on failure
-        */
-        void onAData ( bool result );
+	/*!
+	Emitted when server replies to our submission.
+	\param result true on success, false on failure
+	*/
+	void onAData ( bool result );
 
-        /*!
-        Emitted when server replies to our request for the current
-        contest time.
-        \param time unsigned int containing the contest time.
-        */
-        void onContestTime ( ushort time );
+	/*!
+	Emitted when server replies to our request for the current
+	contest time.
+	\param time unsigned int containing the contest time.
+	*/
+	void onContestTime ( ushort time );
 
-        /*!
-        Emitted when the question for round 3/4 changes in status.
-        This is either when the question changes, the timer changes
-        or when the timer is started/stopped/paused.
-        \param qnum The question number.
-        \param time The time for this question.
-        \param status The current status for this question.
-        */
-        void onQuestionStateChange ( ushort qnum, ushort time, QUESTION_STATUS status );
+	/*!
+	Emitted when the question for round 3/4 changes in status.
+	This is either when the question changes, the timer changes
+	or when the timer is started/stopped/paused.
+	\param qnum The question number.
+	\param time The time for this question.
+	\param status The current status for this question.
+	*/
+	void onQuestionStateChange ( ushort qnum, ushort time, QUESTION_STATUS status );
+
 protected:
-        QTcpSocket* m_socket;
-        p_header* m_hdr;
-        bool m_authenticated;
+	QTcpSocket* m_socket;
+	p_header* m_hdr;
+	bool m_authenticated;
+
 private:
 };
 

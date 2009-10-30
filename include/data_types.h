@@ -142,6 +142,22 @@ struct Question {
 	}
 };
 
+/*!
+This struct represents an answer to a single question.
+ans_type determines which of the fields should be set.
+IDENTIFICATION: id_answer must have the answer data.
+CHOOSE_ONE or CHOOSE_ANY: multi_choice must contain the answer(s)
+*/
+struct Answer{
+	Question::Type ans_type;
+	// answer for identification
+	QString id_answer;
+	// answer for multiple choice
+	std::vector<ushort> multi_choice;
+};
+
+typedef std::vector<Answer> AnswerData;
+
 struct StageData {
 	StageData(){
 		contest_time = -1;

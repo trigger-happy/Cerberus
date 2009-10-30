@@ -486,14 +486,22 @@ void QEditor::update_question(int round)
 		if (round > 2) e=question_e[ptr]->text();
 		else e="";
 		QString anskey="";
-		if (question_ans_a[ptr]->isChecked()) anskey.append("1");
-		else anskey.append("0");
-		if (question_ans_b[ptr]->isChecked()) anskey.append("1");
-		else anskey.append("0");
-		if (question_ans_c[ptr]->isChecked()) anskey.append("1");
-		else anskey.append("0");
-		if (question_ans_d[ptr]->isChecked()) anskey.append("1");
-		else anskey.append("0");
+		if (question_ans_a[ptr]->isChecked()) 
+			anskey.append("1");
+		else 
+			anskey.append("0");
+		if (question_ans_b[ptr]->isChecked()) 
+			anskey.append("1");
+		else 
+			anskey.append("0");
+		if (question_ans_c[ptr]->isChecked()) 
+			anskey.append("1");
+		else 
+			anskey.append("0");
+		if (question_ans_d[ptr]->isChecked()) 
+			anskey.append("1");
+		else 
+			anskey.append("0");
 		
 		QString score=QString::number(question_score[ptr]->value());
 		QString time;
@@ -766,40 +774,28 @@ void QEditor::load()
 		return;
 	for (int ctr=0;ctr<4;ctr++)
 	{
-		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
-		//QuestionData qd;
-		if(fq.open(QIODevice::ReadOnly))
+		StageData sd;
+		QFile fs(file_prefix+QString::number(ctr+1)+".xml");
+		if(fs.open(QIODevice::ReadOnly))
 		{
-			QString xml_q=fq.readAll();
+			QString stage_xml=fs.readAll();
 			try {
-				//xml_util.readQuestionData(ctr+1,xml_q,qd);
+				xml_util.readStageData(stage_xml,sd);
 			} catch (exception e) {
+				//QString error=e.what();
 				QMessageBox notice;
-				notice.setWindowTitle("Notice - QEditor ^_^;");
-				notice.setText("^_^; i guess something went wrong while reading "+
-						file_prefix+QString::number(ctr+1)+"_q.xml");
+				notice.setWindowTitle("Ooops... - QEditor ^_^;");
+				notice.setText("i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+".xml");
+				notice.setDetailedText(e.what());
 				notice.exec();
+				continue;
 			}
 		}
 		
-		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
-		//AnswerData ad;
-		if (!fa.open(QIODevice::ReadOnly))
-		{
-			QString xml_a=fa.readAll();
-			try {
-				//xml_util.readAnswerData(ctr+1,xml_a,ad);
-			} catch (exception e) {
-				QMessageBox notice;
-				notice.setWindowTitle("Notice - QEditor");
-				notice.setText("^_^; i guess something went wrong while reading "+
-						file_prefix+QString::number(ctr+1)+"_a.xml");
-				notice.exec();
-			}
-		}
 		
-		//welcome[ctr]->setPlainText(qd.welcome_msg);
-		//roundmodel[ctr]->feedData(qd,ad);
+		roundmodel[ctr]->feedData(sd);
+		
 		this->setWindowTitle(file_prefix+".xgrp - QEditor");
 		
 		fully_updated[ctr]=true;
@@ -860,71 +856,49 @@ int QEditor::save()
 					QMessageBox notice;
 					notice.setWindowTitle("Notice - QEditor");
 					notice.setText("Changes of round "+QString::number(roundctr+1)+" won't be changed.");
-					//return;
+					continue;
 				}
 			}
 			//QuestionData rounddata;
 			//AnswerData ansdata;
 			StageData sd;
 			
-			QString xml_q;
-			QString xml_a;
+			QString stage_xml;
+			
 			int question_cnt=roundmodel[roundctr]->rowCount();
 			
-			//rounddata.welcome_msg=welcome[roundctr]->toPlainText();
-			//rounddata.contest_time=duration[roundctr]->value();
+			sd.welcome_msg=welcome[roundctr]->toPlainText();
+			sd.contest_time=duration[roundctr]->value();
 			
 			for (int qctr=0;qctr<question_cnt;qctr++)
 			{
 				Question temp;
-				//roundmodel[roundctr]->getFullQuestion(qctr,&temp);
+				roundmodel[roundctr]->getFullQuestion(qctr,&temp);
+				sd.questions.push_back(temp);
 				//rounddata.questions.push_back(temp);
-				
-				bool* cheat=new bool[5];
-				roundmodel[roundctr]->getAnskey(qctr,cheat);
-				for (int cctr=0;cctr<5;cctr++)
-				{
-					if (cheat[cctr])
-					{
-						QString temp=QString::number(cctr+1);
-						if (roundctr>1)
-							temp+=" "+roundmodel[roundctr]->getE(qctr);
-						//ansdata.insert(pair<int,QString>(qctr+1,temp));
-					}
-				}
-				delete cheat;
 			}
 			
+			//preprocess verification
 			
-			//uncomment this part if its completed;
-			
-			QFile file_q(file_prefix+QString::number(roundctr+1)+"_q.xml");
+			QFile file_q(file_prefix+QString::number(roundctr+1)+".xml");
 			if (!file_q.open(QIODevice::WriteOnly))
 				return -1;
 			else
 			{
 				QTextStream out(&file_q);
-				//xml_util.writeQuestionData(roundctr+1,rounddata,xml_q);
-				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_q
-				out << xml_q;
+				xml_util.writeStageData(sd,stage_xml);
+				out << stage_xml;
 			}
 			
-			QFile file_a(file_prefix+QString::number(roundctr+1)+"_a.xml");
-			if (!file_a.open(QIODevice::WriteOnly))
-				return -1;
-			else
-			{
-				QTextStream out(&file_a);
-				//xml_util.writeAnswerData(roundctr+1,ansdata,xml_a);
-				//out << "xml doc " << QString::number(roundctr+1); //replace w/ xml_a
-				out << xml_a;
-			}
 			fully_updated[roundctr]=true;
 		}
 		q_ui->statusBar->showMessage("File saved at "+file_prefix);
 		
 		if (fully_updated[0] && fully_updated[1] && fully_updated[2] && fully_updated[3])
+		{
+			this->setWindowTitle(file_prefix+".xgrp - QEditor");
 			return 0;
+		}
 		else
 			return 1;
 	}
