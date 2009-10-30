@@ -371,7 +371,7 @@ void QEditor::list_focus(int round)
 			question_c[ptr]->setText(roundmodel[ptr]->getC(index));
 			question_d[ptr]->setText(roundmodel[ptr]->getD(index));
 			question_score[ptr]->setValue(roundmodel[ptr]->getScore(index));
-			bool* ans=new bool[5];
+			bool* ans=new bool[4];
 			roundmodel[ptr]->getAnskey(index,ans);
 			question_ans_a[ptr]->setChecked(ans[0]);
 			question_ans_b[ptr]->setChecked(ans[1]);
@@ -498,7 +498,7 @@ void QEditor::update_question(int round)
 			anskey.append("1");
 		else 
 			anskey.append("0");
-		anskey.append("0");
+		//anskey.append("0");
 		
 		QString score=QString::number(question_score[ptr]->value());
 		QString time;
@@ -511,7 +511,7 @@ void QEditor::update_question(int round)
 				type="1";
 		}
 		else {
-			anskey.append("0");
+			//anskey.append("0");
 			time="0";
 		}
 		
