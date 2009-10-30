@@ -19,8 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define ADMIN_CONNECTION_H
 #include <QtNetwork>
 
-class AdminConnection : public QObject
-{
+class AdminConnection : public QObject {
 	Q_OBJECT;
 };
+
 #endif

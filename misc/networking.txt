@@ -81,6 +81,7 @@ presenter-server network:
 	answer show (round 3 and 4):
 		server: PSN_SHOW_ANSWER <char[] answer>
 
+// no longer going to be implemented for 1.0
 admin-server network:
     // nothing here yet.
     contest state request:

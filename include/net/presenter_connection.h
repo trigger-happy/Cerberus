@@ -19,8 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define PRESENTER_CONNECTION_H
 #include <QtNetwork>
 
-class PresenterConnection : public QObject
-{
+class PresenterConnection : public QObject {
 	Q_OBJECT;
 };
 
