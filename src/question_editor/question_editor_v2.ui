@@ -1144,16 +1144,6 @@
               <item row="7" column="1">
                <widget class="QLineEdit" name="question_r3_d"/>
               </item>
-              <item row="8" column="0">
-               <widget class="QCheckBox" name="question_r3_ans_e">
-                <property name="layoutDirection">
-                 <enum>Qt::RightToLeft</enum>
-                </property>
-                <property name="text">
-                 <string>E</string>
-                </property>
-               </widget>
-              </item>
               <item row="8" column="1">
                <widget class="QLineEdit" name="question_r3_e"/>
               </item>
@@ -1590,16 +1580,6 @@
             <item row="8" column="1">
              <widget class="QLineEdit" name="question_r4_d"/>
             </item>
-            <item row="9" column="0">
-             <widget class="QCheckBox" name="question_r4_ans_e">
-              <property name="layoutDirection">
-               <enum>Qt::RightToLeft</enum>
-              </property>
-              <property name="text">
-               <string>E</string>
-              </property>
-             </widget>
-            </item>
             <item row="9" column="1">
              <widget class="QLineEdit" name="question_r4_e"/>
             </item>
@@ -1786,7 +1766,6 @@
   <tabstop>question_r3_ans_b</tabstop>
   <tabstop>question_r3_ans_c</tabstop>
   <tabstop>question_r3_ans_d</tabstop>
-  <tabstop>question_r3_ans_e</tabstop>
   <tabstop>button_update_r3</tabstop>
   <tabstop>button_cancel_r3</tabstop>
   <tabstop>duration_r4</tabstop>
@@ -1806,7 +1785,6 @@
   <tabstop>question_r4_ans_b</tabstop>
   <tabstop>question_r4_ans_c</tabstop>
   <tabstop>question_r4_ans_d</tabstop>
-  <tabstop>question_r4_ans_e</tabstop>
   <tabstop>button_update_r4</tabstop>
   <tabstop>button_cancel_r4</tabstop>
  </tabstops>
