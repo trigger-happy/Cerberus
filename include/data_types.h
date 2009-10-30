@@ -149,9 +149,7 @@ IDENTIFICATION: id_answer must have the answer data.
 CHOOSE_ONE or CHOOSE_ANY: multi_choice must contain the answer(s)
 */
 struct Answer{
-	// copy the enum from Question
-	typedef Question::Type Type;
-	Type ans_type;
+	Question::Type ans_type;
 	// answer for identification
 	QString id_answer;
 	// answer for multiple choice
