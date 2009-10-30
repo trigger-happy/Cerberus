@@ -224,8 +224,12 @@ void QuestionModel::feedData(StageData sd)
 		if(q.type==Question::IDENTIFICATION)
 		{
 			int empty=5-q.answer_key.size();
+			int count=1;
 			while (empty--)
+			{
+				cout << count++ << endl;
 				temp.append(new QStandardItem(""));
+			}
 		}
 		
 		if (round>2)
