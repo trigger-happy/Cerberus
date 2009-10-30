@@ -24,100 +24,102 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define PROTOCOL_PATCH 1
 
 enum CLIENT_ID {
-    CLIENT_CONTESTANT = 0,
-    CLIENT_PRESENTER,
-    CLIENT_ADMIN
+	CLIENT_CONTESTANT = 0,
+	CLIENT_PRESENTER,
+	CLIENT_ADMIN
 };
 
 enum PROTOCOL_COMMAND {
-    // error
-    INF_ERROR = 0,
+	// error
+	INF_ERROR = 0,
 
-    // connection
-    NET_INITIATE_CONNECTION,
-    NET_CONNECTION_RESULT,
-    NET_DISCONNECT,
+	// connection
+	NET_INITIATE_CONNECTION,
+	NET_CONNECTION_RESULT,
+	NET_DISCONNECT,
 
-    // authentication
-    QRY_AUTHENTICATE,
-    INF_AUTHENTICATE,
+	// authentication
+	QRY_AUTHENTICATE,
+	INF_AUTHENTICATE,
 
-    // contest state
-    QRY_CONTEST_STATE,
-    INF_CONTEST_STATE,
+	// contest state
+	QRY_CONTEST_STATE,
+	INF_CONTEST_STATE,
 
-    // question request
-    QRY_QUESTION_REQUEST,
-    INF_QUESTION_DATA,
+	// question request
+	QRY_QUESTION_REQUEST,
+	INF_QUESTION_DATA,
 
-    // answer submission
-    QRY_ANSWER_SUBMIT,
-    INF_ANSWER_REPLY,
+	// answer submission
+	QRY_ANSWER_SUBMIT,
+	INF_ANSWER_REPLY,
 
-    // contest time
-    QRY_CONTEST_TIME,
-    INF_CONTEST_TIME,
+	// contest time
+	QRY_CONTEST_TIME,
+	INF_CONTEST_TIME,
 
-    // presenter stuff
-    // sent by the presenter when ready
-    QRY_PRESENTER_READY,
+	// presenter stuff
+	// sent by the presenter when ready
+	QRY_PRESENTER_READY,
 
-    // round 1-2, show contest time
-    PSN_SHOW_TIME,
+	// round 1-2, show contest time
+	PSN_SHOW_TIME,
 
-    // all rounds show rankings
-    PSN_SHOW_RANKS,
+	// all rounds show rankings
+	PSN_SHOW_RANKS,
 
-    // question time info
-    INF_QUESTION_TIME,
+	// question time info
+	INF_QUESTION_TIME,
 
-    // question state
-    INF_QUESTION_STATE,
+	// question state
+	INF_QUESTION_STATE,
 
-    // show answer
-    PSN_SHOW_ANSWER
+	// show answer
+	PSN_SHOW_ANSWER
 
-    // TODO: Add admin commands here
+	// TODO: Add admin commands here
 };
 
 enum CONTEST_STATUS {
-    CONTEST_RUNNING = 0,
-    CONTEST_STOPPED,
-    CONTEST_PAUSED
+	CONTEST_RUNNING = 0,
+	CONTEST_STOPPED,
+	CONTEST_PAUSED
 };
 
-enum QUESTION_STATUS{
+enum QUESTION_STATUS {
 	QUESTION_RUNNING = 0,
 	QUESTION_STOPPED,
 	QUESTION_PAUSED
 };
 
 struct p_version {
-    p_version() {
-        major = PROTOCOL_MAJOR;
-        minor = PROTOCOL_MINOR;
-        patch = PROTOCOL_PATCH;
-    }
-    uchar major;
-    uchar minor;
-    uchar patch;
+	p_version() {
+		major = PROTOCOL_MAJOR;
+		minor = PROTOCOL_MINOR;
+		patch = PROTOCOL_PATCH;
+	}
+
+	uchar major;
+	uchar minor;
+	uchar patch;
 };
 
 struct p_ident {
-    p_ident() {
-        data[0] = 'C';
-        data[1] = 'E';
-        data[2] = 'R';
-        data[3] = 'B';
-    }
-    unsigned char data[4];
+	p_ident() {
+		data[0] = 'C';
+		data[1] = 'E';
+		data[2] = 'R';
+		data[3] = 'B';
+	}
+
+	unsigned char data[4];
 };
 
 struct p_header {
-    unsigned long length;
-    p_ident ident;
-    p_version ver;
-    unsigned char command;
+	unsigned long length;
+	p_ident ident;
+	p_version ver;
+	unsigned char command;
 };
 
 bool is_proto_current ( const p_version& ver );
