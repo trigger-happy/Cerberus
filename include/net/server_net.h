@@ -167,7 +167,6 @@ public slots:
 	void invalidClient ( TempConnection* con );
 
 signals:
-	// TODO: add signals here
 	void badClient ( TempConnection* con );
 	void newContestant ( ContestantConnection* cc );
 	void contestantDc ( ContestantConnection* cc );

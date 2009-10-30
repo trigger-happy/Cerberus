@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <vector>
 #include "protocol.h"
 #include "error_defs.h"
+#include "data_types.h"
 
 using std::vector;
 
@@ -82,6 +83,14 @@ public:
 		m_qdata = qdata;
 	}
 
+	/*!
+	Enable/disable this client in submitting answers.
+	\param b true if this client may submit, false otherwise.
+	*/
+	inline void enableAnswerSubmission( bool b ) {
+		m_answer_capable = b;
+	}
+
 public slots:
 	/*!
 	Called when there's a socket error.
@@ -117,7 +126,18 @@ signals:
 	*/
 	void onContestTimeRequest ( ContestantConnection* cc );
 
+	/*!
+	Emitted when the authentication is successful for this client.
+	\param username const reference to a QString containing the username.
+	*/
 	void onAuthentication( const QString& username );
+
+	/*!
+	Emitted when the client has sent its answer data.
+	\param round The round that the answer data is suppose to come from.
+	\param ans The answer data.
+	*/
+	void onAnswerSubmission( int round, const AnswerData& ans );
 
 private:
 	//some private functions
@@ -146,6 +166,7 @@ private:
 	void sendAReply ( bool res );
 
 	//private fields
+	bool m_answer_capable;
 	QTcpSocket* m_socket;
 	QString m_username;
 	p_header* m_hdr;
