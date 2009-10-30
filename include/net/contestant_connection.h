@@ -117,7 +117,12 @@ signals:
 	*/
 	void onContestTimeRequest ( ContestantConnection* cc );
 
+	/*!
+	Emitted when the authentication is successful for this client.
+	\param username const reference to a QString containing the username.
+	*/
 	void onAuthentication( const QString& username );
+	
 
 private:
 	//some private functions
