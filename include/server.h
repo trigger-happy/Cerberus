@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef SERVER_APP_H
-#define SERVER_APP_H
+#ifndef SERVER_H
+#define SERVER_H
 #include <QtGui/QtGui>
 #include <QtNetwork>
 #include "net/server_net.h"
@@ -28,12 +28,12 @@ class server_dlg;
 
 class ServerNetwork;
 
-class ServerApp : public QDialog
+class Server : public QDialog
 {
         Q_OBJECT;
 public:
-        ServerApp ( QWidget* parent = 0 );
-        ~ServerApp();
+		Server ( QWidget* parent = 0 );
+		~Server();
 private slots:
         /*!
         Called when there is a new connection
@@ -53,7 +53,7 @@ private slots:
         /*
         Called when the stop button is pressed
         */
-        void stop();
+		void stopContest();
 private:
 		QString log;
 		int num;
@@ -65,4 +65,4 @@ private:
 
 };
 
-#endif //SERVER_APP_H
+#endif //SERVER_H
