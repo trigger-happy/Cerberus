@@ -21,7 +21,7 @@ set(PACKAGE_NAME "\"ctemplate\"")
 set(PACKAGE_VERSION "\"0.96\"")
 set(PACKAGE_STRING "${PACKAGE_NAME}\" \"${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT "\"opensource@google.com\"")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "CMakeModules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
 option(BUILD_SHARED_LIBS "Build ctemplate as a shared library" false)
 
