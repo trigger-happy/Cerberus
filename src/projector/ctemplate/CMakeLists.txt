@@ -171,6 +171,8 @@ else()
 	set(ac_google_attribute 0)
 endif()
 
+normalize_bool(HAVE___ATTRIBUTE__)
+
 if ( HAVE_U_INT64_T )
    set(ac_cv_uint64 "u_int64_t")
 elseif( HAVE_UINT64_T )
