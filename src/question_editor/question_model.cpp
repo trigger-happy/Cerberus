@@ -170,7 +170,7 @@ void QuestionModel::getFullQuestion(int index, Question* q)
 	ans[3]=getD(index);
 	ans[4]=getE(index);
 	
-	bool* cheat=new bool[ENTRIES];
+	bool* cheat=new bool[CHOICES];
 	getAnskey(index,cheat);
 	
 	//determine type
@@ -248,8 +248,8 @@ void QuestionModel::feedData(StageData sd)
 				else
 					cheat.append("0");
 			}
-			while (cheat.length()!=5)
-				cheat.append("0");
+			//while (cheat.length()!=5)
+			//	cheat.append("0");
 			temp.append(new QStandardItem(cheat));
 			temp.append(new QStandardItem(QString::number(q.score)));
 			temp.append(new QStandardItem(QString::number(q.time_limit)));
