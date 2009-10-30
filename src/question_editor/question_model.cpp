@@ -190,7 +190,7 @@ void QuestionModel::getFullQuestion(int index, Question* q)
 	for (int ctr=0;ctr<ENTRIES;ctr++)
 	{
 		Question::AnswerKeyEntry akey(ans[ctr],cheat[ctr]);
-		if (q->type==Question::IDENTIFICATION)
+		if (q->type==Question::IDENTIFICATION && ans[ctr]!="")
 			akey.is_answer=true;
 		if (ctr<4)
 			q->answer_key.push_back(akey);
@@ -213,14 +213,24 @@ void QuestionModel::feedData(StageData sd)
 	{
 		Question q=sd.questions[ctr];
 		QList<QStandardItem *> temp;
+		
 		temp.append(new QStandardItem(q.question)); //question
-		temp.append(new QStandardItem(q.answer_key[0].c)); // choice a
-		temp.append(new QStandardItem(q.answer_key[1].c)); // choice b
-		temp.append(new QStandardItem(q.answer_key[2].c)); // choice c
-		temp.append(new QStandardItem(q.answer_key[3].c)); // choice d
+		
+		for (int cctr=0;cctr<q.answer_key.size();cctr++)
+		{
+			temp.append(new QStandardItem(q.answer_key[cctr].c));
+		}
+		
+		if(q.type==Question::IDENTIFICATION)
+		{
+			int empty=5-q.answer_key.size();
+			while (empty--)
+				temp.append(new QStandardItem(""));
+		}
+		
 		if (round>2)
 		{
-			temp.append(new QStandardItem(q.answer_key[4].c));
+			//temp.append(new QStandardItem(q.answer_key[4].c));
 		}
 		else
 		{
