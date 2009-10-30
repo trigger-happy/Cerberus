@@ -46,6 +46,14 @@ public:
 	void setRound ( int r );
 
 	/*!
+	Get the username associated with this contestant connection
+	\return const reference to a QString containing the username.
+	*/
+	inline const QString& getUserName() const {
+		return m_username;
+	}
+
+	/*!
 	Set the current status of the contest.
 	\param s CONTEST_STATUS
 	*/
@@ -109,6 +117,8 @@ signals:
 	*/
 	void onContestTimeRequest ( ContestantConnection* cc );
 
+	void onAuthentication( const QString& username );
+
 private:
 	//some private functions
 	/*!
@@ -137,6 +147,7 @@ private:
 
 	//private fields
 	QTcpSocket* m_socket;
+	QString m_username;
 	p_header* m_hdr;
 	bool m_authenticated;
 	CONTEST_STATUS m_con_status;

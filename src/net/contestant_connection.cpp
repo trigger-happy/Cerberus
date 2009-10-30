@@ -105,6 +105,11 @@ void ContestantConnection::ready() {
 				bool result = SqlUtil::getInstance().authenticate ( user, pass );
 				authenticationReply ( result );
 				m_authenticated = result;
+				m_username = user;
+
+				if ( m_authenticated ) {
+					emit onAuthentication( m_username );
+				}
 			} else {
 				//TODO: what happens here?
 				authenticationReply ( false );
