@@ -1,6 +1,24 @@
+#Copyright (C) 2009 Wilhansen Li
+
+#This program is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation; either version 2
+#of the License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, write to the Free Software
+
+#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 # - Check if for (hash/unordered)_(map/set).
-# CHECK_CXX_HASH ()
-#
+# CHECK_CXX_HASH()
+# defines the following: HASH_MAP_H HASH_SET_H HASH_NAMESPACE HASH_TYPE
+# Original logic from stl_hash.m4
 
 include(CheckCXXSourceCompiles)
 
@@ -27,10 +45,10 @@ macro(CHECK_CXX_HASH)
 					"
 					HASH_OK)
 					if( HASH_OK )
-						set(${OUT_MAP_H} "${location}unordered_map")
-						set(${OUT_SET_H} "${location}unordered_set")
-						set(${OUT_TYPE} "unordered")
-						set(${OUT_NAMESPACE} ${ns})
+						set(${OUT_MAP_H} "${location}unordered_map" PARENT_SCOPE)
+						set(${OUT_SET_H} "${location}unordered_set" PARENT_SCOPE)
+						set(${OUT_TYPE} "unordered" PARENT_SCOPE)
+						set(${OUT_NAMESPACE} ${ns} PARENT_SCOPE)
 						return()
 					endif()
 				endforeach()
@@ -50,19 +68,20 @@ macro(CHECK_CXX_HASH)
 				"
 				HASH_OK)
 				if( HASH_OK )
-					set(${OUT_MAP_H} "${location}hash_map")
-					set(${OUT_SET_H} "${location}hash_set")
-					set(${OUT_TYPE} "hash")
-					set(${OUT_NAMESPACE} ${ns})
+					set(${OUT_MAP_H} "${location}hash_map" PARENT_SCOPE)
+					set(${OUT_SET_H} "${location}hash_set" PARENT_SCOPE)
+					set(${OUT_TYPE} "hash" PARENT_SCOPE)
+					set(${OUT_NAMESPACE} ${ns} PARENT_SCOPE)
 					return()
 				endif()
 			endforeach()
 		endforeach()
+		message(SEND_ERROR "No hash container for C++ found.")
 	endfunction()
 	
 	if ( NOT DEFINED HASH_MAP_H OR NOT DEFINED HASH_SET_H OR NOT DEFINED HASH_NAMSEPACE OR NOT DEFINED HASH_TYPE )
 		check_cxx_hash_container(HASH_MAP_H HASH_SET_H HASH_NAMESPACE HASH_TYPE)
-		message(STATUS "Hash found at ${HASH_MAP_H}")
+		message(STATUS "${HASH_TYPE} map container found at ${HASH_MAP_H} in namespace ${HASH_NAMESPACE}")
 		set(HASH_MAP_H ${HASH_MAP_H} CACHE PATH "Location of hash map header")
 		set(HASH_SET_H ${HASH_SET_H} CACHE PATH "Location of hash set header")
 		set(HASH_NAMESPACE ${HASH_NAMESPACE} CACHE STRING "Namespace of hash containers")
@@ -71,6 +90,9 @@ macro(CHECK_CXX_HASH)
 		if( HASH_TYPE STREQUAL "hash" )
 			set(HAVE_HASH_MAP 1)
 			set(HAVE_HASH_SET 1)
+		else()
+			set(HAVE_UNORDERED_MAP 1)
+			set(HAVE_UNORDERED_SET 1)
 		endif()
 	endif()
 endmacro()
