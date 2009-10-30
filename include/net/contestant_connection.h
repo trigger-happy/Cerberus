@@ -122,22 +122,24 @@ signals:
 
 	/*!
 	Emitted when a contestant requests for the contest time.
-	\param cc Pointer to a ContestantConnectin that made the request.
+	\param cc Pointer to a ContestantConnection that made the request.
 	*/
 	void onContestTimeRequest ( ContestantConnection* cc );
 
 	/*!
 	Emitted when the authentication is successful for this client.
+	\param cc Pointer to the ContesantConnection that made the request.
 	\param username const reference to a QString containing the username.
 	*/
-	void onAuthentication( const QString& username );
+	void onAuthentication( ContestantConnection* cc, QString& username );
 
 	/*!
 	Emitted when the client has sent its answer data.
+	\param cc Pointer to the ContesantConnection that made the request.
 	\param round The round that the answer data is suppose to come from.
 	\param ans The answer data.
 	*/
-	void onAnswerSubmission( int round, const AnswerData& ans );
+	void onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& ans );
 
 private:
 	//some private functions

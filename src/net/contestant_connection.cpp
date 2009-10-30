@@ -109,7 +109,7 @@ void ContestantConnection::ready() {
 				m_username = user;
 
 				if ( m_authenticated ) {
-					emit onAuthentication( m_username );
+					emit onAuthentication( this, m_username );
 				}
 			} else {
 				//TODO: what happens here?
@@ -166,7 +166,7 @@ void ContestantConnection::ready() {
 					}
 
 					if ( m_answer_capable ) {
-						emit onAnswerSubmission( round, ans );
+						emit onAnswerSubmission( this, round, ans );
 						sendAReply( true );
 					} else {
 						sendAReply( false );
