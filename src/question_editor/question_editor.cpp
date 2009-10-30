@@ -22,8 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "data_types.h"
 #include <iostream>
 
+#define CHOICE 4
+
 using namespace std;
-//TODO: clean up 5th choice, remove methods only relevant to that, make 5th textfield invi if not identification, use unsavedwarning dialog
+//TODO: remove methods only relevant to that,  use of constants
 
 QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 {
@@ -184,7 +186,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	connect(sigToDown,SIGNAL(mapped(int)),this,SLOT(move_down(int)));
 	connect(sigToVisible,SIGNAL(mapped(int)),this,SLOT(visibility(int)));
 	
-	for (int ctr=0;ctr<4;ctr++)
+	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		sigToList->setMapping(question_list[ctr],ctr+1);
 		sigToAdd->setMapping(button_add[ctr],ctr+1);
@@ -244,12 +246,20 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 			connect(question_multi[ctr],SIGNAL(toggled(bool)),sigToVisible,SLOT(map()));
 			
 			question_e[ctr]->setVisible(false);
+			question_e[ctr]->installEventFilter(this);
 		}
 		
 		welcome[ctr]->setTabChangesFocus(true);
 		question_list[ctr]->setModel(roundmodel[ctr]);
 		question_list[ctr]->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		question_text[ctr]->setTabChangesFocus(true);
+		
+		question_text[ctr]->installEventFilter(this);
+		question_a[ctr]->installEventFilter(this);
+		question_b[ctr]->installEventFilter(this);
+		question_c[ctr]->installEventFilter(this);
+		question_d[ctr]->installEventFilter(this);
+		
 		
 		fully_updated[ctr]=true;
 		qmod[ctr]=false;
@@ -297,7 +307,7 @@ QEditor::~QEditor()
 	delete sigToDown;
 	
 	delete q_ui;
-	for (int ctr=0;ctr<4;ctr++)
+	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		delete roundmodel[ctr];
 	}
@@ -603,7 +613,7 @@ void QEditor::newfile()
 			return;
 	}
 	
-	for (int ctr=0;ctr<4;ctr++)
+	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		roundmodel[ctr]->clear();
 		fully_updated[ctr]=true;
@@ -624,7 +634,7 @@ void QEditor::import()
 	load_dlg.exec();
 	
 	int rec[4];
-	for (int ctr=0;ctr<4;ctr++)
+	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		rec[ctr]=roundmodel[ctr]->rowCount();
 	}
@@ -634,7 +644,7 @@ void QEditor::import()
 	
 	if (file_prefix=="")
 		return;
-	for (int ctr=0;ctr<4;ctr++)
+	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		StageData sd;
 		QFile fs(file_prefix+QString::number(ctr+1)+".xml");
@@ -697,7 +707,7 @@ void QEditor::load()
 			return;
 	}
 	
-	for (int ctr=0;ctr<4;ctr++)
+	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		roundmodel[ctr]->clear();
 	}
@@ -712,7 +722,7 @@ void QEditor::load()
 	file_prefix.replace(QString(".xgrp"),QString(""));
 	if (file_prefix=="")
 		return;
-	for (int ctr=0;ctr<4;ctr++)
+	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		StageData sd;
 		QFile fs(file_prefix+QString::number(ctr+1)+".xml");
@@ -773,7 +783,7 @@ int QEditor::save()
 	if (file_prefix!="")
 	{
 		
-		for (int roundctr=0;roundctr<4;roundctr++)
+		for (int roundctr=0;roundctr<CHOICE;roundctr++)
 		{
 			if (!fully_updated[roundctr])
 			{
@@ -890,6 +900,40 @@ void QEditor::closeEvent(QCloseEvent *event)
 		event->accept();
 	}
 }
+
+bool QEditor::eventFilter(QObject* o, QEvent* e)
+{
+	if (e->type() == QEvent::KeyRelease) {
+		QKeyEvent* key= (QKeyEvent*)e;
+		if (key->key() == Qt::Key_Enter || key->key() == Qt::Key_Return)
+		{
+			//cout << question_text[0]->lineWrapMode() << endl;
+			for(int ctr=0;ctr<CHOICE;ctr++)
+			{
+				QString temp=question_text[ctr]->toPlainText();
+				temp.replace("\n","");
+				temp.replace("\r","");
+				cout << temp.toStdString() << endl;
+				question_text[ctr]->setPlainText(temp);
+			}
+			int ctr=q_ui->tabWidget->currentIndex();
+			if (button_update[ctr]->isEnabled())
+				update_question(ctr+1);
+		}
+		else if (key->key() == Qt::Key_Escape)
+		{
+			int ctr=q_ui->tabWidget->currentIndex();
+			if (button_cancel[ctr]->isEnabled())
+				cancel_update(ctr+1);
+		}
+		else
+		{
+			return QMainWindow::eventFilter(o, e);
+		}
+	}
+	return QMainWindow::eventFilter(o, e);
+}
+
 
 int main(int argc, char *argv[])
 {
