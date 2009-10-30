@@ -131,7 +131,7 @@ signals:
 	\param cc Pointer to the ContesantConnection that made the request.
 	\param username const reference to a QString containing the username.
 	*/
-	void onAuthentication( ContestantConnection* cc, QString& username );
+	void onAuthentication( ContestantConnection* cc, const QString& username );
 
 	/*!
 	Emitted when the client has sent its answer data.

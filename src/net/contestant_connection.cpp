@@ -150,11 +150,17 @@ void ContestantConnection::ready() {
 						in >> ans_info;
 
 						if ( ans_info < 0 ) {
-							char* buffer = new char[ans_info*-1];
-							in.readRawData( buffer, ans_info* -1 );
+							temp.ans_type = Question::IDENTIFICATION;
+							QByteArray buffer;
+							buffer = in.device()->read( abs( ans_info ) );
 							temp.id_answer = buffer;
-							delete[] buffer;
 						} else {
+							if ( ans_info == 1 ) {
+								temp.ans_type = Question::CHOOSE_ONE;
+							} else {
+								temp.ans_type = Question::CHOOSE_ANY;
+							}
+
 							for ( int j = 0; j < ans_info; j++ ) {
 								ushort choice;
 								in >> choice;

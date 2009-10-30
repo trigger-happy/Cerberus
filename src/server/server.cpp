@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#include "server_app.h"
-#include "ui_server_app.h"
+#include "server.h"
+#include "ui_server.h"
 #include "net/server_net.h"
 #include <iostream>
 #include <string>
@@ -25,9 +25,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 
-ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg )
+Server::Server ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg )
 {
-		//Fills up the m_questions vector with the question data for each stage.
+		/*Fills up the m_questions and m_answers vector with the
+		question data and answer data respectively.
+		*/
 		for ( int i = 1; i <= 4; i++ ) {
 				QFile file1 ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
 				QFile file2 ( QString ( "resources/stage%1_a.xml" ).arg ( i ) );
@@ -37,14 +39,13 @@ ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 				m_answers.push_back ( file2.readAll() );
 		}
 
+		//reads the server config from the XML file
 		QFile file ( QString ( "resources/server_config.xml" ));
 		file.open ( QIODevice::ReadOnly );
 		QString serverConfigXml = file.readAll();
 		XmlUtil::getInstance().readServerConfig(serverConfigXml,m_config);
 
-		m_dlg->setupUi ( this );
-		connect(m_dlg->stopButton,SIGNAL(clicked()),this,SLOT(stop()));
-
+		//Instantiates the ServerNetwork class, networking stuff go here
 		m_network = new ServerNetwork ( this );
 		connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
 		connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
@@ -62,45 +63,43 @@ ServerApp::ServerApp ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 		num=0;
 }
 
-ServerApp::~ServerApp()
+Server::~Server()
 {
         delete m_network;
 }
 
-void ServerApp::newContestant( ContestantConnection* cc )
+void Server::newContestant( ContestantConnection* cc )
 {
 		//TODO: Stuff here for when a new connection is made
-		m_dlg->textBrowser->append("New Contestant connection.");
+		//m_dlg->textBrowser->append("New Contestant connection.");
+		//cout >> "New Contestant connection." >> "\n";
 
 }
 
-void ServerApp::badClient ( TempConnection* tc )
+void Server::badClient ( TempConnection* tc )
 {
-		m_dlg->textBrowser->setText("Bad client.");
+		//m_dlg->textBrowser->setText("Bad client.");
 }
 
-void ServerApp::contestantDisconnect( ContestantConnection* cc )
+void Server::contestantDisconnect( ContestantConnection* cc )
 {
-		m_dlg->textBrowser->append("Contestant disconnected.");
+		//m_dlg->textBrowser->append("Contestant disconnected.");
 
 }
 
-void ServerApp::onAuthentication(ContestantConnection* cc)
+void Server::onAuthentication(ContestantConnection* cc)
 {
-		m_dlg->textBrowser->append("Contestant has logged in.");
+		//m_dlg->textBrowser->append("Contestant has logged in.");
 }
 
-void ServerApp::stop()
+void Server::stopContest()
 {
-		m_dlg->textBrowser->append("Stopped.");
+		//m_dlg->textBrowser->append("Stopped.");
 }
 
 int main ( int argc, char* argv[] )
 {
-		/*int x = 2 + 3;
-		cout << x << endl;*/
-        QApplication a ( argc, argv );
-        ServerApp server;
-		server.show();
+		cout << "hello" << endl;
+		QApplication a ( argc, argv );
 		return a.exec();
 }

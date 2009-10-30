@@ -321,7 +321,7 @@ void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 			}
 		}
 	}
-
+        //cout<<reader.name().toStdString()  <<endl;
 	if ( reader.name() != CONFIG_ROOT_TAG )
 		throw InvalidXmlException("No config root tag found.",
 								  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());

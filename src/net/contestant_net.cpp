@@ -128,28 +128,29 @@ bool ContestantNetwork::aDataSend ( ushort round, const AnswerData& ans ) {
 	// construct the header
 	p_header hdr;
 	hdr.command = QRY_ANSWER_SUBMIT;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 
 	//construct the data that we're suppose to send
-	out2 << ( ushort ) round;
-	out2 << ( quint16 ) ans.size();
+	out << ( ushort ) round;
+	out << ( quint16 ) ans.size();
 
 	for ( int i = 0; i < ans.size(); i++ ) {
 		if ( ans[i].ans_type == Question::IDENTIFICATION ) {
-			out2 << ( qint16 ) ans.size()* -1;
-			out2 << ans[i].id_answer;
+			out << ( qint16 ) ( ans[i].id_answer.size()* -1 );
+			out.writeRawData( ans[i].id_answer.toAscii().data(), ans[i].id_answer.size() );
 		} else {
-			out2 << ( qint16 ) ans[i].multi_choice.size();
+			out << ( qint16 ) ans[i].multi_choice.size();
 
-			for ( int j = 0; j << ans[i].multi_choice.size(); j++ ) {
-				out2 << ( ushort ) ans[i].multi_choice[j];
+			for ( int j = 0; j < ans[i].multi_choice.size(); j++ ) {
+				out << ( ushort ) ans[i].multi_choice[j];
 			}
 		}
 	}
 
-	hdr.length = tempblk.size();
+	hdr.length = block.size() - sizeof( p_header );
 
+	out.device()->seek( 0 );
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
-	out << tempblk;
 	m_socket->write ( block );
 
 	return true;
