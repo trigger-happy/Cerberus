@@ -18,8 +18,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "server.h"
 #include "ui_server.h"
 #include "net/server_net.h"
+#include "net/contestant_connection.h"
 #include <iostream>
 #include <string>
+#include <QtGui>
 #include "util/sql_util.h"
 #include "util/xml_util.h"
 
@@ -44,23 +46,27 @@ Server::Server ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_
 		file.open ( QIODevice::ReadOnly );
 		QString serverConfigXml = file.readAll();
 		XmlUtil::getInstance().readServerConfig(serverConfigXml,m_config);
+		int port = m_config.port;
+		QString db_path = m_config.db_path;
+
+		//Opens the SQL Database with the db_path
+		bool result = SqlUtil::getInstance().init ( db_path );
+		if ( !result ) {
+				QMessageBox msg ( this );
+				msg.setText ( "Failed to load db" );
+				msg.exec();
+		}
 
 		//Instantiates the ServerNetwork class, networking stuff go here
 		m_network = new ServerNetwork ( this );
 		connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
 		connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
 		connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
-		m_network->listen ( 2652 );
+		
+		m_network->listen ( port );
 		m_network->setRound ( 1 );
 		m_network->setStatus ( CONTEST_STOPPED );
 		m_network->setQData ( &m_questions );
-		bool result = SqlUtil::getInstance().init ( "resources/test.db" );
-		if ( !result ) {
-				QMessageBox msg ( this );
-				msg.setText ( "Failed to load db" );
-				msg.exec();
-		}
-		num=0;
 }
 
 Server::~Server()
@@ -71,8 +77,8 @@ Server::~Server()
 void Server::newContestant( ContestantConnection* cc )
 {
 		//TODO: Stuff here for when a new connection is made
-		//m_dlg->textBrowser->append("New Contestant connection.");
-		//cout >> "New Contestant connection." >> "\n";
+		cout << "Connected." << endl; 
+		connect ( cc, SIGNAL (onAuthentication( ContestantConnection*, const QString&)), this, SLOT (onAuthentication(ContestantConnection*, const QString&)));
 
 }
 
@@ -87,14 +93,40 @@ void Server::contestantDisconnect( ContestantConnection* cc )
 
 }
 
-void Server::onAuthentication(ContestantConnection* cc)
+void Server::onAuthentication(ContestantConnection* cc, const QString& c_username)
 {
 		//m_dlg->textBrowser->append("Contestant has logged in.");
+		cout << c_username.toStdString() << " has connected." << endl;
 }
 
 void Server::stopContest()
 {
 		//m_dlg->textBrowser->append("Stopped.");
+}
+
+void Server::startContest()
+{
+
+}
+
+void Server::pauseContest()
+{
+
+}
+
+void Server::viewSubmittedAnswers()
+{
+
+}
+
+void Server::checkAnswersManually()
+{
+
+}
+
+void Server::dropConnection( ContestantConnection* cc )
+{
+
 }
 
 int main ( int argc, char* argv[] )

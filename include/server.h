@@ -49,11 +49,26 @@ private slots:
 		*/
 		void contestantDisconnect( ContestantConnection* cc );
 
-		void onAuthentication( ContestantConnection* cc );
-        /*
+		void onAuthentication( ContestantConnection* cc, const QString& c_username );
+
+		//Manual methods to be used by admin.
+		/*
         Called when the stop button is pressed
         */
 		void stopContest();
+
+		void startContest();
+
+		void pauseContest();
+
+		void viewSubmittedAnswers();
+
+		void checkAnswersManually ();
+
+		void dropConnection( ContestantConnection* cc );
+
+
+
 private:
 		QString log;
 		int num;
