@@ -84,35 +84,35 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QCheckBox" name="a_check">
+           <widget class="QCheckBox" name="a_choice">
             <property name="text">
              <string>Choice A goes here</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="b_check">
+           <widget class="QCheckBox" name="b_choice">
             <property name="text">
              <string>Choice B goes here</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="c_check">
+           <widget class="QCheckBox" name="c_choice">
             <property name="text">
              <string>Choice C goes here</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="d_check">
+           <widget class="QCheckBox" name="d_choice">
             <property name="text">
              <string>Choice D goes here</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="other_check">
+           <widget class="QCheckBox" name="other_choice">
             <property name="text">
              <string>None of the above. Specify answer below:</string>
             </property>
