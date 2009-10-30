@@ -391,9 +391,13 @@ void QEditor::list_focus(int round)
 				question_ans_e[ptr]->setChecked(ans[4]);
 				question_time[ptr]->setValue(roundmodel[ptr]->getTime(index));
 				if (roundmodel[ptr]->isIdentification(index))
+				{
 					question_iden[ptr]->setChecked(true);
+				}
 				else
+				{
 					question_multi[ptr]->setChecked(true);
+				}
 			}
 			delete ans;
 			control_components(round,true);
@@ -793,7 +797,8 @@ void QEditor::load()
 			}
 		}
 		
-		
+		welcome[ctr]->setPlainText(sd.welcome_msg);
+		duration[ctr]->setValue(sd.contest_time);
 		roundmodel[ctr]->feedData(sd);
 		
 		this->setWindowTitle(file_prefix+".xgrp - QEditor");

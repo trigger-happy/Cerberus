@@ -180,7 +180,9 @@ void QuestionModel::getFullQuestion(int index, Question* q)
 	else
 	{
 		if(isIdentification(index))
+		{
 			q->type=Question::IDENTIFICATION;
+		}
 		else
 			q->type=Question::CHOOSE_ANY;
 	}
@@ -188,6 +190,8 @@ void QuestionModel::getFullQuestion(int index, Question* q)
 	for (int ctr=0;ctr<ENTRIES;ctr++)
 	{
 		Question::AnswerKeyEntry akey(ans[ctr],cheat[ctr]);
+		if (q->type==Question::IDENTIFICATION)
+			akey.is_answer=true;
 		if (ctr<4)
 			q->answer_key.push_back(akey);
 		else
@@ -240,7 +244,11 @@ void QuestionModel::feedData(StageData sd)
 		
 		temp.append(new QStandardItem(QString::number(q.score))); // score
 		temp.append(new QStandardItem(QString::number(q.time_limit))); // time
-		
+		QString type="0";
+		if (q.type==Question::IDENTIFICATION)
+			type="1";
+
+		temp.append(new QStandardItem(type));
 		QStandardItemModel::appendRow(temp);
 	}
 }
