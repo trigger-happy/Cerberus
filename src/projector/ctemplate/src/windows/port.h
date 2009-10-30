@@ -65,7 +65,9 @@
 #pragma warning(disable:4244 4251 4355 4715 4800 4996)
 
 /* file I/O */
+#ifndef PATH_MAX
 #define PATH_MAX 1024
+#endif
 #define access  _access
 #define getcwd  _getcwd
 #define open    _open
@@ -75,7 +77,9 @@
 #define close   _close
 #define popen   _popen
 #define pclose  _pclose
+#ifndef R_OK
 #define R_OK    04           /* read-only (for access()) */
+#endif
 #define S_ISDIR(m)  (((m) & _S_IFMT) == _S_IFDIR)
 
 /* Not quite as lightweight as a hard-link, but more than good enough for us. */
@@ -99,7 +103,10 @@ extern CTEMPLATE_DLL_DECL int snprintf(char *str, size_t size,
 extern int CTEMPLATE_DLL_DECL safe_vsnprintf(char *str, size_t size,
                                              const char *format, va_list ap);
 #define vsnprintf(str, size, format, ap)  safe_vsnprintf(str, size, format, ap)
+
+#ifndef va_copy
 #define va_copy(dst, src)  (dst) = (src)
+#endif
 
 /* Windows doesn't support specifying the number of buckets as a
  * hash_map constructor arg, so we leave this blank.

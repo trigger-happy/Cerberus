@@ -208,15 +208,23 @@ endif()
 # be the empty string.  In windows, we'll replace it with windows-specific
 # text.
 if ( WIN32 )
-	set(ac_windows_dllexport "CTEMPLATE_DLL_DECL")
-	set(ac_windows_dllexport_defines "
+	if( BUILD_SHARED_LIBS )
+		set(ac_windows_dllexport "CTEMPLATE_DLL_DECL")
+		set(ac_windows_dllexport_defines "
 // NOTE: if you are statically linking the template library into your binary
 // (rather than using the template .dll), set '/D CTEMPLATE_DLL_DECL='
 // as a compiler flag in your project file to turn off the dllimports.
 #ifndef ${ac_windows_dllexport}
+#ifdef ${ac_windows_dllexport}_BUILDING
+# define ${ac_windows_dllexport}  __declspec(dllexport)
+#else
 # define ${ac_windows_dllexport}  __declspec(dllimport)
 #endif
-	")
+#endif
+		")
+	else()
+		set(ac_windows_dllexport_defines "#define CTEMPLATE_DLL_DECL")
+	endif()
 	set(WINDOWS_EXTRA "
 // ---------------------------------------------------------------------
 // Extra stuff not found in config.h.in
@@ -231,8 +239,8 @@ ${ac_windows_dllexport_defines}
 #include \"windows/port.h\"
 	")
 else()
-	set(ac_windows_dllexport_defines "")
-	set(ac_windows_dllexport "")
+	set(ac_windows_dllexport_defines " ")
+	set(ac_windows_dllexport " ")
 endif()
 
 # This will (should) never change, but we put it here so if we do need
@@ -292,6 +300,7 @@ set(CTEMPLATE_SRCS ${GENERATED_HEADERS}
 
 if ( WIN32 )
 	set(CTEMPLATE_SRCS ${SRC_ROOT}/windows/port.cc)
+	set(COMPILE_DEFINITIONS ${COMPILE_DEFINITIONS} "${ac_windows_dllexport}_BUILDING")
 endif()
 
 add_library(ctemplate ${CTEMPLATE_SRCS})
