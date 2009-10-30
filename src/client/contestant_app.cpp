@@ -61,13 +61,24 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
     m_network = new ContestantNetwork ( this );
 
-    connect( m_network, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( onAuthenticate ( bool ) ) );
+
     connect( m_network, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
-    connect( m_network, SIGNAL ( onContestStateChange ( int, CONTEST_STATUS ) ), this, SLOT ( onContestStateChange ( int, CONTEST_STATUS ) ) );
-    connect( m_network, SIGNAL ( onContestError ( quint16 ) ), this, SLOT ( onContestError ( quint16 ) ) );
-    connect( m_network, SIGNAL ( onError ( QAbstractSocket::SocketError ) ), this, SLOT ( onError ( QAbstractSocket::SocketError ) ) );
-    connect( m_network, SIGNAL ( onAData ( bool ) ), this, SLOT ( onAData ( bool ) ) );
+    connect( m_network, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
+    connect( m_network, SIGNAL ( onAuthenticate ( bool ) ), this, SLOT ( onAuthenticate ( bool ) ) );
+
+    connect( m_network, SIGNAL ( onContestStateChange ( int, CONTEST_STATUS ) ),
+             this, SLOT ( onContestStateChange ( int, CONTEST_STATUS ) ) );
+    connect( m_network, SIGNAL ( onQuestionStateChange ( ushort, ushort, QUESTION_STATUS ) ),
+              this, SLOT ( onQuestionStateChange ( ushort, ushort, QUESTION_STATUS ) ) );
+    connect( m_network, SIGNAL ( onContestTime ( ushort ) ), this, SLOT ( onContestTime ( ushort ) ) );
     connect( m_network, SIGNAL ( onQData ( QString ) ), this, SLOT ( onQData ( QString ) ) );
+    connect( m_network, SIGNAL ( onAData ( bool ) ), this, SLOT ( onAData ( bool ) ) );
+
+    connect( m_network, SIGNAL ( onContestError ( ERROR_MESSAGES ) ),
+              this, SLOT ( onContestError ( ERROR_MESSAGES ) ) );
+    connect( m_network, SIGNAL ( onError ( QAbstractSocket::SocketError ) ),
+             this, SLOT ( onError ( QAbstractSocket::SocketError ) ) );
+
 
     // connections for the login dialog
     connect( m_login_dlg->login_btn, SIGNAL ( clicked() ), this, SLOT ( login() ) );
@@ -119,23 +130,6 @@ ContestantApp::~ContestantApp()
     delete m_elims_w;
 }
 
-void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
-{
-    //TODO: do something here for when the contest state changes
-    m_network->qDataRequest( r );
-    round = r;
-}
-
-void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
-{
-    //TODO: do something here when there's a network error.
-}
-
-void ContestantApp::onContestError ( quint16 err )
-{
-    //TODO: do something here for contest errors.
-    //Undefined, ignore for now
-}
 
 void ContestantApp::onConnect()
 {
@@ -146,6 +140,11 @@ void ContestantApp::onConnect()
     msg.setDefaultButton( QMessageBox::Ok );
     msg.setIcon( QMessageBox::Information );
     msg.exec();
+}
+
+void ContestantApp::onDisconnect()
+{
+
 }
 
 void ContestantApp::onAuthenticate ( bool result )
@@ -172,6 +171,22 @@ void ContestantApp::onAuthenticate ( bool result )
 
 }
 
+void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
+{
+    m_network->qDataRequest( r );
+    round = r;
+}
+
+void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATUS status )
+{
+
+}
+
+void ContestantApp::onContestTime( ushort time )
+{
+
+}
+
 void ContestantApp::onQData ( const QString& xml )
 {
     XmlUtil::getInstance().readStageData( xml, sd );
@@ -181,6 +196,17 @@ void ContestantApp::onQData ( const QString& xml )
 void ContestantApp::onAData ( bool result )
 {
     //TODO: do something here for replies to answer uploads.
+}
+
+void ContestantApp::onContestError ( ERROR_MESSAGES err )
+{
+
+}
+
+
+void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
+{
+    //TODO: do something here when there's a network error.
 }
 
 void ContestantApp::login()

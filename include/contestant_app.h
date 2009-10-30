@@ -42,23 +42,7 @@ public:
         ~ContestantApp();
 private slots:
 
-        /*!
-        Slot for when the server says the contest state changes.
-        \param state The state that the contest is in now.
-        */
-        void onContestStateChange ( int round, CONTEST_STATUS s );
-
-        /*!
-        Emitted when there's an error with the connection.
-        \param err SocketError
-        */
-        void onError ( const QAbstractSocket::SocketError& err );
-
-        /*!
-        Emitted when there's a contest error.
-        \param err ERROR_MESSAGES indicating the error.
-        */
-        void onContestError ( quint16 err );
+        //Below: slots for network
 
         /*!
         Called when the client is able to connect.
@@ -66,13 +50,39 @@ private slots:
         void onConnect();
 
         /*!
+        Called when the client is disconnected.
+        */
+        void onDisconnect();
+
+        /*!
         Slot for when the authentication reply has arrived.
         \param result true if we're in, false if not
         */
         void onAuthenticate ( bool result );
 
+
         /*!
-        When round 1 questions arrive, this gets called.
+        Slot for when the server says the contest state changes.
+        */
+        void onContestStateChange ( int round, CONTEST_STATUS s );
+
+        /*!
+        Slot for when question in round 3/4 changes in status.
+        This is either when the question changes, the timer changes
+        or when the timer is started/stopped/paused.
+        \param qnum The question number.
+        \param time The time for this question.
+        \param status The current status for this question.
+        */
+        void onQuestionStateChange ( ushort qnum, ushort time, QUESTION_STATUS status );
+
+        /*!
+        Slot for receiving current contest time
+        */
+        void onContestTime( ushort time );
+
+        /*!
+        When question data arrives, this gets called
         \param xml Round 1 question data in xml format.
         */
         void onQData ( const QString& xml );
@@ -82,6 +92,20 @@ private slots:
         \param result true on success, false on failure
         */
         void onAData ( bool result );
+
+        /*!
+        Emitted when there's a contest error.
+        \param err ERROR_MESSAGES indicating the error.
+        */
+        void onContestError ( ERROR_MESSAGES err );
+
+        /*!
+        Emitted when there's an error with the connection.
+        \param err SocketError
+        */
+        void onError ( const QAbstractSocket::SocketError& err );
+
+        //Below: slots for widgets
 
         /*!
         Slot for when the user clicks the login button on the log-in screen.
