@@ -46,54 +46,54 @@ private slots:
         Slot for when the server says the contest state changes.
         \param state The state that the contest is in now.
         */
-		void netContestStateChange ( int round, CONTEST_STATUS s );
+        void onContestStateChange ( int round, CONTEST_STATUS s );
 
         /*!
         Emitted when there's an error with the connection.
         \param err SocketError
         */
-        void netError ( const QAbstractSocket::SocketError& err );
+        void onError ( const QAbstractSocket::SocketError& err );
 
         /*!
         Emitted when there's a contest error.
         \param err ERROR_MESSAGES indicating the error.
         */
-        void netContestError ( quint16 err );
+        void onContestError ( quint16 err );
 
         /*!
         Called when the client is able to connect.
         */
-        void netConnect();
+        void onConnect();
 
         /*!
         Slot for when the authentication reply has arrived.
         \param result true if we're in, false if not
         */
-        void netAuthenticate ( bool result );
+        void onAuthenticate ( bool result );
 
         /*!
         When round 1 questions arrive, this gets called.
         \param xml Round 1 question data in xml format.
         */
-		void netQData ( const QString& xml );
+        void onQData ( const QString& xml );
 
         /*!
         Slot for when the server replies to our sent answers.
         \param result true on success, false on failure
         */
-		void netAData ( bool result );
+        void onAData ( bool result );
 
         /*!
         Slot for when the user clicks the login button on the log-in screen.
         \param the username in the username field
         \param the password in the password field
         */
-        void loginLogin();
+        void login();
 
         /*!
         Slot for when the user exits from the login screen.
         */
-        void loginExit();
+        void exit();
 
         /*!
         Slot for when the user clicks the Start button on the welcome screen.
@@ -125,6 +125,11 @@ private slots:
 		*/
 		void review();
 
+        /*!
+        Slot for the submit button button of the summary dialog
+        */
+        void submit();
+
 private:
         ContestantNetwork* m_network;
         Ui::login_dlg* m_login_dlg;
@@ -145,10 +150,11 @@ private:
         const QString UNAUTH_TEXT;
         const QString UNAUTH_INFORMATION;
 
+        void displayQuestionAndChoices();
 
-		QuestionData qd;
+        StageData sd;
 		int round;
-		int r1Count;
+        int qCount;        
 };
 
 #endif //CONTESTANT_APP_H
