@@ -774,40 +774,28 @@ void QEditor::load()
 		return;
 	for (int ctr=0;ctr<4;ctr++)
 	{
-		QFile fq(file_prefix+QString::number(ctr+1)+"_q.xml");
-		//QuestionData qd;
-		if(fq.open(QIODevice::ReadOnly))
+		StageData sd;
+		QFile fs(file_prefix+QString::number(ctr+1)+".xml");
+		if(fs.open(QIODevice::ReadOnly))
 		{
-			QString xml_q=fq.readAll();
+			QString stage_xml=fs.readAll();
 			try {
-				//xml_util.readQuestionData(ctr+1,xml_q,qd);
+				xml_util.readStageData(stage_xml,sd);
 			} catch (exception e) {
+				//QString error=e.what();
 				QMessageBox notice;
-				notice.setWindowTitle("Notice - QEditor ^_^;");
-				notice.setText("^_^; i guess something went wrong while reading "+
-						file_prefix+QString::number(ctr+1)+"_q.xml");
+				notice.setWindowTitle("Ooops... - QEditor ^_^;");
+				notice.setText("i guess something went wrong while reading "+
+						file_prefix+QString::number(ctr+1)+".xml");
+				notice.setDetailedText(e.what());
 				notice.exec();
+				continue;
 			}
 		}
 		
-		QFile fa(file_prefix+QString::number(ctr+1)+"_a.xml");
-		//AnswerData ad;
-		if (!fa.open(QIODevice::ReadOnly))
-		{
-			QString xml_a=fa.readAll();
-			try {
-				//xml_util.readAnswerData(ctr+1,xml_a,ad);
-			} catch (exception e) {
-				QMessageBox notice;
-				notice.setWindowTitle("Notice - QEditor");
-				notice.setText("^_^; i guess something went wrong while reading "+
-						file_prefix+QString::number(ctr+1)+"_a.xml");
-				notice.exec();
-			}
-		}
 		
-		//welcome[ctr]->setPlainText(qd.welcome_msg);
-		//roundmodel[ctr]->feedData(qd,ad);
+		roundmodel[ctr]->feedData(sd);
+		
 		this->setWindowTitle(file_prefix+".xgrp - QEditor");
 		
 		fully_updated[ctr]=true;
