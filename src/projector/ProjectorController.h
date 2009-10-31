@@ -16,31 +16,20 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef PROJECTOR_TEMPLATEMANAGER_H_
-#define PROJECTOR_TEMPLATEMANAGER_H_
+#ifndef PROJECTOR_PROJECTORCONTROLLER_H_
+#define PROJECTOR_PROJECTORCONTROLLER_H_
 
-#include <QString>
+class ProjectorWindow;
+class QKeyEvent;
 
-namespace ctemplate {
-	class Template;
-}
-
-class TemplateManager
+class ProjectorController
 {
+	ProjectorWindow *m_target;
 public:
-	enum TKey { INDEX, ERROR, SCOREBOARD, QDISPLAY, TIMEBOARD };
-	TemplateManager();
+	ProjectorController(ProjectorWindow *target);
+	virtual ~ProjectorController() {}
 
-	void setTemplatePath(const QString &path) {
-		m_path = path;
-	}
-
-	const QString& getTemplatePath() { return m_path; }
-
-	ctemplate::Template* getTemplate(TKey template_key);
-private:
-	static void initialize();
-	QString m_path;
+	virtual bool keyReleaseEvent(QKeyEvent *event) = 0;
 };
 
-#endif // PROJECTOR_TEMPLATEMANAGER_H_
+#endif // PROJECTOR_PROJECTORCONTROLLER_H
