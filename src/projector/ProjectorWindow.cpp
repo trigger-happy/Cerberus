@@ -7,7 +7,7 @@
 
 #define JS_TIMELEFT_EVENT "window.ontimeleft"
 
-const QString WINDOW_TITLE = "Cerberus Projector";
+const QString WINDOW_TITLE = "Cerberus Contest System";
 
 const QString JS_TRIGGER_TIME =
 "if ( " JS_TIMELEFT_EVENT " != null ) {"
@@ -26,7 +26,7 @@ ProjectorWindow::ProjectorWindow(QWidget *parent) :
 	showFullScreen();
 }
 
-void ProjectorWindow::updateView() {
+void ProjectorWindow::setTimeLeft(unsigned int val) {
 
 }
 
@@ -50,14 +50,16 @@ void ProjectorWindow::keyReleaseEvent(QKeyEvent *event) {
 void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 	QFile file(file_path);
 	file.open(QIODevice::ReadOnly);
-	XmlUtil::getInstance().readProjectorConfig(file.readAll(), *m_cfg);
-	setConfig(*m_cfg);
+	ProjectorConfig cfg;
+	XmlUtil::getInstance().readProjectorConfig(file.readAll(), cfg);
+	setConfig(cfg);
 }
 
 void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 	if ( m_cfg != &cfg )
 		*m_cfg = cfg;
 	m_base_url = QUrl::fromLocalFile(m_cfg->theme_path);
+	m_tpl.setTemplatePath(m_cfg->theme_path);
 	if ( m_cfg->contest_name.isEmpty() )
 		setWindowTitle(WINDOW_TITLE);
 	else

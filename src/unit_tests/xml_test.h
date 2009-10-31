@@ -33,6 +33,7 @@ private slots:
 	void netConfReadTest();
 	void netConfWriteTest();
 	void serverConfReadTest();
+	void clientConfReadTest();
 private:
 	XmlUtil m_util;
 };
