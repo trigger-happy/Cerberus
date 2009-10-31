@@ -76,6 +76,10 @@ void ProjectorWindow::setTemplate(ctemplate::Template *tpl) {
 	m_ui->webView->setHtml(QString(buffer.c_str()), m_base_url);
 }
 
+void ProjectorWindow::setView(TemplateManager::TKey v) {
+	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key = v));
+}
+
 void ProjectorWindow::displayError(const char *brief, const char *detail, bool persist) {
 	m_dict->SetValue("ERROR_BRIEF", brief);
 	m_dict->SetValue("ERROR_DETAIL", detail);

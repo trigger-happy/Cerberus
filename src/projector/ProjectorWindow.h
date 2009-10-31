@@ -43,6 +43,8 @@ public:
 	void loadConfigFromFile(const QString &file_path);
 	void setConfig(const ProjectorConfig &cfg);
 	const ProjectorConfig& getConfig() const;
+
+	TemplateManager::TKey getView() const { return m_tpl_key; }
 protected:
 	void changeEvent(QEvent *e);
 	void keyReleaseEvent(QKeyEvent *event);
@@ -59,6 +61,7 @@ private:
 public slots:
 	void setTimeLeft(unsigned int);
 	void refresh();
+	void setView(TemplateManager::TKey v);
 };
 
 #endif // PROJECTOR_PROJECTORWINDOW_H_

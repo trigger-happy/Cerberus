@@ -28,7 +28,7 @@ namespace ctemplate {
 class TemplateManager
 {
 public:
-	enum TKey { INDEX, ERROR, SCOREBOARD, QDISPLAY, TIMEBOARD };
+	enum TKey { INDEX, ERROR, SCOREBOARD, QDISPLAY, TIMEBOARD, N_TEMPLATES };
 	TemplateManager();
 
 	void setTemplatePath(const QString &path) {

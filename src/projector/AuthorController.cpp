@@ -24,10 +24,28 @@ AuthorController::AuthorController(ProjectorWindow &target) :
 		ProjectorController(target) {
 }
 
+static int properMod(int a, int m) {
+	return (a % m + m) % m;
+}
+
 bool AuthorController::keyReleaseEvent(QKeyEvent *event) {
-	if ( event->key() == Qt::Key_F5 ) {
-		m_target.refresh();
-		return true;
+	switch ( event->key() ) {
+		case Qt::Key_F5:
+			m_target.refresh();
+			break;
+		case Qt::Key_Left:
+			m_target.setView(
+					TemplateManager::TKey(
+							((int)m_target.getView() + 1) % TemplateManager::N_TEMPLATES));
+			break;
+		case Qt::Key_Right:
+				m_target.setView(
+				TemplateManager::TKey(
+						properMod((int)m_target.getView() - 1,
+								  (int)TemplateManager::N_TEMPLATES)));
+			break;
+		default:
+			return false;
 	}
-	return false;
+	return true;
 }
