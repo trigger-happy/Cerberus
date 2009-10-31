@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_elims.h"
 #include "ui_semifinals.h"
 #include "ui_summary.h"
+#include <QString>
 #include <vector>
 #include <iostream>
 
@@ -67,7 +68,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_login_w->hide();
 
 	m_network = new ContestantNetwork ( this );
-
+    timer = new QTimer( this );
 
 	connect( m_network, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
 	connect( m_network, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
@@ -104,9 +105,12 @@ ContestantApp::ContestantApp ( QWidget* parent )
     connect( m_semifinals_dlg->prev_btn, SIGNAL ( clicked() ), this, SLOT ( elimSemiPrev() ) );
     connect( m_semifinals_dlg->next_btn, SIGNAL ( clicked() ), this, SLOT ( elimSemiNext() ) );
 
-	//connections for summary dialog
+    // connections for summary dialog
 	connect( m_summary_dlg->review_btn, SIGNAL( clicked() ), this, SLOT( review() ) );
 	connect( m_summary_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( submit() ) );
+
+    // slot for timer
+    connect( timer, SIGNAL( timeout() ), this, SLOT( updateTimer() ) );
 
 	// Get the client configuration from XmlUtil
     /*
@@ -129,6 +133,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_network->connectToHost ( "localhost" , 2652 );
 
     qCount = 0;
+    time = 0;
 }
 
 ContestantApp::~ContestantApp()
@@ -139,6 +144,7 @@ ContestantApp::~ContestantApp()
 	delete m_reconnect_w;
 	delete m_elims_w;
     delete m_semifinals_w;
+    delete timer;
 }
 
 
@@ -195,9 +201,9 @@ void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATU
 
 }
 
-void ContestantApp::onContestTime( ushort time )
+void ContestantApp::onContestTime( ushort t )
 {
-
+    time = t;
 }
 
 void ContestantApp::onQData ( const QString& xml )
@@ -242,6 +248,23 @@ void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
 	//TODO: do something here when there's a network error.
 }
 
+void ContestantApp::updateTimer()
+{
+    time--;
+    //if( time == 0 )
+        // stop contest
+    int minute = time/60;
+    int second = time - minute*60;
+    QString t = QString::number(minute);
+    t.append(":");
+    t.append( QString::number(second).leftJustified( 2, ' '));
+
+    if( round == 1 )
+        m_elims_dlg->time_lbl->setText( t );
+    else if( round == 2 )
+        m_semifinals_dlg->time_lbl->setText( t );
+}
+
 //widget slots
 
 void ContestantApp::login()
@@ -269,11 +292,13 @@ void ContestantApp::welcomeStart()
             m_elims_dlg->prev_btn->setEnabled( false );
         else if( round == 2 )
             m_semifinals_dlg->prev_btn->setEnabled( false );
+        time = sd.contest_time;
     }
 
+    timer->start( 1000 );
     initializeAnswerData();
-	// changing the question text to the first question
     displayQuestionAndChoices();
+
 }
 
 void ContestantApp::reconnectTry()
