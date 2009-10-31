@@ -193,6 +193,8 @@ struct ClientConfig : public NetworkConfig {
 struct ProjectorConfig : public NetworkConfig {
 	QString theme_path;
 	QString contest_name;
+	unsigned int time_precision;
+	enum { DEFAULT_TIME_PRECISION = 1000 };
 };
 
 struct AdminConfig : public NetworkConfig {

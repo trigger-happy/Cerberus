@@ -296,6 +296,7 @@ void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
 	if ( reader.name() != CONFIG_ROOT_TAG )
 		throw InvalidXmlException("No config root tag found.", reader);
 
+	conf.time_precision = ProjectorConfig::DEFAULT_TIME_PRECISION;
 	while ( !reader.atEnd() ) {
 		reader.readNext();
 		if ( reader.isStartElement() ) {
@@ -303,6 +304,10 @@ void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
 				conf.theme_path = reader.readElementText();
 			} else if ( reader.name() == "contest_name" ) {
 				conf.contest_name = reader.readElementText();
+			} else if ( reader.name() == "time_precision" ) {
+				conf.time_precision =
+						checked_convert<unsigned int>(reader.readElementText(),
+													  "time_precision", reader);
 			} else {
 				readNetConfigElement(reader, conf);
 			}
