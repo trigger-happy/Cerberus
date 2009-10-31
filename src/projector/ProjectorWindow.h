@@ -2,6 +2,8 @@
 #define PROJECTOR_PROJECTORWINDOW_H_
 
 #include <QtGui/QMainWindow>
+#include <QUrl>
+#include "TemplateManager.h"
 
 namespace Ui {
 	class ProjectorWindow;
@@ -24,6 +26,10 @@ protected:
 private:
 	Ui::ProjectorWindow *m_ui;
 	ProjectorConfig *m_cfg;
+	QUrl m_base_url;
+	TemplateManager m_tpl;
+public slots:
+	void setTimeLeft(unsigned int);
 };
 
 #endif // PROJECTOR_PROJECTORWINDOW_H_

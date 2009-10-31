@@ -25,136 +25,167 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 namespace Ui
 {
-class login_dlg;
-class welcome_dlg;
-class reconnect_dlg;
-class elims_dlg;
-class summary_dlg;
+	class login_dlg;
+	class welcome_dlg;
+	class reconnect_dlg;
+	class elims_dlg;
+    class semifinals_dlg;
+	class summary_dlg;
 }
 
 class ContestantNetwork;
 
 class ContestantApp : public QDialog
 {
-        Q_OBJECT;
+	Q_OBJECT;
 public:
-        ContestantApp ( QWidget* parent = 0 );
-        ~ContestantApp();
+	ContestantApp ( QWidget* parent = 0 );
+	~ContestantApp();
 private slots:
 
-        /*!
-        Slot for when the server says the contest state changes.
-        \param state The state that the contest is in now.
-        */
-        void onContestStateChange ( int round, CONTEST_STATUS s );
+	//Below: slots for network
 
-        /*!
-        Emitted when there's an error with the connection.
-        \param err SocketError
-        */
-        void onError ( const QAbstractSocket::SocketError& err );
+	/*!
+	Called when the client is able to connect.
+	*/
+	void onConnect();
 
-        /*!
-        Emitted when there's a contest error.
-        \param err ERROR_MESSAGES indicating the error.
-        */
-        void onContestError ( quint16 err );
+	/*!
+	Called when the client is disconnected.
+	*/
+	void onDisconnect();
 
-        /*!
-        Called when the client is able to connect.
-        */
-        void onConnect();
+	/*!
+	Slot for when the authentication reply has arrived.
+	\param result true if we're in, false if not
+	*/
+	void onAuthenticate ( bool result );
 
-        /*!
-        Slot for when the authentication reply has arrived.
-        \param result true if we're in, false if not
-        */
-        void onAuthenticate ( bool result );
 
-        /*!
-        When round 1 questions arrive, this gets called.
-        \param xml Round 1 question data in xml format.
-        */
-        void onQData ( const QString& xml );
+	/*!
+	Slot for when the server says the contest state changes.
+	*/
+	void onContestStateChange ( int round, CONTEST_STATUS s );
 
-        /*!
-        Slot for when the server replies to our sent answers.
-        \param result true on success, false on failure
-        */
-        void onAData ( bool result );
+	/*!
+	Slot for when question in round 3/4 changes in status.
+	This is either when the question changes, the timer changes
+	or when the timer is started/stopped/paused.
+	\param qnum The question number.
+	\param time The time for this question.
+	\param status The current status for this question.
+	*/
+	void onQuestionStateChange ( ushort qnum, ushort time, QUESTION_STATUS status );
 
-        /*!
-        Slot for when the user clicks the login button on the log-in screen.
-        \param the username in the username field
-        \param the password in the password field
-        */
-        void login();
+	/*!
+	Slot for receiving current contest time (in seconds)
+	*/
+	void onContestTime( ushort time );
 
-        /*!
-        Slot for when the user exits from the login screen.
-        */
-        void exit();
+	/*!
+	When question data arrives, this gets called
+	\param xml Round 1 question data in xml format.
+	*/
+	void onQData ( const QString& xml );
 
-        /*!
-        Slot for when the user clicks the Start button on the welcome screen.
-        */
-        void welcomeStart();
+	/*!
+	Slot for when the server replies to our sent answers.
+	\param result true on success, false on failure
+	*/
+	void onAData ( bool result );
 
-        /*!
-        Slot for the Reconnect button on the dialog which appears upon connection problems.
-        */
-        void reconnectTry();
+	/*!
+	Emitted when there's a contest error.
+	\param err ERROR_MESSAGES indicating the error.
+	*/
+	void onContestError ( ERROR_MESSAGES err );
 
-        /*!
-        Slot for the Cancel button on the dialog which appears upon connection problems.
-        */
-        void reconnectCancel();
+	/*!
+	Emitted when there's an error with the connection.
+	\param err SocketError
+	*/
+	void onError ( const QAbstractSocket::SocketError& err );
 
-        /*!
-        Slot for the Previous button on the round 1 dialog.
-        */
-		void elimsPrevious();
+	//Below: slots for widgets
 
-        /*!
-        Slot for the Next button on the round 1 dialog.
-        */
-		void elimsNext();
+	/*!
+	Slot for when the user clicks the login button on the log-in screen.
+	\param the username in the username field
+	\param the password in the password field
+	*/
+	void login();
 
-		/*!
-		Slot for the review button button of the summary dialog
-		*/
-		void review();
+	/*!
+	Slot for when the user exits from the login screen.
+	*/
+	void exit();
 
-        /*!
-        Slot for the submit button button of the summary dialog
-        */
-        void submit();
+	/*!
+	Slot for when the user clicks the Start button on the welcome screen.
+	*/
+	void welcomeStart();
+
+	/*!
+	Slot for the Reconnect button on the dialog which appears upon connection problems.
+	*/
+	void reconnectTry();
+
+	/*!
+	Slot for the Cancel button on the dialog which appears upon connection problems.
+	*/
+	void reconnectCancel();
+
+	/*!
+    Slot for the Previous button on the elims & semis dialog.
+	*/
+    void elimSemiPrev();
+
+	/*!
+    Slot for the Next button on the elims & semis dialog.
+	*/
+    void elimSemiNext();
+
+	/*!
+	Slot for the review button button of the summary dialog
+	*/
+	void review();
+
+	/*!
+	Slot for the submit button button of the summary dialog
+	*/
+	void submit();
 
 private:
-        ContestantNetwork* m_network;
-        Ui::login_dlg* m_login_dlg;
-        Ui::welcome_dlg* m_welcome_dlg;
-        Ui::reconnect_dlg* m_reconnect_dlg;
-		Ui::elims_dlg* m_elims_dlg;
-        Ui::summary_dlg* m_summary_dlg;
+	ContestantNetwork* m_network;
+	Ui::login_dlg* m_login_dlg;
+	Ui::welcome_dlg* m_welcome_dlg;
+	Ui::reconnect_dlg* m_reconnect_dlg;
+	Ui::elims_dlg* m_elims_dlg;
+    Ui::semifinals_dlg* m_semifinals_dlg;
+	Ui::summary_dlg* m_summary_dlg;
 
-        QDialog* m_login_w;
-        QDialog* m_welcome_w;
-        QDialog* m_reconnect_w;
-		QDialog* m_elims_w;
-        QDialog* m_summary_w;
+	QDialog* m_login_w;
+	QDialog* m_welcome_w;
+	QDialog* m_reconnect_w;
+	QDialog* m_elims_w;
+    QDialog* m_semifinals_w;
+	QDialog* m_summary_w;
 
-        const QString DISCONNECT_QUESTION;
-        const QString DISCONNECT_INFORMATION;
-		const QString CON_TEXT;
-        const QString UNAUTH_TEXT;
-        const QString UNAUTH_INFORMATION;
+	const QString DISCONNECT_QUESTION;
+	const QString DISCONNECT_INFORMATION;
+	const QString CON_TEXT;
+	const QString UNAUTH_TEXT;
+	const QString UNAUTH_INFORMATION;
 
-        void displayQuestionAndChoices();
+	void displayQuestionAndChoices();
+    void recordAnswer();
+    void displayAnswer();
+    void initializeAnswerData();
 
-        StageData sd;
-		int round;
-        int qCount;        
+	StageData sd;
+    AnswerData ad;
+	int round;
+	int qCount;
 };
 
 #endif //CONTESTANT_APP_H

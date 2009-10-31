@@ -43,6 +43,7 @@ protected slots:
 
 private:
 	void refreshTeamList(QStringList& teams); //a function to refresh the list of teams in the respective QListWidget
+	void refreshUserList(QString team, QStringList& users);
 
 	Ui::team_table_wnd* m_team_table_wnd;
 	Ui::user_table_wnd* m_user_table_wnd;
@@ -52,6 +53,7 @@ private:
 	QString user_nav;
 
 	QStringList teams;
+	QStringList users;
 
 	QDialog* m_team_table_w;
 	QDialog* m_user_table_w;

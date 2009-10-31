@@ -15,27 +15,4 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef XML_TEST_H
-#define XML_TEST_H
-#include <QtTest/QtTest>
-#include <QObject>
-#include "util/xml_util.h"
-
-class XmlTest : public QObject
-{
-	Q_OBJECT;
-private slots:
-	// question test
-	void q1ReadTest();
-	void q1WriteTest();
-	void q2ReadTest();
-	// configuration test
-	void netConfReadTest();
-	void netConfWriteTest();
-	void serverConfReadTest();
-	void clientConfReadTest();
-private:
-	XmlUtil m_util;
-};
-
-#endif //XML_TEST_H
+#include "net/projector_net.h"
