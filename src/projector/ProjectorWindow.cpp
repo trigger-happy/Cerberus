@@ -78,7 +78,7 @@ void ProjectorWindow::setTemplate(ctemplate::Template *tpl) {
 void ProjectorWindow::displayError(const char *brief, const char *detail) {
 	m_dict->SetValue("ERROR_BRIEF", brief);
 	m_dict->SetValue("ERROR_DETAIL", detail);
-	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
+	setTemplate(m_tpl_mgr.getTemplate(TemplateManager::ERROR));
 }
 
 #include <QKeyEvent>
@@ -94,10 +94,17 @@ void ProjectorWindow::keyReleaseEvent(QKeyEvent *event) {
 
 void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 	QFile file(file_path);
-	file.open(QIODevice::ReadOnly);
-	ProjectorConfig cfg;
-	XmlUtil::getInstance().readProjectorConfig(file.readAll(), cfg);
-	setConfig(cfg);
+	if ( !file.open(QIODevice::ReadOnly) ) {
+		displayError("Unable to open configuration file", "");
+		return;
+	}
+	try {
+		ProjectorConfig cfg;
+		XmlUtil::getInstance().readProjectorConfig(file.readAll(), cfg);
+		setConfig(cfg);
+	} catch ( XmlUtil::XmlException &e ) {
+		displayError("Error while parsing configuration file", e.what());
+	}
 }
 
 void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
