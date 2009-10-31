@@ -140,11 +140,14 @@ public:
 
 	void readAdminConfig(const QString &xml, AdminConfig &conf);
 	void writeAdminConfig(const AdminConfig &conf, QString &xml);
+
+	void readProjectorConfig(const QString &xml, ProjectorConfig &conf);
 private:
 	static Question parseChooseQuestion(QXmlStreamReader &reader);
 	static Question parseIdentificationQuestion(QXmlStreamReader &reader);
 	static StageData readStageData(QXmlStreamReader& stream);
 	static void readNetConfig ( QXmlStreamReader& reader, NetworkConfig& conf );
+	static void readNetConfigElement(QXmlStreamReader &reader, NetworkConfig &conf);
 protected:
 };
 

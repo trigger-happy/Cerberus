@@ -283,6 +283,37 @@ QString XmlUtil::stripAnswers(const QString &input) {
 	return doc.toString(2);
 }
 
+void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
+	QXmlStreamReader reader( xml );
+	while ( !reader.atEnd() ) {
+		if ( reader.readNext() == QXmlStreamReader::StartElement) {
+			if ( reader.name() == CONFIG_ROOT_TAG ) {
+				break;
+			}
+		}
+	}
+
+	if ( reader.name() != CONFIG_ROOT_TAG )
+		throw InvalidXmlException("No config root tag found.", reader);
+
+	while ( !reader.atEnd() ) {
+		reader.readNext();
+		if ( reader.isStartElement() ) {
+			if ( reader.name() == "theme_path" ) {
+				conf.theme_path = reader.readElementText();
+			} else if ( reader.name() == "contest_name" ) {
+				conf.contest_name = reader.readElementText();
+			} else {
+				readNetConfigElement(reader, conf);
+			}
+		} else if ( reader.isEndElement() && reader.name() == CONFIG_ROOT_TAG )
+			break;
+	}
+
+	if ( reader.hasError() )
+		throw IllFormedXmlException(reader.errorString(), reader);
+}
+
 void XmlUtil::readClientConfig ( const QString& xml, ClientConfig& conf )
 {
 	readNetConfig(xml, conf);
@@ -298,16 +329,22 @@ void XmlUtil::readNetConfig( QXmlStreamReader& reader, NetworkConfig& config) {
 
 	while ( !reader.atEnd() ) {
 		if ( reader.readNext() == QXmlStreamReader::StartElement ) {
-			if ( reader.name() == "ip" ) {
-				config.ip = reader.readElementText();
-			} else if ( reader.name() == "port" ) {
-				config.port = reader.readElementText().toInt();
-			} else {
-				//Should I barf because of invalid tags in the conf or just
-				//ignore this madness?
-			}
+			readNetConfigElement(reader, config);
 		} else if ( reader.isEndElement() && reader.name() == CONFIG_ROOT_TAG )
 			break;
+	}
+}
+
+void XmlUtil::readNetConfigElement(QXmlStreamReader &reader, NetworkConfig &config) {
+	if ( !reader.isStartElement() ) return;
+
+	if ( reader.name() == "ip" ) {
+		config.ip = reader.readElementText();
+	} else if ( reader.name() == "port" ) {
+		config.port = reader.readElementText().toInt();
+	} else {
+		//Should I barf because of invalid tags in the conf or just
+		//ignore this madness?
 	}
 }
 
@@ -321,7 +358,7 @@ void XmlUtil::readNetConfig ( const QString& xml, NetworkConfig& conf )
 			}
 		}
 	}
-        //cout<<reader.name().toStdString()  <<endl;
+
 	if ( reader.name() != CONFIG_ROOT_TAG )
 		throw InvalidXmlException("No config root tag found.",
 								  reader.lineNumber(), reader.columnNumber(), reader.characterOffset());
