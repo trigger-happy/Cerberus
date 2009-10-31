@@ -102,11 +102,20 @@
          <property name="title">
           <string>Choices</string>
          </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QRadioButton" name="a_choice">
             <property name="text">
              <string>Choice A goes here</string>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

@@ -178,8 +178,12 @@ private:
 	const QString UNAUTH_INFORMATION;
 
 	void displayQuestionAndChoices();
+    void recordAnswer();
+    void displayAnswer();
+    void initializeAnswerData();
 
 	StageData sd;
+    AnswerData ad;
 	int round;
 	int qCount;
 };
