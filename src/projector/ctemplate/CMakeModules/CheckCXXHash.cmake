@@ -35,7 +35,9 @@ macro(CHECK_CXX_HASH)
 		STL_HASH_NEW_GCC)
 		if( STL_HASH_NEW_GCC )
 			foreach(location "" "tr1/")
-				foreach(ns std std::tr1)
+				foreach(ns std "std::tr1")
+					message("Trying ${ns}::unordered_map in <${location}unordered_map>")
+					set(HASH_VAR "HASH_${ns}_${location}unordered_map")
 					check_cxx_source_compiles("
 						#include <${location}unordered_map>
 						int main() {
@@ -43,8 +45,8 @@ macro(CHECK_CXX_HASH)
 							return t.find(5) == t.end();
 						}
 					"
-					HASH_OK)
-					if( HASH_OK )
+					${HASH_VAR})
+					if( ${HASH_VAR} )
 						set(${OUT_MAP_H} "${location}unordered_map" PARENT_SCOPE)
 						set(${OUT_SET_H} "${location}unordered_set" PARENT_SCOPE)
 						set(${OUT_TYPE} "unordered" PARENT_SCOPE)
@@ -59,6 +61,8 @@ macro(CHECK_CXX_HASH)
 		
 		foreach(location "ext/" "")
 			foreach(ns __gnu_cxx "" std stdext)
+				message("Trying ${ns}::hash_map in <${location}hash_map>")
+				set(HASH_VAR "HASH_${ns}_${location}hash_map")
 				check_cxx_source_compiles("
 					#include <${location}hash_map>
 					int main() {
@@ -66,8 +70,8 @@ macro(CHECK_CXX_HASH)
 						return 0;
 					}
 				"
-				HASH_OK)
-				if( HASH_OK )
+				${HASH_VAR})
+				if( ${HASH_VAR} )
 					set(${OUT_MAP_H} "${location}hash_map" PARENT_SCOPE)
 					set(${OUT_SET_H} "${location}hash_set" PARENT_SCOPE)
 					set(${OUT_TYPE} "hash" PARENT_SCOPE)
