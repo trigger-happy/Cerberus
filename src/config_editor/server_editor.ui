@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>322</width>
-    <height>415</height>
+    <width>319</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,8 +126,8 @@
         <property name="geometry">
          <rect>
           <x>9</x>
-          <y>9</y>
-          <width>55</width>
+          <y>0</y>
+          <width>81</width>
           <height>16</height>
          </rect>
         </property>
@@ -139,18 +139,18 @@
         <property name="geometry">
          <rect>
           <x>9</x>
-          <y>29</y>
+          <y>18</y>
           <width>271</width>
-          <height>20</height>
+          <height>31</height>
          </rect>
         </property>
        </widget>
        <widget class="QLabel" name="label_3">
         <property name="geometry">
          <rect>
-          <x>9</x>
-          <y>55</y>
-          <width>85</width>
+          <x>10</x>
+          <y>50</y>
+          <width>121</width>
           <height>16</height>
          </rect>
         </property>
@@ -162,9 +162,9 @@
         <property name="geometry">
          <rect>
           <x>9</x>
-          <y>75</y>
+          <y>65</y>
           <width>271</width>
-          <height>20</height>
+          <height>31</height>
          </rect>
         </property>
        </widget>
@@ -173,7 +173,7 @@
          <rect>
           <x>9</x>
           <y>101</y>
-          <width>38</width>
+          <width>61</width>
           <height>16</height>
          </rect>
         </property>
@@ -187,7 +187,7 @@
           <x>9</x>
           <y>121</y>
           <width>271</width>
-          <height>20</height>
+          <height>31</height>
          </rect>
         </property>
        </widget>
@@ -196,8 +196,8 @@
          <rect>
           <x>10</x>
           <y>160</y>
-          <width>280</width>
-          <height>91</height>
+          <width>281</width>
+          <height>101</height>
          </rect>
         </property>
         <property name="currentIndex">
@@ -327,17 +327,17 @@
       </widget>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="load">
-      <property name="text">
-       <string>                        Load                     </string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="1">
      <widget class="QPushButton" name="save">
       <property name="text">
        <string>Save</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="load">
+      <property name="text">
+       <string>                        Load                     </string>
       </property>
      </widget>
     </item>
@@ -348,8 +348,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>322</width>
-     <height>22</height>
+     <width>319</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>
