@@ -296,7 +296,6 @@ void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
 	if ( reader.name() != CONFIG_ROOT_TAG )
 		throw InvalidXmlException("No config root tag found.", reader);
 
-	conf.time_precision = ProjectorConfig::DEFAULT_TIME_PRECISION;
 	while ( !reader.atEnd() ) {
 		reader.readNext();
 		if ( reader.isStartElement() ) {
@@ -308,6 +307,10 @@ void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
 				conf.time_precision =
 						checked_convert<unsigned int>(reader.readElementText(),
 													  "time_precision", reader);
+			} else if ( reader.name() == "author_mode" ) {
+				conf.author_mode =
+						checked_convert<bool>(reader.readElementText(),
+											  "author_mode", reader);
 			} else {
 				readNetConfigElement(reader, conf);
 			}
