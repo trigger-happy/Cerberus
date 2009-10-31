@@ -7,8 +7,9 @@
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set(SERVER_SRCS server.cpp)
-set(SERVER_MHDRS ${INCLUDE_DIR}/server.h)
+set(SERVER_SRCS server.cpp admin.cpp)
+set(SERVER_MHDRS ${INCLUDE_DIR}/server.h
+					${INCLUDE_DIR}/admin.h)
 QT4_WRAP_CPP(SERVER_MSRCS ${SERVER_MHDRS})
 set(SERVER_UIS server.ui)
 QT4_WRAP_UI(SERVER_UIS_H ${SERVER_UIS})
