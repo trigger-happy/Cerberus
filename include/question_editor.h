@@ -48,7 +48,6 @@ private slots:
 	void remove_question(int round);
 	void move_up(int round);
 	void move_down(int round);
-	void disableDuplicates(int round);
 	void newfile();
 	void import();
 	void load();
@@ -92,7 +91,6 @@ private:
 	QAbstractButton* question_ans_b[ROUNDS];
 	QAbstractButton* question_ans_c[ROUNDS];
 	QAbstractButton* question_ans_d[ROUNDS];
-	QAbstractButton* question_ans_e[ROUNDS];
 	QToolButton* button_update[ROUNDS];
 	QToolButton* button_cancel[ROUNDS];
 	QToolButton* button_add[ROUNDS];
@@ -110,7 +108,6 @@ private:
 	QSignalMapper* sigToDetailUpdate;
 	QSignalMapper* sigToUp;
 	QSignalMapper* sigToDown;
-	QSignalMapper* sigToChoices;
 	QSignalMapper* sigToVisible;
 	
 	XmlUtil xml_util;
@@ -121,6 +118,7 @@ private:
 	bool fully_updated[ROUNDS];
 protected:
 	void closeEvent(QCloseEvent*);
+	bool eventFilter(QObject* ob, QEvent* ev);
 };
 
 #endif

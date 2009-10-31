@@ -190,7 +190,9 @@ struct NetworkConfig {
 struct ClientConfig : public NetworkConfig {
 };
 
-struct PresenterConfig : public NetworkConfig {
+struct ProjectorConfig : public NetworkConfig {
+	QString theme_path;
+	QString contest_name;
 };
 
 struct AdminConfig : public NetworkConfig {

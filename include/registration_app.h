@@ -46,6 +46,8 @@ private:
 	Ui::user_table_wnd* m_user_table_wnd;
 	Ui::user_edit_wnd* m_user_edit_wnd;
 
+	QString team_nav;//for saving the name of the team who you are currently accessing
+	QString user_nav;
 
 	QDialog* m_team_table_w;
 	QDialog* m_user_table_w;

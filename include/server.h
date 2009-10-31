@@ -17,42 +17,67 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #ifndef SERVER_H
 #define SERVER_H
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <QtNetwork>
 #include "net/server_net.h"
 
-namespace Ui {
-
-	class server_dlg;
+namespace Ui
+{
+class server_dlg;
 }
 
-class ServerDlg : public QDialog {
-	Q_OBJECT;
+class ServerNetwork;
 
+class Server : public QDialog
+{
+        Q_OBJECT;
 public:
-	ServerDlg ( QWidget* parent = 0 );
-	~ServerDlg();
-
+		Server ( QWidget* parent = 0 );
+		~Server();
 private slots:
-	void onQuestionBtn();
-	void onTimeBtn();
-	void onStartBtn();
-	void onStopBtn();
-	void onPauseBtn();
-	void onRoundChangeBtn();
-	void onQuitBtn();
-	void newContestant ( ContestantConnection* cc );
-	void badClient ( TempConnection* tc );
-	void contestantDisconnect ( ContestantConnection* cc );
-	void onAuthenticate( ContestantConnection* cc, const QString& username );
-	void onAnswerSubmit( ContestantConnection* cc, int round, const AnswerData& data );
+        /*!
+        Called when there is a new connection
+        */
+		void newContestant( ContestantConnection* cc );
+
+		/*
+		Called when a client connects but is not a Cerberus client.
+		  */
+		void badClient ( TempConnection* tc );
+		/*
+		Called when there is a disconnection
+		*/
+		void contestantDisconnect( ContestantConnection* cc );
+
+		void onAuthentication( ContestantConnection* cc, const QString& c_username );
+
+		//Manual methods to be used by admin.
+		/*
+        Called when the stop button is pressed
+        */
+		void stopContest();
+
+		void startContest();
+
+		void pauseContest();
+
+		void viewSubmittedAnswers();
+
+		void checkAnswersManually ();
+
+		void dropConnection( ContestantConnection* cc );
+
+
 
 private:
-	void writeLog ( const QString& s );
-	QString log;
-	Ui::server_dlg* m_dlg;
-	ServerNetwork* m_server;
-	vector<QString> m_questions;
+		QString log;
+		int num;
+		ServerNetwork* m_network;
+		ServerConfig m_config;
+        Ui::server_dlg* m_dlg;
+		vector<QString> m_questions;
+		vector<QString> m_answers;
+
 };
 
-#endif // SERVER_H
+#endif //SERVER_H

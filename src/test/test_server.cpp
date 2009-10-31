@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QApplication>
 #include <iostream>
 #include "ui_server.h"
-#include "server.h"
+#include "test_server.h"
 #include "util/xml_util.h"
 #include "util/sql_util.h"
 #include "net/contestant_connection.h"
