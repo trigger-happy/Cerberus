@@ -250,7 +250,7 @@ void ConfigEditor::load() {
     bool check = false;
 
     if( ui->presenterConf->text().compare(QString( "" ) ) != 0 ) {
-        NetworkConfig *nc = new NetworkConfig();
+        ProjectorConfig *nc = new ProjectorConfig();
         QString network(ui->presenterConf->text());
         QFile file( network );
 
@@ -259,7 +259,7 @@ void ConfigEditor::load() {
             check = true;
             QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            xu.readNetConfig ( xml , *nc );
+            xu.readProjectorConfig ( xml , *nc );
             ui->serverIP->setText( nc->ip );
             ui->serverPort1->setText( QString("%1").arg(nc->port) );
             ui->serverPort2->setText( QString("%1").arg(nc->port) );
@@ -267,7 +267,7 @@ void ConfigEditor::load() {
         }
     }
     else if( ui->adminConf->text().compare(QString( "" ) ) != 0 ) {
-        NetworkConfig *nc = new NetworkConfig();
+        AdminConfig *nc = new AdminConfig();
         QString network(ui->presenterConf->text());
         QFile file (network);
 
@@ -275,7 +275,7 @@ void ConfigEditor::load() {
             check = true;
             QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            xu.readNetConfig( network, *nc );
+            xu.readAdminConfig( network, *nc );
             ui->serverIP->setText( nc->ip );
             ui->serverPort1->setText( QString("%1").arg(nc->port) );
             ui->serverPort2->setText( QString("%1").arg(nc->port) );
@@ -290,7 +290,7 @@ void ConfigEditor::load() {
             check = true;
             QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            xu.readNetConfig( network, *nc );
+            xu.readClientConfig( network, *nc );
             ui->serverIP->setText( nc->ip );
             ui->serverPort1->setText( QString("%1").arg(nc->port) );
             ui->serverPort2->setText( QString("%1").arg(nc->port) );
