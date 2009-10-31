@@ -1,0 +1,9 @@
+The deployment system has the ff objectives:
+-rapid installation of contestant clients to various machines
+-quick installation of other applications to non-contest machines
+
+The deployment system will have the following components:
+-installer application
+-configuration file
+
+// more stuff here later
