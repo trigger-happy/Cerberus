@@ -175,6 +175,11 @@
 /* Puts following code inside the Google namespace */
 #cmakedefine _START_GOOGLE_NAMESPACE_ @_START_GOOGLE_NAMESPACE_@
 
+
+/* Some windows platforms don't have this so we'll have to define one ourselves in port.cc */
+#cmakedefine HAVE_SNPRINTF @HAVE_SNPRINTF@
+
 @WINDOWS_EXTRA@
+
 
 #endif

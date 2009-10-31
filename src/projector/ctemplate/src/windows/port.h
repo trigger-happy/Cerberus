@@ -98,8 +98,11 @@
  * because they don't always NUL-terminate. :-(  We also can't use the
  * name vsnprintf, since windows defines that (but not snprintf (!)).
  */
+ 
+#ifndef HAVE_SNPRINTF
 extern CTEMPLATE_DLL_DECL int snprintf(char *str, size_t size,
                                        const char *format, ...);
+#endif
 extern int CTEMPLATE_DLL_DECL safe_vsnprintf(char *str, size_t size,
                                              const char *format, va_list ap);
 #define vsnprintf(str, size, format, ap)  safe_vsnprintf(str, size, format, ap)
