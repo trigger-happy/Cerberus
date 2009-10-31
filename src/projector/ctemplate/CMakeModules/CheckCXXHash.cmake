@@ -83,7 +83,7 @@ macro(CHECK_CXX_HASH)
 		message(SEND_ERROR "No hash container for C++ found.")
 	endfunction()
 	
-	if ( NOT DEFINED HASH_MAP_H OR NOT DEFINED HASH_SET_H OR NOT DEFINED HASH_NAMSEPACE OR NOT DEFINED HASH_TYPE )
+	if ( NOT DEFINED HASH_MAP_H OR NOT DEFINED HASH_SET_H OR NOT DEFINED HASH_NAMESPACE OR NOT DEFINED HASH_TYPE )
 		check_cxx_hash_container(HASH_MAP_H HASH_SET_H HASH_NAMESPACE HASH_TYPE)
 		message(STATUS "${HASH_TYPE} map container found at ${HASH_MAP_H} in namespace ${HASH_NAMESPACE}")
 		set(HASH_MAP_H ${HASH_MAP_H} CACHE PATH "Location of hash map header")
