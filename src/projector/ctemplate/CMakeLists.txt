@@ -29,7 +29,7 @@ include(CheckFunctionExists)
 include(CheckTypeSize)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
-include(CheckCxxSourceCompiles)
+include(CheckCXXSourceCompiles)
 include(CheckCXXHash)
 include(FindThreads)
 include(CheckDirent)
@@ -123,7 +123,7 @@ if ( HAVE_PTHREAD )
 	
 	unset(RESULT)
 	foreach(attr PTHREAD_CREATE_JOINABLE PTHREAD_CREATE_UNDETACHED )
-	    check_cxx_source_runs("
+	    check_cxx_source_compiles("
 			#include <pthread.h>
 			int main() {
 				int attr = ${attr};
