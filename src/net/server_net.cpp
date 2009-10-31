@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "net/temp_connection.h"
 #include "net/contestant_connection.h"
 #include "net/admin_connection.h"
-#include "net/presenter_connection.h"
+#include "net/projector_connection.h"
 
 using namespace std;
 
