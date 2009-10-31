@@ -1,26 +1,45 @@
+/*
+Copyright (C) 2009 Nikolai Banasihan and Vernon Gutierrez
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 #include <iostream>
-#include <xml_util.h>
+#include <vector>
+
+#include "patterns/singleton.h"
+#include "data_types.h"
+
+using namespace std;
 
 class Checker : public Singleton<Checker>
 {
+	private:
+		vector<Question> *m_qset;
+
 	public:
 		Checker();
 		~Checker();
-	//int check(int round, AnswerData& ad, AnswerData& ak);
-		double check(int round, AnswerData& answerData);
 		
-		void setAnswerKey(int round, AnswerData& answerKey);
-	
-	private:
-		AnswerData answerKey1;
-		AnswerData answerKey2;
-		AnswerData answerKey3;
-		AnswerData answerKey4;
-
-		// special methods for rounds :D
-		double checkR1(AnswerData& answerData);
-		double checkR2(AnswerData& answerData);
-		double checkR3(AnswerData& answerData);
-		double checkR4(AnswerData& answerData);
+		// for inputting questions
+		bool resetQuestionSet();
+		bool addQuestion(Question &myQuestion);
+		//bool addQuestionSet( vector<Question> &myQSet);
+		
+		// for operations
+		double score(AnswerData& answer);
+		
 	
 };
