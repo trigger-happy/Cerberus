@@ -78,7 +78,7 @@ int SqlUtil::editUser ( const QString& user_name, const UserData& ud )
 {
 	//update user set firstname = 'A', lastname = 'B' , password = 'C' where username = 'username';
 	QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
-	QString sql = QString ( "UPDATE user SET firstname = '%1', lastname = '%2', password '%3' WHERE username = '%4'" )
+	QString sql = QString ( "UPDATE user SET firstname = '%1', lastname = '%2', password = '%3' WHERE username = '%4'" )
 		      .arg ( QString ( ud.firstname ) )
 		      .arg ( QString ( ud.lastname ) )
 		      .arg ( QString ( pwd ) )
@@ -116,18 +116,18 @@ int SqlUtil::deleteTeam ( const QString& team_name )
 	QString sql = QString ( "DELETE FROM user WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
 	if ( query->exec ( sql ) != 0)
-		return 1;
+		return -1;
 	
 	//DELETE from team where team_name='B'
-	sql = QString ( "DELETE FROM team WHERE team_name = '%1'" )
+	QString sql2 = QString ( "DELETE FROM team WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
-	return query->exec ( sql );
+	return query->exec ( sql2 );
 }
 
 bool SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
 {
 	//SELECT username,team_name,firstname,lastname FROM user WHERE team_name = 'B'
-	QString sql = QString ( "SELECT username, team_name, firstname, lastname"
+	QString sql = QString ( "SELECT username, team_name, firstname, lastname "
 				"FROM user WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
 	if ( !query->exec ( sql ) )
@@ -152,7 +152,7 @@ bool SqlUtil::getSpecificUser ( const QString& user_name, UserData& out )
 	//SELECT username,team_name,firstname,lastname FROM user WHERE username = 'D'
 	QString sql = QString ( "SELECT username, team_name, firstname, lastname FROM user WHERE username = '%1'" )
 		      .arg( QString ( user_name ) );
-	if ( !query->exec() )
+	if ( !query->exec(sql) )
 		return false;
 	else
 	{
@@ -174,7 +174,7 @@ QString SqlUtil::getTeamSchool ( const QString& team_name )
 	//select school from team where team_name = 'B'
 	QString sql = QString ( "SELECT school FROM team WHERE team_name = '%1'" )
 		      .arg( QString ( team_name ) );
-	if ( !query->exec() )
+	if ( !query->exec(sql) )
 		return "Some weird error occurred. I don't know what ^_^;";
 	else
 	{
