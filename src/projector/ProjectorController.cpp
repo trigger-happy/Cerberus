@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "ProjectorController.h"
 
-ProjectorController::ProjectorController(ProjectorWindow *target):
+ProjectorController::ProjectorController(ProjectorWindow &target):
 		m_target(target)
 {
 

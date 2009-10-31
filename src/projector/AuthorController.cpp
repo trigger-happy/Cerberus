@@ -16,21 +16,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef PROJECTOR_PROJECTORCONTROLLER_H_
-#define PROJECTOR_PROJECTORCONTROLLER_H_
+#include "AuthorController.h"
+#include "ProjectorWindow.h"
+#include <QKeyEvent>
 
-class ProjectorWindow;
-class QKeyEvent;
+AuthorController::AuthorController(ProjectorWindow &target) :
+		ProjectorController(target) {
+}
 
-class ProjectorController
-{
-protected:
-	ProjectorWindow &m_target;
-public:
-	ProjectorController(ProjectorWindow &target);
-	virtual ~ProjectorController() {}
-
-	virtual bool keyReleaseEvent(QKeyEvent *event) = 0;
-};
-
-#endif // PROJECTOR_PROJECTORCONTROLLER_H
+bool AuthorController::keyReleaseEvent(QKeyEvent *event) {
+	if ( event->key() == Qt::Key_F5 ) {
+		m_target.refresh();
+		return true;
+	}
+	return false;
+}

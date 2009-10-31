@@ -24,7 +24,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <ctemplate/template.h>
 #include "data_types.h"
 #include "util/xml_util.h"
-#include "ProjectorController.h"
+#include "MainController.h"
+#include "AuthorController.h"
 
 #define JS_TIMELEFT_EVENT "window.ontimeleft"
 
@@ -110,6 +111,10 @@ void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 }
 
 void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
+	bool change_ctrl = false;
+	if ( cfg.author_mode != m_cfg->author_mode || m_controller == NULL )
+		change_ctrl = true;
+
 	if ( m_cfg != &cfg )
 		*m_cfg = cfg;
 
@@ -123,6 +128,14 @@ void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 					   arg(cfg.contest_name));
 
 	m_dict->SetValue("CONTEST_NAME", cfg.contest_name.toStdString());
+
+	if ( change_ctrl ) {
+		delete m_controller;
+		if ( m_cfg->author_mode )
+			m_controller = new AuthorController(*this);
+		else
+			m_controller = new MainController(*this);
+	}
 }
 
 const ProjectorConfig& ProjectorWindow::getConfig() const { return *m_cfg; }

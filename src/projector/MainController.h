@@ -16,21 +16,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef PROJECTOR_PROJECTORCONTROLLER_H_
-#define PROJECTOR_PROJECTORCONTROLLER_H_
+#ifndef PROJECTOR_MAINCONTROLLER_H
+#define PROJECTOR_MAINCONTROLLER_H
 
-class ProjectorWindow;
-class QKeyEvent;
-
-class ProjectorController
+#include "ProjectorController.h"
+class MainController : public ProjectorController
 {
-protected:
-	ProjectorWindow &m_target;
 public:
-	ProjectorController(ProjectorWindow &target);
-	virtual ~ProjectorController() {}
-
-	virtual bool keyReleaseEvent(QKeyEvent *event) = 0;
+	MainController(ProjectorWindow &target);
+	virtual bool keyReleaseEvent(QKeyEvent *event);
 };
 
-#endif // PROJECTOR_PROJECTORCONTROLLER_H
+#endif // PROJECTOR_MAINCONTROLLER_H
