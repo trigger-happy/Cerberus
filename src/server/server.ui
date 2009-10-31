@@ -6,35 +6,273 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>502</width>
-    <height>401</height>
+    <width>592</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Cerberus Server</string>
   </property>
-  <widget class="QTextBrowser" name="textBrowser">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>30</y>
-     <width>441</width>
-     <height>311</height>
+     <x>0</x>
+     <y>0</y>
+     <width>591</width>
+     <height>521</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QPushButton" name="stopButton">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>360</y>
-     <width>80</width>
-     <height>21</height>
-    </rect>
+   <property name="currentIndex">
+    <number>0</number>
    </property>
-   <property name="text">
-    <string>Stop</string>
-   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Contest Control</string>
+    </attribute>
+    <widget class="QPushButton" name="apply_btn">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>160</y>
+       <width>91</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&amp;Apply</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>160</y>
+       <width>471</width>
+       <height>123</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Round:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="round_combo">
+            <item>
+             <property name="text">
+              <string>Round 1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Round 2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Round 3</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tie Breaker</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Contest Time:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="timer_spin"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Contest Status:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="status_lbl">
+            <property name="text">
+             <string>Status</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QPushButton" name="start_btn">
+          <property name="text">
+           <string>&amp;Start</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="stop_btn">
+          <property name="text">
+           <string>S&amp;top</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pause_btn">
+          <property name="text">
+           <string>&amp;Pause</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Contestant Control</string>
+    </attribute>
+    <widget class="QListView" name="contestants_listv">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>256</width>
+       <height>461</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>10</y>
+       <width>301</width>
+       <height>163</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>username:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="user_lbl">
+          <property name="text">
+           <string>user</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>score:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="score_lbl">
+          <property name="text">
+           <string>score</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>status:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="cstatus_lbl">
+          <property name="text">
+           <string>status</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="drop_con_btn">
+        <property name="text">
+         <string>&amp;Drop contestant</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="view_ans_btn">
+        <property name="text">
+         <string>&amp;View Answers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="change_score_btn">
+        <property name="text">
+         <string>&amp;Change Score</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Projector Control</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tab_5">
+    <attribute name="title">
+     <string>Score View</string>
+    </attribute>
+    <widget class="QTableView" name="score_tbv">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>581</width>
+       <height>481</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>

@@ -23,7 +23,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_elims.h"
 #include "ui_semifinals.h"
 #include "ui_summary.h"
+#include <vector>
 #include <iostream>
+
 
 ContestantApp::ContestantApp ( QWidget* parent )
 		: QDialog ( parent ),
@@ -207,7 +209,26 @@ void ContestantApp::onQData ( const QString& xml )
 
 void ContestantApp::onAData ( bool result )
 {
-	//TODO: do something here for replies to answer uploads.
+    if( result )
+    {
+        QMessageBox msg;
+        msg.setWindowTitle( "Information" );
+        msg.setText( "Answers successfully sent to server" );
+        msg.setStandardButtons( QMessageBox::Ok );
+        msg.setDefaultButton( QMessageBox::Ok );
+        msg.setIcon( QMessageBox::Information );
+        msg.exec();
+    }
+    else
+    {
+        QMessageBox msg;
+        msg.setWindowTitle( "Error" );
+        msg.setText( "Answers not sent. Please try again." );
+        msg.setStandardButtons( QMessageBox::Ok );
+        msg.setDefaultButton( QMessageBox::Ok );
+        msg.setIcon( QMessageBox::Information );
+        msg.exec();
+    }
 }
 
 void ContestantApp::onContestError ( ERROR_MESSAGES err )
@@ -241,6 +262,16 @@ void ContestantApp::welcomeStart()
     else if( round == 2 )
         m_semifinals_w->show();
 
+
+    if( round == 1 || round == 2 )
+    {
+        if( round == 1 )
+            m_elims_dlg->prev_btn->setEnabled( false );
+        else if( round == 2 )
+            m_semifinals_dlg->prev_btn->setEnabled( false );
+    }
+
+    initializeAnswerData();
 	// changing the question text to the first question
     displayQuestionAndChoices();
 }
@@ -274,6 +305,7 @@ void ContestantApp::reconnectCancel()
 
 void ContestantApp::elimSemiNext()
 {
+    recordAnswer();
 	bool atLastQuestion = ( ( sd.questions.size() - 1 ) == qCount );
 
 	if ( atLastQuestion )
@@ -286,29 +318,31 @@ void ContestantApp::elimSemiNext()
 	}
 	else
 	{
+        if( round == 1 )
+            m_elims_dlg->prev_btn->setEnabled( true );
+        else if( round == 2 )
+            m_semifinals_dlg->prev_btn->setEnabled( true );
 		qCount++;
 		displayQuestionAndChoices();
+        displayAnswer();
 	}
 }
 
 void ContestantApp::elimSemiPrev()
 {
-	bool atFirstQuestion = ( qCount == 0 );
+    recordAnswer();
 
-	// if first question, show the welcome/instructions page
-	if ( atFirstQuestion )
-	{
+    qCount--;
+    if( qCount == 0 )
+    {
         if( round == 1 )
-            m_elims_w->hide();
+            m_elims_dlg->prev_btn->setEnabled( false );
         else if( round == 2 )
-            m_semifinals_w->hide();
-		m_welcome_w->show();
-	}
-	else
-	{
-		qCount--;
-		displayQuestionAndChoices();
-	}
+            m_semifinals_dlg->prev_btn->setEnabled( false );
+    }
+
+    displayQuestionAndChoices();
+    displayAnswer();
 }
 
 void ContestantApp::review()
@@ -320,13 +354,20 @@ void ContestantApp::review()
 		m_elims_w->show();
 		qCount = sd.questions.size() - 1;
 	}
+    else if( round == 2 )
+    {
+        m_semifinals_w->show();
+        qCount = sd.questions.size() - 1;
+    }
+
 
 	displayQuestionAndChoices();
 }
 
 void ContestantApp::submit()
 {
-
+    std::cout<<"hi";
+    m_network->aDataSend ( round, ad );
 }
 
 void ContestantApp::displayQuestionAndChoices()
@@ -347,6 +388,103 @@ void ContestantApp::displayQuestionAndChoices()
         m_semifinals_dlg->b_choice->setText ( q.answer_key[1].c );
         m_semifinals_dlg->c_choice->setText ( q.answer_key[2].c );
         m_semifinals_dlg->d_choice->setText ( q.answer_key[3].c );
+    }
+}
+
+void ContestantApp::displayAnswer()
+{
+    if( round == 1 )
+    { 
+        //to ensure no button is checked by default (previous dialog selection)
+        if( ad[qCount].multi_choice.size() == 0 )
+        {
+            m_elims_dlg->a_choice->setCheckable(false);
+            m_elims_dlg->b_choice->setCheckable(false);
+            m_elims_dlg->c_choice->setCheckable(false);
+            m_elims_dlg->d_choice->setCheckable(false);
+            m_elims_dlg->a_choice->setCheckable(true);
+            m_elims_dlg->b_choice->setCheckable(true);
+            m_elims_dlg->c_choice->setCheckable(true);
+            m_elims_dlg->d_choice->setCheckable(true);
+        }
+
+        for( int i = 0; i < ad[qCount].multi_choice.size(); i++ )
+        {
+            if( ad[qCount].multi_choice[i] == 1 )
+                m_elims_dlg->a_choice->setChecked( true );
+            else if( ad[qCount].multi_choice[i] == 2 )
+                m_elims_dlg->b_choice->setChecked( true );
+            else if( ad[qCount].multi_choice[i] == 3 )
+                m_elims_dlg->c_choice->setChecked( true );
+            else if( ad[qCount].multi_choice[i] == 4 )
+                m_elims_dlg->d_choice->setChecked( true );
+        }
+
+
+    }
+    else if( round == 2 )
+    {
+        std::vector<ushort> ans;
+
+        for( int i = 0; i < ad[qCount].multi_choice.size(); i++ )
+            ans.push_back( ad[qCount].multi_choice[i] );
+
+        m_semifinals_dlg->a_choice->setChecked(false);
+        m_semifinals_dlg->b_choice->setChecked(false);
+        m_semifinals_dlg->c_choice->setChecked(false);
+        m_semifinals_dlg->d_choice->setChecked(false);
+
+        for( int i = 0; i < ans.size(); i++ )
+        {
+            if( ans[i] == 1 )
+                m_semifinals_dlg->a_choice->setChecked( true );
+            else if( ans[i] == 2 )
+                m_semifinals_dlg->b_choice->setChecked( true );
+            else if( ans[i] == 3 )
+                m_semifinals_dlg->c_choice->setChecked( true );
+            else if( ans[i] == 4 )
+                m_semifinals_dlg->d_choice->setChecked( true );
+        }
+    }
+
+
+}
+
+void ContestantApp::recordAnswer()
+{
+    if( round == 1 )
+    {
+        ad[qCount].multi_choice.clear();
+        if( m_elims_dlg->a_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(1);
+        else if( m_elims_dlg->b_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(2);
+        else if( m_elims_dlg->c_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(3);
+        else if( m_elims_dlg->d_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(4);
+    }
+    else if( round == 2 )
+    {
+        ad[qCount].multi_choice.clear();
+        if( m_semifinals_dlg->a_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(1);
+        if( m_semifinals_dlg->b_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(2);
+        if( m_semifinals_dlg->c_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(3);
+        if( m_semifinals_dlg->d_choice->isChecked() )
+            ad[qCount].multi_choice.push_back(4);
+    }
+}
+
+void ContestantApp::initializeAnswerData()
+{
+    for( int i = 0; i < sd.questions.size(); i++ )
+    {
+        Answer a;
+        a.ans_type = sd.questions[i].type;
+        ad.push_back( a );
     }
 }
 

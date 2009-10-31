@@ -6,7 +6,6 @@
 #include "util/sql_util.h"
 #include "data_types.h"
 #include <QListWidget>
-//#include <qlistview.h>
 
 RegistrationApp::RegistrationApp(QWidget* parent) :
 	m_team_table_wnd( new Ui::team_table_wnd ),
@@ -14,11 +13,12 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 	m_user_edit_wnd(new Ui::user_edit_wnd),
 	m_sql(SqlUtil::getInstance())
 {
+	this->setWindowTitle("Registration");
 	this->hide();
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Database Directory"),
 										  tr("Database Path:"), QLineEdit::Normal,
-										  QDir::home().dirName(), &ok);
+										  "resources/test.db", &ok);
 	if (!text.isEmpty())
 		 m_sql.init(text);
 
@@ -56,9 +56,10 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 	connect(m_user_edit_wnd->save_userchange_btn, SIGNAL(clicked()), this, SLOT(saveUserEdit()));
 	connect(m_user_edit_wnd->backtouser_btn, SIGNAL(clicked()), this, SLOT(backToUser()));
 
-	bool result = m_sql.init ( "resources/test.db" ); //change parameter to 'text' when done testing
+	bool result = m_sql.init ( text );
 		if ( !result ) {
 				QMessageBox msg ( this );
+				msg.setWindowTitle("");
 				msg.setText ( "Failed to load database" );
 				msg.exec();
 		}
@@ -73,6 +74,7 @@ void RegistrationApp::refreshTeamList(QStringList& teams){
 	bool test = m_sql.getTeams(team_data);
 	if (!test){
 				QMessageBox team_msg ( this );
+				team_msg.setWindowTitle("");
 				team_msg.setText ( "Couldn't get teams" );
 				team_msg.exec();
 	}
@@ -83,6 +85,7 @@ void RegistrationApp::refreshTeamList(QStringList& teams){
 
 		m_team_table_wnd->team_listview->clear();
 		m_team_table_wnd->team_listview->addItems(teams);
+		m_team_table_wnd->team_listview->setCurrentRow(0);
 	}
 }
 
@@ -92,6 +95,7 @@ void RegistrationApp::refreshUserList(QString team, QStringList& users){
 	bool test = m_sql.getTeamUsers(team, user_data);
 	if (!test){
 				QMessageBox team_msg ( this );
+				team_msg.setWindowTitle("");
 				team_msg.setText ( "Couldn't get users" );
 				team_msg.exec();
 	}
@@ -101,6 +105,7 @@ void RegistrationApp::refreshUserList(QString team, QStringList& users){
 		}
 		m_user_table_wnd->user_listview->clear();
 		m_user_table_wnd->user_listview->addItems(users);
+		m_user_table_wnd->user_listview->setCurrentRow(0);
 	}
 
 }
@@ -112,8 +117,10 @@ bool RegistrationApp::addTeam(){
 	int success = m_sql.addTeam(teamname_txt, teamschool_txt);
 	if (success){
 				refreshTeamList(teams);
+				m_team_table_wnd->teamname_txt->setText("");
 				//m_team_table_wnd->team_listview->addItem(teamname_forlist);
 				QMessageBox addteam_msg ( this );
+				addteam_msg.setWindowTitle("");
 				addteam_msg.setText ( "Team successfully added" );
 				addteam_msg.exec();
 	}
@@ -122,8 +129,10 @@ bool RegistrationApp::addTeam(){
 bool RegistrationApp::goToEditTeam(){
 	//change this to access from the list view
 	team_nav = m_team_table_wnd->team_listview->currentItem()->text();
+
+	m_team_table_wnd->teamname_txt->setText("");
+	m_team_table_wnd->teamschool_txt->setText("");
 	refreshUserList(team_nav, users);
-	//clear all text fields in the view you are moving to
 	m_team_table_w->hide();
 	m_user_table_w->show();
 	m_user_table_wnd->lbl_teamname->setText(team_nav);
@@ -135,14 +144,23 @@ bool RegistrationApp::deleteTeam(){
 	//gets the selected school in the list view
 	team_nav = m_team_table_wnd->team_listview->currentItem()->text();
 	//show pop up dialog if they are sure they want to delete that team
-	int success = m_sql.deleteTeam(team_nav);
-	if (success){
-				refreshTeamList(teams);
-				QMessageBox deleteteam_msg ( this );
-				deleteteam_msg.setText ( "Team successfully deleted" );
-				deleteteam_msg.exec();
+	 QMessageBox msgBox;
+	 msgBox.setText("You are about to delete team " + team_nav +".");
+	 msgBox.setInformativeText("Are you sure?");
+	 msgBox.setWindowTitle("Confirm Deletion");
+	 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	 msgBox.setDefaultButton(QMessageBox::No);
+	 int ret = msgBox.exec();
+	 if(ret == QMessageBox::Yes){
+		int success = m_sql.deleteTeam(team_nav);
+		if (success){
+					refreshTeamList(teams);
+					QMessageBox deleteteam_msg ( this );
+					deleteteam_msg.setWindowTitle("");
+					deleteteam_msg.setText ( "Team successfully deleted" );
+					deleteteam_msg.exec();
+		}
 	}
-
 }
 
 
@@ -153,11 +171,12 @@ bool RegistrationApp::editTeamSchool(){
 	bool ok;
 	QString new_team = QInputDialog::getText(this, tr("Team Edit"),
 										  tr("Enter new team name here:"), QLineEdit::Normal,
-										  QDir::home().dirName(), &ok);
+										  team_nav, &ok);
 	if (ok){
 		int success = m_sql.editTeamName(m_user_table_wnd->lbl_teamname->text(), new_team);
 		if (success){
 				QMessageBox editname_msg ( this );
+				editname_msg.setWindowTitle("");
 				editname_msg.setText ( "Team name successfully changed." );
 				editname_msg.exec();
 		}
@@ -179,6 +198,7 @@ bool RegistrationApp::addUser(){
 				refreshUserList(team_nav, users);
 				//m_user_table_wnd->user_listview->addItem(username_forlist);
 				QMessageBox adduser_msg ( this );
+				adduser_msg.setWindowTitle("");
 				adduser_msg.setText ( "User successfully added" );
 				adduser_msg.exec();
 	}
@@ -206,13 +226,22 @@ bool RegistrationApp::deleteUser(){
 	user_nav = m_user_table_wnd->user_listview->currentItem()->text();
 	//show pop up dialog if they are sure they want to delete that user
 	int success = m_sql.deleteUser(user_nav);
-	if (success){
-				refreshUserList(team_nav, users);
-				QMessageBox deleteuser_msg ( this );
-				deleteuser_msg.setText ( "User successfully deleted" );
-				deleteuser_msg.exec();
+	 QMessageBox msgBox;
+	 msgBox.setText("You are about to delete " + user_nav +".");
+	 msgBox.setWindowTitle("Confirm Deletion");
+	 msgBox.setInformativeText("Are you sure?");
+	 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	 msgBox.setDefaultButton(QMessageBox::No);
+	 int ret = msgBox.exec();
+	 if(ret == QMessageBox::Yes){
+		if (success){
+					refreshUserList(team_nav, users);
+					QMessageBox deleteuser_msg ( this );
+					deleteuser_msg.setWindowTitle("");
+					deleteuser_msg.setText ( "User successfully deleted" );
+					deleteuser_msg.exec();
+		}
 	}
-
 }
 
 
@@ -233,12 +262,8 @@ bool RegistrationApp::saveUserEdit(){
 	int success = m_sql.editUser(ud.user_name, ud); //is not woooorking...
 	if (success){
 				QMessageBox edituser_msg ( this );
-				edituser_msg.setText ( "User successfully edited" );
-				edituser_msg.exec();
-	}
-	else{
-		QMessageBox edituser_msg ( this );
-				edituser_msg.setText ( ud.firstname + " " + ud.lastname + " " + ud.user_name );
+				edituser_msg.setWindowTitle("");
+				edituser_msg.setText ( "Changes Saved. Your password is '" + m_user_edit_wnd->password_txt->text() + "'." );
 				edituser_msg.exec();
 	}
 

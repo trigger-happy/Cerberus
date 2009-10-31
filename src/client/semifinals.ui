@@ -68,28 +68,28 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <widget class="QRadioButton" name="a_choice">
+           <widget class="QCheckBox" name="a_choice">
             <property name="text">
              <string>Choice A goes here</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="b_choice">
+           <widget class="QCheckBox" name="b_choice">
             <property name="text">
              <string>Choice B goes here</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="c_choice">
+           <widget class="QCheckBox" name="c_choice">
             <property name="text">
              <string>Choice C goes here</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="d_choice">
+           <widget class="QCheckBox" name="d_choice">
             <property name="text">
              <string>Choice D goes here</string>
             </property>
