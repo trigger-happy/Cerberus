@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 bool testing = true;
-Server::Server ( QWidget* parent ) : QObject ( parent )
+Server::Server ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg() )
 {
 		/*Fills up the m_questions and m_answers vector with the
 		question data and answer data respectively.
@@ -48,6 +48,9 @@ Server::Server ( QWidget* parent ) : QObject ( parent )
 		XmlUtil::getInstance().readServerConfig(serverConfigXml,m_config);
 		m_port = m_config.port;
 		QString m_db_path = m_config.db_path;
+
+		//Sets up the server dialog
+		m_dlg->setupUi(this);
 
 		//Instantiates the ServerNetwork class, networking stuff go here
 		m_network = new ServerNetwork ( this );
@@ -136,13 +139,7 @@ void Server::dropConnection( ContestantConnection* cc )
 int main ( int argc, char* argv[] )
 {
 		QApplication a ( argc, argv );
-		string cmd;
-		Server* server = new Server();
-
-		while(cmd != "exit")
-		{
-			cin >> cmd;
-		}
-		exit(0);
+		Server server;
+		server.show();
 		return a.exec();
 }
