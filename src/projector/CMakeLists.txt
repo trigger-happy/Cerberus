@@ -1,6 +1,8 @@
 add_subdirectory(ctemplate)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}
+		${CMAKE_CURRENT_BINARY_DIR}/include
+		./ctemplate/src)
 
 unset(QT_LIBRARIES)
 set(QT_USE_QTWEBKIT 1)
