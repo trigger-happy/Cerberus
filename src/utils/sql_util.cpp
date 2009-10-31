@@ -17,6 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "util/sql_util.h"
 #include <QCryptographicHash>
+#include <iostream>
 
 bool SqlUtil::init ( const QString& dbname )
 {
@@ -94,7 +95,7 @@ int SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_na
 		      .arg ( QString ( team_name_old ) );
 	//UPDATE user SET team_name= 'new' WHERE team_name = 'team'
 	
-	if ( query->exec ( sql ) != 0)
+	if ( query->exec ( sql ) == false)
 		return 1;
 	sql = QString ( "UPDATE user SET team_name = '%1' WHERE team_name = '%2'" )
 		      .arg ( QString ( team_name_new ) )
@@ -112,16 +113,18 @@ int SqlUtil::deleteUser ( const QString& user_name )
 
 int SqlUtil::deleteTeam ( const QString& team_name )
 {
+	//QString team_name2 = team_name;
 	//DELETE from user where team_name='B'
 	QString sql = QString ( "DELETE FROM user WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
-	if ( query->exec ( sql ) != 0)
-		return -1;
+	if ( query->exec ( sql ) == false)
+		return 1;
 	
 	//DELETE from team where team_name='B'
-	QString sql2 = QString ( "DELETE FROM team WHERE team_name = '%1'" )
-		      .arg ( QString ( team_name ) );
-	return query->exec ( sql2 );
+	sql = QString ( "DELETE FROM team WHERE team_name = '%1'" )
+			  .arg ( QString ( team_name ) );
+	//std::cout << query->lastError().text().toStdString() << std::endl;
+	return query->exec ( sql );
 }
 
 bool SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
