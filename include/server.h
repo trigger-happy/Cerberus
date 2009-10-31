@@ -21,62 +21,58 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtNetwork>
 #include "net/server_net.h"
 
-namespace Ui
-{
-class server_dlg;
-}
-
 class ServerNetwork;
 
-class Server : public QDialog
-{
-        Q_OBJECT;
+class Server : public QObject {
+	Q_OBJECT;
+
 public:
-		Server ( QWidget* parent = 0 );
-		~Server();
+	Server ( QWidget* parent = 0 );
+	~Server();
+
 private slots:
-        /*!
-        Called when there is a new connection
-        */
-		void newContestant( ContestantConnection* cc );
+	/*!
+	Called when there is a new connection
+	*/
+	void newContestant( ContestantConnection* cc );
 
-		/*
-		Called when a client connects but is not a Cerberus client.
-		  */
-		void badClient ( TempConnection* tc );
-		/*
-		Called when there is a disconnection
-		*/
-		void contestantDisconnect( ContestantConnection* cc );
+	/*
+	Called when a client connects but is not a Cerberus client.
+	  */
+	void badClient ( TempConnection* tc );
+	/*
+	Called when there is a disconnection
+	*/
+	void contestantDisconnect( ContestantConnection* cc );
 
-		void onAuthentication( ContestantConnection* cc, const QString& c_username );
+	void onAuthentication( ContestantConnection* cc, const QString& c_username );
 
-		//Manual methods to be used by admin.
-		/*
-        Called when the stop button is pressed
-        */
-		void stopContest();
+	//Manual methods to be used by admin.
+	/*
+	Called when the stop button is pressed
+	*/
+	void stopContest();
 
-		void startContest();
+	void startContest();
 
-		void pauseContest();
+	void pauseContest();
 
-		void viewSubmittedAnswers();
+	void viewSubmittedAnswers();
 
-		void checkAnswersManually ();
+	void checkAnswersManually ();
 
-		void dropConnection( ContestantConnection* cc );
+	void dropConnection( ContestantConnection* cc );
 
-
+signals:
+	// TODO: add signals when certain events happen
 
 private:
-		QString log, m_db_path;
-		quint16 m_port;
-		ServerNetwork* m_network;
-		ServerConfig m_config;
-        Ui::server_dlg* m_dlg;
-		vector<QString> m_questions;
-		vector<QString> m_answers;
+	QString log, m_db_path;
+	quint16 m_port;
+	ServerNetwork* m_network;
+	ServerConfig m_config;
+	vector<QString> m_questions;
+	vector<QString> m_answers;
 
 };
 

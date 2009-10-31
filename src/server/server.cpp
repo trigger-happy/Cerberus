@@ -27,119 +27,110 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 bool testing = true;
-Server::Server ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg() )
-{
-		/*Fills up the m_questions and m_answers vector with the
-		question data and answer data respectively.
-		*/
-		for ( int i = 1; i <= 4; i++ ) {
-				QFile file1 ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
-				QFile file2 ( QString ( "resources/stage%1_a.xml" ).arg ( i ) );
-				file1.open ( QIODevice::ReadOnly );
-				file2.open ( QIODevice::ReadOnly );
-				m_questions.push_back ( file1.readAll() );
-				m_answers.push_back ( file2.readAll() );
-		}
+Server::Server ( QWidget* parent ) : QObject ( parent ) {
+	/*Fills up the m_questions and m_answers vector with the
+	question data and answer data respectively.
+	*/
+	for ( int i = 1; i <= 4; i++ ) {
+		QFile file1 ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
+		QFile file2 ( QString ( "resources/stage%1_a.xml" ).arg ( i ) );
+		file1.open ( QIODevice::ReadOnly );
+		file2.open ( QIODevice::ReadOnly );
+		m_questions.push_back ( file1.readAll() );
+		m_answers.push_back ( file2.readAll() );
+	}
 
-		//reads the server config from the XML file
-		QFile file ( QString ( "resources/server_config.xml" ));
-		file.open ( QIODevice::ReadOnly );
-		QString serverConfigXml = file.readAll();
-		XmlUtil::getInstance().readServerConfig(serverConfigXml,m_config);
-		m_port = m_config.port;
-		QString m_db_path = m_config.db_path;
+	//reads the server config from the XML file
+	QFile file ( QString ( "resources/server_config.xml" ) );
 
-		//Sets up the server dialog
-		m_dlg->setupUi(this);
+	file.open ( QIODevice::ReadOnly );
 
-		//Instantiates the ServerNetwork class, networking stuff go here
-		m_network = new ServerNetwork ( this );
-		connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
-		connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
-		connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
-		
-		m_network->listen ( m_port );
-		m_network->setRound ( 1 );
-		m_network->setStatus ( CONTEST_STOPPED );
-		m_network->setQData ( &m_questions );
-		if(testing) cout << "Server has been established at port " << m_port << endl;
+	QString serverConfigXml = file.readAll();
 
-		//Opens the SQL Database with the specified db_path
-		bool result = SqlUtil::getInstance().init ( m_db_path );
-		if ( !result ) {
-				/*QMessageBox msg ( this );
-				msg.setText ( "Failed to load db" );
-				msg.exec();*/
-				cout << "Failed to load db." << endl;
-		}
+	XmlUtil::getInstance().readServerConfig( serverConfigXml, m_config );
 
-		cout << "Finished with setting up Server." << endl;
+	m_port = m_config.port;
+
+	QString m_db_path = m_config.db_path;
+
+	//Instantiates the ServerNetwork class, networking stuff go here
+	m_network = new ServerNetwork ( this );
+
+	connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
+
+	connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
+
+	connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+
+	m_network->listen ( m_port );
+
+	m_network->setRound ( 1 );
+
+	m_network->setStatus ( CONTEST_STOPPED );
+
+	m_network->setQData ( &m_questions );
+
+	if ( testing ) cout << "Server has been established at port " << m_port << endl;
+
+	//Opens the SQL Database with the specified db_path
+	bool result = SqlUtil::getInstance().init ( m_db_path );
+
+	if ( !result ) {
+		/*QMessageBox msg ( this );
+		msg.setText ( "Failed to load db" );
+		msg.exec();*/
+		cout << "Failed to load db." << endl;
+	}
+
+	cout << "Finished with setting up Server." << endl;
 }
 
-Server::~Server()
-{
-        delete m_network;
+Server::~Server() {
+	delete m_network;
 }
 
-void Server::newContestant( ContestantConnection* cc )
-{
-		//TODO: Stuff here for when a new connection is made
-		cout << "Contestant has connected." << endl;
-		connect ( cc, SIGNAL (onAuthentication( ContestantConnection*, const QString&)), this, SLOT (onAuthentication(ContestantConnection*, const QString&)));
-
-}
-
-void Server::badClient ( TempConnection* tc )
-{
-		//m_dlg->textBrowser->setText("Bad client.");
-}
-
-void Server::contestantDisconnect( ContestantConnection* cc )
-{
-		//m_dlg->textBrowser->append("Contestant disconnected.");
+void Server::newContestant( ContestantConnection* cc ) {
+	//TODO: Stuff here for when a new connection is made
+	cout << "Contestant has connected." << endl;
+	connect ( cc, SIGNAL ( onAuthentication( ContestantConnection*, const QString& ) ), this, SLOT ( onAuthentication( ContestantConnection*, const QString& ) ) );
 
 }
 
-void Server::onAuthentication(ContestantConnection* cc, const QString& c_username)
-{
-		//m_dlg->textBrowser->append("Contestant has logged in.");
-		cout << c_username.toStdString() << " has connected." << endl;
+void Server::badClient ( TempConnection* tc ) {
+	//m_dlg->textBrowser->setText("Bad client.");
 }
 
-void Server::stopContest()
-{
-		//m_dlg->textBrowser->append("Stopped.");
-}
-
-void Server::startContest()
-{
+void Server::contestantDisconnect( ContestantConnection* cc ) {
+	//m_dlg->textBrowser->append("Contestant disconnected.");
 
 }
 
-void Server::pauseContest()
-{
+void Server::onAuthentication( ContestantConnection* cc, const QString& c_username ) {
+	//m_dlg->textBrowser->append("Contestant has logged in.");
+	cout << c_username.toStdString() << " has connected." << endl;
+}
+
+void Server::stopContest() {
+	//m_dlg->textBrowser->append("Stopped.");
+}
+
+void Server::startContest() {
 
 }
 
-void Server::viewSubmittedAnswers()
-{
+void Server::pauseContest() {
 
 }
 
-void Server::checkAnswersManually()
-{
+void Server::viewSubmittedAnswers() {
 
 }
 
-void Server::dropConnection( ContestantConnection* cc )
-{
+void Server::checkAnswersManually() {
 
 }
 
-int main ( int argc, char* argv[] )
-{
-		QApplication a ( argc, argv );
-		Server server;
-		server.show();
-		return a.exec();
+void Server::dropConnection( ContestantConnection* cc ) {
+
 }
+
