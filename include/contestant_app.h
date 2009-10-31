@@ -29,6 +29,7 @@ namespace Ui
 	class welcome_dlg;
 	class reconnect_dlg;
 	class elims_dlg;
+    class semifinals_dlg;
 	class summary_dlg;
 }
 

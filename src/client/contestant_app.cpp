@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_elims.h"
 #include "ui_semifinals.h"
 #include "ui_summary.h"
-#include "util/xml_util.h"
 #include <iostream>
 
 ContestantApp::ContestantApp ( QWidget* parent )
@@ -37,7 +36,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_welcome_dlg = new Ui::welcome_dlg;
 	m_reconnect_dlg = new Ui::reconnect_dlg;
 	m_elims_dlg = new Ui::elims_dlg;
-    m_semfinals_dlg = new Ui::semifinals_dlg;
+    m_semifinals_dlg = new Ui::semifinals_dlg;
     m_summary_dlg = new Ui::summary_dlg;
 
 	this->hide();
@@ -137,6 +136,7 @@ ContestantApp::~ContestantApp()
 	delete m_welcome_w;
 	delete m_reconnect_w;
 	delete m_elims_w;
+    delete m_semifinals_w;
 }
 
 
@@ -200,6 +200,7 @@ void ContestantApp::onContestTime( ushort time )
 
 void ContestantApp::onQData ( const QString& xml )
 {
+    sd.questions.clear();
 	XmlUtil::getInstance().readStageData( xml, sd );
 	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );
 }
@@ -234,7 +235,6 @@ void ContestantApp::exit()
 
 void ContestantApp::welcomeStart()
 {
-    std::cout<<round;
 	m_welcome_w->hide();
     if( round == 1 )
         m_elims_w->show();
@@ -272,7 +272,7 @@ void ContestantApp::reconnectCancel()
 	}
 }
 
-void ContestantApp::elimsNext()
+void ContestantApp::elimSemiNext()
 {
 	bool atLastQuestion = ( ( sd.questions.size() - 1 ) == qCount );
 
@@ -291,7 +291,7 @@ void ContestantApp::elimsNext()
 	}
 }
 
-void ContestantApp::elimsPrevious()
+void ContestantApp::elimSemiPrev()
 {
 	bool atFirstQuestion = ( qCount == 0 );
 
@@ -355,7 +355,7 @@ int main ( int argc, char* argv[] )
 	QApplication app ( argc, argv );
 
 	ContestantApp c_app;
-	c_app.show();
+    //c_app.show();
 
 	return app.exec();
 }
