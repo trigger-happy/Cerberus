@@ -27,7 +27,12 @@ namespace Ui {
 	class ProjectorWindow;
 }
 
+namespace ctemplate {
+	class TemplateDictionary;
+}
+
 struct ProjectorConfig;
+class ProjectorController;
 
 class ProjectorWindow : public QMainWindow {
 	Q_OBJECT
@@ -45,7 +50,12 @@ private:
 	Ui::ProjectorWindow *m_ui;
 	ProjectorConfig *m_cfg;
 	QUrl m_base_url;
-	TemplateManager m_tpl;
+	TemplateManager m_tpl_mgr;
+	TemplateManager::TKey m_tpl_key;
+	ProjectorController *m_controller;
+	ctemplate::TemplateDictionary *m_dict;
+	void setTemplate(ctemplate::Template *tpl);
+	void displayError(const QString &brief, const QString &summary);
 public slots:
 	void setTimeLeft(unsigned int);
 };

@@ -39,22 +39,48 @@ const QString JS_TRIGGER_TIME =
 ProjectorWindow::ProjectorWindow(QWidget *parent) :
 	QMainWindow(parent),
 	m_ui(new Ui::ProjectorWindow),
-	m_cfg(new ProjectorConfig)
+	m_cfg(new ProjectorConfig),
+	m_tpl_key(TemplateManager::INDEX),
+	m_controller(0),
+	m_dict(new ctemplate::TemplateDictionary("main"))
 {
 	m_ui->setupUi(this);
-	//m_ui->webView->setHtml(DEFAULT_PAGE);
 	this->setWindowTitle(WINDOW_TITLE);
 	showFullScreen();
 }
 
-void ProjectorWindow::setTimeLeft(unsigned int val) {
-
-}
-
 ProjectorWindow::~ProjectorWindow()
 {
-	delete m_ui;
+	delete m_dict;
+	delete m_controller;
 	delete m_cfg;
+	delete m_ui;
+}
+
+void ProjectorWindow::setTimeLeft(unsigned int val) {
+	m_dict->SetIntValue("TIME_LEFT", val);
+	const QVariant &result =
+			m_ui->webView->page()->mainFrame()->
+			evaluateJavaScript(
+					JS_TRIGGER_TIME.arg(QString::number(val)));
+	if ( result.toBool() ) return;
+	//The page has no handler which accepts time update, refresh the page.
+	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
+}
+
+void ProjectorWindow::setTemplate(ctemplate::Template *tpl) {
+	Q_ASSERT(tpl != 0);
+	std::string buffer;
+	tpl->Expand(&buffer, m_dict);
+	m_ui->webView->setHtml(QString(buffer.c_str()), m_base_url);
+}
+
+
+
+void ProjectorWindow::displayError(const QString &brief, const QString &summary) {
+	m_dict->SetValue("ERROR_BRIEF", brief.toStdString().c_str());
+	m_dict->SetValue("ERROR_DETAIL", summary.toStdString().c_str());
+	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
 }
 
 #include <QKeyEvent>
@@ -64,7 +90,7 @@ void ProjectorWindow::keyReleaseEvent(QKeyEvent *event) {
 			showNormal();
 		else
 			showFullScreen();
-	} else
+	} else if ( !(m_controller && m_controller->keyReleaseEvent(event)) )
 		QMainWindow::keyReleaseEvent(event);
 }
 
@@ -79,8 +105,9 @@ void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 	if ( m_cfg != &cfg )
 		*m_cfg = cfg;
+
 	m_base_url = QUrl::fromLocalFile(m_cfg->theme_path);
-	m_tpl.setTemplatePath(m_cfg->theme_path);
+	m_tpl_mgr.setTemplatePath(m_cfg->theme_path);
 	if ( m_cfg->contest_name.isEmpty() )
 		setWindowTitle(WINDOW_TITLE);
 	else
@@ -88,6 +115,7 @@ void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 					   arg(WINDOW_TITLE).
 					   arg(cfg.contest_name));
 
+	m_dict->SetValue("CONTEST_NAME", cfg.contest_name.toStdString());
 }
 
 const ProjectorConfig& ProjectorWindow::getConfig() const { return *m_cfg; }
@@ -96,10 +124,10 @@ void ProjectorWindow::changeEvent(QEvent *e)
 {
 	QMainWindow::changeEvent(e);
 	switch (e->type()) {
-	case QEvent::LanguageChange:
-		m_ui->retranslateUi(this);
-		break;
-	default:
-		break;
+		case QEvent::LanguageChange:
+			m_ui->retranslateUi(this);
+			break;
+		default:
+			break;
 	}
 }
