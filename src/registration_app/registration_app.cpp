@@ -5,6 +5,8 @@
 #include "ui_user_edit.h"
 #include "util/sql_util.h"
 #include "data_types.h"
+#include <QListWidget>
+//#include <qlistview.h>
 
 RegistrationApp::RegistrationApp(QWidget* parent) :
 	m_team_table_wnd( new Ui::team_table_wnd ),
@@ -37,7 +39,7 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 
 	//experimenting with qlistview
 	//m_team_table_wnd->team_listview->addColumn("Users");
-	//QListViewItem element = new QListViewItem( element, qName, namespaceURI );
+	//QListViewItem* element = new QListViewItem( m_team_table_wnd->team_listview, "Test");
 
 	//connections for the buttons
 
@@ -65,15 +67,28 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 		}
 }
 
+void RegistrationApp::refreshTeamList(QStringList& teams){
+	vector<TeamData> team_data;
+	m_sql.getTeams(team_data);
+	for (int i = 0; i < team_data.size(); i++){
+		teams.append(team_data.at(i).teamname);
+	}
+}
+
 bool RegistrationApp::addTeam(){
 	const QString teamname_txt = m_team_table_wnd->teamname_txt->text(),
 	teamschool_txt = m_team_table_wnd->teamschool_txt->text();
 	int success = m_sql.addTeam(teamname_txt, teamschool_txt);
 	if (success){
+				refreshTeamList(teams);
+				m_team_table_wnd->team_listview->clear();
+				m_team_table_wnd->team_listview->addItems(teams);
 				QMessageBox addteam_msg ( this );
 				addteam_msg.setText ( "Team successfully added" );
 				addteam_msg.exec();
+
 	}
+
 
 	//refresh the list view here
 
