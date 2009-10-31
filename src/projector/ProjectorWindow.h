@@ -55,7 +55,7 @@ private:
 	ProjectorController *m_controller;
 	ctemplate::TemplateDictionary *m_dict;
 	void setTemplate(ctemplate::Template *tpl);
-	void displayError(const char *brief, const char *detail);
+	void displayError(const char *brief, const char *detail, bool persist = false);
 public slots:
 	void setTimeLeft(unsigned int);
 };

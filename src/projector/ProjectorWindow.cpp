@@ -75,9 +75,11 @@ void ProjectorWindow::setTemplate(ctemplate::Template *tpl) {
 	m_ui->webView->setHtml(QString(buffer.c_str()), m_base_url);
 }
 
-void ProjectorWindow::displayError(const char *brief, const char *detail) {
+void ProjectorWindow::displayError(const char *brief, const char *detail, bool persist) {
 	m_dict->SetValue("ERROR_BRIEF", brief);
 	m_dict->SetValue("ERROR_DETAIL", detail);
+	if ( persist )
+		m_tpl_key = TemplateManager::ERROR;
 	setTemplate(m_tpl_mgr.getTemplate(TemplateManager::ERROR));
 }
 
@@ -95,7 +97,7 @@ void ProjectorWindow::keyReleaseEvent(QKeyEvent *event) {
 void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 	QFile file(file_path);
 	if ( !file.open(QIODevice::ReadOnly) ) {
-		displayError("Unable to open configuration file", "");
+		displayError("Unable to open configuration file", "", true);
 		return;
 	}
 	try {
@@ -103,7 +105,7 @@ void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 		XmlUtil::getInstance().readProjectorConfig(file.readAll(), cfg);
 		setConfig(cfg);
 	} catch ( XmlUtil::XmlException &e ) {
-		displayError("Error while parsing configuration file", e.what());
+		displayError("Error while parsing configuration file", e.what(), true);
 	}
 }
 
