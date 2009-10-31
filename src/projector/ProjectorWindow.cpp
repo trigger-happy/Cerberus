@@ -75,11 +75,9 @@ void ProjectorWindow::setTemplate(ctemplate::Template *tpl) {
 	m_ui->webView->setHtml(QString(buffer.c_str()), m_base_url);
 }
 
-
-
-void ProjectorWindow::displayError(const QString &brief, const QString &summary) {
-	m_dict->SetValue("ERROR_BRIEF", brief.toStdString().c_str());
-	m_dict->SetValue("ERROR_DETAIL", summary.toStdString().c_str());
+void ProjectorWindow::displayError(const char *brief, const char *detail) {
+	m_dict->SetValue("ERROR_BRIEF", brief);
+	m_dict->SetValue("ERROR_DETAIL", detail);
 	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
 }
 
