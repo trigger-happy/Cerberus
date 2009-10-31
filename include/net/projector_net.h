@@ -15,15 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef PRESENTER_NET_H
-#define PRESENTER_NET_H
+#ifndef PROJECTOR_NET_H
+#define PROJECTOR_NET_H
 #include <QtNetwork>
 #include "net/protocol.h"
 
-class PresenterNet : public QObject{
+class ProjectorNet : public QObject{
 	Q_OBJECT;
 public:
 private:
 };
 
-#endif //PRESENTER_NET_H
+#endif //PROJECTOR_NET_H

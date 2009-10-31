@@ -15,12 +15,4 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-#ifndef PRESENTER_CONNECTION_H
-#define PRESENTER_CONNECTION_H
-#include <QtNetwork>
-
-class PresenterConnection : public QObject {
-	Q_OBJECT;
-};
-
-#endif
+#include "net/projector_net.h"
