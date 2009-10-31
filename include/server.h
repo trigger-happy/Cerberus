@@ -28,7 +28,7 @@ class server_dlg;
 
 class ServerNetwork;
 
-class Server : public QDialog
+class Server : public QObject
 {
         Q_OBJECT;
 public:
@@ -70,11 +70,10 @@ private slots:
 
 
 private:
-		QString log;
-		int num;
+		QString log, m_db_path;
+		quint16 m_port;
 		ServerNetwork* m_network;
 		ServerConfig m_config;
-        Ui::server_dlg* m_dlg;
 		vector<QString> m_questions;
 		vector<QString> m_answers;
 

@@ -26,8 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "util/xml_util.h"
 
 using namespace std;
-
-Server::Server ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_dlg )
+bool testing = true;
+Server::Server ( QWidget* parent ) : QObject ( parent )
 {
 		/*Fills up the m_questions and m_answers vector with the
 		question data and answer data respectively.
@@ -46,16 +46,8 @@ Server::Server ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_
 		file.open ( QIODevice::ReadOnly );
 		QString serverConfigXml = file.readAll();
 		XmlUtil::getInstance().readServerConfig(serverConfigXml,m_config);
-		int port = m_config.port;
-		QString db_path = m_config.db_path;
-
-		//Opens the SQL Database with the db_path
-		bool result = SqlUtil::getInstance().init ( db_path );
-		if ( !result ) {
-				QMessageBox msg ( this );
-				msg.setText ( "Failed to load db" );
-				msg.exec();
-		}
+		m_port = m_config.port;
+		QString m_db_path = m_config.db_path;
 
 		//Instantiates the ServerNetwork class, networking stuff go here
 		m_network = new ServerNetwork ( this );
@@ -63,10 +55,22 @@ Server::Server ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::server_
 		connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
 		connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
 		
-		m_network->listen ( port );
+		m_network->listen ( m_port );
 		m_network->setRound ( 1 );
 		m_network->setStatus ( CONTEST_STOPPED );
 		m_network->setQData ( &m_questions );
+		if(testing) cout << "Server has been established at port " << m_port << endl;
+
+		//Opens the SQL Database with the specified db_path
+		bool result = SqlUtil::getInstance().init ( m_db_path );
+		if ( !result ) {
+				/*QMessageBox msg ( this );
+				msg.setText ( "Failed to load db" );
+				msg.exec();*/
+				cout << "Failed to load db." << endl;
+		}
+
+		cout << "Finished with setting up Server." << endl;
 }
 
 Server::~Server()
@@ -77,7 +81,7 @@ Server::~Server()
 void Server::newContestant( ContestantConnection* cc )
 {
 		//TODO: Stuff here for when a new connection is made
-		cout << "Connected." << endl; 
+		cout << "Contestant has connected." << endl;
 		connect ( cc, SIGNAL (onAuthentication( ContestantConnection*, const QString&)), this, SLOT (onAuthentication(ContestantConnection*, const QString&)));
 
 }
@@ -131,7 +135,14 @@ void Server::dropConnection( ContestantConnection* cc )
 
 int main ( int argc, char* argv[] )
 {
-		cout << "hello" << endl;
 		QApplication a ( argc, argv );
+		string cmd;
+		Server* server = new Server();
+
+		while(cmd != "exit")
+		{
+			cin >> cmd;
+		}
+		exit(0);
 		return a.exec();
 }

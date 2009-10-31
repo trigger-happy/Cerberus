@@ -1,5 +1,23 @@
+/*
+Copyright (C) 2009 Janssen Go
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 #include <QFile>
 #include <QString>
+#include <QtTest/QtTest>
 #include <QMessageBox>
 #include "config_editor.h"
 #include "ui_server_editor.h"
@@ -175,7 +193,7 @@ void ConfigEditor::save() {
         //Save everything...
 
         //ClientConfig *cc = new ClientConfig();
-        PresenterConfig *pc = new PresenterConfig();
+        ProjectorConfig *pc = new ProjectorConfig();
         ClientConfig *cc = new ClientConfig();
         AdminConfig *ac = new AdminConfig();
 
@@ -185,22 +203,6 @@ void ConfigEditor::save() {
         pc->port = port.toInt();
         ac->ip = ip;
         ac->port = port.toInt();
-
-
-
-       // StageData *s1 = new StageData();
-       // StageData *s2 = new StageData();
-       // StageData *s3 = new StageData();
-       // StageData *s4 = new StageData();
-
-       // s1->answer_file = r1_a;
-       // s1->question_file = r1_q;
-       // s2->answer_file = r2_a;
-       // s2->question_file = r2_q;
-       // s3->answer_file = r3_a;
-       // s3->question_file = r3_q;
-       // s4->answer_file = r4_a;
-       // s4->question_file = r4_q;
 
         ServerConfig *sc = new ServerConfig();
         sc->db_path = sql;
@@ -247,9 +249,7 @@ void ConfigEditor::load() {
     XmlUtil& xu = XmlUtil::getInstance();
     bool check = false;
 
-
-
-
+    if( ui->presenterConf->text().compare(QString( "" ) ) != 0 ) {
         NetworkConfig *nc = new NetworkConfig();
         QString network(ui->presenterConf->text());
         QFile file( network );
@@ -257,77 +257,70 @@ void ConfigEditor::load() {
 
         if( file.exists() ) {
             check = true;
-            //QFile file2(network);
-            //QVERIFY(file.open(QIODevice::ReadOnly));
+            QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            cout << "here" << endl;
             xu.readNetConfig ( xml , *nc );
-            cout << "here" << endl;
             ui->serverIP->setText( nc->ip );
             ui->serverPort1->setText( QString("%1").arg(nc->port) );
             ui->serverPort2->setText( QString("%1").arg(nc->port) );
 
-           //cout << nc->ip<<endl;
-            //cout << nc->port<< endl;
         }
-    /*else if( ui->adminConf->text() != "" ) {
+    }
+    else if( ui->adminConf->text().compare(QString( "" ) ) != 0 ) {
         NetworkConfig *nc = new NetworkConfig();
         QString network(ui->presenterConf->text());
         QFile file (network);
 
         if( file.exists() ) {
             check = true;
+            QVERIFY(file.open(QIODevice::ReadOnly));
+            QString xml = file.readAll();
             xu.readNetConfig( network, *nc );
             ui->serverIP->setText( nc->ip );
             ui->serverPort1->setText( QString("%1").arg(nc->port) );
+            ui->serverPort2->setText( QString("%1").arg(nc->port) );
         }
     }
-
-    else if( ui->constConf->text() != "" ) {
+     else if( ui->constConf->text().compare(QString( "" ) ) != 0 ) {
         ClientConfig *nc = new ClientConfig();
         QString network(ui->presenterConf->text());
         QFile file (network);
 
         if( file.exists() ) {
             check = true;
-            xu.readClientConfig( network, *nc );
+            QVERIFY(file.open(QIODevice::ReadOnly));
+            QString xml = file.readAll();
+            xu.readNetConfig( network, *nc );
             ui->serverIP->setText( nc->ip );
             ui->serverPort1->setText( QString("%1").arg(nc->port) );
             ui->serverPort2->setText( QString("%1").arg(nc->port) );
         }
     }
 
-    if( ui->serverConf->text() != "" ) {
+    if( ui->serverConf->text() .compare(QString( "" ) ) != 0 ) {
         ServerConfig *sc = new ServerConfig();
         QString network( ui->serverConf->text() );
         QFile file (network);
 
         if( file.exists() ) {
             check = true;
+            QVERIFY(file.open(QIODevice::ReadOnly));
+            QString xml = file.readAll();
             xu.readServerConfig( network, *sc );
             ui->sql->setText( sc->db_path );
             ui->serverPort1->setText( QString("%1").arg(sc->port) );
             ui->serverPort2->setText( QString("%1").arg(sc->port) );
 
-            //StageData s1 = sc->stage_data.at(0);
-            //StageData s2 = sc->stage_data.at(1);
-            //StageData s3 = sc->stage_data.at(2);
-            //StageData s4 = sc->stage_data.at(3);
+            ui->q_rnd1->setText(sc->stage_files.at(0));
+            ui->q_rnd2->setText(sc->stage_files.at(1));
+            ui->q_rnd3->setText(sc->stage_files.at(2));
+            ui->q_rnd4->setText(sc->stage_files.at(3));
 
-            //ui->q_rnd1->setText(s1.question_file);
-            //ui->q_rnd2->setText(s2.question_file);
-            //ui->q_rnd3->setText(s3.question_file);
-           // ui->q_rnd4->setText(s4.question_file);
-
-            //ui->a_rnd1->setText(s1.answer_file);
-            //ui->a_rnd2->setText(s2.answer_file);
-            //ui->a_rnd3->setText(s3.answer_file);
-            //ui->a_rnd4->setText(s4.answer_file);
         }
     }
-    */
-    if( check == false ) {
 
+
+    if( check == false ) {
         ui->error->setText( "Please add at least one correct path to fill something" );
     }
 }

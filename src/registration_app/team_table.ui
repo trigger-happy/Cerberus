@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>276</width>
+    <width>286</width>
     <height>300</height>
    </rect>
   </property>
@@ -19,15 +19,15 @@
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="teamname_txt"/>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="teamnamelabel">
        <property name="text">
         <string>Team Name:</string>
        </property>
       </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="teamname_txt"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="teamschoollabel">
@@ -49,14 +49,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QListView" name="team_listview">
-     <property name="minimumSize">
-      <size>
-       <width>268</width>
-       <height>158</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="QListWidget" name="team_listview"/>
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
