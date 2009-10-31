@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 Nikolai Banasihan and Vernon Gutierrez
+Copyright (C) 2009 James Choa
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,31 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
+#include "ui_server.h"
+#include "admin.h"
 
-#include <iostream>
-#include <vector>
+Admin::Admin( QWidget* parent ) : QDialog( parent ), m_server( this ),
+		m_dlg( new Ui::server_dlg ) {
+	m_dlg->setupUi( this );
+	// connect dialog signals and slots here
+	// connect server signals and slots here
+}
 
-#include "patterns/singleton.h"
-#include "data_types.h"
+Admin::~Admin() {
+}
 
-using namespace std;
-
-class Checker : public Singleton<Checker>
+int main ( int argc, char* argv[] )
 {
-	private:
-		vector<Question> *m_qset;
-
-	public:
-		Checker();
-		~Checker();
-		
-		// for inputting questions
-		bool resetQuestionSet();
-		bool addQuestion(Question &myQuestion);
-		//bool addQuestionSet( vector<Question> &myQSet);
-		
-		// for operations
-		double score(AnswerData& answer);
-		
-	
-};
+	QApplication a ( argc, argv );
+	string cmd;
+	Admin admin;
+	admin.show();
+	return a.exec();
+}

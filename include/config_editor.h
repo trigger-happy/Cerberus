@@ -16,7 +16,7 @@ public:
     ConfigEditor(QWidget *parent = 0);
     ~ConfigEditor();
     bool askConfirmation( QString& s );
-    bool showInfo();
+    bool showInfo( QString s);
 public slots:
     void save();
     void load();

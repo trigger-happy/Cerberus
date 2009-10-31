@@ -71,9 +71,9 @@ bool ConfigEditor::askConfirmation( QString& s ) {
     }
 }
 
-bool ConfigEditor::showInfo() {
+bool ConfigEditor::showInfo( QString s ) {
     QMessageBox msgBox;
-     msgBox.setText("Some Files Doesn't Exist.");
+     msgBox.setText(s );
 
      msgBox.setStandardButtons(QMessageBox::Ok);
      msgBox.setDefaultButton(QMessageBox::Ok);
@@ -81,8 +81,7 @@ bool ConfigEditor::showInfo() {
 
 }
 void ConfigEditor::save() {
-    //QString *error = new QString("");
-    //bool isEmpty = true;
+
     ui->error->setText("");
     ui->tabWidget_2->setTabText(0, "Round1");
     ui->tabWidget_2->setTabText(1, "Round2");
@@ -131,6 +130,7 @@ void ConfigEditor::save() {
         if( !q1File.exists() ) {
             ui->tabWidget_2->setTabText(0, "Round1*");
             ui->label_q1->setText("Question File*");
+            cout << r1_q.toStdString() << endl;
             cont = false;
         }      
 
@@ -157,7 +157,7 @@ void ConfigEditor::save() {
     }
 
     if( !cont) {
-        showInfo();
+        showInfo( QString("Some Files Doesnt Exist") );
     }
 
     if( cont ) {
@@ -219,6 +219,7 @@ void ConfigEditor::save() {
         QFile f(presenter);
         f.open(QIODevice::WriteOnly);
         f.write(temp.toUtf8());
+        temp.clear();
 
         //delete f;
 
@@ -226,20 +227,22 @@ void ConfigEditor::save() {
         QFile f1(contestant);
         f1.open(QIODevice::WriteOnly);
         f1.write(temp.toUtf8());
+        temp.clear();
 
         xu.writeNetConfig ( *ac, temp );
         QFile f2(admin);
         f2.open(QIODevice::WriteOnly);
         f2.write(temp.toUtf8());
+        temp.clear();
 
         xu.writeServerConfig ( *sc, temp );
         QFile f3(server);
         f3.open(QIODevice::WriteOnly);
         f3.write(temp.toUtf8());
+
     }
-    else {
-        ui->error->setText( "Change the file paths to avoid overwriting" );
-    }
+    showInfo( QString("Config Saved") );
+
     //ui->error->setText(*error);
 }
 
@@ -250,7 +253,7 @@ void ConfigEditor::load() {
     bool check = false;
 
     if( ui->presenterConf->text().compare(QString( "" ) ) != 0 ) {
-        NetworkConfig *nc = new NetworkConfig();
+        ProjectorConfig *nc = new ProjectorConfig();
         QString network(ui->presenterConf->text());
         QFile file( network );
 
@@ -259,42 +262,68 @@ void ConfigEditor::load() {
             check = true;
             QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            xu.readNetConfig ( xml , *nc );
+            xu.readProjectorConfig ( xml , *nc );
             ui->serverIP->setText( nc->ip );
             ui->serverPort1->setText( QString("%1").arg(nc->port) );
             ui->serverPort2->setText( QString("%1").arg(nc->port) );
 
         }
+        else {
+            showInfo( QString("File path for projector config not found") );
+        }
     }
+
     else if( ui->adminConf->text().compare(QString( "" ) ) != 0 ) {
-        NetworkConfig *nc = new NetworkConfig();
-        QString network(ui->presenterConf->text());
+        AdminConfig nc;
+        QString network(ui->adminConf->text());
         QFile file (network);
 
         if( file.exists() ) {
             check = true;
             QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            xu.readNetConfig( network, *nc );
-            ui->serverIP->setText( nc->ip );
-            ui->serverPort1->setText( QString("%1").arg(nc->port) );
-            ui->serverPort2->setText( QString("%1").arg(nc->port) );
+            
+             try {
+                   xu.readAdminConfig( xml, nc );
+
+            } catch (XmlUtil::XmlException e) {
+                    cout << e.what() << endl;
+            }
+            ui->serverIP->setText( nc.ip );
+            ui->serverPort1->setText( QString("%1").arg(nc.port) );
+            ui->serverPort2->setText( QString("%1").arg(nc.port) );
+        }
+        else {
+            showInfo( QString("File path for admin config not found") );
         }
     }
-     else if( ui->constConf->text().compare(QString( "" ) ) != 0 ) {
-        ClientConfig *nc = new ClientConfig();
-        QString network(ui->presenterConf->text());
+
+    else if( ui->constConf->text().compare(QString( "" ) ) != 0 ) {
+        ClientConfig *cc = new ClientConfig();
+        QString network(ui->constConf->text());
         QFile file (network);
+
 
         if( file.exists() ) {
             check = true;
             QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            xu.readNetConfig( network, *nc );
-            ui->serverIP->setText( nc->ip );
-            ui->serverPort1->setText( QString("%1").arg(nc->port) );
-            ui->serverPort2->setText( QString("%1").arg(nc->port) );
+
+            try {
+                    xu.readClientConfig( xml, *cc );
+            } catch (XmlUtil::XmlException e) {
+                    cout << e.what() << endl;
+            }
+
+            ui->serverIP->setText( cc->ip );
+            ui->serverPort1->setText( QString("%1").arg(cc->port) );
+            ui->serverPort2->setText( QString("%1").arg(cc->port) );
         }
+        else {
+            showInfo( QString("File path for contestant config not found") );
+        }
+
+
     }
 
     if( ui->serverConf->text() .compare(QString( "" ) ) != 0 ) {
@@ -306,16 +335,26 @@ void ConfigEditor::load() {
             check = true;
             QVERIFY(file.open(QIODevice::ReadOnly));
             QString xml = file.readAll();
-            xu.readServerConfig( network, *sc );
-            ui->sql->setText( sc->db_path );
-            ui->serverPort1->setText( QString("%1").arg(sc->port) );
-            ui->serverPort2->setText( QString("%1").arg(sc->port) );
 
-            ui->q_rnd1->setText(sc->stage_files.at(0));
-            ui->q_rnd2->setText(sc->stage_files.at(1));
-            ui->q_rnd3->setText(sc->stage_files.at(2));
-            ui->q_rnd4->setText(sc->stage_files.at(3));
+            try {
+                    xu.readServerConfig( xml, *sc );
+                    ui->sql->setText( sc->db_path );
+                    ui->serverPort1->setText( QString("%1").arg(sc->port) );
+                    ui->serverPort2->setText( QString("%1").arg(sc->port) );
 
+                    ui->q_rnd1->setText(sc->stage_files.at(0));
+                    ui->q_rnd2->setText(sc->stage_files.at(1));
+                    ui->q_rnd3->setText(sc->stage_files.at(2));
+                    ui->q_rnd4->setText(sc->stage_files.at(3));
+
+            } catch (XmlUtil::XmlException e) {
+                    cout << e.what() << endl;
+            }
+
+
+        }
+        else {
+            showInfo( QString("File path for server config not found") );
         }
     }
 
