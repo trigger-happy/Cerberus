@@ -138,3 +138,7 @@ void ProjectorWindow::changeEvent(QEvent *e)
 			break;
 	}
 }
+
+void ProjectorWindow::refresh() {
+	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
+}

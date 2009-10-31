@@ -58,6 +58,7 @@ private:
 	void displayError(const char *brief, const char *detail, bool persist = false);
 public slots:
 	void setTimeLeft(unsigned int);
+	void refresh();
 };
 
 #endif // PROJECTOR_PROJECTORWINDOW_H_
