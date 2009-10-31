@@ -17,6 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "util/sql_util.h"
 #include <QCryptographicHash>
+#include <iostream>
 
 bool SqlUtil::init ( const QString& dbname )
 {
@@ -78,7 +79,7 @@ int SqlUtil::editUser ( const QString& user_name, const UserData& ud )
 {
 	//update user set firstname = 'A', lastname = 'B' , password = 'C' where username = 'username';
 	QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
-	QString sql = QString ( "UPDATE user SET firstname = '%1', lastname = '%2', password '%3' WHERE username = '%4'" )
+	QString sql = QString ( "UPDATE user SET firstname = '%1', lastname = '%2', password = '%3' WHERE username = '%4'" )
 		      .arg ( QString ( ud.firstname ) )
 		      .arg ( QString ( ud.lastname ) )
 		      .arg ( QString ( pwd ) )
@@ -94,7 +95,7 @@ int SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_na
 		      .arg ( QString ( team_name_old ) );
 	//UPDATE user SET team_name= 'new' WHERE team_name = 'team'
 	
-	if ( query->exec ( sql ) != 0)
+	if ( query->exec ( sql ) == false)
 		return 1;
 	sql = QString ( "UPDATE user SET team_name = '%1' WHERE team_name = '%2'" )
 		      .arg ( QString ( team_name_new ) )
@@ -112,22 +113,24 @@ int SqlUtil::deleteUser ( const QString& user_name )
 
 int SqlUtil::deleteTeam ( const QString& team_name )
 {
+	//QString team_name2 = team_name;
 	//DELETE from user where team_name='B'
 	QString sql = QString ( "DELETE FROM user WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
-	if ( query->exec ( sql ) != 0)
+	if ( query->exec ( sql ) == false)
 		return 1;
 	
 	//DELETE from team where team_name='B'
 	sql = QString ( "DELETE FROM team WHERE team_name = '%1'" )
-		      .arg ( QString ( team_name ) );
+			  .arg ( QString ( team_name ) );
+	//std::cout << query->lastError().text().toStdString() << std::endl;
 	return query->exec ( sql );
 }
 
 bool SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
 {
 	//SELECT username,team_name,firstname,lastname FROM user WHERE team_name = 'B'
-	QString sql = QString ( "SELECT username, team_name, firstname, lastname"
+	QString sql = QString ( "SELECT username, team_name, firstname, lastname "
 				"FROM user WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
 	if ( !query->exec ( sql ) )
@@ -152,7 +155,7 @@ bool SqlUtil::getSpecificUser ( const QString& user_name, UserData& out )
 	//SELECT username,team_name,firstname,lastname FROM user WHERE username = 'D'
 	QString sql = QString ( "SELECT username, team_name, firstname, lastname FROM user WHERE username = '%1'" )
 		      .arg( QString ( user_name ) );
-	if ( !query->exec() )
+	if ( !query->exec(sql) )
 		return false;
 	else
 	{
@@ -174,7 +177,7 @@ QString SqlUtil::getTeamSchool ( const QString& team_name )
 	//select school from team where team_name = 'B'
 	QString sql = QString ( "SELECT school FROM team WHERE team_name = '%1'" )
 		      .arg( QString ( team_name ) );
-	if ( !query->exec() )
+	if ( !query->exec(sql) )
 		return "Some weird error occurred. I don't know what ^_^;";
 	else
 	{

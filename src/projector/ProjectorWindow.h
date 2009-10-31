@@ -2,6 +2,7 @@
 #define PROJECTOR_PROJECTORWINDOW_H_
 
 #include <QtGui/QMainWindow>
+#include <QUrl>
 
 namespace Ui {
 	class ProjectorWindow;
@@ -24,6 +25,9 @@ protected:
 private:
 	Ui::ProjectorWindow *m_ui;
 	ProjectorConfig *m_cfg;
+	QUrl m_base_url;
+public slots:
+	void updateView();
 };
 
 #endif // PROJECTOR_PROJECTORWINDOW_H_

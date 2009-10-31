@@ -5,23 +5,29 @@
 #include "data_types.h"
 #include "util/xml_util.h"
 
+#define JS_TIMELEFT_EVENT "window.ontimeleft"
 
-const char * const DEFAULT_PAGE =
-"<html>"
-"	<head><title>No Style Specified</title></head>"
-"	<body><h1>No style specified in projector_config.xml</h1></body>"
-"</html>";
 const QString WINDOW_TITLE = "Cerberus Projector";
+
+const QString JS_TRIGGER_TIME =
+"if ( " JS_TIMELEFT_EVENT " != null ) {"
+"	" JS_TIMELEFT_EVENT "(%1);"
+"	return 1;"
+"} else return 0;";
 
 ProjectorWindow::ProjectorWindow(QWidget *parent) :
 	QMainWindow(parent),
-	m_ui(new Ui::ProjectorWindow)
+	m_ui(new Ui::ProjectorWindow),
+	m_cfg(new ProjectorConfig)
 {
 	m_ui->setupUi(this);
-	m_ui->webView->setHtml(DEFAULT_PAGE);
+	//m_ui->webView->setHtml(DEFAULT_PAGE);
 	this->setWindowTitle(WINDOW_TITLE);
 	showFullScreen();
-	m_cfg = new ProjectorConfig();
+}
+
+void ProjectorWindow::updateView() {
+
 }
 
 ProjectorWindow::~ProjectorWindow()
@@ -51,7 +57,7 @@ void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 	if ( m_cfg != &cfg )
 		*m_cfg = cfg;
-
+	m_base_url = QUrl::fromLocalFile(m_cfg->theme_path);
 	if ( m_cfg->contest_name.isEmpty() )
 		setWindowTitle(WINDOW_TITLE);
 	else

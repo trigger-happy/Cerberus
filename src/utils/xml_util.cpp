@@ -303,6 +303,14 @@ void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
 				conf.theme_path = reader.readElementText();
 			} else if ( reader.name() == "contest_name" ) {
 				conf.contest_name = reader.readElementText();
+			} else if ( reader.name() == "time_precision" ) {
+				conf.time_precision =
+						checked_convert<unsigned int>(reader.readElementText(),
+													  "time_precision", reader);
+			} else if ( reader.name() == "author_mode" ) {
+				conf.author_mode =
+						checked_convert<bool>(reader.readElementText(),
+											  "author_mode", reader);
 			} else {
 				readNetConfigElement(reader, conf);
 			}

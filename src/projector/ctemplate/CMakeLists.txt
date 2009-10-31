@@ -204,6 +204,7 @@ if ( NOT ac_have_attribute_weak )
 	set(ac_have_attribute_weak 0)
 endif()
 
+include(CheckCSourceCompiles)
 # In unix (that is, using this script), this dll-export stuff will always
 # be the empty string.  In windows, we'll replace it with windows-specific
 # text.
@@ -238,6 +239,17 @@ ${ac_windows_dllexport_defines}
 // TODO(csilvers): include windows/port.h in every relevant source file instead?
 #include \"windows/port.h\"
 	")
+	
+	check_c_source_compiles("
+#include <string.h>
+
+int main() {
+	char buffer[128];
+	snprintf(buffer, sizeof(buffer), \"%s\", \"Hello\");
+	return 0;
+}"
+	HAVE_SNPRINTF)
+	normalize_bool(HAVE_SPRINTF)
 else()
 	set(ac_windows_dllexport_defines " ")
 	set(ac_windows_dllexport " ")
