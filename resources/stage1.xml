@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <stage time_limit="3600" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" xmlns="http://cerberus.compsat.org">
-	<welcome_msg>Insert welcome message here.</welcome_msg>
+    <welcome_msg>Round 1</welcome_msg>
 	
 	<choose score="1">
 		<q>The answer to this question is choice 1.</q>
