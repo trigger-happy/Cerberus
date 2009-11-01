@@ -16,3 +16,27 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "net/projector_net.h"
+
+ProjectorNet::ProjectorNet( QObject* parent ) : QObject( parent ) {
+}
+
+void ProjectorNet::connectToHost( const QString& ip, quint16 port ) {
+}
+
+void ProjectorNet::disconnectFromHost() {
+}
+
+void ProjectorNet::connected() {
+}
+
+void ProjectorNet::disconnected() {
+}
+
+void ProjectorNet::error( const QAbstractSocket::SocketError& error ) {
+}
+
+void ProjectorNet::ready() {
+}
+
+void ProjectorNet::disconnected() {
+}
