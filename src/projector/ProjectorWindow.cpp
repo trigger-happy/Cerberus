@@ -58,12 +58,20 @@ ProjectorWindow::~ProjectorWindow()
 	delete m_ui;
 }
 
+const unsigned int MSEC_PER_SEC = 1000;
+
 void ProjectorWindow::setTimeLeft(unsigned int val) {
-	m_dict->SetIntValue("TIME_LEFT", val);
 	const QVariant &result =
 			m_ui->webView->page()->mainFrame()->
 			evaluateJavaScript(
 					JS_TRIGGER_TIME.arg(QString::number(val)));
+	//format the thing differently if it's over a minute
+	if ( val > MSEC_PER_SEC * 60 ) {
+		m_dict->SetFormattedValue("TIME_LEFT", "%d:%.1lf", val/(MSEC_PER_SEC * 60), (double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC);
+	} else {
+		m_dict->SetFormattedValue("TIME_LEFT", "%.1lf", (double)val/MSEC_PER_SEC);
+	}
+
 	if ( result.toBool() ) return;
 	//The page has no handler which accepts time update, refresh the page.
 	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
