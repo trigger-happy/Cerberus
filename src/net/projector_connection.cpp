@@ -63,6 +63,7 @@ void ProjectorConnection::ready() {
 	}
 
 	switch ( m_hdr->command ) {
+
 		default:
 			;
 	}
@@ -77,4 +78,19 @@ void ProjectorConnection::ready() {
 }
 
 void ProjectorConnection::disconnected() {
+}
+
+void ProjectorConnection::setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state ) {
+}
+
+void ProjectorConnection::showContestTime() {
+}
+
+void ProjectorConnection::showContestRanks() {
+}
+
+void ProjectorConnection::showQuestionTime() {
+}
+
+void ProjectorConnection::showAnswer() {
 }

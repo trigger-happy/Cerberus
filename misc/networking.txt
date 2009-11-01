@@ -78,7 +78,7 @@ presenter-server network:
 	
 	//might remove this one
 	question time info (round 3 and 4):
-		server: INF_QUESTION_TIME <ushort time> // in seconds
+		server: INF_QUESTION_TIME
 		
 	question state change (round 3 and 4):
 		server: INF_QUESTION_STATE <ushort question number> <ushort time> <ushort status>

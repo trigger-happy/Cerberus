@@ -198,19 +198,43 @@ void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS
 		for ( ; i != m_contestants.end(); i++ ) {
 			( *i )->setQuestionState ( qnum, time, state );
 		}
-	}
 
-	//TODO: broadcast to presenters as well.
+		projector_list::iterator j = m_projectors.begin();
+
+		for ( ; j != m_projectors.end(); j++ ) {
+			( *j )->setQuestionState( qnum, time, state );
+		}
+	}
 }
 
 void ServerNetwork::showContestTime() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showContestTime();
+	}
 }
 
 void ServerNetwork::showContestRanks() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showContestRanks();
+	}
 }
 
 void ServerNetwork::showQuestionTime() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showQuestionTime();
+	}
 }
 
 void ServerNetwork::showAnswer() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showAnswer();
+	}
 }
