@@ -17,15 +17,34 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "ui_server.h"
 #include "admin.h"
+#include <iostream>
+
+using namespace std;
 
 Admin::Admin( QWidget* parent ) : QDialog( parent ), m_server( this ),
 		m_dlg( new Ui::server_dlg ) {
 	m_dlg->setupUi( this );
 	// connect dialog signals and slots here
+	connect(m_dlg->stop_btn, SIGNAL (clicked()), this, SLOT (onStopBtn()));
+	connect(m_dlg->start_btn, SIGNAL (clicked()), this, SLOT (onStartBtn()));
+	connect(m_dlg->pause_btn, SIGNAL (clicked()), this, SLOT (onPauseBtn()));
+
 	// connect server signals and slots here
 }
 
 Admin::~Admin() {
+}
+
+void Admin::onStopBtn() {
+	m_server.stopContest();
+}
+
+void Admin::onStartBtn() {
+	m_server.startContest();
+}
+
+void Admin::onPauseBtn() {
+	m_server.pauseContest();
 }
 
 int main ( int argc, char* argv[] )

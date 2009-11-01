@@ -34,6 +34,11 @@ public:
 
 public slots:
 	// TODO: add a bunch of slots here
+	void onStopBtn();
+
+	void onStartBtn();
+
+	void onPauseBtn();
 
 private:
 	Ui::server_dlg* m_dlg;
