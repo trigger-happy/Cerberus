@@ -199,4 +199,18 @@ void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS
 			( *i )->setQuestionState ( qnum, time, state );
 		}
 	}
+
+	//TODO: broadcast to presenters as well.
+}
+
+void ServerNetwork::showContestTime() {
+}
+
+void ServerNetwork::showContestRanks() {
+}
+
+void ServerNetwork::showQuestionTime() {
+}
+
+void ServerNetwork::showAnswer() {
 }

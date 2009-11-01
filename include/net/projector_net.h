@@ -81,7 +81,7 @@ signals:
 	void onShowContestTime();
 	// NOTE: params for this will change
 	void onShowContestRanks();
-	void onQuestionTime( ushort time );
+	void onQuestionTime();
 	void onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status );
 	void onShowAnswer();
 

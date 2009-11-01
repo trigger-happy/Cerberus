@@ -140,6 +140,28 @@ public:
 	*/
 	void setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state );
 
+	// projector specific stuff
+	/*!
+	Show the contest time on projectors.
+	*/
+	void showContestTime();
+
+	/*!
+	Show the current contesant rankings on the projectors.
+	\note Parameters are subject to change.
+	*/
+	void showContestRanks();
+
+	/*!
+	Show the question time on screen.
+	*/
+	void showQuestionTime();
+
+	/*!
+	Show the answer to the projector.
+	*/
+	void showAnswer();
+
 public slots:
 
 	/*!
