@@ -17,3 +17,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "net/projector_connection.h"
 #include "net/protocol.h"
+
+ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket ) : QObject( parent ), m_socket( socket ) {
+}
+
+void ProjectorConnection::error( const QAbstractSocket::SocketError& err ) {
+}
+
+void ProjectorConnection::ready() {
+}
+
+void ProjectorConnection::disconnected() {
+}

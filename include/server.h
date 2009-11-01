@@ -61,7 +61,7 @@ signals:
 	void contestantC ( ContestantConnection* cc, const QString& c_username );
 	void contestantDc ( ContestantConnection* cc );
 	void newAdmin ( AdminConnection* ac );
-	void newPresenter ( PresenterConnection* pc );
+	void newProjector ( ProjectorConnection* pc );
 
 private slots:
 	/*!
