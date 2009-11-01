@@ -24,7 +24,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "data_types.h"
 #include "util/xml_util.h"
 
-
 namespace Ui
 {
 	class login_dlg;
@@ -188,6 +187,10 @@ private:
     void recordAnswer();
     void displayAnswer();
     void initializeAnswerData();
+    void displayStatus();
+    void stopContest();
+    void pauseContest();
+    void runContest();
 
     QTimer *timer;
 	StageData sd;
@@ -196,6 +199,7 @@ private:
 	int round;
 	int qCount;
     int time;
+    bool timeSet;
 };
 
 #endif //CONTESTANT_APP_H

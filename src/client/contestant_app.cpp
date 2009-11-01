@@ -134,6 +134,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
     qCount = 0;
     time = 0;
+    status = CONTEST_STOPPED;
+    timeSet = false;
 }
 
 ContestantApp::~ContestantApp()
@@ -175,6 +177,7 @@ void ContestantApp::onAuthenticate ( bool result )
 		m_login_w->hide();
 		m_welcome_w->show();
 		m_network->getContestState();
+        //m_network->qDataRequest( round );
 	}
 	else
 	{
@@ -186,14 +189,23 @@ void ContestantApp::onAuthenticate ( bool result )
 		msg.setDefaultButton ( QMessageBox::Ok );
 		msg.setIcon ( QMessageBox::Information );
 		msg.exec();
+        m_login_w->show();
 	}
 
 }
 
 void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 {
-	m_network->qDataRequest( r );
+    m_network->qDataRequest( r );
 	round = r;
+    status = s;
+
+    if( status == CONTEST_RUNNING )
+        runContest();
+    else if( status == CONTEST_STOPPED )
+        stopContest();
+    else if( status == CONTEST_PAUSED )
+        pauseContest();
 }
 
 void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATUS status )
@@ -203,7 +215,7 @@ void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATU
 
 void ContestantApp::onContestTime( ushort t )
 {
-    time = t;
+    time = sd.contest_time - t;
 }
 
 void ContestantApp::onQData ( const QString& xml )
@@ -211,6 +223,14 @@ void ContestantApp::onQData ( const QString& xml )
     sd.questions.clear();
 	XmlUtil::getInstance().readStageData( xml, sd );
 	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );
+    if( !timeSet )
+    {
+        if( round == 1 || round == 2 )
+            time = sd.contest_time;
+        timeSet = true;
+    }
+
+
 }
 
 void ContestantApp::onAData ( bool result )
@@ -242,17 +262,20 @@ void ContestantApp::onContestError ( ERROR_MESSAGES err )
 
 }
 
-
 void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
 {
-	//TODO: do something here when there's a network error.
+
 }
 
 void ContestantApp::updateTimer()
 {
     time--;
-    //if( time == 0 )
-        // stop contest
+    if( time == 0 )
+    {
+        status = CONTEST_STOPPED;
+        stopContest();
+    }
+
     int minute = time/60;
     int second = time - minute*60;
     QString t = QString::number(minute);
@@ -285,20 +308,8 @@ void ContestantApp::welcomeStart()
     else if( round == 2 )
         m_semifinals_w->show();
 
-
-    if( round == 1 || round == 2 )
-    {
-        if( round == 1 )
-            m_elims_dlg->prev_btn->setEnabled( false );
-        else if( round == 2 )
-            m_semifinals_dlg->prev_btn->setEnabled( false );
-        time = sd.contest_time;
-    }
-
-    timer->start( 1000 );
     initializeAnswerData();
     displayQuestionAndChoices();
-
 }
 
 void ContestantApp::reconnectTry()
@@ -343,10 +354,6 @@ void ContestantApp::elimSemiNext()
 	}
 	else
 	{
-        if( round == 1 )
-            m_elims_dlg->prev_btn->setEnabled( true );
-        else if( round == 2 )
-            m_semifinals_dlg->prev_btn->setEnabled( true );
 		qCount++;
 		displayQuestionAndChoices();
         displayAnswer();
@@ -356,18 +363,22 @@ void ContestantApp::elimSemiNext()
 void ContestantApp::elimSemiPrev()
 {
     recordAnswer();
+    bool atFirstQuestion = ( qCount == 0 );
 
-    qCount--;
-    if( qCount == 0 )
+    if( atFirstQuestion )
     {
         if( round == 1 )
-            m_elims_dlg->prev_btn->setEnabled( false );
+            m_elims_w->hide();
         else if( round == 2 )
-            m_semifinals_dlg->prev_btn->setEnabled( false );
+            m_semifinals_w->hide();
+        m_welcome_w->show();
     }
-
-    displayQuestionAndChoices();
-    displayAnswer();
+    else
+    {
+        qCount--;
+        displayQuestionAndChoices();
+        displayAnswer();
+    }
 }
 
 void ContestantApp::review()
@@ -391,7 +402,6 @@ void ContestantApp::review()
 
 void ContestantApp::submit()
 {
-    std::cout<<"hi";
     m_network->aDataSend ( round, ad );
 }
 
@@ -444,8 +454,6 @@ void ContestantApp::displayAnswer()
             else if( ad[qCount].multi_choice[i] == 4 )
                 m_elims_dlg->d_choice->setChecked( true );
         }
-
-
     }
     else if( round == 2 )
     {
@@ -471,8 +479,23 @@ void ContestantApp::displayAnswer()
                 m_semifinals_dlg->d_choice->setChecked( true );
         }
     }
+}
 
+void ContestantApp::displayStatus()
+{
+    QString s;
+    if( status == CONTEST_RUNNING )
+        s = "RUNNING";
+    else if( status == CONTEST_STOPPED )
+        s = "STOPPED";
+    else if( status == CONTEST_PAUSED )
+        s = "PAUSED";
 
+    m_welcome_dlg->status_lbl->setText( s );
+    if( round == 1 )
+        m_elims_dlg->status_lbl->setText( s );
+    else if( round == 2 )
+        m_semifinals_dlg->status_lbl->setText( s );
 }
 
 void ContestantApp::recordAnswer()
@@ -505,12 +528,85 @@ void ContestantApp::recordAnswer()
 
 void ContestantApp::initializeAnswerData()
 {
+    if( sd.questions.size() == ad.size() )
+        return;
+
     for( int i = 0; i < sd.questions.size(); i++ )
     {
         Answer a;
         a.ans_type = sd.questions[i].type;
         ad.push_back( a );
     }
+}
+
+void ContestantApp::stopContest()
+{
+    timer->stop();
+
+    if( round == 1 )
+        m_elims_w->hide();
+    else if( round == 2 )
+        m_semifinals_w->hide();
+
+    qCount = 0;
+    m_welcome_dlg->start_btn->setEnabled( false );
+    displayStatus();
+    m_summary_w->hide();
+    m_welcome_w->show();
+}
+
+void ContestantApp::pauseContest()
+{
+    m_welcome_dlg->start_btn->setEnabled( false );
+
+    if( round == 1 )
+    {
+        m_elims_dlg->prev_btn->setEnabled( false );
+        m_elims_dlg->next_btn->setEnabled( false );
+    }
+    else if( round == 2 )
+    {
+        m_semifinals_dlg->prev_btn->setEnabled( false );
+        m_semifinals_dlg->next_btn->setEnabled( false );
+    }
+
+    m_summary_dlg->submit_btn->setEnabled( false );
+    timer->stop();
+    displayStatus();
+}
+
+void ContestantApp::runContest()
+{
+    if( time > 0 )
+    {
+        timer->start( 1000 );
+
+        m_welcome_dlg->start_btn->setEnabled( true );
+
+        if( round == 1 )
+        {
+            m_elims_dlg->prev_btn->setEnabled( true );
+            m_elims_dlg->next_btn->setEnabled( true );
+        }
+        else if( round == 2 )
+        {
+            m_semifinals_dlg->prev_btn->setEnabled( true );
+            m_semifinals_dlg->next_btn->setEnabled( true );
+        }
+
+        m_summary_dlg->submit_btn->setEnabled( true );
+        displayStatus();
+    }
+}
+
+void ContestantApp::successDialog( QString s, QString inform )
+{
+
+}
+
+void ContestantApp::errorDialog( Qtring s, QString inform )
+{
+
 }
 
 int main ( int argc, char* argv[] )
