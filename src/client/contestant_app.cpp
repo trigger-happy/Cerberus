@@ -219,7 +219,10 @@ void ContestantApp::onQData ( const QString& xml )
 void ContestantApp::onAData ( bool result )
 {
     if( result )
+    {
         showInfo( 0, "Answers successfully sent to server", "" );
+        exit();
+    }
     else
         showInfo( 1, "Answers not sent. Please try again.", "" );
 }
@@ -388,6 +391,7 @@ void ContestantApp::submit()
 void ContestantApp::displayQuestionAndChoices()
 {
 	Question q = sd.questions[qCount];
+
 	if ( round == 1 )
 	{
 		m_elims_dlg->question_lbl->setText ( q.question );
@@ -595,6 +599,6 @@ int main ( int argc, char* argv[] )
 
 	ContestantApp c_app;
     c_app.show();
-
+    c_app.resize( 500, 500 );
 	return app.exec();
 }
