@@ -27,62 +27,50 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 bool testing = true;
+
 Server::Server ( QWidget* parent ) : QObject ( parent ) {
-	/*Fills up the m_questions and m_answers vector with the
-	question data and answer data respectively.
+	/*Fills up the m_questions vector with the question data in XML.
 	*/
 	for ( int i = 1; i <= 4; i++ ) {
-		QFile file1 ( QString ( "resources/stage%1_q.xml" ).arg ( i ) );
-		QFile file2 ( QString ( "resources/stage%1_a.xml" ).arg ( i ) );
-		file1.open ( QIODevice::ReadOnly );
-		file2.open ( QIODevice::ReadOnly );
-		m_questions.push_back ( file1.readAll() );
-		m_answers.push_back ( file2.readAll() );
+		QFile file ( QString ( "resources/stage%1.xml" ).arg ( i ) );
+		file.open ( QIODevice::ReadOnly );
+		m_questions.push_back ( file.readAll() );
 	}
 
 	//reads the server config from the XML file
 	QFile file ( QString ( "resources/server_config.xml" ) );
-
 	file.open ( QIODevice::ReadOnly );
-
 	QString serverConfigXml = file.readAll();
-
 	XmlUtil::getInstance().readServerConfig( serverConfigXml, m_config );
-
 	m_port = m_config.port;
-
 	QString m_db_path = m_config.db_path;
 
 	//Instantiates the ServerNetwork class, networking stuff go here
 	m_network = new ServerNetwork ( this );
-
-	connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ), this, SLOT ( newContestant ( ContestantConnection* ) ) );
-
-	connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ), this, SLOT ( badClient ( TempConnection* ) ) );
-
-	connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ), this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
-
+	connect ( m_network, SIGNAL ( newContestant ( ContestantConnection* ) ),
+			  this, SLOT ( newContestant ( ContestantConnection* ) ) );
+	connect ( m_network, SIGNAL ( badClient ( TempConnection* ) ),
+			  this, SLOT ( badClient ( TempConnection* ) ) );
+	connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ),
+			  this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
 	m_network->listen ( m_port );
-
 	m_network->setRound ( 1 );
-
 	m_network->setStatus ( CONTEST_STOPPED );
-
 	m_network->setQData ( &m_questions );
-
 	if ( testing ) cout << "Server has been established at port " << m_port << endl;
 
 	//Opens the SQL Database with the specified db_path
-	bool result = SqlUtil::getInstance().init ( m_db_path );
+	bool result;
+	if ( testing ) result = SqlUtil::getInstance().init ( "resources/test.db" );
+	else result = SqlUtil::getInstance().init ( m_db_path );
 
 	if ( !result ) {
-		/*QMessageBox msg ( this );
+		QMessageBox msg;
 		msg.setText ( "Failed to load db" );
-		msg.exec();*/
-		cout << "Failed to load db." << endl;
+		msg.exec();
 	}
 
-	cout << "Finished with setting up Server." << endl;
+	if ( testing ) cout << "Finished with setting up Server." << endl;
 }
 
 Server::~Server() {
@@ -91,35 +79,43 @@ Server::~Server() {
 
 void Server::newContestant( ContestantConnection* cc ) {
 	//TODO: Stuff here for when a new connection is made
-	cout << "Contestant has connected." << endl;
-	connect ( cc, SIGNAL ( onAuthentication( ContestantConnection*, const QString& ) ), this, SLOT ( onAuthentication( ContestantConnection*, const QString& ) ) );
-
+	if( testing ) cout << "A new contestant has connected." << endl;
+	connect ( cc, SIGNAL ( onAuthentication( ContestantConnection*, const QString& ) ),
+			  this, SLOT ( onAuthentication( ContestantConnection*, const QString& ) ) );
 }
 
 void Server::badClient ( TempConnection* tc ) {
-	//m_dlg->textBrowser->setText("Bad client.");
+	emit badC( tc );
 }
 
 void Server::contestantDisconnect( ContestantConnection* cc ) {
-	//m_dlg->textBrowser->append("Contestant disconnected.");
-
+	if( testing ) cout << "A contestant has been disconnected." << endl;
+	emit contestantDc( cc );
 }
 
 void Server::onAuthentication( ContestantConnection* cc, const QString& c_username ) {
-	//m_dlg->textBrowser->append("Contestant has logged in.");
-	cout << c_username.toStdString() << " has connected." << endl;
+	if ( testing ) cout << c_username.toStdString() << " has connected." << endl;
+	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
+			 this, SLOT( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ) );
+	emit contestantC( cc, c_username );
+}
+
+void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data )
+{
+
 }
 
 void Server::stopContest() {
 	//m_dlg->textBrowser->append("Stopped.");
+	m_network->setStatus( CONTEST_STOPPED );
 }
 
 void Server::startContest() {
-
+	m_network->setStatus( CONTEST_RUNNING );
 }
 
 void Server::pauseContest() {
-
+	m_network->setStatus( CONTEST_PAUSED );
 }
 
 void Server::viewSubmittedAnswers() {
@@ -133,4 +129,3 @@ void Server::checkAnswersManually() {
 void Server::dropConnection( ContestantConnection* cc ) {
 
 }
-

@@ -3,7 +3,7 @@
     <welcome_msg>Round 1</welcome_msg>
 	
 	<choose score="1">
-		<q>The answer to this question is choice 1.</q>
+        <q>The answer to this question is choice 1. Just making this longer to see it would look on screen.</q>
 		<choice answer="true">Choice 1</choice>
 		<choice>Choice 2</choice>
 		<choice>Choice 3</choice>

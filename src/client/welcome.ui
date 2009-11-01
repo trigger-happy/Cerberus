@@ -38,6 +38,13 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
+      <widget class="QLabel" name="status_lbl">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="instruction_lbl">
        <property name="text">
         <string>Instructions</string>
