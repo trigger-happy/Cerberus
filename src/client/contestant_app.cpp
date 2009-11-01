@@ -210,6 +210,7 @@ void ContestantApp::onQData ( const QString& xml )
         if( round == 1 || round == 2 )
             time = sd.contest_time;
         timeSet = true;
+        //m_network->getContestTime();
     }
 
 
@@ -540,26 +541,22 @@ void ContestantApp::pauseContest()
 
 void ContestantApp::runContest()
 {
-    if( time > 0 )
+    m_welcome_dlg->start_btn->setEnabled( true );
+
+    if( round == 1 )
     {
-        timer->start( 1000 );
-
-        m_welcome_dlg->start_btn->setEnabled( true );
-
-        if( round == 1 )
-        {
-            m_elims_dlg->prev_btn->setEnabled( true );
-            m_elims_dlg->next_btn->setEnabled( true );
-        }
-        else if( round == 2 )
-        {
-            m_semifinals_dlg->prev_btn->setEnabled( true );
-            m_semifinals_dlg->next_btn->setEnabled( true );
-        }
-
-        m_summary_dlg->submit_btn->setEnabled( true );
-        displayStatus();
+        m_elims_dlg->prev_btn->setEnabled( true );
+        m_elims_dlg->next_btn->setEnabled( true );
     }
+    else if( round == 2 )
+    {
+        m_semifinals_dlg->prev_btn->setEnabled( true );
+        m_semifinals_dlg->next_btn->setEnabled( true );
+    }
+    std::cout<<time;
+    timer->start( 1000 );
+    m_summary_dlg->submit_btn->setEnabled( true );
+    displayStatus();
 }
 
 void ContestantApp::showInfo( int i, QString s, QString inform )
