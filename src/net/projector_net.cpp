@@ -37,6 +37,3 @@ void ProjectorNet::error( const QAbstractSocket::SocketError& error ) {
 
 void ProjectorNet::ready() {
 }
-
-void ProjectorNet::disconnected() {
-}

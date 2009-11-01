@@ -70,11 +70,6 @@ public slots:
 	*/
 	void ready();
 
-	/*!
-	Called when the connection is disconnected by the client.
-	*/
-	void disconnected();
-
 signals:
 
 private:
