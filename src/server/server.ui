@@ -98,7 +98,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="timer_spin"/>
+            <widget class="QSpinBox" name="timer_spin">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -308,7 +312,7 @@
      <property name="title">
       <string>General Projector Control</string>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -354,7 +358,7 @@
      <property name="title">
       <string>Round 3 and Tie Breaker options</string>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>

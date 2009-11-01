@@ -22,10 +22,69 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), m_server( this ),
 		m_dlg( new Ui::server_dlg ) {
 	m_dlg->setupUi( this );
 	// connect dialog signals and slots here
+	connect(m_dlg->round_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRoundSelection(int)));
 	// connect server signals and slots here
 }
 
 Admin::~Admin() {
+}
+
+// contest control
+void Admin::onApplyBtn(){
+}
+
+void Admin::onStartBtn(){
+}
+
+void Admin::onPauseBtn(){
+}
+
+void Admin::onStopBtn(){
+}
+
+void Admin::onRoundSelection(int index){
+}
+
+// contestant control
+void Admin::onContestantListClick(const QModelIndex& index){
+}
+
+void Admin::onDropContestant(){
+}
+
+void Admin::onViewAnswers(){
+}
+
+void Admin::onChangeScore(){
+}
+
+
+// projector control
+void Admin::onShowTimeLeft(){
+}
+
+void Admin::onShowRankings(){
+}
+
+void Admin::onShowNothing(){
+}
+
+void Admin::onQuestionListClick(const QModelIndex& index){
+}
+
+void Admin::onPreviousQuestion(){
+}
+
+void Admin::onNextQuestion(){
+}
+
+void Admin::onShowQuestion(){
+}
+
+void Admin::onShowAnswer(){
+}
+
+void Admin::onShowQuestionTime(){
 }
 
 int main ( int argc, char* argv[] )
