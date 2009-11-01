@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef PROJECTOR_CONNECTION_H
 #define PROJECTOR_CONNECTION_H
 #include <QtNetwork>
+#include "net/protocol.h"
 
 class ProjectorConnection : public QObject {
 	Q_OBJECT;
@@ -51,6 +52,7 @@ signals:
 
 private:
 	QTcpSocket* m_socket;
+	p_header* m_hdr;
 };
 
 #endif

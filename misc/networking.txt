@@ -85,7 +85,7 @@ presenter-server network:
 		*status = running, stopped, paused
 		
 	answer show (round 3 and 4):
-		server: PSN_SHOW_ANSWER <char[] answer>
+		server: PSN_SHOW_ANSWER
 
 // no longer going to be implemented for 1.0
 admin-server network:
