@@ -20,9 +20,28 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtNetwork>
 #include "net/protocol.h"
 
-class ProjectorNet : public QObject{
+class ProjectorNet : public QObject {
 	Q_OBJECT;
+
 public:
+
+public slots:
+	/*!
+	Called when there's a socket error.
+	\param err The error
+	*/
+	void error ( const QAbstractSocket::SocketError& err );
+
+	/*!
+	Called when there's data ready in the socket for reading.
+	*/
+	void ready();
+
+	/*!
+	Called when the connection is disconnected by the client.
+	*/
+	void disconnected();
+
 private:
 };
 

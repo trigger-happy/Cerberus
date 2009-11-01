@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Final Round</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="round_lbl">
+    <widget class="QLabel" name="status_lbl">
      <property name="text">
-      <string>Final Round</string>
+      <string>Contest Status</string>
      </property>
     </widget>
    </item>

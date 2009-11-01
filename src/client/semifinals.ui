@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Semi-Final Round</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0" colspan="2">
@@ -163,9 +163,9 @@
     </spacer>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="round_lbl">
+    <widget class="QLabel" name="status_lbl">
      <property name="text">
-      <string>Semi-Final Round</string>
+      <string>Contest Status</string>
      </property>
     </widget>
    </item>
@@ -188,7 +188,7 @@
   </layout>
   <zorder>time_lbl</zorder>
   <zorder>verticalSpacer_2</zorder>
-  <zorder>round_lbl</zorder>
+  <zorder>status_lbl</zorder>
   <zorder>verticalSpacer_3</zorder>
  </widget>
  <resources/>

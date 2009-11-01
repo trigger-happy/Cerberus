@@ -263,6 +263,7 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 		
 		fully_updated[ctr]=true;
 		qmod[ctr]=false;
+		saved=false;
 		
 		control_components(ctr+1,false);
 		button_update[ctr]->setEnabled(false);
@@ -398,9 +399,12 @@ void QEditor::list_focus(int round)
 			
 			qmod[ptr]=false;
 			fully_updated[ptr]=true;
-			if (file_prefix!="")
-				this->setWindowTitle(file_prefix+".xgrp - QEditor");
-			
+			if (fully_updated[0] && fully_updated[1] && fully_updated[2] && fully_updated[3])
+			{
+				saved=true;
+				if (file_prefix!="")
+					this->setWindowTitle(file_prefix+".xgrp - QEditor");
+			}
 		}
 	}
 	else
@@ -452,6 +456,7 @@ void QEditor::changed_general(int round)
 	button_update[round-1]->setEnabled(true);
 	button_cancel[round-1]->setEnabled(true);
 	fully_updated[round-1]=false;
+	saved=false;
 	if (!qmod[round-1]) qmod[round-1]=false; 
 	if (file_prefix!="")
 		this->setWindowTitle(file_prefix+".xgrp [modified] - QEditor");
@@ -462,6 +467,7 @@ void QEditor::changed_details(int round)
 	button_update[round-1]->setEnabled(true);
 	button_cancel[round-1]->setEnabled(true);
 	fully_updated[round-1]=false;
+	saved=false;
 	qmod[round-1]=true;
 	if (file_prefix!="")
 		this->setWindowTitle(file_prefix+".xgrp [modified] - QEditor");
@@ -667,6 +673,7 @@ void QEditor::import()
 		
 		roundmodel[ctr]->feedData(sd);
 		
+		saved=false;
 		if (roundmodel[ctr]->rowCount()!=rec[ctr]) 
 			fully_updated[ctr]=false;
 	}
@@ -750,6 +757,7 @@ void QEditor::load()
 		this->setWindowTitle(file_prefix+".xgrp - QEditor");
 		
 		fully_updated[ctr]=true;
+		saved=true;
 	}
 }
 
@@ -848,6 +856,7 @@ int QEditor::save()
 		
 		if (fully_updated[0] && fully_updated[1] && fully_updated[2] && fully_updated[3])
 		{
+			saved=true;
 			this->setWindowTitle(file_prefix+".xgrp - QEditor");
 			return 0;
 		}
@@ -875,7 +884,7 @@ void QEditor::exit()
 
 void QEditor::closeEvent(QCloseEvent *event)
 {
-	if (roundmodel[0]->rowCount()==0 && roundmodel[1]->rowCount()==0 &&
+	if (saved && roundmodel[0]->rowCount()==0 && roundmodel[1]->rowCount()==0 &&
 	    roundmodel[2]->rowCount()==0 && roundmodel[3]->rowCount()==0 &&
 	    fully_updated[0] && fully_updated[1] && fully_updated[2] && fully_updated[3])
 		event->accept();
@@ -887,7 +896,7 @@ void QEditor::closeEvent(QCloseEvent *event)
 		else
 			event->ignore();
 	}
-	else if (file_prefix!="" && (!fully_updated[0] || !fully_updated[1] || !fully_updated[2] || !fully_updated[3]))
+	else if (file_prefix!="" && (!fully_updated[0] || !fully_updated[1] || !fully_updated[2] || !fully_updated[3]) || !saved)
 	{
 		int response = showUnsavedWarning();
 		if (response == 0 || response == 1)

@@ -116,6 +116,7 @@ private:
 	bool qmod[ROUNDS];
 	int history[ROUNDS];
 	bool fully_updated[ROUNDS];
+	bool saved;
 protected:
 	void closeEvent(QCloseEvent*);
 	bool eventFilter(QObject* ob, QEvent* ev);

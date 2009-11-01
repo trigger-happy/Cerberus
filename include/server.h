@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2009 James Choa
+Copyright (C) 2009 Joshua Cheng
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -21,61 +22,80 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtNetwork>
 #include "net/server_net.h"
 
-namespace Ui
-{
-class server_dlg;
-}
-
 class ServerNetwork;
 
-class Server : public QObject
-{
-        Q_OBJECT;
+class Server : public QObject {
+	Q_OBJECT;
+
 public:
-		Server ( QWidget* parent = 0 );
-		~Server();
+	Server ( QWidget* parent = 0 );
+	~Server();
+
+	//Manual methods to be used by admin.
+	/*!
+	*/
+	void stopContest();
+
+	/*!
+	*/
+	void startContest();
+
+	/*!
+	*/
+	void pauseContest();
+
+	/*!
+	*/
+	void viewSubmittedAnswers();
+
+	/*!
+	*/
+	void checkAnswersManually ();
+
+	/*!
+	*/
+	void dropConnection( ContestantConnection* cc );
+
+signals:
+	void badC ( TempConnection* con );
+	void contestantC ( ContestantConnection* cc, const QString& c_username );
+	void contestantDc ( ContestantConnection* cc );
+	void newAdmin ( AdminConnection* ac );
+	void newProjector ( ProjectorConnection* pc );
+
 private slots:
-        /*!
-        Called when there is a new connection
-        */
-		void newContestant( ContestantConnection* cc );
+	/*!
+	Called when there is a new connection
+	*/
+	void newContestant( ContestantConnection* cc );
 
-		/*
-		Called when a client connects but is not a Cerberus client.
-		  */
-		void badClient ( TempConnection* tc );
-		/*
-		Called when there is a disconnection
-		*/
-		void contestantDisconnect( ContestantConnection* cc );
+	/*!
+	Called when a client connects but is not a Cerberus client.
+	  */
+	void badClient ( TempConnection* tc );
 
-		void onAuthentication( ContestantConnection* cc, const QString& c_username );
+	/*!
+	Called when there is a disconnection
+	*/
+	void contestantDisconnect( ContestantConnection* cc );
 
-		//Manual methods to be used by admin.
-		/*
-        Called when the stop button is pressed
-        */
-		void stopContest();
+	void onAuthentication( ContestantConnection* cc, const QString& c_username );
 
-		void startContest();
-
-		void pauseContest();
-
-		void viewSubmittedAnswers();
-
-		void checkAnswersManually ();
-
-		void dropConnection( ContestantConnection* cc );
+	void onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data );
 
 
+
+
+signals:
+	// TODO: add signals when certain events happen
 
 private:
-		QString log, m_db_path;
-		quint16 m_port;
-		ServerNetwork* m_network;
-		ServerConfig m_config;
-		vector<QString> m_questions;
-		vector<QString> m_answers;
+	QString log, m_db_path;
+	quint16 m_port;
+	ServerNetwork* m_network;
+	ServerConfig m_config;
+	vector<QString> m_questions;
+	vector<QString> m_answers;
 
 };
 

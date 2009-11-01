@@ -6,8 +6,10 @@ unset(QT_LIBRARIES)
 set(QT_USE_QTWEBKIT 1)
 include(${QT_USE_FILE})
 
-set(PROJECTOR_SRC main.cpp ProjectorWindow.cpp TemplateManager.cpp DefaultTemplates.cpp)
-set(PROJECTOR_HDR TemplateManager.h DefaultTemplates.h)
+set(PROJECTOR_SRC main.cpp ProjectorWindow.cpp TemplateManager.cpp DefaultTemplates.cpp
+				  ProjectorController.cpp MainController.cpp AuthorController.cpp)
+set(PROJECTOR_HDR TemplateManager.h DefaultTemplates.h
+				  ProjectorController.h MainController.h AuthorController.h)
 set(PROJECTOR_MHDR ProjectorWindow.h)
 qt4_wrap_cpp(PROJECTOR_MSRC ${PROJECTOR_MHDR})
 

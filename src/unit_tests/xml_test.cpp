@@ -146,6 +146,32 @@ void XmlTest::netConfWriteTest()
 
 void XmlTest::serverConfReadTest()
 {
+	XmlUtil &xu = XmlUtil::getInstance();
+	ServerConfig sc, expected;
+	expected.port = 2652;
+	expected.db_path = "resources/server.db";
+	expected.stage_files.push_back("resources/stage1.xml");
+	expected.stage_files.push_back("resources/stage2.xml");
+	expected.stage_files.push_back("resources/stage3.xml");
+	expected.stage_files.push_back("resources/stage4.xml");
+	QFile file("resources/server_config.xml");
+	QVERIFY(file.open(QIODevice::ReadOnly));
+	QString xml = file.readAll();
+	xu.readServerConfig(xml, sc);
+
+	QVERIFY(sc == expected);
+}
+
+void XmlTest::clientConfReadTest() {
+	ClientConfig read, expected;
+	expected.port = 1234;
+	expected.ip = "1.2.3.4";
+	QFile file("resources/client_config.xml");
+	QVERIFY(file.open(QIODevice::ReadOnly));
+	QString xml = file.readAll();
+	XmlUtil::getInstance().readClientConfig(xml, read);
+
+	QVERIFY(read == expected);
 }
 
 QTEST_MAIN ( XmlTest );

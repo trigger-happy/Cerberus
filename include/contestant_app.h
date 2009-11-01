@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define CONTESTANT_APP_H
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+#include <QTimer>
 #include "net/contestant_net.h"
 #include "data_types.h"
 #include "util/xml_util.h"
@@ -155,6 +156,11 @@ private slots:
 	*/
 	void submit();
 
+    /*!
+    Slot for updating the timer
+    */
+    void updateTimer();
+
 private:
 	ContestantNetwork* m_network;
 	Ui::login_dlg* m_login_dlg;
@@ -181,11 +187,20 @@ private:
     void recordAnswer();
     void displayAnswer();
     void initializeAnswerData();
+    void displayStatus();
+    void stopContest();
+    void pauseContest();
+    void runContest();
+    void showInfo( int, QString, QString );
 
+    QTimer *timer;
 	StageData sd;
     AnswerData ad;
+    int status;
 	int round;
 	int qCount;
+    int time;
+    bool timeSet;
 };
 
 #endif //CONTESTANT_APP_H

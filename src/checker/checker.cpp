@@ -1,3 +1,23 @@
+/*
+Copyright (C) 2009 Nikolai Banasihan and Vernon Gutierrez
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+
+
 //3 rounds
 //each round has 3 categories of questions
 //each category has its own weight
@@ -10,110 +30,130 @@
 //if at least one of the selected answers is wrong, no credit will be given
 //the third round is the same as the second round, except that there will be an option, "None of the above", wherein the question
 //must be given a correct answer that is not in the choices
-#include <iostream>
-#include <xml_util.h>
+
+/*
+	The checker assumes that the sequence of questions
+	are also the same as the sequence of answers.
+*/
+//#include <iostream>
+//#include <vector>
+#include <cmath>
+
 #include "checker.h"
+#include "data_types.h"
+
 
 using namespace std;
 
+// make sure that this is a singleton
+
 Checker::Checker()
 {
+	m_qset = new vector<Question>();
 }
 
 
 Checker::~Checker()
 {
+	delete m_qset;
 }
 
 double
-Checker::check(int round, AnswerData& answerData)
+Checker::score(AnswerData &answerData)
 {
-	switch(round)
-	{
-		case 1:
-		return checkR1(answerData);
-		case 2:
-		return checkR2(answerData);
-		case 3:
-		return checkR3(answerData);
-		case 4:
-		return checkR4(answerData);
-		default:
-		//throw an exception
-	}
-}
+	double value = 0;
 
-void
-Checker::setAnswerKey(int round, AnswerData& answerKey)
-{
-	switch(round)
+	for(unsigned int i = 0; i < answerData.size(); i++)
 	{
-		case 1:
-		this.answerKey1 = answerKey;
-		break;
-		case 2:
-		this.answerKey2 = answerKey;
-		break;
-		case 3:
-		this.answerKey3 = answerKey;
-		break;
-		case 4:
-		this.answerKey4 = answerKey;
-		default:
-		// throw an exception
+		// check type of question
+		Question::Type questionType = answerData[i].ans_type;
+		if(questionType == Question::IDENTIFICATION)
+		{
+			value += m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].id_answer);
+			
+		}
+		else if (questionType == Question::CHOOSE_ONE)
+		{
+			value += floor(m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].multi_choice));
+		}
+		else if (questionType == Question::CHOOSE_ANY)
+		{
+			value += m_qset->at(i).score * m_qset->at(i).checkAnswer(answerData[i].multi_choice);
+		}
+		else
+		{	
+			// throw an exception
+		}
 		
 	}
+	
+	return value;
 }
 
-/*
-	checkR1(AnswerData&)
-	The checker for this one will receive
-	a set of values, and the score is the total
-	score for the round.
-*/
 
-double 
-Checker::checkR1(AnswerData& answerData)
+/*double
+Checker::score(Answer& answer)
 {
+	double value;
 	
+	// first check what type of question
 	
-}
+	// call the proper method yehey
+	// if IDENTIFICATION or CHOOSE_ONE, 
+	// cast the value that the method returned
+	if(question.type == IDENTIFICATION)
+	{
+		value = (double)question.checkAnswer();
+	}
+	else if (question.type == CHOOSE_ONE)
+	{
+		value = (double)question.checkAnswer();
+	}
+	else if (question.type == CHOOSE_ANY)
+	{
+		value = question.checkAnswer();
+	}
+	
+	// multiply by the score
+	value *= question.score;
+	// return the value
+	return value;
+}*/
 
+//
 /*
-	checkR2(AnswerData&)
-	The checker for this one is open to
-	the possibility of two or more answers
-	in the questions. So, the procedure is
-	quite different.
+	Just a little warning though, if I select reset, it will definitely
+	erase the objects contained in it! Make sure that this function is only
+	called when everything needs to be reset.
 */
-double
-Checker::checkR2(AnswerData& answerData)
+bool
+Checker::resetQuestionSet()
 {
+	if(m_qset->empty())
+	{
+		m_qset->clear();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 	
 }
 
+// requires that the inputs must be sequential
+bool
+Checker::addQuestion(Question& myQuestion)
+{
+	m_qset->push_back(myQuestion);
+	return true;
+}
 
+// allows you to add a whole vector of Questions (not require but nice to have)
 /*
-	checkR3(AnswerData&)
-	The checker for this one receives one
-	question at a time, while maintaining
-	the mechanics of the previous round.
-*/
-double
-Checker::checkR3(AnswerData& answerData)
+bool
+Checker::addQuestionSet( vector<Question> &myQSet)
 {
-	
-}
-
-/*
-	checkR4(AnswerData&)
-	This is the same as the third round, except
-	that the tie-breaker is really just good
-	for a few questions.
-
-*/
-double
-Checker::checkR4(AnswerData& answerData)
-{
-	
-}
+	m_qset = myQSet;
+	return true;
+}*/
