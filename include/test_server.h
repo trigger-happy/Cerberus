@@ -46,6 +46,7 @@ private slots:
 	void contestantDisconnect ( ContestantConnection* cc );
 	void onAuthenticate( ContestantConnection* cc, const QString& username );
 	void onAnswerSubmit( ContestantConnection* cc, int round, const AnswerData& data );
+	void onContestTimeRequest( ContestantConnection* cc );
 
 private:
 	void writeLog ( const QString& s );

@@ -94,6 +94,8 @@ void ServerDlg::newContestant ( ContestantConnection* cc ) {
 	         this, SLOT( onAuthenticate( ContestantConnection*, QString ) ) );
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
 	         this, SLOT( onAnswerSubmit( ContestantConnection*, int, AnswerData ) ) );
+	connect( cc, SIGNAL( onContestTimeRequest( ContestantConnection* ) ),
+	         this, SLOT( onContestTimeRequest( ContestantConnection* ) ) );
 }
 
 void ServerDlg::contestantDisconnect ( ContestantConnection* cc ) {
@@ -148,6 +150,10 @@ void ServerDlg::onAnswerSubmit( ContestantConnection* cc, int round, const Answe
 			writeLog( QString( "%1 is %2" ).arg( i + 1 ).arg( buffer ) );
 		}
 	}
+}
+
+void ServerDlg::onContestTimeRequest( ContestantConnection* cc ) {
+	cc->setContestTime( m_dlg->time_line->text().toUShort() );
 }
 
 int main ( int argc, char* argv[] ) {
