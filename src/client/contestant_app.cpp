@@ -117,7 +117,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     QString xml;
 	QFile file("client_config.xml");
 	if (!file.open (IO_ReadOnly))
-	    //display error message
+        showInfo( 1, "Can't open file", "" );
 	QTextStream stream( &file );
 	QString line;
 	while( !stream.eof() ) {
@@ -218,7 +218,23 @@ void ContestantApp::onAData ( bool result )
 
 void ContestantApp::onContestError ( ERROR_MESSAGES err )
 {
-
+    switch ( err )
+    {
+        case ERR_NOTAUTHORIZED:
+            showInfo( 1, "Server returned that we're not authorized", "" );
+            break;
+        case ERR_BADCOMMAND:
+            showInfo( 1, "Server returned bad command", "" );
+            break;
+        case ERR_CONTEST_STOPPED:
+            showInfo( 1, "Contest is stopped", "" );
+            break;
+        case ERR_UNKNOWN:
+            showInfo( 1, "Server returned unknown error", "" );
+            break;
+        default:
+            assert ( false );
+    }
 }
 
 void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
