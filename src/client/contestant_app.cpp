@@ -152,14 +152,7 @@ ContestantApp::~ContestantApp()
 
 void ContestantApp::onConnect()
 {
-	QMessageBox msg;
-	msg.setWindowTitle( "Information" );
-	msg.setText( "Connected to Server." );
-	msg.setStandardButtons( QMessageBox::Ok );
-	msg.setDefaultButton( QMessageBox::Ok );
-	msg.setIcon( QMessageBox::Information );
-	msg.exec();
-
+    showInfo( 0, "Connected to Server.", "" );
 	m_login_w->show();
 }
 
@@ -170,28 +163,17 @@ void ContestantApp::onDisconnect()
 
 void ContestantApp::onAuthenticate ( bool result )
 {
-	//TODO: do something here for authorization replies.
-
 	if ( result )
 	{
 		m_login_w->hide();
 		m_welcome_w->show();
 		m_network->getContestState();
-        //m_network->qDataRequest( round );
 	}
 	else
 	{
-		QMessageBox msg;
-		msg.setWindowTitle ( "Error" );
-		msg.setText ( UNAUTH_TEXT );
-		msg.setInformativeText ( UNAUTH_INFORMATION );
-		msg.setStandardButtons ( QMessageBox::Ok );
-		msg.setDefaultButton ( QMessageBox::Ok );
-		msg.setIcon ( QMessageBox::Information );
-		msg.exec();
+        showInfo( 0, UNAUTH_TEXT, UNAUTH_INFORMATION );
         m_login_w->show();
 	}
-
 }
 
 void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
@@ -236,25 +218,9 @@ void ContestantApp::onQData ( const QString& xml )
 void ContestantApp::onAData ( bool result )
 {
     if( result )
-    {
-        QMessageBox msg;
-        msg.setWindowTitle( "Information" );
-        msg.setText( "Answers successfully sent to server" );
-        msg.setStandardButtons( QMessageBox::Ok );
-        msg.setDefaultButton( QMessageBox::Ok );
-        msg.setIcon( QMessageBox::Information );
-        msg.exec();
-    }
+        showInfo( 0, "Answers successfully sent to server", "" );
     else
-    {
-        QMessageBox msg;
-        msg.setWindowTitle( "Error" );
-        msg.setText( "Answers not sent. Please try again." );
-        msg.setStandardButtons( QMessageBox::Ok );
-        msg.setDefaultButton( QMessageBox::Ok );
-        msg.setIcon( QMessageBox::Information );
-        msg.exec();
-    }
+        showInfo( 1, "Answers not sent. Please try again.", "" );
 }
 
 void ContestantApp::onContestError ( ERROR_MESSAGES err )
@@ -333,7 +299,6 @@ void ContestantApp::reconnectCancel()
 		case QMessageBox::Yes:
 			this->close();
 			break;
-
 		case QMessageBox::No:
 			break;
 	}
@@ -395,8 +360,6 @@ void ContestantApp::review()
         m_semifinals_w->show();
         qCount = sd.questions.size() - 1;
     }
-
-
 	displayQuestionAndChoices();
 }
 
@@ -599,14 +562,19 @@ void ContestantApp::runContest()
     }
 }
 
-void ContestantApp::successDialog( QString s, QString inform )
+void ContestantApp::showInfo( int i, QString s, QString inform )
 {
-
-}
-
-void ContestantApp::errorDialog( Qtring s, QString inform )
-{
-
+    QMessageBox msg;
+    if( i == 0 )
+        msg.setWindowTitle( "Success" );
+    else
+        msg.setWindowTitle( "Error" );
+    msg.setText( s );
+    msg.setInformativeText( inform );
+    msg.setStandardButtons( QMessageBox::Ok );
+    msg.setDefaultButton( QMessageBox::Ok );
+    msg.setIcon( QMessageBox::Information );
+    msg.exec();
 }
 
 int main ( int argc, char* argv[] )

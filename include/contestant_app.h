@@ -191,6 +191,7 @@ private:
     void stopContest();
     void pauseContest();
     void runContest();
+    void showInfo( int, QString, QString );
 
     QTimer *timer;
 	StageData sd;
