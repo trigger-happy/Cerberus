@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 Michael Ybanez, John Eric Sy
+Copyright (C) 2009 John Eric Sy, Michael Ybanez
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -117,7 +117,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     QString xml;
 	QFile file("client_config.xml");
 	if (!file.open (IO_ReadOnly))
-	    //display error message
+        showInfo( 1, "Can't open file", "" );
 	QTextStream stream( &file );
 	QString line;
 	while( !stream.eof() ) {
@@ -197,7 +197,7 @@ void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATU
 
 void ContestantApp::onContestTime( ushort t )
 {
-    time = sd.contest_time - t;
+    time = t;
 }
 
 void ContestantApp::onQData ( const QString& xml )
@@ -205,15 +205,7 @@ void ContestantApp::onQData ( const QString& xml )
     sd.questions.clear();
 	XmlUtil::getInstance().readStageData( xml, sd );
 	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );
-    if( !timeSet )
-    {
-        if( round == 1 || round == 2 )
-            time = sd.contest_time;
-        timeSet = true;
-        //m_networkgetContestTime();
-    }
-
-
+    m_network->getContestTime();
 }
 
 void ContestantApp::onAData ( bool result )
@@ -226,7 +218,23 @@ void ContestantApp::onAData ( bool result )
 
 void ContestantApp::onContestError ( ERROR_MESSAGES err )
 {
-
+    switch ( err )
+    {
+        case ERR_NOTAUTHORIZED:
+            showInfo( 1, "Server returned that we're not authorized", "" );
+            break;
+        case ERR_BADCOMMAND:
+            showInfo( 1, "Server returned bad command", "" );
+            break;
+        case ERR_CONTEST_STOPPED:
+            showInfo( 1, "Contest is stopped", "" );
+            break;
+        case ERR_UNKNOWN:
+            showInfo( 1, "Server returned unknown error", "" );
+            break;
+        default:
+            assert ( false );
+    }
 }
 
 void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
@@ -237,7 +245,7 @@ void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
 void ContestantApp::updateTimer()
 {
     time--;
-    if( time == 0 )
+    if( time <= 0 )
     {
         status = CONTEST_STOPPED;
         stopContest();
@@ -366,7 +374,7 @@ void ContestantApp::review()
 
 void ContestantApp::submit()
 {
-    m_network->aDataSend ( round, ad );
+    m_network->aDataSend( round, ad );
 }
 
 void ContestantApp::displayQuestionAndChoices()
@@ -578,7 +586,7 @@ int main ( int argc, char* argv[] )
 	QApplication app ( argc, argv );
 
 	ContestantApp c_app;
-    //c_app.show();
+    c_app.show();
 
 	return app.exec();
 }

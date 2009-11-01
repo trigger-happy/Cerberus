@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 Janlebrad Ang
+Copyright (C) 2009 Janlebrad Ang, Ken Lee and Nicole Guloy
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -45,23 +45,28 @@ void SqlUtil::createDBTables()
         query->exec ( s );
 }
 
-int SqlUtil::addTeam ( const QString& team_name, const QString& school )
+void SqlUtil::addTeam ( const QString& team_name, const QString& school )
 {
-        return query->exec ( "INSERT INTO team(team_name, school) "
+		//check input values here if they are all valid?
+		bool success =  query->exec ( "INSERT INTO team(team_name, school) "
                              "VALUES ('" + team_name + "', '" + school + "')" );
+		if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
-int SqlUtil::addUser(const QString& user_name, const QString& team_name)
+void SqlUtil::addUser(const QString& user_name, const QString& team_name)
 {
 	//insert into user(username,team_name,firstname,lastname,password) values ('123','team','','','')
 	QString sql = QString ( "INSERT INTO user(username, team_name, firstname, lastname, password) "
 				"VALUES ('%1','%2','','','')" )
 		      .arg ( QString (user_name) )
 		      .arg ( QString (team_name) );
-	return query->exec( sql ); 
+	bool success = query->exec( sql );
+	if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
-int SqlUtil::addUser ( const UserData& ud )
+void SqlUtil::addUser ( const UserData& ud )
 {
         QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
         QString sql = QString ( "INSERT INTO user(username, team_name, "
@@ -72,10 +77,12 @@ int SqlUtil::addUser ( const UserData& ud )
                       .arg ( QString ( ud.firstname ) )
                       .arg ( QString ( ud.lastname ) )
                       .arg ( QString ( pwd ) );
-        return query->exec ( sql );
+		bool success= query->exec ( sql );
+		if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
-int SqlUtil::editUser ( const QString& user_name, const UserData& ud )
+void SqlUtil::editUser ( const QString& user_name, const UserData& ud )
 {
 	//update user set firstname = 'A', lastname = 'B' , password = 'C' where username = 'username';
 	QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
@@ -84,10 +91,12 @@ int SqlUtil::editUser ( const QString& user_name, const UserData& ud )
 		      .arg ( QString ( ud.lastname ) )
 		      .arg ( QString ( pwd ) )
 		      .arg ( QString ( user_name ) );
-	return query->exec ( sql );
+	bool success= query->exec ( sql );
+	if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
-int SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_name_new )
+void SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_name_new )
 {
 	//UPDATE team SET team_name= 'new' WHERE team_name = 'old'
 	QString sql = QString ( "UPDATE team SET team_name = '%1' WHERE team_name = '%2'" )
@@ -96,45 +105,67 @@ int SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_na
 	//UPDATE user SET team_name= 'new' WHERE team_name = 'team'
 	
 	if ( query->exec ( sql ) == false)
-		return 1;
+			throw SqlUtilException(query->lastError().databaseText());
 	sql = QString ( "UPDATE user SET team_name = '%1' WHERE team_name = '%2'" )
 		      .arg ( QString ( team_name_new ) )
 		      .arg ( QString ( team_name_old ) );
-	return query->exec ( sql );
+	bool success = query->exec ( sql );
+	if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
-int SqlUtil::deleteUser ( const QString& user_name )
+void SqlUtil::deleteUser ( const QString& user_name )
 {
 	//DELETE from user where username = '123'
 	QString sql = QString ( "DELETE FROM user WHERE username = '%1'" )
 		      .arg ( QString ( user_name ) );
-	return query->exec ( sql );
+	bool success= query->exec ( sql );
+	if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
-int SqlUtil::deleteTeam ( const QString& team_name )
+void SqlUtil::deleteTeam ( const QString& team_name )
 {
 	//QString team_name2 = team_name;
 	//DELETE from user where team_name='B'
 	QString sql = QString ( "DELETE FROM user WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
 	if ( query->exec ( sql ) == false)
-		return 1;
+			throw SqlUtilException(query->lastError().databaseText());
 	
 	//DELETE from team where team_name='B'
 	sql = QString ( "DELETE FROM team WHERE team_name = '%1'" )
 			  .arg ( QString ( team_name ) );
 	//std::cout << query->lastError().text().toStdString() << std::endl;
-	return query->exec ( sql );
+	bool success= query->exec ( sql );
+	if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
-bool SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
+int SqlUtil::countTeamsPerSchool(const QString& school){
+		query->exec ( "SELECT count(*) FROM team "
+					  "WHERE school = '" + school + "'");
+		query->next();
+		int tally = query->value ( 0 ).toInt();
+		return tally;
+}
+
+int SqlUtil::countUsersPerTeam(const QString& team){
+	query->exec ( "SELECT count(*) FROM user "
+					  "WHERE team_name = '" + team + "'");
+		query->next();
+		int tally = query->value ( 0 ).toInt();
+		return tally;
+}
+
+void SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
 {
 	//SELECT username,team_name,firstname,lastname FROM user WHERE team_name = 'B'
 	QString sql = QString ( "SELECT username, team_name, firstname, lastname "
 				"FROM user WHERE team_name = '%1'" )
 		      .arg ( QString ( team_name ) );
 	if ( !query->exec ( sql ) )
-	      return false;
+		 throw SqlUtilException(query->lastError().databaseText());
 	else
 	{
 		while ( query->next() )
@@ -146,28 +177,26 @@ bool SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
 			ud.lastname = query->value(3).toString();
 			out.push_back(ud);
 		}
-		return true;
 	}
 }
 
-bool SqlUtil::getSpecificUser ( const QString& user_name, UserData& out )
+void SqlUtil::getSpecificUser ( const QString& user_name, UserData& out )
 {
 	//SELECT username,team_name,firstname,lastname FROM user WHERE username = 'D'
 	QString sql = QString ( "SELECT username, team_name, firstname, lastname FROM user WHERE username = '%1'" )
 		      .arg( QString ( user_name ) );
 	if ( !query->exec(sql) )
-		return false;
+			throw SqlUtilException(query->lastError().databaseText());
 	else
 	{
 		if (!query->next())
-			return false;
+			throw SqlUtilException(query->lastError().databaseText());
 		else
 		{
 			out.user_name = query->value(0).toString();
 			out.teamname = query->value(1).toString();
 			out.firstname = query->value(2).toString();
-			out.lastname = query->value(3).toString();
-			return true;
+			out.lastname = query->value(3).toString();			
 		}
 	}
 }
@@ -256,7 +285,7 @@ bool SqlUtil::authenticate ( const QString& user_name, const QString& password )
                 return false;
 }
 
-bool SqlUtil::getTeams ( vector<TeamData>& out )
+void SqlUtil::getTeams ( vector<TeamData>& out )
 {
         out.clear();
         QString sql = "SELECT school, team_name FROM team";
@@ -267,14 +296,13 @@ bool SqlUtil::getTeams ( vector<TeamData>& out )
                         temp.school = query->value ( 0 ).toString();
                         temp.teamname = query->value ( 1 ).toString();
                         out.push_back ( temp );
-                }
-                return true;
+				}
         } else {
-                return false;
+			throw SqlUtilException(query->lastError().databaseText());
         }
 }
 
-bool SqlUtil::getUsers ( vector<UserData>& out )
+void SqlUtil::getUsers ( vector<UserData>& out )
 {
         out.clear();
         QString sql = "SELECT username, team_name, firstname, lastname, password FROM user";
@@ -289,13 +317,12 @@ bool SqlUtil::getUsers ( vector<UserData>& out )
                         temp.password = query->value ( 4 ).toString();
                         out.push_back ( temp );
                 }
-                return true;
         } else {
-                return false;
+			throw SqlUtilException(query->lastError().databaseText());
         }
 }
 
-bool SqlUtil::getScores ( vector<ScoreData>& out )
+void SqlUtil::getScores ( vector<ScoreData>& out )
 {
         out.clear();
         QString sql = "SELECT username, score FROM scores";
@@ -307,13 +334,12 @@ bool SqlUtil::getScores ( vector<ScoreData>& out )
                         temp.score = query->value ( 1 ).toDouble();
                         out.push_back ( temp );
                 }
-                return true;
         } else {
-                return false;
+			throw SqlUtilException(query->lastError().databaseText());
         }
 }
 
-bool SqlUtil::getAdmins ( vector<AdminData>& out )
+void SqlUtil::getAdmins ( vector<AdminData>& out )
 {
         out.clear();
         QString sql = "SELECT username, password FROM admin";
@@ -325,18 +351,18 @@ bool SqlUtil::getAdmins ( vector<AdminData>& out )
                         temp.password = query->value ( 1 ).toString();
                         out.push_back ( temp );
                 }
-                return true;
         } else {
-                return false;
+			throw SqlUtilException(query->lastError().databaseText());
         }
 }
 
-bool SqlUtil::addAdmin ( const AdminData& a )
+void SqlUtil::addAdmin ( const AdminData& a )
 {
         QString sql = QString ( "INSERT INTO \"admin\" VALUES('%1', '%2')" )
                       .arg ( a.user_name ).arg ( a.password );
-        bool result = query->exec ( sql );
-        return result;
+		bool success = query->exec ( sql );
+		if (!success)
+			throw SqlUtilException(query->lastError().databaseText());
 }
 
 bool SqlUtil::verifyDB ( const QStringList& sl )
