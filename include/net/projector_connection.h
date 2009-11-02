@@ -30,6 +30,7 @@ public:
 	*/
 	inline void setContestTime( ushort time ) {
 		m_contime = time;
+		sendContestTime();
 	}
 
 	/*!
@@ -104,6 +105,10 @@ signals:
 	\param p Pointer to the ProjectorConnection that disconnected.
 	*/
 	void projectorDisconnect( ProjectorConnection* p );
+
+	/*!
+	*/
+	void contestTimeRequest( ushort& contime );
 
 private:
 	ushort m_round;

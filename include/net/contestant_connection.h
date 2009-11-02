@@ -126,10 +126,8 @@ signals:
 	void contestantDisconnect ( ContestantConnection* cc );
 
 	/*!
-	Emitted when a contestant requests for the contest time.
-	\param cc Pointer to a ContestantConnection that made the request.
 	*/
-	void onContestTimeRequest ( ContestantConnection* cc );
+	void contestTimeRequest( ushort& contime );
 
 	/*!
 	Emitted when the authentication is successful for this client.

@@ -122,6 +122,8 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 				cc->setContestTime( m_contime );
 				connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
 				          this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+				connect( cc, SIGNAL( contestTimeRequest( ushort& ) ),
+				         this, SLOT( contestTimeResponse( ushort& ) ) );
 				m_contestants.insert ( m_contestants.end(), cc );
 				emit newContestant ( cc );
 			}
@@ -141,6 +143,8 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 				pc->setContestTime( m_contime );
 				connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
 				         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
+				connect( pc, SIGNAL( contestTimeRequest( ushort& ) ),
+				         this, SLOT( contestTimeResponse( ushort& ) ) );
 				m_projectors.insert( m_projectors.end(), pc );
 				emit newProjector( pc );
 			}
@@ -206,6 +210,7 @@ void ServerNetwork::setStatus ( CONTEST_STATUS s ) {
 
 void ServerNetwork::setContestTime ( ushort time ) {
 	m_contime = time;
+	/*
 	contestant_list::iterator i = m_contestants.begin();
 
 	for ( ;i != m_contestants.end(); i++ ) {
@@ -217,6 +222,7 @@ void ServerNetwork::setContestTime ( ushort time ) {
 	for ( ; j != m_projectors.end(); j++ ) {
 		( *i )->setContestTime( time );
 	}
+	*/
 }
 
 void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state ) {
@@ -265,4 +271,8 @@ void ServerNetwork::showAnswer() {
 	for ( ; i != m_projectors.end(); i++ ) {
 		( *i )->showAnswer();
 	}
+}
+
+void ServerNetwork::contestTimeResponse( ushort& contime ) {
+	contime = m_contime;
 }

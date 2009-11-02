@@ -194,6 +194,10 @@ public slots:
 	*/
 	void invalidClient ( TempConnection* con );
 
+	/*!
+	*/
+	void contestTimeResponse( ushort& contime );
+
 signals:
 	void badClient ( TempConnection* con );
 	void newContestant ( ContestantConnection* cc );
