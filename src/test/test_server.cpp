@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "util/xml_util.h"
 #include "util/sql_util.h"
 #include "net/contestant_connection.h"
+#include "net/projector_connection.h"
 
 using namespace std;
 
@@ -43,6 +44,14 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 	connect ( m_dlg->start_btn, SIGNAL ( clicked() ), this, SLOT ( onStartBtn() ) );
 	connect ( m_dlg->time_btn, SIGNAL ( clicked() ), this, SLOT ( onTimeBtn() ) );
 	connect ( m_dlg->question_btn, SIGNAL ( clicked() ), this, SLOT ( onQuestionBtn() ) );
+	connect( m_dlg->qtime_btn, SIGNAL( clicked() ), this, SLOT( onQTimeBtn() ) );
+	connect( m_dlg->shw_ranks_btn, SIGNAL( clicked() ), this, SLOT( onShowRanksBtn() ) );
+	connect( m_dlg->shw_qtime_btn, SIGNAL( clicked() ), this, SLOT( onShowQTimeBtn() ) );
+	connect( m_dlg->shw_answer_btn, SIGNAL( clicked() ), this, SLOT( onShowAnswerBtn() ) );
+	connect( m_dlg->shw_question_btn, SIGNAL( clicked() ), this, SLOT( onShowQuestionBtn() ) );
+	connect( m_dlg->start_q_btn, SIGNAL( clicked() ), this, SLOT( onStartQuestionBtn() ) );
+	connect( m_dlg->stop_q_btn, SIGNAL( clicked() ), this, SLOT( onStopQuestionBtn() ) );
+	connect( m_dlg->pause_q_btn, SIGNAL( clicked() ), this, SLOT( onPauseQuestionBtn() ) );
 
 	connect ( m_server, SIGNAL ( newContestant ( ContestantConnection* ) ),
 	          this, SLOT ( newContestant ( ContestantConnection* ) ) );
@@ -50,6 +59,8 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 	          this, SLOT ( badClient ( TempConnection* ) ) );
 	connect ( m_server, SIGNAL ( contestantDc ( ContestantConnection* ) ),
 	          this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+	connect ( m_server, SIGNAL ( newProjector( ProjectorConnection* ) ),
+	          this, SLOT ( newProjector( ProjectorConnection* ) ) );
 	m_server->listen ( 2652 );
 	m_server->setRound ( 1 );
 	m_server->setStatus ( CONTEST_STOPPED );
@@ -94,6 +105,8 @@ void ServerDlg::newContestant ( ContestantConnection* cc ) {
 	         this, SLOT( onAuthenticate( ContestantConnection*, QString ) ) );
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
 	         this, SLOT( onAnswerSubmit( ContestantConnection*, int, AnswerData ) ) );
+	connect( cc, SIGNAL( onContestTimeRequest( ContestantConnection* ) ),
+	         this, SLOT( onContestTimeRequest( ContestantConnection* ) ) );
 }
 
 void ServerDlg::contestantDisconnect ( ContestantConnection* cc ) {
@@ -148,6 +161,43 @@ void ServerDlg::onAnswerSubmit( ContestantConnection* cc, int round, const Answe
 			writeLog( QString( "%1 is %2" ).arg( i + 1 ).arg( buffer ) );
 		}
 	}
+}
+
+void ServerDlg::onContestTimeRequest( ContestantConnection* cc ) {
+	cc->setContestTime( m_dlg->time_line->text().toUShort() );
+}
+
+void ServerDlg::onQTimeBtn() {
+}
+
+void ServerDlg::onShowRanksBtn() {
+}
+
+void ServerDlg::onShowQTimeBtn() {
+}
+
+void ServerDlg::onShowAnswerBtn() {
+}
+
+void ServerDlg::onShowQuestionBtn() {
+}
+
+void ServerDlg::onStartQuestionBtn() {
+}
+
+void ServerDlg::onStopQuestionBtn() {
+}
+
+void ServerDlg::onPauseQuestionBtn() {
+}
+
+void ServerDlg::newProjector( ProjectorConnection* pc ) {
+	writeLog( "New projector connected" );
+	connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
+	         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
+}
+
+void ServerDlg::projectorDisconnect( ProjectorConnection* pc ) {
 }
 
 int main ( int argc, char* argv[] ) {

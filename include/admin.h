@@ -33,7 +33,29 @@ public:
 	~Admin();
 
 public slots:
-	// TODO: add a bunch of slots here
+	// contest control tab
+	void onApplyBtn();
+	void onStartBtn();
+	void onPauseBtn();
+	void onStopBtn();
+	void onRoundSelection(int index);
+	
+	// contestant control
+	void onContestantListClick(const QModelIndex& index);
+	void onDropContestant();
+	void onViewAnswers();
+	void onChangeScore();
+	
+	// projector control
+	void onShowTimeLeft();
+	void onShowRankings();
+	void onShowNothing();
+	void onQuestionListClick(const QModelIndex& index);
+	void onPreviousQuestion();
+	void onNextQuestion();
+	void onShowQuestion();
+	void onShowAnswer();
+	void onShowQuestionTime();
 
 private:
 	Ui::server_dlg* m_dlg;

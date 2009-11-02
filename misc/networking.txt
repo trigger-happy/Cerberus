@@ -78,14 +78,14 @@ presenter-server network:
 	
 	//might remove this one
 	question time info (round 3 and 4):
-		server: INF_QUESTION_TIME <ushort time> // in seconds
+		server: INF_QUESTION_TIME
 		
 	question state change (round 3 and 4):
 		server: INF_QUESTION_STATE <ushort question number> <ushort time> <ushort status>
 		*status = running, stopped, paused
 		
 	answer show (round 3 and 4):
-		server: PSN_SHOW_ANSWER <char[] answer>
+		server: PSN_SHOW_ANSWER
 
 // no longer going to be implemented for 1.0
 admin-server network:

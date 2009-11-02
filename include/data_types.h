@@ -153,7 +153,7 @@ struct Answer{
 	// answer for identification
 	QString id_answer;
 	// answer for multiple choice
-	std::vector<ushort> multi_choice;
+	std::vector<uint> multi_choice;
 };
 
 typedef std::vector<Answer> AnswerData;
@@ -233,6 +233,8 @@ struct TeamData {
 
 struct ScoreData {
 	QString user_name;
+	QString team_name;
+	ushort rank;
 	double score;
 };
 

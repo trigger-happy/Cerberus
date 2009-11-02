@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 Michael Ybanez, John Eric Sy
+Copyright (C) 2009 John Eric Sy, Michael Ybanez
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,9 +22,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_reconnect.h"
 #include "ui_elims.h"
 #include "ui_semifinals.h"
+#include "ui_finalsChoice.h"
+#include "ui_finalsIdent.h"
 #include "ui_summary.h"
+#include <QString>
+#include <QFile>
+#include <QTextStream>
 #include <vector>
 #include <iostream>
+#include <cassert>
 
 
 ContestantApp::ContestantApp ( QWidget* parent )
@@ -39,6 +45,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_reconnect_dlg = new Ui::reconnect_dlg;
 	m_elims_dlg = new Ui::elims_dlg;
     m_semifinals_dlg = new Ui::semifinals_dlg;
+    m_finalsChoice_dlg = new Ui::finalsChoice_dlg;
+    m_finalsIdent_dlg = new Ui::finalsIdent_dlg;
     m_summary_dlg = new Ui::summary_dlg;
 
 	this->hide();
@@ -58,6 +66,14 @@ ContestantApp::ContestantApp ( QWidget* parent )
     m_semifinals_dlg->setupUi( m_semifinals_w );
     m_semifinals_w->hide();
 
+    m_finalsChoice_w = new QDialog( this );
+    m_finalsChoice_dlg->setupUi( m_finalsChoice_w );
+    m_finalsChoice_w->hide();
+
+    m_finalsIdent_w = new QDialog( this );
+    m_finalsIdent_dlg->setupUi( m_finalsIdent_w );
+    m_finalsIdent_w->hide();
+
 	m_summary_w = new QDialog( this );
 	m_summary_dlg->setupUi( m_summary_w );
 	m_summary_w->hide();
@@ -67,7 +83,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_login_w->hide();
 
 	m_network = new ContestantNetwork ( this );
-
+    timer = new QTimer( this );
 
 	connect( m_network, SIGNAL ( onConnect() ), this, SLOT ( onConnect() ) );
 	connect( m_network, SIGNAL ( onDisconnect() ), this, SLOT ( onDisconnect() ) );
@@ -104,31 +120,47 @@ ContestantApp::ContestantApp ( QWidget* parent )
     connect( m_semifinals_dlg->prev_btn, SIGNAL ( clicked() ), this, SLOT ( elimSemiPrev() ) );
     connect( m_semifinals_dlg->next_btn, SIGNAL ( clicked() ), this, SLOT ( elimSemiNext() ) );
 
-	//connections for summary dialog
+    // connections for summary dialog
 	connect( m_summary_dlg->review_btn, SIGNAL( clicked() ), this, SLOT( review() ) );
 	connect( m_summary_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( submit() ) );
 
+    // connections for finals dialog
+    connect( m_finalsChoice_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
+    connect( m_finalsIdent_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
+
+    // slot for timer
+    connect( timer, SIGNAL( timeout() ), this, SLOT( updateTimer() ) );
+
 	// Get the client configuration from XmlUtil
-    /*
+
     QString xml;
-	QFile file("client_config.xml");
-	if (!file.open (IO_ReadOnly))
-	    //display error message
+    QFile file( QString("resources/client_config.xml") );
+    if( !file.exists() )
+    {
+        showInfo( 1, "client_config.xml does not exist", "Make sure file is ready" );
+        exit();
+    }
+    else if( !file.open( QIODevice::ReadOnly ) )
+    {
+        showInfo( 1, "Can't open client_config.xml", "Make sure file is ready" );
+        exit();
+    }
 	QTextStream stream( &file );
 	QString line;
-	while( !stream.eof() ) {
+    do {
 	    line = stream.readLine();
-	    xml += line;
-	}
+        xml.append( line );
+    } while( !line.isNull() );
 
 	ClientConfig config;
-    XMLUtil::getInstance().readNetConfig( xml, config ); */
+    XmlUtil::getInstance().readNetConfig( xml, config );
 
-	// Connect to the server here
-	//m_network->connectToHost ( config.ip , config.port );
-	m_network->connectToHost ( "localhost" , 2652 );
+    m_network->connectToHost ( config.ip , config.port );
 
     qCount = 0;
+    time = 0;
+    status = CONTEST_STOPPED;
+    timeSet = false;
 }
 
 ContestantApp::~ContestantApp()
@@ -139,19 +171,13 @@ ContestantApp::~ContestantApp()
 	delete m_reconnect_w;
 	delete m_elims_w;
     delete m_semifinals_w;
+    delete timer;
 }
 
 
 void ContestantApp::onConnect()
 {
-	QMessageBox msg;
-	msg.setWindowTitle( "Information" );
-	msg.setText( "Connected to Server." );
-	msg.setStandardButtons( QMessageBox::Ok );
-	msg.setDefaultButton( QMessageBox::Ok );
-	msg.setIcon( QMessageBox::Information );
-	msg.exec();
-
+    showInfo( 0, "Connected to Server.", "" );
 	m_login_w->show();
 }
 
@@ -162,8 +188,6 @@ void ContestantApp::onDisconnect()
 
 void ContestantApp::onAuthenticate ( bool result )
 {
-	//TODO: do something here for authorization replies.
-
 	if ( result )
 	{
 		m_login_w->hide();
@@ -172,74 +196,126 @@ void ContestantApp::onAuthenticate ( bool result )
 	}
 	else
 	{
-		QMessageBox msg;
-		msg.setWindowTitle ( "Error" );
-		msg.setText ( UNAUTH_TEXT );
-		msg.setInformativeText ( UNAUTH_INFORMATION );
-		msg.setStandardButtons ( QMessageBox::Ok );
-		msg.setDefaultButton ( QMessageBox::Ok );
-		msg.setIcon ( QMessageBox::Information );
-		msg.exec();
+        showInfo( 0, UNAUTH_TEXT, UNAUTH_INFORMATION );
+        m_login_w->show();
 	}
-
 }
 
 void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 {
-	m_network->qDataRequest( r );
+    m_network->getContestTime();
+    m_network->qDataRequest( r );
 	round = r;
+    if( round == 4 )
+    {
+        m_finalsChoice_w->setWindowTitle("Tie-Breaker Round");
+        m_finalsIdent_w->setWindowTitle("Tie-Breaker Round");
+    }
+    status = s;
+
+    if( status == CONTEST_RUNNING )
+        runContest();
+    else if( status == CONTEST_STOPPED )
+        stopContest();
+    else if( status == CONTEST_PAUSED )
+        pauseContest();
 }
 
-void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATUS status )
+void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s )
 {
+    time = t;
+    displayQuestionAndChoices();
+    status = s;
 
+    if( status == QUESTION_RUNNING )
+        runContest();
+    else if( status == QUESTION_STOPPED )
+        stopContest();
+    else if( status == QUESTION_PAUSED )
+        pauseContest();
 }
 
-void ContestantApp::onContestTime( ushort time )
+void ContestantApp::onContestTime( ushort t )
 {
-
+    time = t;
 }
 
 void ContestantApp::onQData ( const QString& xml )
 {
     sd.questions.clear();
 	XmlUtil::getInstance().readStageData( xml, sd );
-	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );
+	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );  
 }
 
 void ContestantApp::onAData ( bool result )
 {
     if( result )
     {
-        QMessageBox msg;
-        msg.setWindowTitle( "Information" );
-        msg.setText( "Answers successfully sent to server" );
-        msg.setStandardButtons( QMessageBox::Ok );
-        msg.setDefaultButton( QMessageBox::Ok );
-        msg.setIcon( QMessageBox::Information );
-        msg.exec();
+        showInfo( 0, "Answers successfully sent to server", "" );
+        if( round == 3 || round == 4 )
+        {
+            m_finalsChoice_dlg->submit_btn->setEnabled( false );
+            m_finalsIdent_dlg->submit_btn->setEnabled( false );
+        }
+        exit();
     }
     else
-    {
-        QMessageBox msg;
-        msg.setWindowTitle( "Error" );
-        msg.setText( "Answers not sent. Please try again." );
-        msg.setStandardButtons( QMessageBox::Ok );
-        msg.setDefaultButton( QMessageBox::Ok );
-        msg.setIcon( QMessageBox::Information );
-        msg.exec();
-    }
+        showInfo( 1, "Answers not sent. Please try again.", "" );
 }
 
 void ContestantApp::onContestError ( ERROR_MESSAGES err )
 {
-
+    switch ( err )
+    {
+        case ERR_NOTAUTHORIZED:
+            showInfo( 1, "Server returned that we're not authorized", "" );
+            break;
+        case ERR_BADCOMMAND:
+            showInfo( 1, "Server returned bad command", "" );
+            break;
+        case ERR_CONTEST_STOPPED:
+            showInfo( 1, "Contest is stopped", "" );
+            break;
+        case ERR_UNKNOWN:
+            showInfo( 1, "Server returned unknown error", "" );
+            break;
+        default:
+            assert ( false );
+    }
 }
-
 
 void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
 {
-	//TODO: do something here when there's a network error.
+
+}
+
+void ContestantApp::updateTimer()
+{
+    time--;
+    if( time <= 0 )
+    {
+        if( round == 3 || round == 4 )
+            finalsSubmit();
+
+        status = CONTEST_STOPPED;
+        stopContest();
+    }
+
+    int minute = time/60;
+    int second = time - minute*60;
+    QString t = QString::number(minute);
+    t.append(":");
+    t.append( QString::number(second).leftJustified( 2, ' '));
+
+    if( round == 1 )
+        m_elims_dlg->time_lbl->setText( t );
+    else if( round == 2 )
+        m_semifinals_dlg->time_lbl->setText( t );
+    else if( round == 3 || round == 4 )
+    {
+        m_finalsChoice_dlg->time_lbl->setText( t );
+        m_finalsIdent_dlg->time_lbl->setText( t );
+    }
 }
 
 //widget slots
@@ -262,17 +338,8 @@ void ContestantApp::welcomeStart()
     else if( round == 2 )
         m_semifinals_w->show();
 
-
-    if( round == 1 || round == 2 )
-    {
-        if( round == 1 )
-            m_elims_dlg->prev_btn->setEnabled( false );
-        else if( round == 2 )
-            m_semifinals_dlg->prev_btn->setEnabled( false );
-    }
-
+    //finals/tiebreaker dialog showing handled by displayQuestionAndChoices
     initializeAnswerData();
-	// changing the question text to the first question
     displayQuestionAndChoices();
 }
 
@@ -297,7 +364,6 @@ void ContestantApp::reconnectCancel()
 		case QMessageBox::Yes:
 			this->close();
 			break;
-
 		case QMessageBox::No:
 			break;
 	}
@@ -318,10 +384,6 @@ void ContestantApp::elimSemiNext()
 	}
 	else
 	{
-        if( round == 1 )
-            m_elims_dlg->prev_btn->setEnabled( true );
-        else if( round == 2 )
-            m_semifinals_dlg->prev_btn->setEnabled( true );
 		qCount++;
 		displayQuestionAndChoices();
         displayAnswer();
@@ -331,18 +393,22 @@ void ContestantApp::elimSemiNext()
 void ContestantApp::elimSemiPrev()
 {
     recordAnswer();
+    bool atFirstQuestion = ( qCount == 0 );
 
-    qCount--;
-    if( qCount == 0 )
+    if( atFirstQuestion )
     {
         if( round == 1 )
-            m_elims_dlg->prev_btn->setEnabled( false );
+            m_elims_w->hide();
         else if( round == 2 )
-            m_semifinals_dlg->prev_btn->setEnabled( false );
+            m_semifinals_w->hide();
+        m_welcome_w->show();
     }
-
-    displayQuestionAndChoices();
-    displayAnswer();
+    else
+    {
+        qCount--;
+        displayQuestionAndChoices();
+        displayAnswer();
+    }
 }
 
 void ContestantApp::review()
@@ -359,20 +425,24 @@ void ContestantApp::review()
         m_semifinals_w->show();
         qCount = sd.questions.size() - 1;
     }
-
-
 	displayQuestionAndChoices();
 }
 
 void ContestantApp::submit()
 {
-    std::cout<<"hi";
-    m_network->aDataSend ( round, ad );
+    m_network->aDataSend( round, ad );
+}
+
+void ContestantApp::finalsSubmit()
+{
+    recordAnswer();
+    m_network->aDataSend( round, ad );
 }
 
 void ContestantApp::displayQuestionAndChoices()
 {
 	Question q = sd.questions[qCount];
+
 	if ( round == 1 )
 	{
 		m_elims_dlg->question_lbl->setText ( q.question );
@@ -388,6 +458,27 @@ void ContestantApp::displayQuestionAndChoices()
         m_semifinals_dlg->b_choice->setText ( q.answer_key[1].c );
         m_semifinals_dlg->c_choice->setText ( q.answer_key[2].c );
         m_semifinals_dlg->d_choice->setText ( q.answer_key[3].c );
+    }
+    else if( round == 3 || round == 4 )
+    {
+        if( q.type == Question::CHOOSE_ANY || q.type == Question::CHOOSE_ONE )
+        {
+            m_finalsChoice_dlg->question_lbl->setText ( q.question );
+            m_finalsChoice_dlg->a_choice->setText ( q.answer_key[0].c );
+            m_finalsChoice_dlg->b_choice->setText ( q.answer_key[1].c );
+            m_finalsChoice_dlg->c_choice->setText ( q.answer_key[2].c );
+            m_finalsChoice_dlg->d_choice->setText ( q.answer_key[3].c );
+
+            m_finalsIdent_w->hide();
+            m_finalsChoice_w->show();
+        }
+        else if( q.type == Question::IDENTIFICATION )
+        {
+            m_finalsIdent_dlg->question_lbl->setText( q.question );
+
+            m_finalsChoice_w->hide();
+            m_finalsIdent_w->show();
+        }
     }
 }
 
@@ -419,8 +510,6 @@ void ContestantApp::displayAnswer()
             else if( ad[qCount].multi_choice[i] == 4 )
                 m_elims_dlg->d_choice->setChecked( true );
         }
-
-
     }
     else if( round == 2 )
     {
@@ -446,8 +535,23 @@ void ContestantApp::displayAnswer()
                 m_semifinals_dlg->d_choice->setChecked( true );
         }
     }
+}
 
+void ContestantApp::displayStatus()
+{
+    QString s;
+    if( status == CONTEST_RUNNING )
+        s = "RUNNING";
+    else if( status == CONTEST_STOPPED )
+        s = "STOPPED";
+    else if( status == CONTEST_PAUSED )
+        s = "PAUSED";
 
+    m_welcome_dlg->status_lbl->setText( s );
+    if( round == 1 )
+        m_elims_dlg->status_lbl->setText( s );
+    else if( round == 2 )
+        m_semifinals_dlg->status_lbl->setText( s );
 }
 
 void ContestantApp::recordAnswer()
@@ -476,10 +580,31 @@ void ContestantApp::recordAnswer()
         if( m_semifinals_dlg->d_choice->isChecked() )
             ad[qCount].multi_choice.push_back(4);
     }
+    else if( round == 3 || round == 4 )
+    {
+        if( ad[qCount].ans_type == Question::IDENTIFICATION )
+        {
+            ad[qCount].id_answer = m_finalsIdent_dlg->answer_line->text();
+        }
+        else if( ad[qCount].ans_type == Question::CHOOSE_ANY || ad[qCount].ans_type == Question::CHOOSE_ONE )
+        {
+            if( m_finalsChoice_dlg->a_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(1);
+            if( m_finalsChoice_dlg->b_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(2);
+            if( m_finalsChoice_dlg->c_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(3);
+            if( m_finalsChoice_dlg->d_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(4);
+        }
+    }
 }
 
 void ContestantApp::initializeAnswerData()
 {
+    if( sd.questions.size() == ad.size() )
+        return;
+
     for( int i = 0; i < sd.questions.size(); i++ )
     {
         Answer a;
@@ -488,12 +613,129 @@ void ContestantApp::initializeAnswerData()
     }
 }
 
+void ContestantApp::stopContest()
+{
+    timer->stop();
+
+    if( round == 1 || round == 2 ) // stop contest
+    {
+        if( round == 1 )
+            m_elims_w->hide();
+        else if( round == 2 )
+            m_semifinals_w->hide();
+
+        qCount = 0;
+        m_welcome_dlg->start_btn->setEnabled( false );
+        m_summary_w->hide();
+        m_welcome_w->show();
+    }
+    else if( round == 3 || round == 4 ) //stop question
+    {
+        m_finalsChoice_dlg->a_choice->setChecked(false);
+        m_finalsChoice_dlg->b_choice->setChecked(false);
+        m_finalsChoice_dlg->c_choice->setChecked(false);
+        m_finalsChoice_dlg->d_choice->setChecked(false);
+        m_finalsChoice_dlg->a_choice->setCheckable(false);
+        m_finalsChoice_dlg->b_choice->setCheckable(false);
+        m_finalsChoice_dlg->c_choice->setCheckable(false);
+        m_finalsChoice_dlg->d_choice->setCheckable(false);
+        m_finalsChoice_dlg->submit_btn->setEnabled(false);
+
+        m_finalsIdent_dlg->answer_line->setText("");
+        m_finalsIdent_dlg->answer_line->setEnabled(false);
+        m_finalsIdent_dlg->submit_btn->setEnabled(false);
+    }
+
+    displayStatus();
+}
+
+void ContestantApp::pauseContest()
+{
+    if( round == 1 || round == 2 ) //pause contest
+    {
+        m_welcome_dlg->start_btn->setEnabled( false );
+        if( round == 1 )
+        {
+            m_elims_dlg->prev_btn->setEnabled( false );
+            m_elims_dlg->next_btn->setEnabled( false );
+        }
+        else if( round == 2 )
+        {
+            m_semifinals_dlg->prev_btn->setEnabled( false );
+            m_semifinals_dlg->next_btn->setEnabled( false );
+        }
+        m_summary_dlg->submit_btn->setEnabled( false );
+    }
+    else if( round == 3 || round == 4 ) //stop question
+    {
+        m_finalsChoice_dlg->a_choice->setCheckable(false);
+        m_finalsChoice_dlg->b_choice->setCheckable(false);
+        m_finalsChoice_dlg->c_choice->setCheckable(false);
+        m_finalsChoice_dlg->d_choice->setCheckable(false);
+        m_finalsChoice_dlg->submit_btn->setEnabled(false);
+
+        m_finalsIdent_dlg->answer_line->setEnabled(false);
+        m_finalsIdent_dlg->submit_btn->setEnabled(false);
+    }
+
+    timer->stop();
+    displayStatus();
+}
+
+void ContestantApp::runContest()
+{
+    if( round == 1 || round == 2 ) //run contest
+    {
+        m_welcome_dlg->start_btn->setEnabled( true );
+        if( round == 1 )
+        {
+            m_elims_dlg->prev_btn->setEnabled( true );
+            m_elims_dlg->next_btn->setEnabled( true );
+        }
+        else if( round == 2 )
+        {
+            m_semifinals_dlg->prev_btn->setEnabled( true );
+            m_semifinals_dlg->next_btn->setEnabled( true );
+        }
+        m_summary_dlg->submit_btn->setEnabled( true );
+    }
+    else if( round == 3 || round == 4 ) //stop question
+    {
+        m_finalsChoice_dlg->a_choice->setCheckable(true);
+        m_finalsChoice_dlg->b_choice->setCheckable(true);
+        m_finalsChoice_dlg->c_choice->setCheckable(true);
+        m_finalsChoice_dlg->d_choice->setCheckable(true);
+        m_finalsChoice_dlg->submit_btn->setEnabled(true);
+
+        m_finalsIdent_dlg->answer_line->setEnabled(true);
+        m_finalsIdent_dlg->submit_btn->setEnabled(true);
+    }
+
+    timer->start( 1000 );
+    displayStatus();
+}
+
+void ContestantApp::showInfo( int i, QString s, QString inform )
+{
+    QMessageBox msg;
+    if( i == 0 )
+        msg.setWindowTitle( "Success" );
+    else
+        msg.setWindowTitle( "Error" );
+    msg.setText( s );
+    msg.setInformativeText( inform );
+    msg.setStandardButtons( QMessageBox::Ok );
+    msg.setDefaultButton( QMessageBox::Ok );
+    msg.setIcon( QMessageBox::Information );
+    msg.exec();
+}
+
 int main ( int argc, char* argv[] )
 {
 	QApplication app ( argc, argv );
 
 	ContestantApp c_app;
-    //c_app.show();
-
+    c_app.show();
+    c_app.resize( 500, 500 );
 	return app.exec();
 }

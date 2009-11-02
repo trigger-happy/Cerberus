@@ -79,6 +79,21 @@ void ServerNetwork::contestantDisconnect ( ContestantConnection* c ) {
 	}
 }
 
+void ServerNetwork::projectorDisconnect( ProjectorConnection* p ) {
+	emit projectorDc( p );
+	projector_list::iterator i = m_projectors.begin();
+
+	while ( i != m_projectors.end() ) {
+		if ( *i == p ) {
+			delete *i;
+			m_projectors.erase( i );
+			break;
+		}
+
+		i++;
+	}
+}
+
 void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 	QTcpSocket* temp_sock = con->getSocket();
 
@@ -116,8 +131,13 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 			// TODO: add code here for creating a new admin connection
 			break;
 
-		case CLIENT_PRESENTER:
+		case CLIENT_PROJECTOR:
 			// TODO: add code here for creating a new presenter connection
+			ProjectorConnection* pc = new ProjectorConnection( this, temp_sock );
+			connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
+			         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
+			m_projectors.insert( m_projectors.end(), pc );
+			emit newProjector( pc );
 			break;
 	}
 }
@@ -178,5 +198,43 @@ void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS
 		for ( ; i != m_contestants.end(); i++ ) {
 			( *i )->setQuestionState ( qnum, time, state );
 		}
+
+		projector_list::iterator j = m_projectors.begin();
+
+		for ( ; j != m_projectors.end(); j++ ) {
+			( *j )->setQuestionState( qnum, time, state );
+		}
+	}
+}
+
+void ServerNetwork::showContestTime() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showContestTime();
+	}
+}
+
+void ServerNetwork::showContestRanks() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showContestRanks();
+	}
+}
+
+void ServerNetwork::showQuestionTime() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showQuestionTime();
+	}
+}
+
+void ServerNetwork::showAnswer() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showAnswer();
 	}
 }

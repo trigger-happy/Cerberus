@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define CONTESTANT_APP_H
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
+#include <QTimer>
 #include "net/contestant_net.h"
 #include "data_types.h"
 #include "util/xml_util.h"
@@ -30,6 +31,8 @@ namespace Ui
 	class reconnect_dlg;
 	class elims_dlg;
     class semifinals_dlg;
+    class finalsChoice_dlg;
+    class finalsIdent_dlg;
 	class summary_dlg;
 }
 
@@ -38,6 +41,7 @@ class ContestantNetwork;
 class ContestantApp : public QDialog
 {
 	Q_OBJECT;
+
 public:
 	ContestantApp ( QWidget* parent = 0 );
 	~ContestantApp();
@@ -155,6 +159,16 @@ private slots:
 	*/
 	void submit();
 
+    /*!
+    Slot for the submit button on the 2 finals dialog.
+    */
+    void finalsSubmit();
+
+    /*!
+    Slot for updating the timer
+    */
+    void updateTimer();
+
 private:
 	ContestantNetwork* m_network;
 	Ui::login_dlg* m_login_dlg;
@@ -162,6 +176,8 @@ private:
 	Ui::reconnect_dlg* m_reconnect_dlg;
 	Ui::elims_dlg* m_elims_dlg;
     Ui::semifinals_dlg* m_semifinals_dlg;
+    Ui::finalsChoice_dlg* m_finalsChoice_dlg;
+    Ui::finalsIdent_dlg* m_finalsIdent_dlg;
 	Ui::summary_dlg* m_summary_dlg;
 
 	QDialog* m_login_w;
@@ -169,6 +185,8 @@ private:
 	QDialog* m_reconnect_w;
 	QDialog* m_elims_w;
     QDialog* m_semifinals_w;
+    QDialog* m_finalsChoice_w;
+    QDialog* m_finalsIdent_w;
 	QDialog* m_summary_w;
 
 	const QString DISCONNECT_QUESTION;
@@ -181,11 +199,20 @@ private:
     void recordAnswer();
     void displayAnswer();
     void initializeAnswerData();
+    void displayStatus();
+    void stopContest();
+    void pauseContest();
+    void runContest();
+    void showInfo( int, QString, QString );
 
+    QTimer *timer;
 	StageData sd;
     AnswerData ad;
+    int status;
 	int round;
 	int qCount;
+    int time;
+    bool timeSet;
 };
 
 #endif //CONTESTANT_APP_H

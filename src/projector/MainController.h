@@ -16,14 +16,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#include <QApplication>
-#include "ProjectorWindow.h"
+#ifndef PROJECTOR_MAINCONTROLLER_H
+#define PROJECTOR_MAINCONTROLLER_H
 
-int main ( int argc, char* argv[] )
+#include "ProjectorController.h"
+class MainController : public ProjectorController
 {
-		QApplication app ( argc, argv );
-		ProjectorWindow pw;
-		pw.loadConfigFromFile("resources/projector_config.xml");
-		pw.show();
-		return app.exec();
-}
+public:
+	MainController(ProjectorWindow &target);
+	virtual bool keyReleaseEvent(QKeyEvent *event);
+};
+
+#endif // PROJECTOR_MAINCONTROLLER_H

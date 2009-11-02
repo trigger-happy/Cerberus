@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>finals_dlg</class>
- <widget class="QDialog" name="finals_dlg">
+ <class>finalsChoice_dlg</class>
+ <widget class="QDialog" name="finalsChoice_dlg">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -77,7 +77,7 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="0" colspan="5">
+   <item row="6" column="0" colspan="5">
     <widget class="QPushButton" name="submit_btn">
      <property name="text">
       <string>Submit Answer</string>
@@ -138,16 +138,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QCheckBox" name="other_choice">
-            <property name="text">
-             <string>None of the above. Specify answer below:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="otherAnswer"/>
-          </item>
          </layout>
         </widget>
        </item>
@@ -170,6 +160,19 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="5" column="0" colspan="5">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

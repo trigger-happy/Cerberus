@@ -29,14 +29,14 @@ using std::vector;
 
 class ContestantConnection;
 
-class PresenterConnection;
+class ProjectorConnection;
 
 class AdminConnection;
 
 class TempConnection;
 
 typedef list<ContestantConnection*> contestant_list;
-typedef list<PresenterConnection*> presenter_list;
+typedef list<ProjectorConnection*> projector_list;
 typedef list<AdminConnection*> admin_list;
 typedef list<TempConnection*> tmpcon_list;
 
@@ -122,8 +122,8 @@ public:
 	Get the list of PresenterConnections.
 	\return list\<PresenterConnection\>
 	*/
-	inline const presenter_list& getPresenters() {
-		return m_presenters;
+	inline const projector_list& getPresenters() {
+		return m_projectors;
 	}
 
 	/*!
@@ -140,6 +140,28 @@ public:
 	*/
 	void setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state );
 
+	// projector specific stuff
+	/*!
+	Show the contest time on projectors.
+	*/
+	void showContestTime();
+
+	/*!
+	Show the current contesant rankings on the projectors.
+	\note Parameters are subject to change.
+	*/
+	void showContestRanks();
+
+	/*!
+	Show the question time on screen.
+	*/
+	void showQuestionTime();
+
+	/*!
+	Show the answer to the projector.
+	*/
+	void showAnswer();
+
 public slots:
 
 	/*!
@@ -152,6 +174,12 @@ public slots:
 	\param c A pointer to the ContestantConnection class that disconnected.
 	*/
 	void contestantDisconnect ( ContestantConnection* c );
+
+	/*!
+	Called when a presenter disconnects.
+	\param p A pointer to a ProjectorConnection class that disconnected.
+	*/
+	void projectorDisconnect( ProjectorConnection* p );
 
 	/*!
 	Called when a new client is identified in a connection.
@@ -171,7 +199,8 @@ signals:
 	void newContestant ( ContestantConnection* cc );
 	void contestantDc ( ContestantConnection* cc );
 	void newAdmin ( AdminConnection* ac );
-	void newPresenter ( PresenterConnection* pc );
+	void newProjector ( ProjectorConnection* pc );
+	void projectorDc( ProjectorConnection* pc );
 
 protected:
 	//contest states
@@ -182,7 +211,7 @@ protected:
 	//connections
 	contestant_list m_contestants;
 	admin_list m_admins;
-	presenter_list m_presenters;
+	projector_list m_projectors;
 	tmpcon_list m_tempconnections;
 	const vector<QString>* m_questiondata;
 };

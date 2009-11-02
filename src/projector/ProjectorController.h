@@ -16,14 +16,21 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#include <QApplication>
-#include "ProjectorWindow.h"
+#ifndef PROJECTOR_PROJECTORCONTROLLER_H_
+#define PROJECTOR_PROJECTORCONTROLLER_H_
 
-int main ( int argc, char* argv[] )
+class ProjectorWindow;
+class QKeyEvent;
+
+class ProjectorController
 {
-		QApplication app ( argc, argv );
-		ProjectorWindow pw;
-		pw.loadConfigFromFile("resources/projector_config.xml");
-		pw.show();
-		return app.exec();
-}
+protected:
+	ProjectorWindow &m_target;
+public:
+	ProjectorController(ProjectorWindow &target);
+	virtual ~ProjectorController() {}
+
+	virtual bool keyReleaseEvent(QKeyEvent *event) = 0;
+};
+
+#endif // PROJECTOR_PROJECTORCONTROLLER_H

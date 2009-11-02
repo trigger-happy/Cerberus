@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 enum CLIENT_ID {
 	CLIENT_CONTESTANT = 0,
-	CLIENT_PRESENTER,
+	CLIENT_PROJECTOR,
 	CLIENT_ADMIN
 };
 
@@ -58,15 +58,15 @@ enum PROTOCOL_COMMAND {
 	QRY_CONTEST_TIME,
 	INF_CONTEST_TIME,
 
-	// presenter stuff
+	// projector stuff
 	// sent by the presenter when ready
-	QRY_PRESENTER_READY,
+	QRY_PROJECTOR_READY,
 
 	// round 1-2, show contest time
-	PSN_SHOW_TIME,
+	PJR_SHOW_TIME,
 
 	// all rounds show rankings
-	PSN_SHOW_RANKS,
+	PJR_SHOW_RANKS,
 
 	// question time info
 	INF_QUESTION_TIME,
@@ -75,7 +75,7 @@ enum PROTOCOL_COMMAND {
 	INF_QUESTION_STATE,
 
 	// show answer
-	PSN_SHOW_ANSWER
+	PJR_SHOW_ANSWER
 
 	// TODO: Add admin commands here
 };

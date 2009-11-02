@@ -16,14 +16,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#include <QApplication>
+#include "MainController.h"
 #include "ProjectorWindow.h"
+#include <QKeyEvent>
 
-int main ( int argc, char* argv[] )
-{
-		QApplication app ( argc, argv );
-		ProjectorWindow pw;
-		pw.loadConfigFromFile("resources/projector_config.xml");
-		pw.show();
-		return app.exec();
+MainController::MainController(ProjectorWindow &target) :
+		ProjectorController(target) {
+}
+
+bool MainController::keyReleaseEvent(QKeyEvent *event) {
+	if ( event->key() == Qt::Key_F5 ) {
+		m_target.refresh();
+		return true;
+	}
+	return false;
 }

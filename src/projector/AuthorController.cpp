@@ -16,14 +16,36 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#include <QApplication>
+#include "AuthorController.h"
 #include "ProjectorWindow.h"
+#include <QKeyEvent>
 
-int main ( int argc, char* argv[] )
-{
-		QApplication app ( argc, argv );
-		ProjectorWindow pw;
-		pw.loadConfigFromFile("resources/projector_config.xml");
-		pw.show();
-		return app.exec();
+AuthorController::AuthorController(ProjectorWindow &target) :
+		ProjectorController(target) {
+}
+
+static int properMod(int a, int m) {
+	return (a % m + m) % m;
+}
+
+bool AuthorController::keyReleaseEvent(QKeyEvent *event) {
+	switch ( event->key() ) {
+		case Qt::Key_F5:
+			m_target.refresh();
+			break;
+		case Qt::Key_Left:
+			m_target.setView(
+					TemplateManager::TKey(
+							((int)m_target.getView() + 1) % TemplateManager::N_TEMPLATES));
+			break;
+		case Qt::Key_Right:
+				m_target.setView(
+				TemplateManager::TKey(
+						properMod((int)m_target.getView() - 1,
+								  (int)TemplateManager::N_TEMPLATES)));
+			break;
+		default:
+			return false;
+	}
+	return true;
 }

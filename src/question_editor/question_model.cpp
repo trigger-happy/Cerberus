@@ -61,16 +61,16 @@ void QuestionModel::removeQuestion(int index)
 
 void QuestionModel::updateQuestion(int index,QString question,QString a,QString b,QString c,QString d,QString e,QString anskey,QString score,QString time,QString type)
 {
-	QStandardItemModel::item(index,0)->setText(question);
-	QStandardItemModel::item(index,1)->setText(a);
-	QStandardItemModel::item(index,2)->setText(b);
-	QStandardItemModel::item(index,3)->setText(c);
-	QStandardItemModel::item(index,4)->setText(d);
-	QStandardItemModel::item(index,5)->setText(e);
-	QStandardItemModel::item(index,6)->setText(anskey);
-	QStandardItemModel::item(index,7)->setText(score);
-	QStandardItemModel::item(index,8)->setText(time);
-	QStandardItemModel::item(index,9)->setText(type);
+	QStandardItemModel::item(index,0)->setText(question.trimmed());
+	QStandardItemModel::item(index,1)->setText(a.trimmed());
+	QStandardItemModel::item(index,2)->setText(b.trimmed());
+	QStandardItemModel::item(index,3)->setText(c.trimmed());
+	QStandardItemModel::item(index,4)->setText(d.trimmed());
+	QStandardItemModel::item(index,5)->setText(e.trimmed());
+	QStandardItemModel::item(index,6)->setText(anskey.trimmed());
+	QStandardItemModel::item(index,7)->setText(score.trimmed());
+	QStandardItemModel::item(index,8)->setText(time.trimmed());
+	QStandardItemModel::item(index,9)->setText(type.trimmed());
 }
 
 void QuestionModel::swapOrder(int q1,int q2)

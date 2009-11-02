@@ -18,9 +18,70 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef PROJECTOR_CONNECTION_H
 #define PROJECTOR_CONNECTION_H
 #include <QtNetwork>
+#include "net/protocol.h"
 
 class ProjectorConnection : public QObject {
 	Q_OBJECT;
+
+public:
+	ProjectorConnection( QObject* parent = 0, QTcpSocket* socket = 0 );
+
+	/*!
+	Change the round 3/4 question status.
+	\param qnum The question number.
+	\param time The time left for this question.
+	\param state The status of this question.
+	*/
+	void setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state );
+
+	/*!
+	Show the contest time on projectors.
+	*/
+	void showContestTime();
+
+	/*!
+	Show the current contesant rankings on the projectors.
+	\note Parameters are subject to change.
+	*/
+	void showContestRanks();
+
+	/*!
+	Show the question time on screen.
+	*/
+	void showQuestionTime();
+
+	/*!
+	Show the answer to the projector.
+	*/
+	void showAnswer();
+
+public slots:
+	/*!
+	Called when there's a socket error.
+	\param err The error
+	*/
+	void error ( const QAbstractSocket::SocketError& err );
+
+	/*!
+	Called when there's data ready in the socket for reading.
+	*/
+	void ready();
+
+	/*!
+	Called when the connection is disconnected by the client.
+	*/
+	void disconnected();
+
+signals:
+	/*!
+	Emitted when the projector disconnects
+	\param p Pointer to the ProjectorConnection that disconnected.
+	*/
+	void projectorDisconnect( ProjectorConnection* p );
+
+private:
+	QTcpSocket* m_socket;
+	p_header* m_hdr;
 };
 
 #endif
