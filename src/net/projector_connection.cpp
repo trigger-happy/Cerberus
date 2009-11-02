@@ -20,14 +20,24 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket ) : QObject( parent ), m_socket( socket ) {
 	m_socket = new QTcpSocket ( this );
-	connect ( m_socket, SIGNAL ( connected() ), this, SLOT ( connected() ) );
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
 	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
 	          this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
-	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
-	          this, SIGNAL ( onError ( QAbstractSocket::SocketError ) ) );
 	connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
 	m_hdr = NULL;
+	// reply to client of the now established connection
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.length = sizeof ( ushort );
+	hdr.command = NET_CONNECTION_RESULT;
+
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out << ( ushort ) true;
+
+	m_socket->write ( block );
 }
 
 void ProjectorConnection::error( const QAbstractSocket::SocketError& err ) {
@@ -78,6 +88,7 @@ void ProjectorConnection::ready() {
 }
 
 void ProjectorConnection::disconnected() {
+	emit projectorDisconnect( this );
 }
 
 void ProjectorConnection::setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state ) {

@@ -36,6 +36,8 @@ public slots:
 	void onConnectBtn();
 	void onQuitBtn();
 	// networking slots
+	void onConnect();
+	void onDisconnect();
 	void onContestState( ushort round, CONTEST_STATUS status );
 	void onContestTime( ushort time );
 	void onShowContestTime();

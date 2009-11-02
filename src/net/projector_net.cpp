@@ -58,6 +58,7 @@ void ProjectorNet::connected() {
 }
 
 void ProjectorNet::disconnected() {
+	emit onDisconnect();
 }
 
 void ProjectorNet::error( const QAbstractSocket::SocketError& error ) {
@@ -93,6 +94,19 @@ void ProjectorNet::ready() {
 	}
 
 	switch ( m_hdr->command ) {
+
+		case NET_CONNECTION_RESULT:
+			// check the result
+			{
+				ushort result;
+				in >> result;
+
+				if ( result ) {
+					emit onConnect();
+				}
+			}
+
+			break;
 
 		case INF_CONTEST_STATE:
 			break;

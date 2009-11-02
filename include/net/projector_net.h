@@ -78,6 +78,7 @@ public slots:
 signals:
 	void onConnect();
 	void onDisconnect();
+	void onError( const QAbstractSocket::SocketError& error );
 
 	void onContestState( ushort round, CONTEST_STATUS status );
 	void onContestTime( ushort time );

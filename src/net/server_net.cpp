@@ -133,11 +133,14 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 
 		case CLIENT_PROJECTOR:
 			// TODO: add code here for creating a new presenter connection
-			ProjectorConnection* pc = new ProjectorConnection( this, temp_sock );
-			connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
-			         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
-			m_projectors.insert( m_projectors.end(), pc );
-			emit newProjector( pc );
+			{
+				ProjectorConnection* pc = new ProjectorConnection( this, temp_sock );
+				connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
+				         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
+				m_projectors.insert( m_projectors.end(), pc );
+				emit newProjector( pc );
+			}
+
 			break;
 	}
 }

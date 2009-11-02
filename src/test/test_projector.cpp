@@ -18,10 +18,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_projector.h"
 #include "test_projector.h"
 
-TestProjector::TestProjector( QDialog* parent ) : QDialog( this ),
-		m_dlg( new Ui::projector_dlg ) {
+TestProjector::TestProjector( QDialog* parent ) : QDialog( parent ),
+		m_dlg( new Ui::projector_dlg() ) {
 	m_dlg->setupUi( this );
 	m_network = new ProjectorNet( this );
+	connect( m_dlg->connect_btn, SIGNAL( clicked() ),
+	         this, SLOT( onConnectBtn() ) );
+	connect( m_dlg->quit_btn, SIGNAL( clicked() ),
+	         this, SLOT( onQuitBtn() ) );
+	connect( m_network, SIGNAL( onConnect() ),
+	         this, SLOT( onConnect() ) );
+	connect( m_network, SIGNAL( onDisconnect() ),
+	         this, SLOT( onDisconnect() ) );
 }
 
 void TestProjector::onConnectBtn() {
@@ -65,6 +73,14 @@ void TestProjector::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS s
 
 void TestProjector::onShowAnswer() {
 	writeLog( "Command received: show answer" );
+}
+
+void TestProjector::onConnect() {
+	writeLog( "Connected to server" );
+}
+
+void TestProjector::onDisconnect() {
+	writeLog( "Disconnected from server" );
 }
 
 int main( int argc, char* argv[] ) {

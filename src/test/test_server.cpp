@@ -61,6 +61,8 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 	          this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
 	connect ( m_server, SIGNAL ( newProjector( ProjectorConnection* ) ),
 	          this, SLOT ( newProjector( ProjectorConnection* ) ) );
+	connect( m_server, SIGNAL( projectorDc( ProjectorConnection* ) ),
+	         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
 	m_server->listen ( 2652 );
 	m_server->setRound ( 1 );
 	m_server->setStatus ( CONTEST_STOPPED );
@@ -193,11 +195,10 @@ void ServerDlg::onPauseQuestionBtn() {
 
 void ServerDlg::newProjector( ProjectorConnection* pc ) {
 	writeLog( "New projector connected" );
-	connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
-	         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
 }
 
 void ServerDlg::projectorDisconnect( ProjectorConnection* pc ) {
+	writeLog( "Projector disconnected" );
 }
 
 int main ( int argc, char* argv[] ) {
