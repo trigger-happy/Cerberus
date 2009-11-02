@@ -233,6 +233,8 @@ struct TeamData {
 
 struct ScoreData {
 	QString user_name;
+	QString team_name;
+	ushort rank;
 	double score;
 };
 

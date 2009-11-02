@@ -37,6 +37,11 @@ public:
 	ProjectorNet( QObject* parent = 0 );
 
 	/*!
+	Destructor
+	*/
+	~ProjectorNet();
+
+	/*!
 	Connect to the Cerberus contest server.
 	\param ip The ip address of the server.
 	\param port The port that the server is listening to.
@@ -71,6 +76,14 @@ public slots:
 	void ready();
 
 signals:
+	void onContestState( ushort round, CONTEST_STATUS status );
+	void onContestTime( ushort time );
+	void onShowContestTime();
+	// NOTE: params for this will change
+	void onShowContestRanks();
+	void onQuestionTime();
+	void onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status );
+	void onShowAnswer();
 
 private:
 	QTcpSocket* m_socket;

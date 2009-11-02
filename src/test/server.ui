@@ -6,150 +6,222 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>409</width>
-    <height>391</height>
+    <width>540</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Test Server</string>
   </property>
-  <widget class="QPushButton" name="quit_btn">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>360</y>
-     <width>105</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>&amp;Quit</string>
-   </property>
-  </widget>
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>1</x>
      <y>2</y>
-     <width>405</width>
-     <height>353</height>
+     <width>531</width>
+     <height>591</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Server</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Server</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       <widget class="QTextEdit" name="log_tedt"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Round:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Contest time:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Current Question:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Question Time:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLineEdit" name="round_line"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="time_line"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="question_line"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="qtime_line"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QPushButton" name="change_btn">
+            <property name="text">
+             <string>&amp;Change Round</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="time_btn">
+            <property name="text">
+             <string>Set &amp;Time</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="question_btn">
+            <property name="text">
+             <string>Set &amp;Question</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="qtime_btn">
+            <property name="text">
+             <string>Set Q&amp;uestion Time</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QPushButton" name="start_btn">
+          <property name="text">
+           <string>&amp;Start Contest</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="stop_btn">
+          <property name="text">
+           <string>S&amp;top Contest</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pause_btn">
+          <property name="text">
+           <string>&amp;Pause Contest</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="QTextEdit" name="log_tedt"/>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Round:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Contest time:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Current Question:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QPushButton" name="shw_ranks_btn">
+        <property name="text">
+         <string>Show &amp;Ranks</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QLineEdit" name="round_line"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="time_line"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="question_line"/>
-        </item>
-       </layout>
+       <widget class="QPushButton" name="shw_qtime_btn">
+        <property name="text">
+         <string>Show &amp;Time</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QPushButton" name="change_btn">
-          <property name="text">
-           <string>&amp;Change Round</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="time_btn">
-          <property name="text">
-           <string>Set &amp;Time</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="question_btn">
-          <property name="text">
-           <string>Set &amp;Question</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QPushButton" name="shw_answer_btn">
+        <property name="text">
+         <string>Show &amp;Answer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="shw_question_btn">
+        <property name="text">
+         <string>Sh&amp;ow Question</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <widget class="QPushButton" name="start_btn">
+       <widget class="QPushButton" name="start_q_btn">
         <property name="text">
-         <string>&amp;Start</string>
+         <string>Start Question</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="stop_btn">
+       <widget class="QPushButton" name="stop_q_btn">
         <property name="text">
-         <string>S&amp;top</string>
+         <string>Stop Question</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pause_btn">
+       <widget class="QPushButton" name="pause_q_btn">
         <property name="text">
-         <string>&amp;Pause</string>
+         <string>Pause Question</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="quit_btn">
+        <property name="text">
+         <string>&amp;Quit</string>
         </property>
        </widget>
       </item>
