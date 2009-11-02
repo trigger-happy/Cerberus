@@ -1,14 +1,14 @@
 #ifndef DEPLOYER_H
 #define DEPLOYER_H
 
-#include <QtGui/QMainWindow>
+#include <QtGui>
 
 namespace Ui
 {
     class deployerUI;
 }
 
-class Installer : public QMainWindow
+class Installer : public QDialog
 {
     Q_OBJECT
 

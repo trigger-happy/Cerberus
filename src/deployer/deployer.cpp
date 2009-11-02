@@ -6,11 +6,11 @@
 #include "data_types.h"
 #include <iostream>
 
-Installer::Installer(QWidget *parent) : QMainWindow(parent), ui(new Ui::deployerUI)
+Installer::Installer(QWidget *parent) : QDialog(parent), ui(new Ui::deployerUI)
 {
     ui->setupUi(this);
     connect( ui->install, SIGNAL( pressed()), this, SLOT(install()) );
-    //ui->installList->insertItem( 0, QString("server" ),  QVariant() );
+    ui->installList->insertItem( 0, QString("server" ),  QVariant() );
 
 }
 
