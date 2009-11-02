@@ -34,6 +34,8 @@ TestProjector::TestProjector( QDialog* parent ) : QDialog( parent ),
 	         this, SLOT( onContestState( ushort, CONTEST_STATUS ) ) );
 	connect( m_network, SIGNAL( onContestTime( ushort ) ),
 	         this, SLOT( onContestTime( ushort ) ) );
+	connect( m_network, SIGNAL( onShowContestTime() ),
+	         this, SLOT( onShowContestTime() ) );
 }
 
 void TestProjector::onConnectBtn() {

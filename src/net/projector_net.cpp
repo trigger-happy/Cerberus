@@ -130,6 +130,7 @@ void ProjectorNet::ready() {
 			break;
 
 		case PJR_SHOW_TIME:
+			emit onShowContestTime();
 			break;
 
 		case PJR_SHOW_RANKS:

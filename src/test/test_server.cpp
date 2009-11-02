@@ -176,6 +176,7 @@ void ServerDlg::onShowRanksBtn() {
 }
 
 void ServerDlg::onShowQTimeBtn() {
+	m_server->showContestTime();
 }
 
 void ServerDlg::onShowAnswerBtn() {
