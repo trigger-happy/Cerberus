@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_reconnect.h"
 #include "ui_elims.h"
 #include "ui_semifinals.h"
+#include "ui_finalsChoice.h"
+#include "ui_finalsIdent.h"
 #include "ui_summary.h"
 #include <QString>
 #include <QFile>
@@ -43,6 +45,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_reconnect_dlg = new Ui::reconnect_dlg;
 	m_elims_dlg = new Ui::elims_dlg;
     m_semifinals_dlg = new Ui::semifinals_dlg;
+    m_finalsChoice_dlg = new Ui::finalsChoice_dlg;
+    m_finalsIdent_dlg = new Ui::finalsIdent_dlg;
     m_summary_dlg = new Ui::summary_dlg;
 
 	this->hide();
@@ -61,6 +65,14 @@ ContestantApp::ContestantApp ( QWidget* parent )
     m_semifinals_w = new QDialog( this );
     m_semifinals_dlg->setupUi( m_semifinals_w );
     m_semifinals_w->hide();
+
+    m_finalsChoice_w = new QDialog( this );
+    m_finalsChoice_dlg->setupUi( m_finalsChoice_w );
+    m_finalsChoice_w->hide();
+
+    m_finalsIdent_w = new QDialog( this );
+    m_finalsIdent_dlg->setupUi( m_finalsIdent_w );
+    m_finalsIdent_w->hide();
 
 	m_summary_w = new QDialog( this );
 	m_summary_dlg->setupUi( m_summary_w );
@@ -111,6 +123,10 @@ ContestantApp::ContestantApp ( QWidget* parent )
     // connections for summary dialog
 	connect( m_summary_dlg->review_btn, SIGNAL( clicked() ), this, SLOT( review() ) );
 	connect( m_summary_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( submit() ) );
+
+    // connections for finals dialog
+    connect( m_finalsChoice_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
+    connect( m_finalsIdent_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
 
     // slot for timer
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateTimer() ) );
@@ -187,6 +203,7 @@ void ContestantApp::onAuthenticate ( bool result )
 
 void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 {
+    m_network->getContestTime();
     m_network->qDataRequest( r );
 	round = r;
     status = s;
@@ -201,7 +218,8 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 
 void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATUS status )
 {
-
+    m_finalsChoice_dlg->submit_btn->setEnabled( true );
+    m_finalsIdent_dlg->submit_btn->setEnabled( true );
 }
 
 void ContestantApp::onContestTime( ushort t )
@@ -213,8 +231,7 @@ void ContestantApp::onQData ( const QString& xml )
 {
     sd.questions.clear();
 	XmlUtil::getInstance().readStageData( xml, sd );
-	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );
-    m_network->getContestTime();
+	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );  
 }
 
 void ContestantApp::onAData ( bool result )
@@ -295,6 +312,7 @@ void ContestantApp::welcomeStart()
     else if( round == 2 )
         m_semifinals_w->show();
 
+    //finals/tiebreaker dialog showing handled by displayQuestionAndChoices
     initializeAnswerData();
     displayQuestionAndChoices();
 }
@@ -389,6 +407,13 @@ void ContestantApp::submit()
     m_network->aDataSend( round, ad );
 }
 
+void ContestantApp::finalsSubmit()
+{
+    m_network->aDataSend( round, ad );
+    m_finalsChoice_dlg->submit_btn->setEnabled( false );
+    m_finalsIdent_dlg->submit_btn->setEnabled( false );
+}
+
 void ContestantApp::displayQuestionAndChoices()
 {
 	Question q = sd.questions[qCount];
@@ -408,6 +433,27 @@ void ContestantApp::displayQuestionAndChoices()
         m_semifinals_dlg->b_choice->setText ( q.answer_key[1].c );
         m_semifinals_dlg->c_choice->setText ( q.answer_key[2].c );
         m_semifinals_dlg->d_choice->setText ( q.answer_key[3].c );
+    }
+    else if( round == 3 || round == 4 )
+    {
+        if( q.type == Question::CHOOSE_ANY || q.type == Question::CHOOSE_ONE )
+        {
+            m_finalsChoice_dlg->question_lbl->setText ( q.question );
+            m_finalsChoice_dlg->a_choice->setText ( q.answer_key[0].c );
+            m_finalsChoice_dlg->b_choice->setText ( q.answer_key[1].c );
+            m_finalsChoice_dlg->c_choice->setText ( q.answer_key[2].c );
+            m_finalsChoice_dlg->d_choice->setText ( q.answer_key[3].c );
+
+            m_finalsIdent_w->hide();
+            m_finalsChoice_w->show();
+        }
+        else if( q.type == Question::IDENTIFICATION )
+        {
+            m_finalsIdent_dlg->question_lbl->setText( q.question );
+
+            m_finalsChoice_w->hide();
+            m_finalsIdent_w->show();
+        }
     }
 }
 
@@ -508,6 +554,24 @@ void ContestantApp::recordAnswer()
             ad[qCount].multi_choice.push_back(3);
         if( m_semifinals_dlg->d_choice->isChecked() )
             ad[qCount].multi_choice.push_back(4);
+    }
+    else if( round == 3 || round == 4 )
+    {
+        if( ad[qCount].ans_type == Question::IDENTIFICATION )
+        {
+            ad[qCount].id_answer = m_finalsIdent_dlg->answer_line->text();
+        }
+        else if( ad[qCount].ans_type == Question::CHOOSE_ANY || ad[qCount].ans_type == Question::CHOOSE_ONE )
+        {
+            if( m_finalsChoice_dlg->a_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(1);
+            if( m_finalsChoice_dlg->b_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(2);
+            if( m_finalsChoice_dlg->c_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(3);
+            if( m_finalsChoice_dlg->d_choice->isChecked() )
+                ad[qCount].multi_choice.push_back(4);
+        }
     }
 }
 
