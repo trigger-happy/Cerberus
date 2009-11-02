@@ -147,3 +147,7 @@ void Server::checkAnswersManually() {
 void Server::dropConnection( ContestantConnection* cc ) {
 
 }
+
+double Server::getScore( QString c_user ){
+	return SqlUtil::getInstance().getScore( c_user );
+}
