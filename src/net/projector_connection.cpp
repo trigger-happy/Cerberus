@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "net/protocol.h"
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket ) : QObject( parent ), m_socket( socket ) {
+	m_ready = false;
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
 	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
 	          this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
@@ -84,6 +85,11 @@ void ProjectorConnection::ready() {
 			sendContestTime();
 			break;
 
+		case QRY_PROJECTOR_READY:
+			m_ready = true;
+			emit projectorReady( this );
+			break;
+
 		default:
 			;
 	}
@@ -105,15 +111,49 @@ void ProjectorConnection::setQuestionState( ushort qnum, ushort time, QUESTION_S
 }
 
 void ProjectorConnection::showContestTime() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = PJR_SHOW_TIME;
+	hdr.length = 0;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
 }
 
 void ProjectorConnection::showContestRanks() {
 }
 
 void ProjectorConnection::showQuestionTime() {
+	showContestTime();
 }
 
 void ProjectorConnection::showAnswer() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = PJR_SHOW_ANSWER;
+	hdr.length = 0;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
+}
+
+void ProjectorConnection::showQuestion() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = PJR_SHOW_QUESTION;
+	hdr.length = 0;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
 }
 
 void ProjectorConnection::sendContestState() {

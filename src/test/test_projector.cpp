@@ -34,6 +34,12 @@ TestProjector::TestProjector( QDialog* parent ) : QDialog( parent ),
 	         this, SLOT( onContestState( ushort, CONTEST_STATUS ) ) );
 	connect( m_network, SIGNAL( onContestTime( ushort ) ),
 	         this, SLOT( onContestTime( ushort ) ) );
+	connect( m_network, SIGNAL( onShowContestTime() ),
+	         this, SLOT( onShowContestTime() ) );
+	connect( m_network, SIGNAL( onShowQuestion() ),
+	         this, SLOT( onShowQuestion() ) );
+	connect( m_network, SIGNAL( onShowAnswer() ),
+	         this, SLOT( onShowAnswer() ) );
 }
 
 void TestProjector::onConnectBtn() {
@@ -59,6 +65,8 @@ void TestProjector::onContestState( ushort round, CONTEST_STATUS status ) {
 
 void TestProjector::onContestTime( ushort time ) {
 	writeLog( QString( "Contest time: %1" ).arg( time ) );
+	writeLog( QString( "Sending projector ready signal" ) );
+	m_network->sendReadyState();
 }
 
 void TestProjector::onShowContestTime() {
@@ -89,6 +97,10 @@ void TestProjector::onConnect() {
 
 void TestProjector::onDisconnect() {
 	writeLog( "Disconnected from server" );
+}
+
+void TestProjector::onShowQuestion() {
+	writeLog( "Command received: show question" );
 }
 
 int main( int argc, char* argv[] ) {

@@ -176,12 +176,15 @@ void ServerDlg::onShowRanksBtn() {
 }
 
 void ServerDlg::onShowQTimeBtn() {
+	m_server->showContestTime();
 }
 
 void ServerDlg::onShowAnswerBtn() {
+	m_server->showAnswer();
 }
 
 void ServerDlg::onShowQuestionBtn() {
+	m_server->showQuestion();
 }
 
 void ServerDlg::onStartQuestionBtn() {
@@ -195,10 +198,16 @@ void ServerDlg::onPauseQuestionBtn() {
 
 void ServerDlg::newProjector( ProjectorConnection* pc ) {
 	writeLog( "New projector connected" );
+	connect( pc, SIGNAL( projectorReady( ProjectorConnection* ) ),
+	         this, SLOT( projectorReady( ProjectorConnection* ) ) );
 }
 
 void ServerDlg::projectorDisconnect( ProjectorConnection* pc ) {
 	writeLog( "Projector disconnected" );
+}
+
+void ServerDlg::projectorReady( ProjectorConnection* pc ) {
+	writeLog( "Projector ready" );
 }
 
 int main ( int argc, char* argv[] ) {

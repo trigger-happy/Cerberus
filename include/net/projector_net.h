@@ -62,6 +62,10 @@ public:
 	*/
 	void getContestTime();
 
+	/*!
+	*/
+	void sendReadyState();
+
 public slots:
 	/*!
 	Called when the app is able to connect to the server.
@@ -97,6 +101,7 @@ signals:
 	void onQuestionTime();
 	void onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status );
 	void onShowAnswer();
+	void onShowQuestion();
 
 private:
 	QTcpSocket* m_socket;

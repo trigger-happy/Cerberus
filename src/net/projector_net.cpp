@@ -130,18 +130,30 @@ void ProjectorNet::ready() {
 			break;
 
 		case PJR_SHOW_TIME:
+			emit onShowContestTime();
 			break;
 
 		case PJR_SHOW_RANKS:
 			break;
 
 		case INF_QUESTION_TIME:
+			// TODO: might remove this
 			break;
 
-		case INF_QUESTION_STATE:
+		case INF_QUESTION_STATE: {
+				ushort qnum, time, status;
+				in >> qnum >> time >> status;
+				emit onQuestionState( qnum, time, ( QUESTION_STATUS )status );
+			}
+
 			break;
 
 		case PJR_SHOW_ANSWER:
+			emit onShowAnswer();
+			break;
+
+		case PJR_SHOW_QUESTION:
+			emit onShowQuestion();
 			break;
 
 		default:
@@ -178,6 +190,18 @@ void ProjectorNet::getContestTime() {
 	p_header hdr;
 	hdr.length = 0;
 	hdr.command = QRY_CONTEST_TIME;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
+}
+
+void ProjectorNet::sendReadyState() {
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	//construct the header
+	p_header hdr;
+	hdr.length = 0;
+	hdr.command = QRY_PROJECTOR_READY;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
 }

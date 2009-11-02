@@ -57,6 +57,7 @@ private slots:
 	void onStartQuestionBtn();
 	void onStopQuestionBtn();
 	void onPauseQuestionBtn();
+	void projectorReady( ProjectorConnection* pc );
 
 private:
 	void writeLog ( const QString& s );

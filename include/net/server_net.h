@@ -161,6 +161,10 @@ public:
 	Show the answer to the projector.
 	*/
 	void showAnswer();
+	
+	/*!
+	*/
+	void showQuestion();
 
 public slots:
 

@@ -80,6 +80,10 @@ public:
 
 	/*!
 	*/
+	void showQuestion();
+
+	/*!
+	*/
 	void sendContestTime();
 
 public slots:
@@ -110,7 +114,12 @@ signals:
 	*/
 	void contestTimeRequest( ushort& contime );
 
+	/*!
+	*/
+	void projectorReady( ProjectorConnection* p );
+
 private:
+	bool m_ready;
 	ushort m_round;
 	ushort m_contime;
 	CONTEST_STATUS m_con_status;
