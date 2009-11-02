@@ -62,7 +62,7 @@ private:
 	Ui::server_dlg* m_dlg;
 	Server* m_server;
 	QStandardItemModel* contestants, questions;
-	QStandardItemModel contestants_model, questions_model;
+	QString selected_user;
 };
 
 #endif //ADMIN_H

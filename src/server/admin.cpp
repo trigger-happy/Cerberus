@@ -27,6 +27,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	contestants = new QStandardItemModel( this );
 	//questions = new QStandardItemModel ( questions_model );
 	m_dlg->contestants_listv->setModel( contestants );
+	m_dlg->contestants_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	// connect dialog signals and slots here
 	connect(m_dlg->round_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRoundSelection(int)));
@@ -71,14 +72,18 @@ void Admin::onRoundSelection(int index){
 void Admin::addContestant(const QString& c_user)
 {
 	QStandardItem* item = new QStandardItem(c_user);
-	contestants_model.appendRow(item);
-	m_dlg->status_lbl->setText("Wee~");
+	contestants->appendRow(item);
 }
 
 void Admin::onContestantListClick(const QModelIndex& index){
+	QString c_user = contestants->itemFromIndex(index)->text();
+	m_dlg->user_lbl->setText(c_user);
+	m_dlg->score_lbl->setText(QString("%1").arg(m_server->getScore(c_user)));
+	selected_user = c_user;
 }
 
 void Admin::onDropContestant(){
+
 }
 
 void Admin::onViewAnswers(){
