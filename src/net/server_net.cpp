@@ -119,6 +119,7 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 				cc->setStatus ( m_con_status );
 				cc->setRound ( m_round );
 				cc->setQData ( m_questiondata );
+				cc->setContestTime( m_contime );
 				connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
 				          this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
 				m_contestants.insert ( m_contestants.end(), cc );
@@ -135,6 +136,9 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 			// TODO: add code here for creating a new presenter connection
 			{
 				ProjectorConnection* pc = new ProjectorConnection( this, temp_sock );
+				pc->setStatus( m_con_status );
+				pc->setRound( m_round );
+				pc->setContestTime( m_contime );
 				connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
 				         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
 				m_projectors.insert( m_projectors.end(), pc );
@@ -174,6 +178,13 @@ void ServerNetwork::setRound ( int round ) {
 		( *i )->setRound ( m_round );
 		( *i )->sendContestState();
 	}
+
+	projector_list::iterator j = m_projectors.begin();
+
+	for ( ; j != m_projectors.end(); j++ ) {
+		( *j )->setRound( m_round );
+		( *j )->sendContestState();
+	}
 }
 
 void ServerNetwork::setStatus ( CONTEST_STATUS s ) {
@@ -184,13 +195,27 @@ void ServerNetwork::setStatus ( CONTEST_STATUS s ) {
 		( *i )->setStatus ( s );
 		( *i )->sendContestState();
 	}
+
+	projector_list::iterator j = m_projectors.begin();
+
+	for ( ; j != m_projectors.end(); j++ ) {
+		( *j )->setStatus( s );
+		( *j )->sendContestState();
+	}
 }
 
 void ServerNetwork::setContestTime ( ushort time ) {
+	m_contime = time;
 	contestant_list::iterator i = m_contestants.begin();
 
 	for ( ;i != m_contestants.end(); i++ ) {
 		( *i )->setContestTime ( time );
+	}
+
+	projector_list::iterator j = m_projectors.begin();
+
+	for ( ; j != m_projectors.end(); j++ ) {
+		( *i )->setContestTime( time );
 	}
 }
 

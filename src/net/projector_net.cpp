@@ -109,6 +109,14 @@ void ProjectorNet::ready() {
 			break;
 
 		case INF_CONTEST_STATE:
+			//we got info on the contest state
+			{
+				ushort round;
+				uchar status;
+				in >> round >> status;
+				emit onContestState ( round, ( CONTEST_STATUS ) status );
+			}
+
 			break;
 
 		case INF_CONTEST_TIME:
@@ -140,4 +148,17 @@ void ProjectorNet::ready() {
 	if ( m_socket->bytesAvailable() > 0 ) {
 		ready();
 	}
+}
+
+void ProjectorNet::getContestState() {
+	// ripped off from ContestantNet
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	//construct the header
+	p_header hdr;
+	hdr.length = 0;
+	hdr.command = QRY_CONTEST_STATE;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
 }

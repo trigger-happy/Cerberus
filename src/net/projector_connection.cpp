@@ -73,6 +73,12 @@ void ProjectorConnection::ready() {
 
 	switch ( m_hdr->command ) {
 
+		case QRY_CONTEST_STATE:
+			//contestant is asking for the contest state.
+
+			sendContestState();
+			break;
+
 		default:
 			;
 	}
@@ -103,4 +109,19 @@ void ProjectorConnection::showQuestionTime() {
 }
 
 void ProjectorConnection::showAnswer() {
+}
+
+void ProjectorConnection::sendContestState() {
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.length = sizeof ( ushort ) + sizeof ( uchar );
+	hdr.command = INF_CONTEST_STATE;
+
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out << ( ushort ) m_round << ( uchar ) m_con_status;
+
+	m_socket->write ( block );
 }

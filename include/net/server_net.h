@@ -205,6 +205,7 @@ signals:
 protected:
 	//contest states
 	int m_round;
+	ushort m_contime;
 	CONTEST_STATUS m_con_status;
 	//server socket
 	QTcpServer* m_server;

@@ -53,6 +53,11 @@ public:
 	*/
 	void disconnectFromHost();
 
+	/*!
+	Get the current contest state from the server.
+	*/
+	void getContestState();
+
 public slots:
 	/*!
 	Called when the app is able to connect to the server.

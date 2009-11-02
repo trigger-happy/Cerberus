@@ -30,6 +30,8 @@ TestProjector::TestProjector( QDialog* parent ) : QDialog( parent ),
 	         this, SLOT( onConnect() ) );
 	connect( m_network, SIGNAL( onDisconnect() ),
 	         this, SLOT( onDisconnect() ) );
+	connect( m_network, SIGNAL( onContestState( ushort, CONTEST_STATUS ) ),
+	         this, SLOT( onContestState( ushort, CONTEST_STATUS ) ) );
 }
 
 void TestProjector::onConnectBtn() {
@@ -77,6 +79,8 @@ void TestProjector::onShowAnswer() {
 
 void TestProjector::onConnect() {
 	writeLog( "Connected to server" );
+	writeLog( "Requesting contest state" );
+	m_network->getContestState();
 }
 
 void TestProjector::onDisconnect() {
