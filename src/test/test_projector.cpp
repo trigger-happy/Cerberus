@@ -59,6 +59,8 @@ void TestProjector::onContestState( ushort round, CONTEST_STATUS status ) {
 
 void TestProjector::onContestTime( ushort time ) {
 	writeLog( QString( "Contest time: %1" ).arg( time ) );
+	writeLog( QString( "Sending projector ready signal" ) );
+	m_network->sendReadyState();
 }
 
 void TestProjector::onShowContestTime() {

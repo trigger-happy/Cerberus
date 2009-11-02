@@ -62,6 +62,10 @@ public:
 	*/
 	void getContestTime();
 
+	/*!
+	*/
+	void sendReadyState();
+
 public slots:
 	/*!
 	Called when the app is able to connect to the server.

@@ -181,3 +181,15 @@ void ProjectorNet::getContestTime() {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
 }
+
+void ProjectorNet::sendReadyState() {
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	//construct the header
+	p_header hdr;
+	hdr.length = 0;
+	hdr.command = QRY_PROJECTOR_READY;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
+}

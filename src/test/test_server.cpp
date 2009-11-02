@@ -195,10 +195,16 @@ void ServerDlg::onPauseQuestionBtn() {
 
 void ServerDlg::newProjector( ProjectorConnection* pc ) {
 	writeLog( "New projector connected" );
+	connect( pc, SIGNAL( projectorReady( ProjectorConnection* ) ),
+	         this, SLOT( projectorReady( ProjectorConnection* ) ) );
 }
 
 void ServerDlg::projectorDisconnect( ProjectorConnection* pc ) {
 	writeLog( "Projector disconnected" );
+}
+
+void ServerDlg::projectorReady( ProjectorConnection* pc ) {
+	writeLog( "Projector ready" );
 }
 
 int main ( int argc, char* argv[] ) {

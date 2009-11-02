@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "net/protocol.h"
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket ) : QObject( parent ), m_socket( socket ) {
+	m_ready = false;
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
 	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
 	          this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
@@ -82,6 +83,11 @@ void ProjectorConnection::ready() {
 		case QRY_CONTEST_TIME:
 			emit contestTimeRequest( m_contime );
 			sendContestTime();
+			break;
+
+		case QRY_PROJECTOR_READY:
+			m_ready = true;
+			emit projectorReady( this );
 			break;
 
 		default:
