@@ -62,8 +62,13 @@ void SqlUtil::addTeam ( const QString& team_name, const QString& school )
 		else{
 			bool success =  query->exec ( "INSERT INTO team(team_name, school) "
 								 "VALUES ('" + team_name + "', '" + school + "')" );
-			if (!success)
-				throw SqlUtilException(query->lastError().databaseText());
+			if (!success){
+				QString temp = query->lastError().databaseText();
+				if (temp.compare(QString("constraint failed")) == 0)
+					throw SqlUtilException("an entry with that name already exists");
+				else
+					throw SqlUtilException(temp);
+			}
 		}
 }
 
@@ -85,8 +90,13 @@ void SqlUtil::addUser(const QString& user_name, const QString& team_name)
 				  .arg ( QString (user_name) )
 				  .arg ( QString (team_name) );
 		bool success = query->exec( sql );
-		if (!success)
-				throw SqlUtilException(query->lastError().databaseText());
+		if (!success){
+			QString temp = query->lastError().databaseText();
+				if (temp.compare(QString("constraint failed")) == 0)
+					throw SqlUtilException("an entry with that name already exists");
+				else
+					throw SqlUtilException(temp);
+		}
 	}
 }
 
@@ -141,8 +151,13 @@ void SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_n
 				  .arg ( QString ( team_name_new ) )
 				  .arg ( QString ( team_name_old ) );
 		bool success = query->exec ( sql );
-		if (!success)
-				throw SqlUtilException(query->lastError().databaseText());
+		if (!success){
+			QString temp = query->lastError().databaseText();
+				if (temp.compare(QString("constraint failed")) == 0)
+					throw SqlUtilException("an entry with that name already exists");
+				else
+					throw SqlUtilException(temp);
+		}
 	}
 }
 

@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QListWidget>
 
 RegistrationApp::RegistrationApp(QWidget* parent) :
+	QDialog(parent),
 	m_team_table_wnd( new Ui::team_table_wnd ),
 	m_user_table_wnd(new Ui::user_table_wnd),
 	m_user_edit_wnd(new Ui::user_edit_wnd),
@@ -35,6 +36,9 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 {
 	this->setWindowTitle("Registration");
 	this->hide();
+	//this->resize(0, 0);
+	this->setVisible(false);
+
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Database Directory"),
 										  tr("Database Path:"), QLineEdit::Normal,
