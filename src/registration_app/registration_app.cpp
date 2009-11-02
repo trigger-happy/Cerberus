@@ -265,10 +265,34 @@ bool RegistrationApp::saveUserEdit(){
 	ud.teamname = team_nav;
 	ud.firstname = m_user_edit_wnd->firstname_txt->text();
 	ud.lastname = m_user_edit_wnd->lastname_txt->text();
-	ud.password = m_user_edit_wnd->password_txt->text();	
+	ud.password = m_user_edit_wnd->password_txt->text();
+
+	QString fn_temp = ud.firstname;
+	QString ln_temp = ud.lastname;
+	QString pw_temp = ud.password;
+	fn_temp.replace(" ", "");
+	ln_temp.replace(" ", "");
+	pw_temp.replace(" ", "");
 	try{
-		m_sql.editUser(ud.user_name, ud);
-		showMessageDialog( "Changes Saved. Your password is '" + m_user_edit_wnd->password_txt->text() + "'." );
+		bool sure = false;
+		if (fn_temp.compare(QString("")) == 0 || ln_temp.compare(QString("")) == 0 || pw_temp.compare(QString("")) == 0){
+			 QMessageBox msgBox;
+			 msgBox.setText("You are about to edit " + user_nav +" with blank fields.");
+			 msgBox.setWindowTitle("Confirm Edit");
+			 msgBox.setInformativeText("Are you sure you want to change these fields to blank?");
+			 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+			 msgBox.setDefaultButton(QMessageBox::No);
+			 int ret = msgBox.exec();
+			 if (ret == QMessageBox::Yes)
+				 sure = true;
+		}
+		else sure = true;
+
+		if (sure){
+			m_sql.editUser(ud.user_name, ud);
+			showMessageDialog( "Changes Saved. Your password is '" + m_user_edit_wnd->password_txt->text() + "'." );
+		}
+		else showMessageDialog( QString("Did not edit user"));
 	}
 	catch(SqlUtil::SqlUtilException e){
 		showMessageDialog( "Error editing user: " + e.msg);
