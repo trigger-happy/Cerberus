@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Final Round</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -117,7 +117,11 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="answer_line"/>
+           <widget class="QLineEdit" name="answer_line">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <spacer name="verticalSpacer_4">

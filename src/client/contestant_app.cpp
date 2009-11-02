@@ -206,6 +206,11 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
     m_network->getContestTime();
     m_network->qDataRequest( r );
 	round = r;
+    if( round == 4 )
+    {
+        m_finalsChoice_w->setWindowTitle("Tie-Breaker Round");
+        m_finalsIdent_w->setWindowTitle("Tie-Breaker Round");
+    }
     status = s;
 
     if( status == CONTEST_RUNNING )
@@ -216,10 +221,18 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
         pauseContest();
 }
 
-void ContestantApp::onQuestionStateChange( ushort q, ushort time, QUESTION_STATUS status )
+void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s )
 {
-    m_finalsChoice_dlg->submit_btn->setEnabled( true );
-    m_finalsIdent_dlg->submit_btn->setEnabled( true );
+    time = t;
+    displayQuestionAndChoices();
+    status = s;
+
+    if( status == QUESTION_RUNNING )
+        runContest();
+    else if( status == QUESTION_STOPPED )
+        stopContest();
+    else if( status == QUESTION_PAUSED )
+        pauseContest();
 }
 
 void ContestantApp::onContestTime( ushort t )
@@ -239,6 +252,11 @@ void ContestantApp::onAData ( bool result )
     if( result )
     {
         showInfo( 0, "Answers successfully sent to server", "" );
+        if( round == 3 || round == 4 )
+        {
+            m_finalsChoice_dlg->submit_btn->setEnabled( false );
+            m_finalsIdent_dlg->submit_btn->setEnabled( false );
+        }
         exit();
     }
     else
@@ -276,6 +294,9 @@ void ContestantApp::updateTimer()
     time--;
     if( time <= 0 )
     {
+        if( round == 3 || round == 4 )
+            finalsSubmit();
+
         status = CONTEST_STOPPED;
         stopContest();
     }
@@ -290,6 +311,11 @@ void ContestantApp::updateTimer()
         m_elims_dlg->time_lbl->setText( t );
     else if( round == 2 )
         m_semifinals_dlg->time_lbl->setText( t );
+    else if( round == 3 || round == 4 )
+    {
+        m_finalsChoice_dlg->time_lbl->setText( t );
+        m_finalsIdent_dlg->time_lbl->setText( t );
+    }
 }
 
 //widget slots
@@ -409,9 +435,8 @@ void ContestantApp::submit()
 
 void ContestantApp::finalsSubmit()
 {
+    recordAnswer();
     m_network->aDataSend( round, ad );
-    m_finalsChoice_dlg->submit_btn->setEnabled( false );
-    m_finalsIdent_dlg->submit_btn->setEnabled( false );
 }
 
 void ContestantApp::displayQuestionAndChoices()
@@ -592,54 +617,101 @@ void ContestantApp::stopContest()
 {
     timer->stop();
 
-    if( round == 1 )
-        m_elims_w->hide();
-    else if( round == 2 )
-        m_semifinals_w->hide();
+    if( round == 1 || round == 2 ) // stop contest
+    {
+        if( round == 1 )
+            m_elims_w->hide();
+        else if( round == 2 )
+            m_semifinals_w->hide();
 
-    qCount = 0;
-    m_welcome_dlg->start_btn->setEnabled( false );
+        qCount = 0;
+        m_welcome_dlg->start_btn->setEnabled( false );
+        m_summary_w->hide();
+        m_welcome_w->show();
+    }
+    else if( round == 3 || round == 4 ) //stop question
+    {
+        m_finalsChoice_dlg->a_choice->setChecked(false);
+        m_finalsChoice_dlg->b_choice->setChecked(false);
+        m_finalsChoice_dlg->c_choice->setChecked(false);
+        m_finalsChoice_dlg->d_choice->setChecked(false);
+        m_finalsChoice_dlg->a_choice->setCheckable(false);
+        m_finalsChoice_dlg->b_choice->setCheckable(false);
+        m_finalsChoice_dlg->c_choice->setCheckable(false);
+        m_finalsChoice_dlg->d_choice->setCheckable(false);
+        m_finalsChoice_dlg->submit_btn->setEnabled(false);
+
+        m_finalsIdent_dlg->answer_line->setText("");
+        m_finalsIdent_dlg->answer_line->setEnabled(false);
+        m_finalsIdent_dlg->submit_btn->setEnabled(false);
+    }
+
     displayStatus();
-    m_summary_w->hide();
-    m_welcome_w->show();
 }
 
 void ContestantApp::pauseContest()
 {
-    m_welcome_dlg->start_btn->setEnabled( false );
-
-    if( round == 1 )
+    if( round == 1 || round == 2 ) //pause contest
     {
-        m_elims_dlg->prev_btn->setEnabled( false );
-        m_elims_dlg->next_btn->setEnabled( false );
+        m_welcome_dlg->start_btn->setEnabled( false );
+        if( round == 1 )
+        {
+            m_elims_dlg->prev_btn->setEnabled( false );
+            m_elims_dlg->next_btn->setEnabled( false );
+        }
+        else if( round == 2 )
+        {
+            m_semifinals_dlg->prev_btn->setEnabled( false );
+            m_semifinals_dlg->next_btn->setEnabled( false );
+        }
+        m_summary_dlg->submit_btn->setEnabled( false );
     }
-    else if( round == 2 )
+    else if( round == 3 || round == 4 ) //stop question
     {
-        m_semifinals_dlg->prev_btn->setEnabled( false );
-        m_semifinals_dlg->next_btn->setEnabled( false );
+        m_finalsChoice_dlg->a_choice->setCheckable(false);
+        m_finalsChoice_dlg->b_choice->setCheckable(false);
+        m_finalsChoice_dlg->c_choice->setCheckable(false);
+        m_finalsChoice_dlg->d_choice->setCheckable(false);
+        m_finalsChoice_dlg->submit_btn->setEnabled(false);
+
+        m_finalsIdent_dlg->answer_line->setEnabled(false);
+        m_finalsIdent_dlg->submit_btn->setEnabled(false);
     }
 
-    m_summary_dlg->submit_btn->setEnabled( false );
     timer->stop();
     displayStatus();
 }
 
 void ContestantApp::runContest()
 {
-    m_welcome_dlg->start_btn->setEnabled( true );
+    if( round == 1 || round == 2 ) //run contest
+    {
+        m_welcome_dlg->start_btn->setEnabled( true );
+        if( round == 1 )
+        {
+            m_elims_dlg->prev_btn->setEnabled( true );
+            m_elims_dlg->next_btn->setEnabled( true );
+        }
+        else if( round == 2 )
+        {
+            m_semifinals_dlg->prev_btn->setEnabled( true );
+            m_semifinals_dlg->next_btn->setEnabled( true );
+        }
+        m_summary_dlg->submit_btn->setEnabled( true );
+    }
+    else if( round == 3 || round == 4 ) //stop question
+    {
+        m_finalsChoice_dlg->a_choice->setCheckable(true);
+        m_finalsChoice_dlg->b_choice->setCheckable(true);
+        m_finalsChoice_dlg->c_choice->setCheckable(true);
+        m_finalsChoice_dlg->d_choice->setCheckable(true);
+        m_finalsChoice_dlg->submit_btn->setEnabled(true);
 
-    if( round == 1 )
-    {
-        m_elims_dlg->prev_btn->setEnabled( true );
-        m_elims_dlg->next_btn->setEnabled( true );
+        m_finalsIdent_dlg->answer_line->setEnabled(true);
+        m_finalsIdent_dlg->submit_btn->setEnabled(true);
     }
-    else if( round == 2 )
-    {
-        m_semifinals_dlg->prev_btn->setEnabled( true );
-        m_semifinals_dlg->next_btn->setEnabled( true );
-    }
+
     timer->start( 1000 );
-    m_summary_dlg->submit_btn->setEnabled( true );
     displayStatus();
 }
 
