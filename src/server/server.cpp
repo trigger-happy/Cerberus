@@ -29,8 +29,7 @@ using namespace std;
 bool testing = true;
 
 Server::Server ( QWidget* parent ) : QObject ( parent ) {
-	/*Fills up the m_questions vector with the question data in XML.
-	*/
+	//Fills up the m_questions vector with the question data in XML.
 	for ( int i = 1; i <= 4; i++ ) {
 		QFile file ( QString ( "resources/stage%1.xml" ).arg ( i ) );
 		file.open ( QIODevice::ReadOnly );
@@ -64,6 +63,7 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 	if ( testing ) result = SqlUtil::getInstance().init ( "resources/test.db" );
 	else result = SqlUtil::getInstance().init ( m_db_path );
 
+	//This will be deleted as soon as SqlUtil return types become void
 	if ( !result ) {
 		QMessageBox msg;
 		msg.setText ( "Failed to load db" );
@@ -78,7 +78,6 @@ Server::~Server() {
 }
 
 void Server::newContestant( ContestantConnection* cc ) {
-	//TODO: Stuff here for when a new connection is made
 	if( testing ) cout << "A new contestant has connected." << endl;
 	connect ( cc, SIGNAL ( onAuthentication( ContestantConnection*, const QString& ) ),
 			  this, SLOT ( onAuthentication( ContestantConnection*, const QString& ) ) );
@@ -88,11 +87,6 @@ void Server::badClient ( TempConnection* tc ) {
 	emit badC( tc );
 }
 
-void Server::contestantDisconnect( ContestantConnection* cc ) {
-	if( testing ) cout << "A contestant has been disconnected." << endl;
-	emit contestantDc( cc );
-}
-
 void Server::onAuthentication( ContestantConnection* cc, const QString& c_username ) {
 	if ( testing ) cout << c_username.toStdString() << " has connected." << endl;
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
@@ -100,13 +94,33 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 	emit contestantC( cc, c_username );
 }
 
+void Server::contestantDisconnect( ContestantConnection* cc ) {
+	if( testing ) cout << "A contestant has been disconnected." << endl;
+	emit contestantDc( cc );
+}
+
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data )
 {
+	//return here should be a vector of QStrings to be submitted to admin. Or something.
+	const QString& user = cc->getUserName();
+	cout << ( QString( "%1 has submitted answer data for round %2" ).arg( user ).arg( round ) ).toStdString() << endl;
 
+	for ( int i = 0; i < data.size(); i++ ) {
+		if ( data[i].ans_type == Question::IDENTIFICATION ) {
+			cout << ( QString( "%1 is %2" ).arg( i + 1 ).arg( data[i].id_answer ) ).toStdString() << endl;
+		} else {
+			QString buffer;
+
+			for ( int j = 0; j < data[i].multi_choice.size(); j++ ) {
+				buffer.append( QString( "%1 " ).arg( data[i].multi_choice[j] ) );
+			}
+
+			cout << ( QString( "%1 is %2" ).arg( i + 1 ).arg( buffer ) ).toStdString() << endl;
+		}
+	}
 }
 
 void Server::stopContest() {
-	//m_dlg->textBrowser->append("Stopped.");
 	m_network->setStatus( CONTEST_STOPPED );
 }
 
