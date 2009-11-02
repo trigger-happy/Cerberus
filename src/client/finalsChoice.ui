@@ -30,7 +30,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>timer</string>
+      <string>0:0</string>
      </property>
     </widget>
    </item>

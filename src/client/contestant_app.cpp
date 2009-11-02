@@ -257,7 +257,8 @@ void ContestantApp::onAData ( bool result )
             m_finalsChoice_dlg->submit_btn->setEnabled( false );
             m_finalsIdent_dlg->submit_btn->setEnabled( false );
         }
-        exit();
+        if( round == 1 || round == 2 )
+            exit();
     }
     else
         showInfo( 1, "Answers not sent. Please try again.", "" );
@@ -294,11 +295,17 @@ void ContestantApp::updateTimer()
     time--;
     if( time <= 0 )
     {
+        if( round == 1 || round == 2 )
+        {
+            status = CONTEST_STOPPED;
+            stopContest();
+        }
         if( round == 3 || round == 4 )
+        {
             finalsSubmit();
-
-        status = CONTEST_STOPPED;
-        stopContest();
+            status = QUESTION_PAUSED;
+            pauseContest();
+        }
     }
 
     int minute = time/60;
@@ -540,11 +547,11 @@ void ContestantApp::displayAnswer()
 void ContestantApp::displayStatus()
 {
     QString s;
-    if( status == CONTEST_RUNNING )
+    if( status == CONTEST_RUNNING || status == QUESTION_RUNNING )
         s = "RUNNING";
-    else if( status == CONTEST_STOPPED )
+    else if( status == CONTEST_STOPPED || status == QUESTION_STOPPED )
         s = "STOPPED";
-    else if( status == CONTEST_PAUSED )
+    else if( status == CONTEST_PAUSED || status == QUESTION_PAUSED )
         s = "PAUSED";
 
     m_welcome_dlg->status_lbl->setText( s );
