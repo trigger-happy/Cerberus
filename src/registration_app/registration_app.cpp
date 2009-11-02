@@ -39,9 +39,9 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 	QString text = QInputDialog::getText(this, tr("Database Directory"),
 										  tr("Database Path:"), QLineEdit::Normal,
 										  "resources/test.db", &ok);
-	if (!text.isEmpty())
-		 m_sql.init(text);
-
+	if ( !m_sql.init ( text ) ) {
+			showMessageDialog( QString::fromStdString("Failed to load database. Application will not work."));
+	}
 
 	m_team_table_w = new QDialog(this);
 	m_team_table_wnd->setupUi(m_team_table_w);
@@ -54,9 +54,6 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 	m_user_edit_w = new QDialog(this);
 	m_user_edit_wnd->setupUi(m_user_edit_w);
 	m_user_edit_w->hide();
-
-
-
 
 	//connections for the buttons
 
@@ -76,15 +73,9 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 	connect(m_user_edit_wnd->save_userchange_btn, SIGNAL(clicked()), this, SLOT(saveUserEdit()));
 	connect(m_user_edit_wnd->backtouser_btn, SIGNAL(clicked()), this, SLOT(backToUser()));
 
-	bool result = m_sql.init ( text );
-		if ( !result ) {
-				QMessageBox msg ( this );
-				msg.setWindowTitle("");
-				msg.setText ( "Failed to load database. Application will not work." );
-				msg.exec();
-		}
 
-	//starting up the QLists
+
+	//start up the QLists
 	refreshTeamList(teams);
 }
 
@@ -104,10 +95,7 @@ void RegistrationApp::refreshTeamList(QStringList& teams){
 
 	}
 	catch(SqlUtil::SqlUtilException e){
-		QMessageBox team_msg ( this );
-		team_msg.setWindowTitle("");
-		team_msg.setText ( "Couldn't refresh teams: error " + e.msg );
-		team_msg.exec();
+		showMessageDialog(  "Couldn't refresh teams: error " + e.msg);
 	}
 }
 
@@ -124,10 +112,7 @@ void RegistrationApp::refreshUserList(QString team, QStringList& users){
 		m_user_table_wnd->user_listview->setCurrentRow(0);
 	}
 	catch(SqlUtil::SqlUtilException e){
-		QMessageBox team_msg ( this );
-		team_msg.setWindowTitle("");
-		team_msg.setText ( "Couldn't refresh users: error " + e.msg );
-		team_msg.exec();
+		showMessageDialog(  "Couldn't refresh users: error " + e.msg);
 	}
 }
 
@@ -142,16 +127,10 @@ bool RegistrationApp::addTeam(){
 		refreshTeamList(teams);
 		m_team_table_wnd->teamname_txt->setText("");
 
-		QMessageBox addteam_msg ( this );
-		addteam_msg.setWindowTitle("");
-		addteam_msg.setText ( "Team successfully added" );
-		addteam_msg.exec();
+		showMessageDialog(QString::fromStdString( "Team successfully added"));
 	}
 	catch(SqlUtil::SqlUtilException e){
-		QMessageBox addteam_msg ( this );
-		addteam_msg.setWindowTitle("");
-		addteam_msg.setText ( "Error adding team: "+ e.msg );
-		addteam_msg.exec();
+		showMessageDialog(  "Error adding team: "+ e.msg);
 	}
 }
 
@@ -185,16 +164,10 @@ bool RegistrationApp::deleteTeam(){
 		 try {
 			 m_sql.deleteTeam(team_nav);
 			refreshTeamList(teams);
-			QMessageBox deleteteam_msg ( this );
-			deleteteam_msg.setWindowTitle("");
-			deleteteam_msg.setText ( "Team successfully deleted" );
-			deleteteam_msg.exec();
+			showMessageDialog( QString::fromStdString("Team successfully deleted."));
 		 }
 		catch(SqlUtil::SqlUtilException e){
-			QMessageBox deleteteam_msg ( this );
-			deleteteam_msg.setWindowTitle("");
-			deleteteam_msg.setText ( "Error deleting team: " + e.msg);
-			deleteteam_msg.exec();
+			showMessageDialog(  "Error deleting team: " + e.msg);
 		}
 	}
 }
@@ -210,19 +183,13 @@ bool RegistrationApp::editTeamSchool(){
 	if (ok){
 		try{
 			m_sql.editTeamName(m_user_table_wnd->lbl_teamname->text(), new_team);
-			QMessageBox editname_msg ( this );
-			editname_msg.setWindowTitle("");
-			editname_msg.setText ( "Team name successfully changed." );
-			editname_msg.exec();
+			showMessageDialog( QString::fromStdString("Team name successfully changed"));
 			//refresh all fields that call this name in this particular window
 			refreshTeamList(teams);
 			m_user_table_wnd->lbl_teamname->setText(new_team);
 		}
 		catch(SqlUtil::SqlUtilException e){
-			QMessageBox editname_msg ( this );
-			editname_msg.setWindowTitle("");
-			editname_msg.setText ( "Error editing team name: " + e.msg );
-			editname_msg.exec();
+			showMessageDialog(  "Error editing team name: " + e.msg);
 		}
 	}
 }
@@ -237,16 +204,10 @@ bool RegistrationApp::addUser(){
 	try{
 		m_sql.addUser(user_nav, team_nav);
 		refreshUserList(team_nav, users);
-		QMessageBox adduser_msg ( this );
-		adduser_msg.setWindowTitle("");
-		adduser_msg.setText ( "User successfully added" );
-		adduser_msg.exec();
+		showMessageDialog(QString::fromStdString( "User successfully added"));
 	}
 	catch(SqlUtil::SqlUtilException e){
-		QMessageBox adduser_msg ( this );
-		adduser_msg.setWindowTitle("");
-		adduser_msg.setText ( "Error adding user: "+ e.msg );
-		adduser_msg.exec();
+		showMessageDialog(  "Error adding user: "+ e.msg);
 	}
 
 }
@@ -282,16 +243,10 @@ bool RegistrationApp::deleteUser(){
 		try{
 			m_sql.deleteUser(user_nav);
 			refreshUserList(team_nav, users);
-			QMessageBox deleteuser_msg ( this );
-			deleteuser_msg.setWindowTitle("");
-			deleteuser_msg.setText ( "User successfully deleted" );
-			deleteuser_msg.exec();
+			showMessageDialog( QString::fromStdString("User successfully deleted"));
 		}
 		catch(SqlUtil::SqlUtilException e){
-			QMessageBox deleteuser_msg ( this );
-			deleteuser_msg.setWindowTitle("");
-			deleteuser_msg.setText ( "Error deleting user: " + e.msg );
-			deleteuser_msg.exec();
+			showMessageDialog( "Error deleting user: " + e.msg);
 		}
 	}
 }
@@ -313,16 +268,10 @@ bool RegistrationApp::saveUserEdit(){
 	ud.password = m_user_edit_wnd->password_txt->text();	
 	try{
 		m_sql.editUser(ud.user_name, ud);
-		QMessageBox edituser_msg ( this );
-		edituser_msg.setWindowTitle("");
-		edituser_msg.setText ( "Changes Saved. Your password is '" + m_user_edit_wnd->password_txt->text() + "'." );
-		edituser_msg.exec();
+		showMessageDialog( "Changes Saved. Your password is '" + m_user_edit_wnd->password_txt->text() + "'." );
 	}
 	catch(SqlUtil::SqlUtilException e){
-		QMessageBox edituser_msg ( this );
-		edituser_msg.setWindowTitle("");
-		edituser_msg.setText ( "Error editing user: " + e.msg );
-		edituser_msg.exec();
+		showMessageDialog( "Error editing user: " + e.msg);
 	}
 
 	//go back to the specific team view
@@ -338,6 +287,13 @@ bool RegistrationApp::backToUser(){
 	m_user_edit_w->hide();
 
 
+}
+
+void RegistrationApp::showMessageDialog(QString text){
+	QMessageBox msg ( this );
+		msg.setWindowTitle("");
+		msg.setText ( text );
+		msg.exec();
 }
 
 

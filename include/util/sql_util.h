@@ -31,14 +31,20 @@ This class takes care of the low level interactions with the SQLite DB
 class SqlUtil : public Singleton<SqlUtil>
 {
 public:
+	//constant variables: may be changed later on depending on contest mechanics
+	//max 2 teams per school
+	//max 2 members per team
+	const static int MAX_TEAMS_PER_SCHOOL = 2;
+	const static int MAX_USERS_PER_TEAM = 2;
 
 	class SqlUtilException{
 	public:
 		const QString msg;
 		SqlUtilException(const QString msg):msg (msg){}
+
 		const char* what() const throw()
 		  {
-			return "My exception happened";
+			return "database exception";
 		  }
 		~SqlUtilException() throw() {}
 	};

@@ -48,24 +48,37 @@ void SqlUtil::createDBTables()
 void SqlUtil::addTeam ( const QString& team_name, const QString& school )
 {
 		//check input values here if they are all valid?
-		bool success =  query->exec ( "INSERT INTO team(team_name, school) "
-                             "VALUES ('" + team_name + "', '" + school + "')" );
-		if (!success)
-			throw SqlUtilException(query->lastError().databaseText());
+		if (countTeamsPerSchool(school) >= MAX_TEAMS_PER_SCHOOL){
+			//QString& temp = new QString();
+			throw SqlUtilException(QString::fromStdString("Cannot add team (max 2 teams per school)"));
+		}
+		else{
+			bool success =  query->exec ( "INSERT INTO team(team_name, school) "
+								 "VALUES ('" + team_name + "', '" + school + "')" );
+			if (!success)
+				throw SqlUtilException(query->lastError().databaseText());
+		}
 }
 
 void SqlUtil::addUser(const QString& user_name, const QString& team_name)
 {
-	//insert into user(username,team_name,firstname,lastname,password) values ('123','team','','','')
-	QString sql = QString ( "INSERT INTO user(username, team_name, firstname, lastname, password) "
-				"VALUES ('%1','%2','','','')" )
-		      .arg ( QString (user_name) )
-		      .arg ( QString (team_name) );
-	bool success = query->exec( sql );
-	if (!success)
-			throw SqlUtilException(query->lastError().databaseText());
+	if (countUsersPerTeam(team_name) >= MAX_USERS_PER_TEAM){
+		//QString temp = new QString();
+		throw SqlUtilException(QString::fromStdString("cannot add user (max 2 users per team)"));
+	}
+	else{
+		//insert into user(username,team_name,firstname,lastname,password) values ('123','team','','','')
+		QString sql = QString ( "INSERT INTO user(username, team_name, firstname, lastname, password) "
+					"VALUES ('%1','%2','','','')" )
+				  .arg ( QString (user_name) )
+				  .arg ( QString (team_name) );
+		bool success = query->exec( sql );
+		if (!success)
+				throw SqlUtilException(query->lastError().databaseText());
+	}
 }
 
+//not used, i think
 void SqlUtil::addUser ( const UserData& ud )
 {
         QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
