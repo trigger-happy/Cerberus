@@ -140,17 +140,20 @@ bool RegistrationApp::addTeam(){
 
 
 bool RegistrationApp::goToEditTeam(){
-	//change this to access from the list view
-	team_nav = m_team_table_wnd->team_listview->currentItem()->text();
+	if (m_team_table_wnd->team_listview->count() == 0)
+		showMessageDialog(QString("There are no users to edit."));
+	else{
+		//change this to access from the list view
+		team_nav = m_team_table_wnd->team_listview->currentItem()->text();
 
-	m_team_table_wnd->teamname_txt->setText("");
-	m_team_table_wnd->teamschool_txt->setText("");
-	refreshUserList(team_nav, users);
-	m_team_table_w->hide();
-	m_user_table_w->show();
-	m_user_table_wnd->lbl_teamname->setText(team_nav);
-	m_user_table_wnd->lbl_schoolname->setText(m_sql.getTeamSchool(m_user_table_wnd->lbl_teamname->text()));
-
+		m_team_table_wnd->teamname_txt->setText("");
+		m_team_table_wnd->teamschool_txt->setText("");
+		refreshUserList(team_nav, users);
+		m_team_table_w->hide();
+		m_user_table_w->show();
+		m_user_table_wnd->lbl_teamname->setText(team_nav);
+		m_user_table_wnd->lbl_schoolname->setText(m_sql.getTeamSchool(m_user_table_wnd->lbl_teamname->text()));
+	}
 }
 
 bool RegistrationApp::deleteTeam(){
@@ -217,19 +220,23 @@ bool RegistrationApp::addUser(){
 }
 
 bool RegistrationApp::editUser(){
-	//pass the username of the selected value in the list view to user_nav
-	user_nav = m_user_table_wnd->user_listview->currentItem()->text();
-	//get the original data of that user
-	UserData ud;
-	m_sql.getSpecificUser(user_nav, ud);
-	m_user_edit_wnd->firstname_txt->setText(ud.firstname);
-	m_user_edit_wnd->lastname_txt->setText(ud.lastname);
+	if (m_user_table_wnd->user_listview->count() == 0)
+		showMessageDialog(QString("There are no users to edit."));
+	else{
+		//pass the username of the selected value in the list view to user_nav
+		user_nav = m_user_table_wnd->user_listview->currentItem()->text();
+		//get the original data of that user
+		UserData ud;
+		m_sql.getSpecificUser(user_nav, ud);
+		m_user_edit_wnd->firstname_txt->setText(ud.firstname);
+		m_user_edit_wnd->lastname_txt->setText(ud.lastname);
 
-	//move to the user edit window
-	m_user_edit_wnd->lbl_username->setText(user_nav);
-	m_user_edit_wnd->lbl_userteam->setText(ud.teamname);
-	m_user_edit_wnd->lbl_userschool->setText(m_sql.getTeamSchool(ud.teamname));
-	m_user_edit_w->show();
+		//move to the user edit window
+		m_user_edit_wnd->lbl_username->setText(user_nav);
+		m_user_edit_wnd->lbl_userteam->setText(ud.teamname);
+		m_user_edit_wnd->lbl_userschool->setText(m_sql.getTeamSchool(ud.teamname));
+		m_user_edit_w->show();
+	}
 }
 
 bool RegistrationApp::deleteUser(){
