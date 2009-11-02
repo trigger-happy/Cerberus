@@ -88,10 +88,11 @@ void Server::badClient ( TempConnection* tc ) {
 }
 
 void Server::onAuthentication( ContestantConnection* cc, const QString& c_username ) {
-	if ( testing ) cout << c_username.toStdString() << " has connected." << endl;
+	if ( testing ) cout << c_username.toStdString() << " has authenticated." << endl;
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
 			 this, SLOT( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ) );
-	emit contestantC( cc, c_username );
+	m_network->getContestantList();
+	emit contestantC( c_username );
 }
 
 void Server::contestantDisconnect( ContestantConnection* cc ) {
@@ -121,14 +122,17 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 }
 
 void Server::stopContest() {
+	if( testing ) cout << "Contest stopped. \n";
 	m_network->setStatus( CONTEST_STOPPED );
 }
 
 void Server::startContest() {
+	if( testing ) cout << "Contest running. \n";
 	m_network->setStatus( CONTEST_RUNNING );
 }
 
 void Server::pauseContest() {
+	if( testing ) cout << "Contest paused. \n";
 	m_network->setStatus( CONTEST_PAUSED );
 }
 

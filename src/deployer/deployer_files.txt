@@ -1,0 +1,2 @@
+the application executable for the module and the configuration file relevant to it
+James Choa: for the server, the question xml files, configuration file and database
