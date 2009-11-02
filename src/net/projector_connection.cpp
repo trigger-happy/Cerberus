@@ -79,6 +79,10 @@ void ProjectorConnection::ready() {
 			sendContestState();
 			break;
 
+		case QRY_CONTEST_TIME:
+			sendContestTime();
+			break;
+
 		default:
 			;
 	}
@@ -123,5 +127,19 @@ void ProjectorConnection::sendContestState() {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( ushort ) m_round << ( uchar ) m_con_status;
 
+	m_socket->write ( block );
+}
+
+void ProjectorConnection::sendContestTime() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = INF_CONTEST_TIME;
+	hdr.length = sizeof ( ushort );
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out << ( ushort ) m_contime;
 	m_socket->write ( block );
 }

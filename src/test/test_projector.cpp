@@ -32,6 +32,8 @@ TestProjector::TestProjector( QDialog* parent ) : QDialog( parent ),
 	         this, SLOT( onDisconnect() ) );
 	connect( m_network, SIGNAL( onContestState( ushort, CONTEST_STATUS ) ),
 	         this, SLOT( onContestState( ushort, CONTEST_STATUS ) ) );
+	connect( m_network, SIGNAL( onContestTime( ushort ) ),
+	         this, SLOT( onContestTime( ushort ) ) );
 }
 
 void TestProjector::onConnectBtn() {
@@ -51,6 +53,8 @@ void TestProjector::writeLog( const QString& log ) {
 
 void TestProjector::onContestState( ushort round, CONTEST_STATUS status ) {
 	writeLog( QString( "CState: round %1, status %2" ).arg( round ).arg( status ) );
+	writeLog( "Getting contest time..." );
+	m_network->getContestTime();
 }
 
 void TestProjector::onContestTime( ushort time ) {

@@ -77,6 +77,10 @@ public:
 	*/
 	void showAnswer();
 
+	/*!
+	*/
+	void sendContestTime();
+
 public slots:
 	/*!
 	Called when there's a socket error.

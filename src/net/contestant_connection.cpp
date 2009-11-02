@@ -188,9 +188,7 @@ void ContestantConnection::ready() {
 
 		case QRY_CONTEST_TIME:
 
-			if ( m_authenticated ) {
-				emit onContestTimeRequest ( this );
-			}
+			sendContestTime();
 
 			break;
 
@@ -275,7 +273,7 @@ void ContestantConnection::sendAReply ( bool res ) {
 	m_socket->write ( block );
 }
 
-void ContestantConnection::setContestTime ( ushort time ) {
+void ContestantConnection::sendContestTime() {
 	//construct the packet and send it
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
@@ -285,7 +283,7 @@ void ContestantConnection::setContestTime ( ushort time ) {
 	hdr.command = INF_CONTEST_TIME;
 	hdr.length = sizeof ( ushort );
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
-	out << ( ushort ) time;
+	out << ( ushort ) m_contime;
 	m_socket->write ( block );
 }
 

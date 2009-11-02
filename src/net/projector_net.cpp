@@ -120,6 +120,13 @@ void ProjectorNet::ready() {
 			break;
 
 		case INF_CONTEST_TIME:
+			// info on contest time
+			{
+				ushort time;
+				in >> time;
+				emit onContestTime( time );
+			}
+
 			break;
 
 		case PJR_SHOW_TIME:
@@ -159,6 +166,18 @@ void ProjectorNet::getContestState() {
 	p_header hdr;
 	hdr.length = 0;
 	hdr.command = QRY_CONTEST_STATE;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
+}
+
+void ProjectorNet::getContestTime() {
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	//construct the header
+	p_header hdr;
+	hdr.length = 0;
+	hdr.command = QRY_CONTEST_TIME;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
 }
