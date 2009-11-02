@@ -137,12 +137,23 @@ void ProjectorNet::ready() {
 			break;
 
 		case INF_QUESTION_TIME:
+			// TODO: might remove this
 			break;
 
-		case INF_QUESTION_STATE:
+		case INF_QUESTION_STATE: {
+				ushort qnum, time, status;
+				in >> qnum >> time >> status;
+				emit onQuestionState( qnum, time, ( QUESTION_STATUS )status );
+			}
+
 			break;
 
 		case PJR_SHOW_ANSWER:
+			emit onShowAnswer();
+			break;
+
+		case PJR_SHOW_QUESTION:
+			emit onShowQuestion();
 			break;
 
 		default:

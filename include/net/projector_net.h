@@ -101,6 +101,7 @@ signals:
 	void onQuestionTime();
 	void onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status );
 	void onShowAnswer();
+	void onShowQuestion();
 
 private:
 	QTcpSocket* m_socket;

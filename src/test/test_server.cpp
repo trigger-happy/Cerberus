@@ -180,9 +180,11 @@ void ServerDlg::onShowQTimeBtn() {
 }
 
 void ServerDlg::onShowAnswerBtn() {
+	m_server->showAnswer();
 }
 
 void ServerDlg::onShowQuestionBtn() {
+	m_server->showQuestion();
 }
 
 void ServerDlg::onStartQuestionBtn() {

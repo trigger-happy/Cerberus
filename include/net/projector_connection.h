@@ -80,6 +80,10 @@ public:
 
 	/*!
 	*/
+	void showQuestion();
+
+	/*!
+	*/
 	void sendContestTime();
 
 public slots:

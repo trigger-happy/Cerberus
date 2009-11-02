@@ -75,7 +75,10 @@ enum PROTOCOL_COMMAND {
 	INF_QUESTION_STATE,
 
 	// show answer
-	PJR_SHOW_ANSWER
+	PJR_SHOW_ANSWER,
+	
+	// show question
+	PJR_SHOW_QUESTION
 
 	// TODO: Add admin commands here
 };
