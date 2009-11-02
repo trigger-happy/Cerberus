@@ -24,6 +24,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_semifinals.h"
 #include "ui_summary.h"
 #include <QString>
+#include <QFile>
+#include <QTextStream>
 #include <vector>
 #include <iostream>
 #include <cassert>
@@ -114,24 +116,30 @@ ContestantApp::ContestantApp ( QWidget* parent )
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateTimer() ) );
 
 	// Get the client configuration from XmlUtil
-    /*
+
     QString xml;
-	QFile file("client_config.xml");
-	if (!file.open (IO_ReadOnly))
-        showInfo( 1, "Can't open file", "" );
+    QFile file( QString("resources/client_config.xml") );
+    if( !file.exists() )
+    {
+        showInfo( 1, "client_config.xml does not exist", "Make sure file is ready" );
+        exit();
+    }
+    else if( !file.open( QIODevice::ReadOnly ) )
+    {
+        showInfo( 1, "Can't open client_config.xml", "Make sure file is ready" );
+        exit();
+    }
 	QTextStream stream( &file );
 	QString line;
-	while( !stream.eof() ) {
+    do {
 	    line = stream.readLine();
-	    xml += line;
-	}
+        xml.append( line );
+    } while( !line.isNull() );
 
 	ClientConfig config;
-    XMLUtil::getInstance().readNetConfig( xml, config ); */
+    XmlUtil::getInstance().readNetConfig( xml, config );
 
-	// Connect to the server here
-	//m_network->connectToHost ( config.ip , config.port );
-	m_network->connectToHost ( "localhost" , 2652 );
+    m_network->connectToHost ( config.ip , config.port );
 
     qCount = 0;
     time = 0;
@@ -212,7 +220,10 @@ void ContestantApp::onQData ( const QString& xml )
 void ContestantApp::onAData ( bool result )
 {
     if( result )
+    {
         showInfo( 0, "Answers successfully sent to server", "" );
+        exit();
+    }
     else
         showInfo( 1, "Answers not sent. Please try again.", "" );
 }
@@ -381,6 +392,7 @@ void ContestantApp::submit()
 void ContestantApp::displayQuestionAndChoices()
 {
 	Question q = sd.questions[qCount];
+
 	if ( round == 1 )
 	{
 		m_elims_dlg->question_lbl->setText ( q.question );
@@ -588,6 +600,6 @@ int main ( int argc, char* argv[] )
 
 	ContestantApp c_app;
     c_app.show();
-
+    c_app.resize( 500, 500 );
 	return app.exec();
 }
