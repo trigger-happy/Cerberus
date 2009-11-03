@@ -96,8 +96,9 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 }
 
 void Server::contestantDisconnect( ContestantConnection* cc ) {
-	if( testing ) cout << "A contestant has been disconnected." << endl;
-	emit contestantDc( cc );
+	QString c_user = cc->getUserName();
+	if( testing ) cout << c_user.toStdString() << " has been disconnected.\n";
+	if(!c_user.isNull()) emit contestantDc( c_user );
 }
 
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data )
@@ -150,4 +151,9 @@ void Server::dropConnection( ContestantConnection* cc ) {
 
 double Server::getScore( QString c_user ){
 	return SqlUtil::getInstance().getScore( c_user );
+}
+
+void Server::setRound( int round ){
+	m_network->setRound(round);
+	if( testing ) cout << "Contest set to Round " << round << ".\n";
 }

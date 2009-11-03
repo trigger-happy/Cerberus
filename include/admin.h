@@ -42,6 +42,7 @@ public slots:
 	
 	// contestant control
 	void addContestant(const QString& c_user);
+	void removeContestant(const QString& c_user);
 	void onContestantListClick(const QModelIndex& index);
 	void onDropContestant();
 	void onViewAnswers();
@@ -63,6 +64,7 @@ private:
 	Server* m_server;
 	QStandardItemModel* contestants, questions;
 	QString selected_user;
+	int selectedRound;
 };
 
 #endif //ADMIN_H

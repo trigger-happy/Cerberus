@@ -58,10 +58,12 @@ public:
 
 	double getScore ( QString c_user );
 
+	void setRound( int round );
+
 signals:
 	void badC ( TempConnection* con );
 	void contestantC ( const QString& c_username );
-	void contestantDc ( ContestantConnection* cc );
+	void contestantDc ( QString c_user );
 	void newAdmin ( AdminConnection* ac );
 	void newProjector ( ProjectorConnection* pc );
 

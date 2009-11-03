@@ -30,16 +30,20 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	m_dlg->contestants_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	// connect dialog signals and slots here
-	connect(m_dlg->round_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRoundSelection(int)));
+	connect(m_dlg->round_combo, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(onRoundSelection(int)));
+	connect(m_dlg->apply_btn, SIGNAL (clicked()), this, SLOT (onApplyBtn()));
 	connect(m_dlg->stop_btn, SIGNAL (clicked()), this, SLOT (onStopBtn()));
 	connect(m_dlg->start_btn, SIGNAL (clicked()), this, SLOT (onStartBtn()));
 	connect(m_dlg->pause_btn, SIGNAL (clicked()), this, SLOT (onPauseBtn()));
-	connect(m_dlg->contestants_listv, SIGNAL (clicked(QModelIndex)), this, SLOT (onContestantListClick(QModelIndex)));
+	connect(m_dlg->contestants_listv, SIGNAL (clicked(QModelIndex)),
+			this, SLOT (onContestantListClick(QModelIndex)));
 
 	// connect server signals and slots here
 	m_server = new Server();
 	connect(m_server, SIGNAL (contestantC(QString)), this, SLOT (addContestant(QString)));
 
+	selectedRound = 1;
 }
 
 Admin::~Admin() {
@@ -47,6 +51,7 @@ Admin::~Admin() {
 
 // contest control
 void Admin::onApplyBtn(){
+	m_server->setRound(selectedRound);
 }
 
 
@@ -66,13 +71,18 @@ void Admin::onPauseBtn() {
 }
 
 void Admin::onRoundSelection(int index){
+	selectedRound = index + 1;
 }
 
 // contestant control
-void Admin::addContestant(const QString& c_user)
-{
+void Admin::addContestant(const QString& c_user){
 	QStandardItem* item = new QStandardItem(c_user);
 	contestants->appendRow(item);
+	contestants->sort( 0, Qt::AscendingOrder);
+}
+
+void Admin::removeContestant(const QString& c_user){
+
 }
 
 void Admin::onContestantListClick(const QModelIndex& index){
