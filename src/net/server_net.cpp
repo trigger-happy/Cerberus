@@ -122,7 +122,7 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 				cc->setContestTime( m_contime );
 				connect ( cc, SIGNAL ( contestantDisconnect ( ContestantConnection* ) ),
 				          this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
-				connect( cc, SIGNAL( contestTimeRequest( ushort& ) ),
+				connect( cc, SIGNAL( onContestTimeRequest( ushort& ) ),
 				         this, SLOT( contestTimeResponse( ushort& ) ) );
 				m_contestants.insert ( m_contestants.end(), cc );
 				emit newContestant ( cc );

@@ -196,7 +196,7 @@ void ContestantConnection::ready() {
 			break;
 
 		case QRY_CONTEST_TIME:
-			emit contestTimeRequest( m_contime );
+			emit onContestTimeRequest( m_contime );
 			sendContestTime();
 
 			break;

@@ -133,7 +133,7 @@ signals:
 
 	/*!
 	*/
-	void contestTimeRequest( ushort& contime );
+	void onContestTimeRequest( ushort& contime );
 
 	/*!
 	Emitted when the authentication is successful for this client.
