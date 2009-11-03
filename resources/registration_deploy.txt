@@ -1,0 +1,1 @@
+build/registration.exe registration.exe

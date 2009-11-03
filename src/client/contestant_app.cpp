@@ -448,17 +448,11 @@ void ContestantApp::finalsSubmit()
 
 void ContestantApp::displayQuestionAndChoices()
 {
-    QDialog* a;
-    if( round == 1 )
-        a = m_elims_dlg;
-    else if( round == 2 )
-        a = m_semifinals_dlg;
-
 	Question q = sd.questions[qCount];
 
 	if ( round == 1 )
 	{
-		m_elims_dlg->question_lbl->setText ( q.question );
+        m_elims_dlg->question_lbl->setText ( q.question );
         m_elims_dlg->a_choice->setText ( q.answer_key[0].c );
         m_elims_dlg->b_choice->setText ( q.answer_key[1].c );
         m_elims_dlg->c_choice->setText ( q.answer_key[2].c );

@@ -79,6 +79,12 @@ public:
 	void getContestState();
 
 	/*!
+	Request for the current question state.
+	*/
+	void getQuestionState();
+
+
+	/*!
 	Request for the question data from the server. Use onQdata signal
 	for the xml data.
 	\return true if the data was sent, false otherwise.

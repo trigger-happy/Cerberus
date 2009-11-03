@@ -72,11 +72,12 @@ enum PROTOCOL_COMMAND {
 	INF_QUESTION_TIME,
 
 	// question state
+	QRY_QUESTION_STATE,
 	INF_QUESTION_STATE,
 
 	// show answer
 	PJR_SHOW_ANSWER,
-	
+
 	// show question
 	PJR_SHOW_QUESTION
 

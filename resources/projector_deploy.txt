@@ -1,0 +1,2 @@
+build/projector.exe projector.exe
+resources/presenter_config.xml presenter_config.xml

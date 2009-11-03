@@ -4,7 +4,7 @@
 #include <QtGui>
 #include <map>
 #include <QString>
-
+#include <QMessageBox>
 using namespace std;
 namespace Ui
 {
@@ -25,7 +25,8 @@ public slots:
 private:
     Ui::deployerUI *ui;
     map <QString, QString> list;
-    void installServer();
+    void deploy(QString& source, QString& component);
+    bool showInfo( QString s );
 };
 
 

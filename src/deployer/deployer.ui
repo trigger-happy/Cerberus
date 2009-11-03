@@ -46,7 +46,12 @@
        </item>
        <item>
         <property name="text">
-         <string>Utils</string>
+         <string>Registration</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>QEditor</string>
         </property>
        </item>
       </widget>

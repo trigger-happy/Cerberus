@@ -16,6 +16,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#ifndef CHECKER_H
+#define CHECKER_H
+
 #include <iostream>
 #include <vector>
 
@@ -33,13 +36,12 @@ class Checker : public Singleton<Checker>
 		Checker();
 		~Checker();
 		
-		// for inputting questions
-		bool resetQuestionSet();
 		bool addQuestion(Question &myQuestion);
-		//bool addQuestionSet( vector<Question> &myQSet);
+		bool resetQuestionSet();
 		
-		// for operations
 		double score(AnswerData& answer);
 		
 	
 };
+
+#endif

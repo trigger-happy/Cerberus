@@ -463,6 +463,27 @@
           </layout>
          </item>
          <item>
+          <widget class="QPushButton" name="qstart_btn">
+           <property name="text">
+            <string>Start Question Timer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="qstop_btn">
+           <property name="text">
+            <string>Stop Question Timer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="qpause_btn">
+           <property name="text">
+            <string>Pause Question Timer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="p_show_qtime_btn">
            <property name="text">
             <string>Show Question T&amp;ime</string>
