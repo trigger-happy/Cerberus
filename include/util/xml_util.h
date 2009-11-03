@@ -1,4 +1,4 @@
-/*
+	/*
 Copyright (C) 2009 Victor Tanedo
 
 This program is free software; you can redistribute it and/or
@@ -148,6 +148,8 @@ private:
 	static StageData readStageData(QXmlStreamReader& stream);
 	static void readNetConfig ( QXmlStreamReader& reader, NetworkConfig& conf );
 	static void readNetConfigElement(QXmlStreamReader &reader, NetworkConfig &conf);
+	static void XmlUtil::readAuthorModeScoreEntry(QXmlStreamReader &reader, ProjectorConfig::AuthorMode &am);
+	static ProjectorConfig::AuthorMode* XmlUtil::readAuthorMode(QXmlStreamReader &reader);
 protected:
 };
 
