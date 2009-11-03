@@ -153,6 +153,10 @@ double Server::getScore( QString c_user ){
 	return SqlUtil::getInstance().getScore( c_user );
 }
 
+void Server::setScore( QString c_user, double score ){
+	SqlUtil::getInstance().setScore( c_user, score );
+}
+
 void Server::setRound( int round ){
 	m_network->setRound(round);
 	if( testing ) cout << "Contest set to Round " << round << ".\n";

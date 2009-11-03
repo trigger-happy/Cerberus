@@ -38,11 +38,13 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect(m_dlg->pause_btn, SIGNAL (clicked()), this, SLOT (onPauseBtn()));
 	connect(m_dlg->contestants_listv, SIGNAL (clicked(QModelIndex)),
 			this, SLOT (onContestantListClick(QModelIndex)));
+	connect(m_dlg->change_score_btn, SIGNAL (clicked()), this, SLOT (onChangeScore()));
+	connect(m_dlg->drop_con_btn, SIGNAL (clicked()), this, SLOT (onDropContestant()));
 
 	// connect server signals and slots here
 	m_server = new Server();
 	connect(m_server, SIGNAL (contestantC(QString)), this, SLOT (addContestant(QString)));
-
+	connect(m_server, SIGNAL (contestantDc(QString)), this, SLOT (removeContestant(QString)));
 	selectedRound = 1;
 }
 
@@ -82,7 +84,8 @@ void Admin::addContestant(const QString& c_user){
 }
 
 void Admin::removeContestant(const QString& c_user){
-
+	QStandardItem* item = new QStandardItem(c_user);
+	contestants->removeRow(0,contestants->indexFromItem(item));
 }
 
 void Admin::onContestantListClick(const QModelIndex& index){
@@ -93,13 +96,18 @@ void Admin::onContestantListClick(const QModelIndex& index){
 }
 
 void Admin::onDropContestant(){
-
+	this->removeContestant( selected_user );
 }
 
 void Admin::onViewAnswers(){
 }
 
 void Admin::onChangeScore(){
+	bool* ok;
+	Qt::WindowFlags flags = 0;
+	double score = QInputDialog::getDouble( this, "Change score", "Enter the new score: ",
+									  0, -1000, 1000, 1, ok, flags);
+	m_server->setScore( selected_user, score );
 }
 
 

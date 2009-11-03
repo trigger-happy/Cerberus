@@ -58,6 +58,8 @@ public:
 
 	double getScore ( QString c_user );
 
+	void setScore ( QString c_user, double score );
+
 	void setRound( int round );
 
 signals:
