@@ -39,10 +39,14 @@ bool AuthorController::keyReleaseEvent(QKeyEvent *event) {
 							((int)m_target.getView() + 1) % TemplateManager::N_TEMPLATES));
 			break;
 		case Qt::Key_Right:
-				m_target.setView(
-				TemplateManager::TKey(
-						properMod((int)m_target.getView() - 1,
-								  (int)TemplateManager::N_TEMPLATES)));
+			m_target.setView(
+			TemplateManager::TKey(
+					properMod((int)m_target.getView() - 1,
+							  (int)TemplateManager::N_TEMPLATES)));
+			break;
+		case Qt::Key_Space:
+			m_target.getContestTimer().setDuration(10*1000);
+			m_target.getContestTimer().start();
 			break;
 		default:
 			return false;

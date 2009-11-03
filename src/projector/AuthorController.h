@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define PROJECTOR_AUTHORCONTROLLER_H
 
 #include "ProjectorController.h"
+
 class AuthorController : public ProjectorController
 {
 public:
