@@ -140,6 +140,30 @@ public:
 	*/
 	void setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state );
 
+	/*!
+	Get the question time.
+	\return the question time.
+	*/
+	inline ushort getQTime() {
+		return m_qtime;
+	}
+
+	/*!
+	Get the question number
+	\return the question number.
+	*/
+	inline ushort getQNumber() {
+		return m_qnumber;
+	}
+
+	/*!
+	Get the question status.
+	\return the question status.
+	*/
+	inline QUESTION_STATUS getQStatus() {
+		return m_qstatus;
+	}
+
 	// projector specific stuff
 	/*!
 	Show the contest time on projectors.
@@ -161,7 +185,7 @@ public:
 	Show the answer to the projector.
 	*/
 	void showAnswer();
-	
+
 	/*!
 	*/
 	void showQuestion();
@@ -215,6 +239,10 @@ protected:
 	int m_round;
 	ushort m_contime;
 	CONTEST_STATUS m_con_status;
+	// question state
+	ushort m_qnumber;
+	ushort m_qtime;
+	QUESTION_STATUS m_qstatus;
 	//server socket
 	QTcpServer* m_server;
 	//connections

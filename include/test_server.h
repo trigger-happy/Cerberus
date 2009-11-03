@@ -46,7 +46,7 @@ private slots:
 	void contestantDisconnect ( ContestantConnection* cc );
 	void onAuthenticate( ContestantConnection* cc, const QString& username );
 	void onAnswerSubmit( ContestantConnection* cc, int round, const AnswerData& data );
-	void onContestTimeRequest( ContestantConnection* cc );
+	void onContestTimeRequest( ushort& time );
 	void newProjector( ProjectorConnection* pc );
 	void projectorDisconnect( ProjectorConnection* pc );
 	void onQTimeBtn();

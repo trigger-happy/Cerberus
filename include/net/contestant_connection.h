@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "protocol.h"
 #include "error_defs.h"
 #include "data_types.h"
+#include "server_net.h"
 
 using std::vector;
 
@@ -38,7 +39,7 @@ public:
 	Constructor.
 	\param parent Set the parent of this class.
 	*/
-	ContestantConnection ( QObject* parent = 0, QTcpSocket* socket = 0 );
+	ContestantConnection ( ServerNetwork* sn = 0, QTcpSocket* socket = 0 );
 
 	/*!
 	Set the current round of the contest.
@@ -132,7 +133,7 @@ signals:
 
 	/*!
 	*/
-	void contestTimeRequest( ushort& contime );
+	void onContestTimeRequest( ushort& contime );
 
 	/*!
 	Emitted when the authentication is successful for this client.
@@ -188,6 +189,7 @@ private:
 	int m_round;
 	ushort m_contime;
 	const vector<QString>* m_qdata;
+	ServerNetwork* m_snet;
 };
 
 #endif
