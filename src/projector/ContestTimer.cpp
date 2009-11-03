@@ -28,6 +28,7 @@ void ContestTimer::start() {
 	if ( isRunning() )return;
 	m_time_tracker.start();
 	m_timer_id = startTimer(m_interval);
+	timerEvent(NULL);
 }
 
 void ContestTimer::stop() {
