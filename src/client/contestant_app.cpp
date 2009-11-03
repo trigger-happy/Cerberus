@@ -448,6 +448,12 @@ void ContestantApp::finalsSubmit()
 
 void ContestantApp::displayQuestionAndChoices()
 {
+    QDialog* a;
+    if( round == 1 )
+        a = m_elims_dlg;
+    else if( round == 2 )
+        a = m_semifinals_dlg;
+
 	Question q = sd.questions[qCount];
 
 	if ( round == 1 )
