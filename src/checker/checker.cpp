@@ -17,26 +17,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 
-
-//3 rounds
-//each round has 3 categories of questions
-//each category has its own weight
-//each correct answer for the first round has a corresponding score
-//for the second round, muliple answers are possible
-//dvide the weight by the number of correct answers
-//if a team gets all the correct answers, and only the correct answers, they get the full weight
-//if not, if the answers selected are all correct, but they are incomplete, they will get only the fraction of the weight based
-//on the number of correct answers they got for the question
-//if at least one of the selected answers is wrong, no credit will be given
-//the third round is the same as the second round, except that there will be an option, "None of the above", wherein the question
-//must be given a correct answer that is not in the choices
-
 /*
 	The checker assumes that the sequence of questions
 	are also the same as the sequence of answers.
 */
-//#include <iostream>
-//#include <vector>
+
 #include <cmath>
 
 #include "checker.h"
@@ -62,7 +47,6 @@ double
 Checker::score(AnswerData &answerData)
 {
 	double value = 0;
-
 	for(unsigned int i = 0; i < answerData.size(); i++)
 	{
 		// check type of question
@@ -70,11 +54,13 @@ Checker::score(AnswerData &answerData)
 		if(questionType == Question::IDENTIFICATION)
 		{
 			value += m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].id_answer);
-			
 		}
 		else if (questionType == Question::CHOOSE_ONE)
 		{
-			value += floor(m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].multi_choice));
+			if(answerData[i].multi_choice.size() > 0) // does not check if there is nothing inside
+			{
+			value += floor(m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].multi_choice[0]));
+			}
 		}
 		else if (questionType == Question::CHOOSE_ANY)
 		{
@@ -91,36 +77,7 @@ Checker::score(AnswerData &answerData)
 }
 
 
-/*double
-Checker::score(Answer& answer)
-{
-	double value;
-	
-	// first check what type of question
-	
-	// call the proper method yehey
-	// if IDENTIFICATION or CHOOSE_ONE, 
-	// cast the value that the method returned
-	if(question.type == IDENTIFICATION)
-	{
-		value = (double)question.checkAnswer();
-	}
-	else if (question.type == CHOOSE_ONE)
-	{
-		value = (double)question.checkAnswer();
-	}
-	else if (question.type == CHOOSE_ANY)
-	{
-		value = question.checkAnswer();
-	}
-	
-	// multiply by the score
-	value *= question.score;
-	// return the value
-	return value;
-}*/
 
-//
 /*
 	Just a little warning though, if I select reset, it will definitely
 	erase the objects contained in it! Make sure that this function is only
@@ -152,7 +109,7 @@ Checker::addQuestion(Question& myQuestion)
 // allows you to add a whole vector of Questions (not require but nice to have)
 /*
 bool
-Checker::addQuestionSet( vector<Question> &myQSet)
+Checker::addQuestionSet( vector<Question> &myQSet )
 {
 	m_qset = myQSet;
 	return true;

@@ -103,7 +103,8 @@ struct Question {
 
 		double correct = 0;
 		size_t choiceIndex = 0;
-
+		
+		/* Let me try another algorithm -- Nick
 		for ( size_t i = 0; i < answer_key.size(); ++i ) {
 			if ( choiceIndex < choices.size() && i == choices[choiceIndex] ) {
 				//your answer matches the key.
@@ -117,9 +118,48 @@ struct Question {
 					correct += 1;
 				}
 			}
+		}*/
+		
+		
+		int key_correct_length = 0;
+		// This is the one I'm using until I find a more efficient way of coding this.
+		/*
+			I've noticed that since the answer key in each question is invariant, I would
+			rather that there is a more efficient way of finding the number of correct
+			answers in the key rather than just by brute force, which I have done below
+			-- Nick	
+		*/
+		
+		// count the number of correct answers
+		for ( size_t i = 0; i < answer_key.size(); ++i )
+		{
+			if( answer_key[i].is_answer )
+			{
+				key_correct_length++;
+			}
+		}
+		
+		for ( size_t i = 0; i < answer_key.size(); ++i )
+		{		
+			
+			if ( choiceIndex < choices.size() && i == choices[choiceIndex] )
+			{
+				// if it is one of the choices, and it is wrong,
+				// no credit.
+				if( !answer_key[i].is_answer )
+				{
+					correct = 0;
+					break;
+				}
+				else
+				{
+					++correct;
+				}
+				++choiceIndex;
+			}
 		}
 
-		return correct/answer_key.size();
+		return correct/key_correct_length;
 	}
 
 	/*!
@@ -195,7 +235,7 @@ struct ProjectorConfig : public NetworkConfig {
 	QString contest_name;
 	unsigned int time_precision;
 	bool author_mode;
-	enum { DEFAULT_TIME_PRECISION = 100 };
+	enum { DEFAULT_TIME_PRECISION = 1000 };
 	ProjectorConfig() :
 			time_precision(DEFAULT_TIME_PRECISION), author_mode(false) {}
 };
@@ -233,8 +273,6 @@ struct TeamData {
 
 struct ScoreData {
 	QString user_name;
-	QString team_name;
-	ushort rank;
 	double score;
 };
 
