@@ -47,6 +47,11 @@ public:
 	void setRound ( int r );
 
 	/*!
+	Disconnect the client for this connection.
+	*/
+	void dropClient();
+
+	/*!
 	Get the username associated with this contestant connection
 	\return const reference to a QString containing the username.
 	*/

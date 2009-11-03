@@ -330,3 +330,7 @@ void ContestantConnection::setQuestionState ( ushort qnum, ushort time, QUESTION
 	out << ( ushort ) qnum << ( ushort ) time << ( ushort ) state;
 	m_socket->write ( block );
 }
+
+void ContestantConnection::dropClient() {
+	m_socket->disconnectFromHost();
+}
