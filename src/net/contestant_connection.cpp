@@ -132,6 +132,10 @@ void ContestantConnection::ready() {
 
 			break;
 
+		case QRY_QUESTION_STATE:
+			setQuestionState( m_qnum, m_qtime, m_qstatus );
+			break;
+
 		case QRY_ANSWER_SUBMIT:
 			//contestant has submitted their answers
 
@@ -311,6 +315,9 @@ void ContestantConnection::setStatus ( CONTEST_STATUS s ) {
 }
 
 void ContestantConnection::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state ) {
+	m_qnum = qnum;
+	m_qtime = time;
+	m_qstatus = state;
 	//construct the packet and send it
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );

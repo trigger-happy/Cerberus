@@ -171,6 +171,9 @@ private:
 	void sendAReply ( bool res );
 
 	//private fields
+	ushort m_qnum;
+	ushort m_qtime;
+	QUESTION_STATUS m_qstatus;
 	bool m_answer_capable;
 	QTcpSocket* m_socket;
 	QString m_username;
