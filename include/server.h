@@ -62,6 +62,12 @@ public:
 
 	void setRound( int round );
 
+	void showTimeLeft();
+
+	void showRankings();
+
+	void showQuestionTime();
+
 signals:
 	void badC ( TempConnection* con );
 	void contestantC ( const QString& c_username );
@@ -70,6 +76,8 @@ signals:
 	void newProjector ( ProjectorConnection* pc );
 
 private slots:
+
+	//Contestant slots
 	/*!
 	Called when there is a new connection
 	*/
@@ -89,6 +97,10 @@ private slots:
 
 	void onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data );
 
+	//Projector slots
+	void projectorConnect( ProjectorConnection* pc );
+
+	void projectorDisconnect( ProjectorConnection* pc);
 
 
 

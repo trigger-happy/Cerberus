@@ -77,6 +77,7 @@ Server::~Server() {
 	delete m_network;
 }
 
+//Contestant slots
 void Server::newContestant( ContestantConnection* cc ) {
 	if( testing ) cout << "A new contestant has connected." << endl;
 	connect ( cc, SIGNAL ( onAuthentication( ContestantConnection*, const QString& ) ),
@@ -123,6 +124,18 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 	}
 }
 
+//Presenter slots
+void Server::projectorConnect( ProjectorConnection* pc){
+	if( testing ) cout << "Projector has connected.\n";
+}
+
+void Server::projectorDisconnect( ProjectorConnection* pc){
+	if( testing ) cout << "Projector has been disconnected.\n";
+}
+
+
+
+//Admin functions
 void Server::stopContest() {
 	if( testing ) cout << "Contest stopped. \n";
 	m_network->setStatus( CONTEST_STOPPED );
@@ -163,4 +176,15 @@ void Server::setScore( QString c_user, double score ){
 void Server::setRound( int round ){
 	m_network->setRound(round);
 	if( testing ) cout << "Contest set to Round " << round << ".\n";
+}
+
+void Server::showTimeLeft(){
+}
+
+void Server::showRankings(){
+	m_network->showContestRanks();
+}
+
+void Server::showQuestionTime(){
+	m_network->showQuestionTime();
 }
