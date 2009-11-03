@@ -2,13 +2,16 @@
 #define DEPLOYER_H
 
 #include <QtGui>
+#include <map>
+#include <QString>
 
+using namespace std;
 namespace Ui
 {
     class deployerUI;
 }
 
-class Installer : public QDialog
+class Installer : public QMainWindow
 {
     Q_OBJECT
 
@@ -21,6 +24,8 @@ public slots:
 
 private:
     Ui::deployerUI *ui;
+    map <QString, QString> list;
+    void installServer();
 };
 
 
