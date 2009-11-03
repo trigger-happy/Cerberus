@@ -46,7 +46,7 @@ ProjectorWindow::ProjectorWindow(QWidget *parent) :
 	m_dict(new ctemplate::TemplateDictionary("main")),
 	m_timer(ProjectorConfig::DEFAULT_TIME_PRECISION)
 {
-	connect(&m_timer, SIGNAL(timeUpdate(uint)), this, SLOT(onContestTimeUpdate(uint)));
+	connect(&m_timer, SIGNAL(timeUpdate(uint)), this, SLOT(setTimeLeft(uint)));
 	m_ui->setupUi(this);
 	this->setWindowTitle(WINDOW_TITLE);
 	showFullScreen();
@@ -170,8 +170,4 @@ void ProjectorWindow::changeEvent(QEvent *e)
 
 void ProjectorWindow::refresh() {
 	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
-}
-
-void ProjectorWindow::onContestTimeUpdate(unsigned int time) {
-	setTimeLeft(time);
 }

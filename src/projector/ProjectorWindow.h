@@ -61,14 +61,12 @@ private:
 	ctemplate::TemplateDictionary *m_dict;
 	ContestTimer m_timer;
 
-
 	void setTemplate(ctemplate::Template *tpl);
 	void displayError(const char *brief, const char *detail, bool persist = false);
 public slots:
 	void setTimeLeft(unsigned int);
 	void refresh();
 	void setView(TemplateManager::TKey v);
-	void onContestTimeUpdate(unsigned int time);
 };
 
 #endif // PROJECTOR_PROJECTORWINDOW_H_
