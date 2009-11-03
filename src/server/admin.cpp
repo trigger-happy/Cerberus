@@ -97,6 +97,7 @@ void Admin::onContestantListClick(const QModelIndex& index){
 
 void Admin::onDropContestant(){
 	this->removeContestant( selected_user );
+	m_server->dropConnection( selected_user );
 }
 
 void Admin::onViewAnswers(){
@@ -104,10 +105,9 @@ void Admin::onViewAnswers(){
 
 void Admin::onChangeScore(){
 	bool* ok;
-	Qt::WindowFlags flags = 0;
-	double score = QInputDialog::getDouble( this, "Change score", "Enter the new score: ",
-									  0, -1000, 1000, 1, ok, flags);
+	double score = QInputDialog::getDouble( this, tr("Change score"), tr("Enter the new score: "), 0, -1000, 1000, 1, ok);
 	m_server->setScore( selected_user, score );
+	m_dlg->score_lbl->setText(QString("%1").arg(score));
 }
 
 

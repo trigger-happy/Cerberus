@@ -54,7 +54,7 @@ public:
 
 	/*!
 	*/
-	void dropConnection( ContestantConnection* cc );
+	void dropConnection( QString c_user );
 
 	double getScore ( QString c_user );
 
@@ -102,6 +102,7 @@ private:
 	ServerConfig m_config;
 	vector<QString> m_questions;
 	vector<QString> m_answers;
+	QHash<QString,ContestantConnection*> hash;
 
 };
 

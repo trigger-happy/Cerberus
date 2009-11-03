@@ -92,6 +92,7 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
 			 this, SLOT( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ) );
 	m_network->getContestantList();
+	hash[c_username] = cc;
 	emit contestantC( c_username );
 }
 
@@ -145,8 +146,9 @@ void Server::checkAnswersManually() {
 
 }
 
-void Server::dropConnection( ContestantConnection* cc ) {
-
+void Server::dropConnection( QString c_user ) {
+	ContestantConnection* cc = hash[c_user];
+	cc->dropClient();
 }
 
 double Server::getScore( QString c_user ){
@@ -155,6 +157,7 @@ double Server::getScore( QString c_user ){
 
 void Server::setScore( QString c_user, double score ){
 	SqlUtil::getInstance().setScore( c_user, score );
+	if( testing ) cout << c_user.toStdString() << "'s score has been set to " << score << endl;
 }
 
 void Server::setRound( int round ){
