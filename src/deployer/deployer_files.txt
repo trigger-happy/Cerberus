@@ -1,2 +1,11 @@
 the application executable for the module and the configuration file relevant to it
 James Choa: for the server, the question xml files, configuration file and database
+
+Server:
+/build/server.exe
+/resources/stage1.xml
+/resources/stage2.xml
+/resources/stage3.xml
+/resources/stage4.xml
+/resources/server_config.xml
+/resources/db_dump.sql
