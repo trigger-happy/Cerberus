@@ -40,6 +40,8 @@ TestProjector::TestProjector( QDialog* parent ) : QDialog( parent ),
 	         this, SLOT( onShowQuestion() ) );
 	connect( m_network, SIGNAL( onShowAnswer() ),
 	         this, SLOT( onShowAnswer() ) );
+	connect( m_network, SIGNAL( onQuestionState( ushort, ushort, QUESTION_STATUS ) ),
+	         this, SLOT( onQuestionState( ushort, ushort, QUESTION_STATUS ) ) );
 }
 
 void TestProjector::onConnectBtn() {

@@ -74,6 +74,8 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 		msg.setText ( "Failed to load db" );
 		msg.exec();
 	}
+
+	m_qstatus = QUESTION_STOPPED;
 }
 
 ServerDlg::~ServerDlg() {
@@ -133,7 +135,7 @@ void ServerDlg::onQuestionBtn() {
 	ushort q = m_dlg->question_line->text().toUShort();
 	writeLog ( QString ( "Question number set to: %1" ).arg ( q ) );
 	//TODO: change the ui to accomodate this
-	m_server->setQuestionState ( q, 200, QUESTION_STOPPED );
+	m_server->setQuestionState ( q, m_dlg->qtime_line->text().toUShort(), m_qstatus );
 }
 
 void ServerDlg::onTimeBtn() {
@@ -170,6 +172,9 @@ void ServerDlg::onContestTimeRequest( ContestantConnection* cc ) {
 }
 
 void ServerDlg::onQTimeBtn() {
+	ushort q = m_dlg->question_line->text().toUShort();
+	writeLog( QString( "Question time changed to: %1" ).arg( m_dlg->qtime_line->text() ) );
+	m_server->setQuestionState ( q, m_dlg->qtime_line->text().toUShort(), m_qstatus );
 }
 
 void ServerDlg::onShowRanksBtn() {
@@ -188,12 +193,21 @@ void ServerDlg::onShowQuestionBtn() {
 }
 
 void ServerDlg::onStartQuestionBtn() {
+	m_qstatus = QUESTION_RUNNING;
+	ushort q = m_dlg->question_line->text().toUShort();
+	m_server->setQuestionState ( q, m_dlg->qtime_line->text().toUShort(), m_qstatus );
 }
 
 void ServerDlg::onStopQuestionBtn() {
+	m_qstatus = QUESTION_STOPPED;
+	ushort q = m_dlg->question_line->text().toUShort();
+	m_server->setQuestionState ( q, m_dlg->qtime_line->text().toUShort(), m_qstatus );
 }
 
 void ServerDlg::onPauseQuestionBtn() {
+	m_qstatus = QUESTION_PAUSED;
+	ushort q = m_dlg->question_line->text().toUShort();
+	m_server->setQuestionState ( q, m_dlg->qtime_line->text().toUShort(), m_qstatus );
 }
 
 void ServerDlg::newProjector( ProjectorConnection* pc ) {

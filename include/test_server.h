@@ -65,6 +65,7 @@ private:
 	Ui::server_dlg* m_dlg;
 	ServerNetwork* m_server;
 	vector<QString> m_questions;
+	QUESTION_STATUS m_qstatus;
 };
 
 #endif // SERVER_H

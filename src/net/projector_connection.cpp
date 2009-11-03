@@ -108,6 +108,17 @@ void ProjectorConnection::disconnected() {
 }
 
 void ProjectorConnection::setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state ) {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = INF_QUESTION_STATE;
+	hdr.length = sizeof ( ushort ) * 3;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out << ( ushort ) qnum << ( ushort ) time << ( ushort ) state;
+	m_socket->write ( block );
 }
 
 void ProjectorConnection::showContestTime() {
