@@ -226,6 +226,10 @@ void ServerNetwork::setContestTime ( ushort time ) {
 }
 
 void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state ) {
+	m_qnumber = qnum;
+	m_qtime = time;
+	m_qstatus = state;
+
 	if ( m_round >= 3 ) {
 		contestant_list::iterator i = m_contestants.begin();
 
@@ -273,10 +277,11 @@ void ServerNetwork::showAnswer() {
 	}
 }
 
-void ServerNetwork::showQuestion(){
+void ServerNetwork::showQuestion() {
 	projector_list::iterator i = m_projectors.begin();
-	for(; i != m_projectors.end(); i++){
-		(*i)->showQuestion();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showQuestion();
 	}
 }
 

@@ -22,7 +22,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 
-ContestantConnection::ContestantConnection ( QObject* parent, QTcpSocket* socket ) : QObject ( parent ) {
+ContestantConnection::ContestantConnection ( ServerNetwork* sn, QTcpSocket* socket ) : QObject ( sn ) {
+	m_snet = sn;
 	m_answer_capable = true;
 	m_hdr = NULL;
 	m_authenticated = false;
@@ -44,6 +45,10 @@ ContestantConnection::ContestantConnection ( QObject* parent, QTcpSocket* socket
 	out << ( ushort ) true;
 
 	m_socket->write ( block );
+
+	m_qnum = m_snet->getQNumber();
+	m_qtime = m_snet->getQTime();
+	m_qstatus = m_snet->getQStatus();
 }
 
 void ContestantConnection::error ( const QAbstractSocket::SocketError& err ) {
