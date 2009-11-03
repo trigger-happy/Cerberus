@@ -1,0 +1,2 @@
+build/Contestant.exe Contestant.exe
+resources/client_config.xml client_config.xml
