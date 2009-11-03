@@ -61,11 +61,16 @@ public:
 	void setStatus ( CONTEST_STATUS s );
 
 	/*!
+	*/
+	inline void setContestTime( ushort time ) {
+		m_contime = time;
+	}
+
+	/*!
 	Set the contest time. Note that this will immediately send the information
 	to the client.
-	\param time The time of the contest in seconds.
 	*/
-	void setContestTime ( ushort time );
+	void sendContestTime ();
 
 	/*!
 	Set the question state for round 3/4 (for contest pacing).
@@ -121,10 +126,8 @@ signals:
 	void contestantDisconnect ( ContestantConnection* cc );
 
 	/*!
-	Emitted when a contestant requests for the contest time.
-	\param cc Pointer to a ContestantConnection that made the request.
 	*/
-	void onContestTimeRequest ( ContestantConnection* cc );
+	void contestTimeRequest( ushort& contime );
 
 	/*!
 	Emitted when the authentication is successful for this client.
@@ -175,6 +178,7 @@ private:
 	bool m_authenticated;
 	CONTEST_STATUS m_con_status;
 	int m_round;
+	ushort m_contime;
 	const vector<QString>* m_qdata;
 };
 

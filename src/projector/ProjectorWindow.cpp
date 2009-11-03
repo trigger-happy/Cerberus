@@ -43,8 +43,10 @@ ProjectorWindow::ProjectorWindow(QWidget *parent) :
 	m_cfg(new ProjectorConfig),
 	m_tpl_key(TemplateManager::INDEX),
 	m_controller(0),
-	m_dict(new ctemplate::TemplateDictionary("main"))
+	m_dict(new ctemplate::TemplateDictionary("main")),
+	m_timer(ProjectorConfig::DEFAULT_TIME_PRECISION)
 {
+	connect(&m_timer, SIGNAL(timeUpdate(uint)), this, SLOT(setTimeLeft(uint)));
 	m_ui->setupUi(this);
 	this->setWindowTitle(WINDOW_TITLE);
 	showFullScreen();
@@ -58,12 +60,21 @@ ProjectorWindow::~ProjectorWindow()
 	delete m_ui;
 }
 
+const unsigned int MSEC_PER_SEC = 1000;
+
 void ProjectorWindow::setTimeLeft(unsigned int val) {
-	m_dict->SetIntValue("TIME_LEFT", val);
 	const QVariant &result =
 			m_ui->webView->page()->mainFrame()->
 			evaluateJavaScript(
 					JS_TRIGGER_TIME.arg(QString::number(val)));
+
+	//format the thing differently if it's over a minute
+	if ( val > MSEC_PER_SEC * 60 ) {
+		m_dict->SetFormattedValue("TIME_LEFT", "%d:%.1lf", val/(MSEC_PER_SEC * 60), (double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC);
+	} else {
+		m_dict->SetFormattedValue("TIME_LEFT", "%.1lf", (double)val/MSEC_PER_SEC);
+	}
+
 	if ( result.toBool() ) return;
 	//The page has no handler which accepts time update, refresh the page.
 	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
@@ -132,6 +143,7 @@ void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 					   arg(cfg.contest_name));
 
 	m_dict->SetValue("CONTEST_NAME", cfg.contest_name.toStdString());
+	m_timer.setInterval(cfg.time_precision);
 
 	if ( change_ctrl ) {
 		delete m_controller;

@@ -21,6 +21,13 @@ set(NET_SERVER_UIS server.ui)
 qt4_wrap_ui(NET_SERVER_UIS_H ${NET_SERVER_UIS})
 add_executable(test_server ${NET_SERVER_SRC} ${NET_SERVER_MSRC} ${NET_SERVER_UIS_H})
 
+set(NET_PROJECTOR_SRC test_projector.cpp)
+set(NET_PROJECTOR_MHDR ${INCLUDE_DIR}/test_projector.h )
+qt4_wrap_cpp(NET_PROJECTOR_MSRC ${NET_PROJECTOR_MHDR})
+set(NET_PROJECTOR_UIS projector.ui)
+qt4_wrap_ui(NET_PROJECTOR_UIS_H ${NET_PROJECTOR_UIS})
+add_executable(test_projector ${NET_PROJECTOR_SRC} ${NET_PROJECTOR_MSRC} ${NET_PROJECTOR_UIS_H})
+
 set(TEST_SRC tester.cpp)
 set(TEST_HDR ${INCLUDE_DIR}/tester.h)
 qt4_wrap_cpp(TEST_MOC ${TEST_HDR})

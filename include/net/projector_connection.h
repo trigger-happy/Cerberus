@@ -27,6 +27,29 @@ public:
 	ProjectorConnection( QObject* parent = 0, QTcpSocket* socket = 0 );
 
 	/*!
+	*/
+	inline void setContestTime( ushort time ) {
+		m_contime = time;
+		sendContestTime();
+	}
+
+	/*!
+	*/
+	inline void setRound( int round ) {
+		m_round = round;
+	}
+
+	/*!
+	*/
+	void sendContestState();
+
+	/*!
+	*/
+	inline void setStatus( CONTEST_STATUS s ) {
+		m_con_status = s;
+	}
+
+	/*!
 	Change the round 3/4 question status.
 	\param qnum The question number.
 	\param time The time left for this question.
@@ -55,6 +78,14 @@ public:
 	*/
 	void showAnswer();
 
+	/*!
+	*/
+	void showQuestion();
+
+	/*!
+	*/
+	void sendContestTime();
+
 public slots:
 	/*!
 	Called when there's a socket error.
@@ -79,7 +110,19 @@ signals:
 	*/
 	void projectorDisconnect( ProjectorConnection* p );
 
+	/*!
+	*/
+	void contestTimeRequest( ushort& contime );
+
+	/*!
+	*/
+	void projectorReady( ProjectorConnection* p );
+
 private:
+	bool m_ready;
+	ushort m_round;
+	ushort m_contime;
+	CONTEST_STATUS m_con_status;
 	QTcpSocket* m_socket;
 	p_header* m_hdr;
 };

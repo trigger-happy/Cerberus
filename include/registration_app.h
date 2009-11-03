@@ -38,8 +38,11 @@ protected slots:
 	bool saveUserEdit();
 	bool backToUser();
 
+	//convenience methods
+	void showMessageDialog(QString text);
+
 	//needs no extra signals because you're using the basic ones:
-	// may probably need some new signals because
+
 
 private:
 	void refreshTeamList(QStringList& teams); //a function to refresh the list of teams in the respective QListWidget

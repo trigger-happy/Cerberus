@@ -59,6 +59,10 @@ presenter-server network:
 		
 	contest state change:
 		server: INF_CONTEST_STATE <ushort round number> <ushort status>
+    
+    contest time request
+		client: QRY_CONTEST_TIME
+		server: INF_CONTEST_TIME <ushort time> //in seconds
 		
     command wait:
 		client: QRY_PRESENTER_READY

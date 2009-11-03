@@ -56,9 +56,11 @@ public:
 	*/
 	void dropConnection( ContestantConnection* cc );
 
+	double getScore ( QString c_user );
+
 signals:
 	void badC ( TempConnection* con );
-	void contestantC ( ContestantConnection* cc, const QString& c_username );
+	void contestantC ( const QString& c_username );
 	void contestantDc ( ContestantConnection* cc );
 	void newAdmin ( AdminConnection* ac );
 	void newProjector ( ProjectorConnection* pc );

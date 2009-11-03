@@ -47,25 +47,60 @@ void SqlUtil::createDBTables()
 
 void SqlUtil::addTeam ( const QString& team_name, const QString& school )
 {
+		QString team_temp = team_name;
+		QString school_temp = school;
 		//check input values here if they are all valid?
-		bool success =  query->exec ( "INSERT INTO team(team_name, school) "
-                             "VALUES ('" + team_name + "', '" + school + "')" );
-		if (!success)
-			throw SqlUtilException(query->lastError().databaseText());
+		team_temp.replace(QString(" "), QString(""), Qt::CaseInsensitive);
+		school_temp.replace(QString(" "), QString(""), Qt::CaseInsensitive);
+		if (countTeamsPerSchool(school) >= MAX_TEAMS_PER_SCHOOL){
+			//QString& temp = new QString();
+			throw SqlUtilException(QString::fromStdString("Cannot add team (max 2 teams per school)"));
+		}
+		else if (team_temp.compare(QString(""))==0 || school_temp.compare(QString("")) == 0){
+			throw SqlUtilException(QString("One or more fields are blank."));
+		}
+		else{
+			bool success =  query->exec ( "INSERT INTO team(team_name, school) "
+								 "VALUES ('" + team_name + "', '" + school + "')" );
+			if (!success){
+				QString temp = query->lastError().databaseText();
+				if (temp.compare(QString("constraint failed")) == 0)
+					throw SqlUtilException("an entry with that name already exists");
+				else
+					throw SqlUtilException(temp);
+			}
+		}
 }
 
 void SqlUtil::addUser(const QString& user_name, const QString& team_name)
 {
-	//insert into user(username,team_name,firstname,lastname,password) values ('123','team','','','')
-	QString sql = QString ( "INSERT INTO user(username, team_name, firstname, lastname, password) "
-				"VALUES ('%1','%2','','','')" )
-		      .arg ( QString (user_name) )
-		      .arg ( QString (team_name) );
-	bool success = query->exec( sql );
-	if (!success)
-			throw SqlUtilException(query->lastError().databaseText());
+	QString user_temp = user_name;
+	user_temp.replace(" ", "");
+	if (countUsersPerTeam(team_name) >= MAX_USERS_PER_TEAM){
+		//QString temp = new QString();
+		throw SqlUtilException(QString::fromStdString("cannot add user (max 2 users per team)"));
+	}
+	else if (user_temp.compare(QString(""))== 0){
+		throw SqlUtilException(QString("One or more fields are blank."));
+	}
+	else{
+		//insert into user(username,team_name,firstname,lastname,password) values ('123','team','','','')
+		QString sql = QString ( "INSERT INTO user(username, team_name, firstname, lastname, password) "
+					"VALUES ('%1','%2','','','')" )
+				  .arg ( QString (user_name) )
+				  .arg ( QString (team_name) );
+		bool success = query->exec( sql );
+		if (!success){
+			QString temp = query->lastError().databaseText();
+				if (temp.compare(QString("constraint failed")) == 0)
+					throw SqlUtilException("an entry with that name already exists");
+				else
+					throw SqlUtilException(temp);
+		}
+	}
 }
 
+//not used, i think
 void SqlUtil::addUser ( const UserData& ud )
 {
         QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
@@ -84,34 +119,46 @@ void SqlUtil::addUser ( const UserData& ud )
 
 void SqlUtil::editUser ( const QString& user_name, const UserData& ud )
 {
-	//update user set firstname = 'A', lastname = 'B' , password = 'C' where username = 'username';
-	QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
-	QString sql = QString ( "UPDATE user SET firstname = '%1', lastname = '%2', password = '%3' WHERE username = '%4'" )
-		      .arg ( QString ( ud.firstname ) )
-		      .arg ( QString ( ud.lastname ) )
-		      .arg ( QString ( pwd ) )
-		      .arg ( QString ( user_name ) );
-	bool success= query->exec ( sql );
-	if (!success)
-			throw SqlUtilException(query->lastError().databaseText());
+		//update user set firstname = 'A', lastname = 'B' , password = 'C' where username = 'username';
+		QString pwd = QCryptographicHash::hash ( ud.password.toAscii(), QCryptographicHash::Sha1 );
+		QString sql = QString ( "UPDATE user SET firstname = '%1', lastname = '%2', password = '%3' WHERE username = '%4'" )
+				  .arg ( QString ( ud.firstname ) )
+				  .arg ( QString ( ud.lastname ) )
+				  .arg ( QString ( pwd ) )
+				  .arg ( QString ( user_name ) );
+		bool success= query->exec ( sql );
+		if (!success)
+				throw SqlUtilException(query->lastError().databaseText());
 }
 
 void SqlUtil::editTeamName ( const QString& team_name_old, const QString& team_name_new )
 {
-	//UPDATE team SET team_name= 'new' WHERE team_name = 'old'
-	QString sql = QString ( "UPDATE team SET team_name = '%1' WHERE team_name = '%2'" )
-		      .arg ( QString ( team_name_new ) )
-		      .arg ( QString ( team_name_old ) );
-	//UPDATE user SET team_name= 'new' WHERE team_name = 'team'
-	
-	if ( query->exec ( sql ) == false)
-			throw SqlUtilException(query->lastError().databaseText());
-	sql = QString ( "UPDATE user SET team_name = '%1' WHERE team_name = '%2'" )
-		      .arg ( QString ( team_name_new ) )
-		      .arg ( QString ( team_name_old ) );
-	bool success = query->exec ( sql );
-	if (!success)
-			throw SqlUtilException(query->lastError().databaseText());
+	QString newteam_temp = team_name_new;
+	newteam_temp.replace(" ", "");
+	if (newteam_temp.compare("") == 0){
+		throw SqlUtilException(QString("No new team name specified"));
+	}
+	else{
+		//UPDATE team SET team_name= 'new' WHERE team_name = 'old'
+		QString sql = QString ( "UPDATE team SET team_name = '%1' WHERE team_name = '%2'" )
+				  .arg ( QString ( team_name_new ) )
+				  .arg ( QString ( team_name_old ) );
+		//UPDATE user SET team_name= 'new' WHERE team_name = 'team'
+
+		if ( query->exec ( sql ) == false)
+				throw SqlUtilException(query->lastError().databaseText());
+		sql = QString ( "UPDATE user SET team_name = '%1' WHERE team_name = '%2'" )
+				  .arg ( QString ( team_name_new ) )
+				  .arg ( QString ( team_name_old ) );
+		bool success = query->exec ( sql );
+		if (!success){
+			QString temp = query->lastError().databaseText();
+				if (temp.compare(QString("constraint failed")) == 0)
+					throw SqlUtilException("an entry with that name already exists");
+				else
+					throw SqlUtilException(temp);
+		}
+	}
 }
 
 void SqlUtil::deleteUser ( const QString& user_name )
@@ -160,24 +207,26 @@ int SqlUtil::countUsersPerTeam(const QString& team){
 
 void SqlUtil::getTeamUsers ( const QString& team_name, vector<UserData>& out )
 {
-	//SELECT username,team_name,firstname,lastname FROM user WHERE team_name = 'B'
-	QString sql = QString ( "SELECT username, team_name, firstname, lastname "
-				"FROM user WHERE team_name = '%1'" )
-		      .arg ( QString ( team_name ) );
-	if ( !query->exec ( sql ) )
-		 throw SqlUtilException(query->lastError().databaseText());
-	else
-	{
-		while ( query->next() )
+
+		//SELECT username,team_name,firstname,lastname FROM user WHERE team_name = 'B'
+		QString sql = QString ( "SELECT username, team_name, firstname, lastname "
+					"FROM user WHERE team_name = '%1'" )
+				  .arg ( QString ( team_name ) );
+		if ( !query->exec ( sql ) )
+			 throw SqlUtilException(query->lastError().databaseText());
+		else
 		{
-			UserData ud;
-			ud.user_name = query->value(0).toString();
-			ud.teamname = query->value(1).toString();
-			ud.firstname = query->value(2).toString();
-			ud.lastname = query->value(3).toString();
-			out.push_back(ud);
+			while ( query->next() )
+			{
+				UserData ud;
+				ud.user_name = query->value(0).toString();
+				ud.teamname = query->value(1).toString();
+				ud.firstname = query->value(2).toString();
+				ud.lastname = query->value(3).toString();
+				out.push_back(ud);
+			}
 		}
-	}
+
 }
 
 void SqlUtil::getSpecificUser ( const QString& user_name, UserData& out )

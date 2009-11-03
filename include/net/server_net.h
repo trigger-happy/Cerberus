@@ -161,6 +161,10 @@ public:
 	Show the answer to the projector.
 	*/
 	void showAnswer();
+	
+	/*!
+	*/
+	void showQuestion();
 
 public slots:
 
@@ -194,6 +198,10 @@ public slots:
 	*/
 	void invalidClient ( TempConnection* con );
 
+	/*!
+	*/
+	void contestTimeResponse( ushort& contime );
+
 signals:
 	void badClient ( TempConnection* con );
 	void newContestant ( ContestantConnection* cc );
@@ -205,6 +213,7 @@ signals:
 protected:
 	//contest states
 	int m_round;
+	ushort m_contime;
 	CONTEST_STATUS m_con_status;
 	//server socket
 	QTcpServer* m_server;

@@ -53,6 +53,19 @@ public:
 	*/
 	void disconnectFromHost();
 
+	/*!
+	Get the current contest state from the server.
+	*/
+	void getContestState();
+
+	/*!
+	*/
+	void getContestTime();
+
+	/*!
+	*/
+	void sendReadyState();
+
 public slots:
 	/*!
 	Called when the app is able to connect to the server.
@@ -76,6 +89,10 @@ public slots:
 	void ready();
 
 signals:
+	void onConnect();
+	void onDisconnect();
+	void onError( const QAbstractSocket::SocketError& error );
+
 	void onContestState( ushort round, CONTEST_STATUS status );
 	void onContestTime( ushort time );
 	void onShowContestTime();
@@ -84,6 +101,7 @@ signals:
 	void onQuestionTime();
 	void onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status );
 	void onShowAnswer();
+	void onShowQuestion();
 
 private:
 	QTcpSocket* m_socket;

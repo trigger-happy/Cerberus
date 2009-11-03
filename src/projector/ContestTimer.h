@@ -1,3 +1,6 @@
+#ifndef PROJECTOR_CONTESTTIMER_H
+#define PROJECTOR_CONTESTTIMER_H
+
 /*
 Copyright (C) 2009 Wilhansen Li
 
@@ -16,16 +19,28 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef PROJECTOR_AUTHORCONTROLLER_H
-#define PROJECTOR_AUTHORCONTROLLER_H
+#include <QObject>
+#include <QTime>
 
-#include "ProjectorController.h"
-
-class AuthorController : public ProjectorController
+class ContestTimer : public QObject
 {
+	Q_OBJECT
+
+	QTime m_time_tracker;
+	unsigned int m_interval, m_duration;
+	int m_timer_id;
 public:
-	AuthorController(ProjectorWindow &target);
-	virtual bool keyReleaseEvent(QKeyEvent *event);
+	ContestTimer( unsigned int interval );
+	void start();
+	void stop();
+
+	bool isRunning() { return m_timer_id > 0; }
+	void setInterval(unsigned int interval);
+	void setDuration(unsigned int duration);
+protected:
+	virtual void timerEvent(QTimerEvent *event);
+signals:
+	void timeUpdate(unsigned int msec);
 };
 
-#endif // PROJECTOR_AUTHORCONTROLLER_H
+#endif // CONTESTTIMER_H

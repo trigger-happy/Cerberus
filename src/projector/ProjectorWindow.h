@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtGui/QMainWindow>
 #include <QUrl>
 #include "TemplateManager.h"
+#include "ContestTimer.h"
 
 namespace Ui {
 	class ProjectorWindow;
@@ -44,6 +45,8 @@ public:
 	void setConfig(const ProjectorConfig &cfg);
 	const ProjectorConfig& getConfig() const;
 
+	ContestTimer& getContestTimer() { return m_timer; }
+
 	TemplateManager::TKey getView() const { return m_tpl_key; }
 protected:
 	void changeEvent(QEvent *e);
@@ -56,6 +59,8 @@ private:
 	TemplateManager::TKey m_tpl_key;
 	ProjectorController *m_controller;
 	ctemplate::TemplateDictionary *m_dict;
+	ContestTimer m_timer;
+
 	void setTemplate(ctemplate::Template *tpl);
 	void displayError(const char *brief, const char *detail, bool persist = false);
 public slots:

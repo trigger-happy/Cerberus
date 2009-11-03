@@ -21,15 +21,25 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace std;
 
-Admin::Admin( QWidget* parent ) : QDialog( parent ), m_server( this ),
+Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 		m_dlg( new Ui::server_dlg ) {
 	m_dlg->setupUi( this );
+	contestants = new QStandardItemModel( this );
+	//questions = new QStandardItemModel ( questions_model );
+	m_dlg->contestants_listv->setModel( contestants );
+	m_dlg->contestants_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
 	// connect dialog signals and slots here
 	connect(m_dlg->round_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRoundSelection(int)));
 	connect(m_dlg->stop_btn, SIGNAL (clicked()), this, SLOT (onStopBtn()));
 	connect(m_dlg->start_btn, SIGNAL (clicked()), this, SLOT (onStartBtn()));
 	connect(m_dlg->pause_btn, SIGNAL (clicked()), this, SLOT (onPauseBtn()));
+	connect(m_dlg->contestants_listv, SIGNAL (clicked(QModelIndex)), this, SLOT (onContestantListClick(QModelIndex)));
+
 	// connect server signals and slots here
+	m_server = new Server();
+	connect(m_server, SIGNAL (contestantC(QString)), this, SLOT (addContestant(QString)));
+
 }
 
 Admin::~Admin() {
@@ -41,25 +51,39 @@ void Admin::onApplyBtn(){
 
 
 void Admin::onStopBtn() {
-	m_server.stopContest();
+	m_server->stopContest();
+	m_dlg->status_lbl->setText("Stopped");
 }
 
 void Admin::onStartBtn() {
-	m_server.startContest();
+	m_server->startContest();
+	m_dlg->status_lbl->setText("Running");
 }
 
 void Admin::onPauseBtn() {
-	m_server.pauseContest();
+	m_server->pauseContest();
+	m_dlg->status_lbl->setText("Paused");
 }
 
 void Admin::onRoundSelection(int index){
 }
 
 // contestant control
+void Admin::addContestant(const QString& c_user)
+{
+	QStandardItem* item = new QStandardItem(c_user);
+	contestants->appendRow(item);
+}
+
 void Admin::onContestantListClick(const QModelIndex& index){
+	QString c_user = contestants->itemFromIndex(index)->text();
+	m_dlg->user_lbl->setText(c_user);
+	m_dlg->score_lbl->setText(QString("%1").arg(m_server->getScore(c_user)));
+	selected_user = c_user;
 }
 
 void Admin::onDropContestant(){
+
 }
 
 void Admin::onViewAnswers(){

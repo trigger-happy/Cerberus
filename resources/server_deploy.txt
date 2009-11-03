@@ -1,0 +1,7 @@
+build/server.exe server.exe
+resources/stage1.xml stage1.xml
+resources/stage2.xml stage2.xml
+resources/stage3.xml stage3.xml
+resources/stage4.xml stage4.xml
+resources/server_config.xml server_config.xml
+resources/db_dump.sql db_dump.sql
