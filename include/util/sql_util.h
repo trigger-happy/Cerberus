@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2009 Janlebrad Ang
+Copyright (C) 2009 Janlebrad Ang and Nicole Guloy
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -31,6 +31,24 @@ This class takes care of the low level interactions with the SQLite DB
 class SqlUtil : public Singleton<SqlUtil>
 {
 public:
+	//constant variables: may be changed later on depending on contest mechanics
+	//max 2 teams per school
+	//max 2 members per team
+	const static int MAX_TEAMS_PER_SCHOOL = 2;
+	const static int MAX_USERS_PER_TEAM = 2;
+
+	class SqlUtilException{
+	public:
+		const QString msg;
+		SqlUtilException(const QString msg):msg (msg){}
+
+		const char* what() const throw()
+		  {
+			return "database exception";
+		  }
+		~SqlUtilException() throw() {}
+	};
+
         /*!
         Initialize the connection to the database specified in dbname
         \param dbname A QString containing the path to the database
@@ -43,84 +61,90 @@ public:
         Add a team to the database.
         \param team_name The name of the team.
         \param school The name of the school.
-        \return 0 on success, a QSqlQuery error otherwise.
+		\throws SqlUtilException
         */
-        int addTeam ( const QString& team_name, const QString& school );
+		void addTeam ( const QString& team_name, const QString& school );
 
         /*!
-		  TODO: Done
 		Add a user to the database, setting all other values to null.
 		\param user_name the username of the user
 		\param team_name the team to which the user belongs
-        \return 0 on success, a QSqlQuery error otherwise.
+		\throws SqlUtilException
         */
-		int addUser(const QString& user_name, const QString& team_name);
+		void addUser(const QString& user_name, const QString& team_name);
 
-		int addUser ( const UserData& ud ); // i have no need for this one, remove or keep?
+		void addUser ( const UserData& ud ); // i have no need for this one, remove or keep?
 
 		/*!
-		  TODO: Done
 		Edits user data in the database.
 		\user_name The current name of the user whose data you want to change.
 		\param ud A const reference to a filled up UserData struct with new data.
-		\return 0 on success, a QSqlQuery error otherwise.
+		\throws SqlUtilException
 		*/
-		int editUser ( const QString& user_name, const UserData& ud );
+		void editUser ( const QString& user_name, const UserData& ud );
 
 		/*!
-		  TODO: Done !?
 		Changes the name of a team in the database. It will:
 			1. change the foreign key team_name of any Users with that team name
 			2. update the Team table itself to change the team_name primary key
 		\param team_name_old the old team name
 		\param team_name_new the new desired team name
-		\return 0 on success, a QSqlQuery error otherwise.
+		\throws SqlUtilException
 		*/
-		int editTeamName ( const QString& team_name_old, const QString& team_name_new );
+		void editTeamName ( const QString& team_name_old, const QString& team_name_new );
 
 		/*!
-		  TODO: Done
 		 deletes a user in the database whose user_name matches the given.
 		\param user_name The current name of the user whose data you want to change.
-		\return 0 on success, a QSqlQuery error otherwise.
+		\throws SqlUtilException
 		*/
- 		int deleteUser ( const QString& user_name);
+		void deleteUser ( const QString& user_name);
 
 		/*!
-		  TODO: Done !?
 		removes a particular team from the database. It will:
 			1. delete all Users with that team_name as a foreign key
 			2. delete the entry from the Team entity with that primary key.
 		\param team_name the key to be deleted from
-		\return 0 on success, a QSqlQuery error otherwise.
+		\throws SqlUtilException
 		*/
-		int deleteTeam ( const QString& team_name );
+		void deleteTeam ( const QString& team_name );
 
 		/*!
-		  TODO: Done... I think ^_^;
 		Get all the available users in the database who fall under a particular team.
 		\param team_name the name of the team whose users are needed
 		\param out A reference to a vector\<UserData\> to output the data to.
-		\return true on success, false otherwise.
+		\throws SqlUtilException
 		*/
-		bool getTeamUsers ( const QString& team_name, vector<UserData>& out );
+		void getTeamUsers ( const QString& team_name, vector<UserData>& out );
 
 		/*!
-		  TODO: Done
 		Get the data of a specific user
 		\param user_name The username of the user whose data you want to view
 		\param out A reference to a vector\<UserData\> to output the data to.
-		\return true on success, false otherwise.
+		\throws SqlUtilException
 		*/
-		bool getSpecificUser ( const QString& user_name, UserData& out );
+		void getSpecificUser ( const QString& user_name, UserData& out );
 
 		/*!
-		  TODO: Done
 		  Return the school name of a particular team.
 		\param team_name the team whose school you are searching for
 		\return string of the team's school name
 		*/
 		QString getTeamSchool ( const QString& team_name );
+
+		/*!
+		  Count the number of teams of a particular school.
+		  \param school the school whose teams you are counting
+		  \return int of the count
+		 */
+		int countTeamsPerSchool( const QString& school);
+
+		/*!
+		  Count the number of members in a particular team.
+		  \param team the team whose members you are counting
+		  \return int of the count
+		 */
+		int countUsersPerTeam( const QString& team);
 
 
         /*!
@@ -130,13 +154,17 @@ public:
         */
         double getScore ( const QString& user_name );
 
+
+
+
+		/* I"M SCARED TO TOUCH THIS METHOD, IT'S TOO COMPLICATED TO EDIT */
         /*!
         Set the score for user_name to score.
         \param user_name The user name who's score should be updated.
         \param score The score of the user in double.
-        \return 0 on success, an error code otherwise.
+		\throws SqlUtilException
         */
-        int setScore ( const QString& user_name, double score );
+		int setScore ( const QString& user_name, double score );
 
         /*!
         Authenticate a user by verifying the match of user_name and password
@@ -150,37 +178,37 @@ public:
         /*!
         Get all the available teams in the database.
         \param out A reference to a vector\<TeamData\> to output the data to.
-        \return true on success, false otherwise.
+		\throws SqlUtilException
         */
-        bool getTeams ( vector<TeamData>& out );
+		void getTeams ( vector<TeamData>& out );
 
 		/*!
         Get all the available users in the database.
         \param out A reference to a vector\<UserData\> to output the data to.
-        \return true on success, false otherwise.
+		\throws SqlUtilException
         */
-		bool getUsers ( vector<UserData>& out );
+		void getUsers ( vector<UserData>& out );
 
         /*!
         Get all the available score data in the database.
         \param out A reference to a vector\<UserData\> to output the data to.
-        \return true on success, false otherwise.
+		\throws SqlUtilException
         */
-        bool getScores ( vector<ScoreData>& out );
+		void getScores ( vector<ScoreData>& out );
 
         /*!
         Get all the available admin data in the database.
         \param out A reference to a vector\<AdminData\> to output the data to.
-        \return true on success, false otherwise.
+		\throws SqlUtilException
         */
-        bool getAdmins ( vector<AdminData>& out );
+		void getAdmins ( vector<AdminData>& out );
 
         /*!
         Add an administrator account into the database.
         \param a The AdminData to enter into the DB.
-        \return true on success, false otherwise.
+		\throws SqlUtilException
         */
-        bool addAdmin ( const AdminData& a );
+		void addAdmin ( const AdminData& a );
 
         /*!
         Verify if the database tables are existent.

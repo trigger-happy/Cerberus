@@ -18,12 +18,73 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef PROJECTOR_CONNECTION_H
 #define PROJECTOR_CONNECTION_H
 #include <QtNetwork>
+#include "net/protocol.h"
 
 class ProjectorConnection : public QObject {
 	Q_OBJECT;
 
 public:
 	ProjectorConnection( QObject* parent = 0, QTcpSocket* socket = 0 );
+
+	/*!
+	*/
+	inline void setContestTime( ushort time ) {
+		m_contime = time;
+		sendContestTime();
+	}
+
+	/*!
+	*/
+	inline void setRound( int round ) {
+		m_round = round;
+	}
+
+	/*!
+	*/
+	void sendContestState();
+
+	/*!
+	*/
+	inline void setStatus( CONTEST_STATUS s ) {
+		m_con_status = s;
+	}
+
+	/*!
+	Change the round 3/4 question status.
+	\param qnum The question number.
+	\param time The time left for this question.
+	\param state The status of this question.
+	*/
+	void setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state );
+
+	/*!
+	Show the contest time on projectors.
+	*/
+	void showContestTime();
+
+	/*!
+	Show the current contesant rankings on the projectors.
+	\note Parameters are subject to change.
+	*/
+	void showContestRanks();
+
+	/*!
+	Show the question time on screen.
+	*/
+	void showQuestionTime();
+
+	/*!
+	Show the answer to the projector.
+	*/
+	void showAnswer();
+
+	/*!
+	*/
+	void showQuestion();
+
+	/*!
+	*/
+	void sendContestTime();
 
 public slots:
 	/*!
@@ -49,8 +110,21 @@ signals:
 	*/
 	void projectorDisconnect( ProjectorConnection* p );
 
+	/*!
+	*/
+	void contestTimeRequest( ushort& contime );
+
+	/*!
+	*/
+	void projectorReady( ProjectorConnection* p );
+
 private:
+	bool m_ready;
+	ushort m_round;
+	ushort m_contime;
+	CONTEST_STATUS m_con_status;
 	QTcpSocket* m_socket;
+	p_header* m_hdr;
 };
 
 #endif

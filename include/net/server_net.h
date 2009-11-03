@@ -140,6 +140,32 @@ public:
 	*/
 	void setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state );
 
+	// projector specific stuff
+	/*!
+	Show the contest time on projectors.
+	*/
+	void showContestTime();
+
+	/*!
+	Show the current contesant rankings on the projectors.
+	\note Parameters are subject to change.
+	*/
+	void showContestRanks();
+
+	/*!
+	Show the question time on screen.
+	*/
+	void showQuestionTime();
+
+	/*!
+	Show the answer to the projector.
+	*/
+	void showAnswer();
+	
+	/*!
+	*/
+	void showQuestion();
+
 public slots:
 
 	/*!
@@ -172,6 +198,10 @@ public slots:
 	*/
 	void invalidClient ( TempConnection* con );
 
+	/*!
+	*/
+	void contestTimeResponse( ushort& contime );
+
 signals:
 	void badClient ( TempConnection* con );
 	void newContestant ( ContestantConnection* cc );
@@ -183,6 +213,7 @@ signals:
 protected:
 	//contest states
 	int m_round;
+	ushort m_contime;
 	CONTEST_STATUS m_con_status;
 	//server socket
 	QTcpServer* m_server;

@@ -46,6 +46,18 @@ private slots:
 	void contestantDisconnect ( ContestantConnection* cc );
 	void onAuthenticate( ContestantConnection* cc, const QString& username );
 	void onAnswerSubmit( ContestantConnection* cc, int round, const AnswerData& data );
+	void onContestTimeRequest( ContestantConnection* cc );
+	void newProjector( ProjectorConnection* pc );
+	void projectorDisconnect( ProjectorConnection* pc );
+	void onQTimeBtn();
+	void onShowRanksBtn();
+	void onShowQTimeBtn();
+	void onShowAnswerBtn();
+	void onShowQuestionBtn();
+	void onStartQuestionBtn();
+	void onStopQuestionBtn();
+	void onPauseQuestionBtn();
+	void projectorReady( ProjectorConnection* pc );
 
 private:
 	void writeLog ( const QString& s );
