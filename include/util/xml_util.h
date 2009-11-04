@@ -148,8 +148,8 @@ private:
 	static StageData readStageData(QXmlStreamReader& stream);
 	static void readNetConfig ( QXmlStreamReader& reader, NetworkConfig& conf );
 	static void readNetConfigElement(QXmlStreamReader &reader, NetworkConfig &conf);
-	static void XmlUtil::readAuthorModeScoreEntry(QXmlStreamReader &reader, ProjectorConfig::AuthorMode &am);
-	static ProjectorConfig::AuthorMode* XmlUtil::readAuthorMode(QXmlStreamReader &reader);
+	static void readAuthorModeScoreEntry(QXmlStreamReader &reader, ProjectorConfig::AuthorMode &am);
+	static ProjectorConfig::AuthorMode* readAuthorMode(QXmlStreamReader &reader);
 protected:
 };
 
