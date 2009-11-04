@@ -16,6 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "ui_server.h"
+#include "ui_view_answers.h"
 #include "admin.h"
 #include <iostream>
 
@@ -23,7 +24,14 @@ using namespace std;
 
 Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 		m_dlg( new Ui::server_dlg ) {
+
+	//TODO: Set up the view_answers dialog
+	/*m_answers_dlg = new Ui::view_answers_dlg;
+	m_answers_w = new QDialog( this );
+	m_answers_dlg->setupUi( m_answers_w );
+	m_answers_w->hide();*/
 	m_dlg->setupUi( this );
+
 	contestants = new QStandardItemModel( this );
 	//questions = new QStandardItemModel ( questions_model );
 	m_dlg->contestants_listv->setModel( contestants );
@@ -40,6 +48,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 			this, SLOT (onContestantListClick(QModelIndex)));
 	connect(m_dlg->change_score_btn, SIGNAL (clicked()), this, SLOT (onChangeScore()));
 	connect(m_dlg->drop_con_btn, SIGNAL (clicked()), this, SLOT (onDropContestant()));
+	connect(m_dlg->view_ans_btn, SIGNAL (clicked()), this, SLOT (onViewAnswers()));
 	connect(m_dlg->p_show_qtime_btn, SIGNAL (clicked()), this, SLOT (onShowQuestionTime()));
 	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
 	// connect server signals and slots here
@@ -105,6 +114,8 @@ void Admin::onDropContestant(){
 }
 
 void Admin::onViewAnswers(){
+	int round;
+	m_server->viewSubmittedAnswers( selected_user, round );
 }
 
 void Admin::onChangeScore(){

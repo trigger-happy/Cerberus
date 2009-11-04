@@ -107,21 +107,27 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 {
 	//return here should be a vector of QStrings to be submitted to admin. Or something.
 	const QString& user = cc->getUserName();
+	QString allAnswers, answer;
 	cout << ( QString( "%1 has submitted answer data for round %2" ).arg( user ).arg( round ) ).toStdString() << endl;
 
 	for ( int i = 0; i < data.size(); i++ ) {
 		if ( data[i].ans_type == Question::IDENTIFICATION ) {
-			cout << ( QString( "%1 is %2" ).arg( i + 1 ).arg( data[i].id_answer ) ).toStdString() << endl;
+			answer = QString( "%1 is %2\n" ).arg( i + 1 ).arg( data[i].id_answer );
+			cout << answer.toStdString();
+			allAnswers.append( answer );
 		} else {
 			QString buffer;
 
 			for ( int j = 0; j < data[i].multi_choice.size(); j++ ) {
 				buffer.append( QString( "%1 " ).arg( data[i].multi_choice[j] ) );
 			}
-
-			cout << ( QString( "%1 is %2" ).arg( i + 1 ).arg( buffer ) ).toStdString() << endl;
+			answer = QString( "%1 is %2\n" ).arg( i + 1 ).arg( buffer );
+			cout << answer.toStdString();
+			allAnswers.append( answer );
 		}
 	}
+	hash_answers[user].insert( round, allAnswers );
+
 }
 
 //Presenter slots
@@ -151,8 +157,9 @@ void Server::pauseContest() {
 	m_network->setStatus( CONTEST_PAUSED );
 }
 
-void Server::viewSubmittedAnswers() {
-
+QString Server::viewSubmittedAnswers( QString c_user, int round ) {
+	QString answers = hash_answers[c_user].at( round );
+	return answers;
 }
 
 void Server::checkAnswersManually() {
@@ -189,3 +196,5 @@ void Server::showRankings(){
 void Server::showQuestionTime(){
 	m_network->showQuestionTime();
 }
+
+

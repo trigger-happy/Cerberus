@@ -46,7 +46,7 @@ public:
 
 	/*!
 	*/
-	void viewSubmittedAnswers();
+	QString viewSubmittedAnswers( QString c_user, int round );
 
 	/*!
 	*/
@@ -115,6 +115,7 @@ private:
 	vector<QString> m_questions;
 	vector<QString> m_answers;
 	QHash<QString,ContestantConnection*> hash;
+	QHash<QString, QStringList> hash_answers;
 
 };
 

@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 namespace Ui {
 
 	class server_dlg;
+	class view_answers_dlg;
 }
 
 class Admin : public QDialog {
@@ -61,6 +62,8 @@ public slots:
 
 private:
 	Ui::server_dlg* m_dlg;
+	Ui::view_answers_dlg* m_answers_dlg;
+	QDialog* m_answers_w;
 	Server* m_server;
 	QStandardItemModel* contestants, questions;
 	QString selected_user;

@@ -11,6 +11,6 @@ set(SERVER_SRCS server.cpp admin.cpp)
 set(SERVER_MHDRS ${INCLUDE_DIR}/server.h
 					${INCLUDE_DIR}/admin.h)
 QT4_WRAP_CPP(SERVER_MSRCS ${SERVER_MHDRS})
-set(SERVER_UIS server.ui)
+set(SERVER_UIS server.ui view_answers.ui)
 QT4_WRAP_UI(SERVER_UIS_H ${SERVER_UIS})
 add_executable(server ${SERVER_SRCS} ${SERVER_UIS_H} ${SERVER_MSRCS})
