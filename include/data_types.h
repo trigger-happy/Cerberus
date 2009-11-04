@@ -274,6 +274,13 @@ struct ServerConfig {
 	}
 };
 
+struct RankData {
+	ushort rank;
+	double score;
+	QString fullname;
+	QString teamname;
+};
+
 struct UserData {
 	QString user_name;
 	QString password;

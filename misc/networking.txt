@@ -73,12 +73,12 @@ presenter-server network:
 		server: INF_CONTEST_TIME <ushort time> // in seconds
 	
 	round 1/2 show contest time
-		server: PSN_SHOW_TIME
+		server: PJR_SHOW_TIME
 	
 	round 1/2/3/4 show rankings
-		server: PSN_SHOW_RANKS <ushort entries>
+		server: PJR_SHOW_RANKS <ushort entries>
 			// repeated the same number as entries
-			<ushort rank> <double score> <ushort uname_s> <char[uname_s] user_name> <ushort team_s> <char[team_s] team_name>
+			<ushort rank> <double score> <ushort fullname_s> <char[fullname_s] full_name> <ushort team_s> <char[team_s] team_name>
 	
 	//might remove this one
 	question time info (round 3 and 4):
@@ -89,7 +89,7 @@ presenter-server network:
 		*status = running, stopped, paused
 		
 	answer show (round 3 and 4):
-		server: PSN_SHOW_ANSWER
+		server: PJR_SHOW_ANSWER
 
 // no longer going to be implemented for 1.0
 admin-server network:
