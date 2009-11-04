@@ -103,7 +103,7 @@ struct Question {
 
 		double correct = 0;
 		size_t choiceIndex = 0;
-		
+
 		/* Let me try another algorithm -- Nick
 		for ( size_t i = 0; i < answer_key.size(); ++i ) {
 			if ( choiceIndex < choices.size() && i == choices[choiceIndex] ) {
@@ -119,17 +119,17 @@ struct Question {
 				}
 			}
 		}*/
-		
-		
+
+
 		int key_correct_length = 0;
 		// This is the one I'm using until I find a more efficient way of coding this.
 		/*
 			I've noticed that since the answer key in each question is invariant, I would
 			rather that there is a more efficient way of finding the number of correct
 			answers in the key rather than just by brute force, which I have done below
-			-- Nick	
+			-- Nick
 		*/
-		
+
 		// count the number of correct answers
 		for ( size_t i = 0; i < answer_key.size(); ++i )
 		{
@@ -138,10 +138,10 @@ struct Question {
 				key_correct_length++;
 			}
 		}
-		
+
 		for ( size_t i = 0; i < answer_key.size(); ++i )
-		{		
-			
+		{
+
 			if ( choiceIndex < choices.size() && i == choices[choiceIndex] )
 			{
 				// if it is one of the choices, and it is wrong,
@@ -231,13 +231,29 @@ struct ClientConfig : public NetworkConfig {
 };
 
 struct ProjectorConfig : public NetworkConfig {
+	struct AuthorMode {
+		struct ScoreEntry {
+			QString name;
+			QString group;
+			std::vector<unsigned int> scores;
+		};
+
+		QString question;
+		QString answer;
+		unsigned int rounds;
+		std::vector<ScoreEntry> scores;
+	};
+
 	QString theme_path;
 	QString contest_name;
 	unsigned int time_precision;
-	bool author_mode;
+	AuthorMode *author_mode;
+
+	bool hasAuthorMode() const { return author_mode != 0; }
 	enum { DEFAULT_TIME_PRECISION = 100 };
 	ProjectorConfig() :
-			time_precision(DEFAULT_TIME_PRECISION), author_mode(false) {}
+			time_precision(DEFAULT_TIME_PRECISION), author_mode(0) {}
+	~ProjectorConfig() { delete author_mode; }
 };
 
 struct AdminConfig : public NetworkConfig {

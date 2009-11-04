@@ -127,7 +127,7 @@ void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 
 void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 	bool change_ctrl = false;
-	if ( cfg.author_mode != m_cfg->author_mode || m_controller == NULL )
+	if ( cfg.hasAuthorMode() != m_cfg->hasAuthorMode() || m_controller == NULL )
 		change_ctrl = true;
 
 	if ( m_cfg != &cfg )
@@ -147,7 +147,7 @@ void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 
 	if ( change_ctrl ) {
 		delete m_controller;
-		if ( m_cfg->author_mode )
+		if ( m_cfg->hasAuthorMode() )
 			m_controller = new AuthorController(*this);
 		else
 			m_controller = new MainController(*this);

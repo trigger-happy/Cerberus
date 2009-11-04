@@ -283,6 +283,60 @@ QString XmlUtil::stripAnswers(const QString &input) {
 	return doc.toString(2);
 }
 
+void XmlUtil::readAuthorModeScoreEntry(QXmlStreamReader &reader, ProjectorConfig::AuthorMode &am) {
+	while ( !reader.atEnd() ) {
+		reader.readNext();
+		if ( reader.isStartElement() ) {
+			if ( reader.name() == "entry" ) {
+				const QXmlStreamAttributes &attr = reader.attributes();
+				ProjectorConfig::AuthorMode::ScoreEntry entry;
+				entry.name = attr.value("name").toString();
+				entry.group = attr.value("group").toString();
+
+				const QString &scores = reader.readElementText();
+				const QStringList &scoreList = scores.split(' ', QString::SkipEmptyParts);
+				for ( size_t i = 0; i < scoreList.size(); ++i )
+					entry.scores.push_back(scoreList.at(i).toUInt());
+				am.scores.push_back(entry);
+			} else if ( reader.name() == "scores" ) {
+				throw InvalidXmlException("Tag 'scores' found inside 'scores'.", reader);
+			} else {
+				//barf?
+			}
+		} else if ( reader.isEndElement() && reader.name() == "scores" )
+			break;
+	}
+}
+
+ProjectorConfig::AuthorMode* XmlUtil::readAuthorMode(QXmlStreamReader &reader) {
+	{
+		const QXmlStreamAttributes &attr = reader.attributes();
+		if ( attr.hasAttribute("enabled") &&
+			 !checked_convert<bool>(attr.value("enabled").toString(), "enabled", reader) )
+		return NULL;
+	}
+
+	ProjectorConfig::AuthorMode *ret = new ProjectorConfig::AuthorMode();
+	while ( !reader.atEnd() ) {
+		reader.readNext();
+		if ( reader.isStartElement() ) {
+			if ( reader.name() == "q" )
+				ret->question = reader.readElementText();
+			else if ( reader.name() == "a" )
+				ret->answer = reader.readElementText();
+			else if ( reader.name() == "scores" ) {
+				readAuthorModeScoreEntry(reader, *ret);
+			} else if ( reader.name() == "author_mode") {
+				throw InvalidXmlException("Tag 'author_mode' found inside 'author_mode'.", reader);
+			} else {
+				//barf?
+			}
+		} else if ( reader.isEndElement() && reader.name() == "author_mode" )
+			break;
+	}
+	return ret;
+}
+
 void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
 	QXmlStreamReader reader( xml );
 	while ( !reader.atEnd() ) {
@@ -308,9 +362,7 @@ void XmlUtil::readProjectorConfig(const QString &xml, ProjectorConfig &conf) {
 						checked_convert<unsigned int>(reader.readElementText(),
 													  "time_precision", reader);
 			} else if ( reader.name() == "author_mode" ) {
-				conf.author_mode =
-						checked_convert<bool>(reader.readElementText(),
-											  "author_mode", reader);
+				conf.author_mode = readAuthorMode(reader);
 			} else {
 				readNetConfigElement(reader, conf);
 			}
