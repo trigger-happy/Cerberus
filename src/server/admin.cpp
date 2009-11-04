@@ -97,18 +97,26 @@ void Admin::onContestantListClick(const QModelIndex& index){
 }
 
 void Admin::onDropContestant(){
-	this->removeContestant( selected_user );
-	m_server->dropConnection( selected_user );
+	if( !selected_user.isEmpty() ){
+		this->removeContestant( selected_user );
+		m_server->dropConnection( selected_user );
+		selected_user = "";
+	}
 }
 
 void Admin::onViewAnswers(){
 }
 
 void Admin::onChangeScore(){
-	bool* ok;
-	double score = QInputDialog::getDouble( this, tr("Change score"), tr("Enter the new score: "), 0, -1000, 1000, 1, ok);
-	m_server->setScore( selected_user, score );
-	m_dlg->score_lbl->setText(QString("%1").arg(score));
+	if( !selected_user.isEmpty() ){
+		bool ok;
+		double score = QInputDialog::getDouble( this, tr("Change score"), tr("Enter the new score: "),
+												m_server->getScore( selected_user ), 0, 10000, 0, &ok);
+		if( ok ){
+			m_server->setScore( selected_user, score );
+			m_dlg->score_lbl->setText(QString("%1").arg(score));
+		}
+	}
 }
 
 
