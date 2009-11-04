@@ -109,8 +109,8 @@ void ServerDlg::newContestant ( ContestantConnection* cc ) {
 	         this, SLOT( onAuthenticate( ContestantConnection*, QString ) ) );
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
 	         this, SLOT( onAnswerSubmit( ContestantConnection*, int, AnswerData ) ) );
-	connect( cc, SIGNAL( onContestTimeRequest( ContestantConnection* ) ),
-	         this, SLOT( onContestTimeRequest( ContestantConnection* ) ) );
+	connect( cc, SIGNAL( onContestTimeRequest( ushort& ) ),
+	         this, SLOT( onContestTimeRequest( ushort& ) ) );
 }
 
 void ServerDlg::contestantDisconnect ( ContestantConnection* cc ) {
@@ -167,8 +167,8 @@ void ServerDlg::onAnswerSubmit( ContestantConnection* cc, int round, const Answe
 	}
 }
 
-void ServerDlg::onContestTimeRequest( ContestantConnection* cc ) {
-	cc->setContestTime( m_dlg->time_line->text().toUShort() );
+void ServerDlg::onContestTimeRequest( ushort& time ) {
+	time = m_dlg->time_line->text().toUShort();
 }
 
 void ServerDlg::onQTimeBtn() {

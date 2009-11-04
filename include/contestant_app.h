@@ -203,16 +203,20 @@ private:
     void stopContest();
     void pauseContest();
     void runContest();
+    void stopQuestion();
+    void pauseQuestion();
+    void runQuestion();
     void showInfo( int, QString, QString );
 
     QTimer *timer;
 	StageData sd;
     AnswerData ad;
     int status;
+    int qStatus;
 	int round;
 	int qCount;
     int time;
-    bool timeSet;
+    bool loggedIn;
 };
 
 #endif //CONTESTANT_APP_H

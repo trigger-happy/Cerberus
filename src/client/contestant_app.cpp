@@ -160,7 +160,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
     qCount = 0;
     time = 0;
     status = CONTEST_STOPPED;
-    timeSet = false;
+    qStatus = QUESTION_STOPPED;
+    loggedIn = false;
 }
 
 ContestantApp::~ContestantApp()
@@ -190,6 +191,7 @@ void ContestantApp::onAuthenticate ( bool result )
 {
 	if ( result )
 	{
+        loggedIn = true;
 		m_login_w->hide();
 		m_welcome_w->show();
 		m_network->getContestState();
@@ -203,9 +205,14 @@ void ContestantApp::onAuthenticate ( bool result )
 
 void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 {
-    m_network->getContestTime();
+    if( !loggedIn )
+        return;
+
     m_network->qDataRequest( r );
 	round = r;
+
+    if( round == 3 || round == 4 )
+        m_welcome_dlg->start_btn->setEnabled( false );
     if( round == 4 )
     {
         m_finalsChoice_w->setWindowTitle("Tie-Breaker Round");
@@ -214,7 +221,11 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
     status = s;
 
     if( status == CONTEST_RUNNING )
-        runContest();
+    {
+        displayStatus();
+        if( round == 1 || round == 2 )
+            m_network->getContestTime();
+    }
     else if( status == CONTEST_STOPPED )
         stopContest();
     else if( status == CONTEST_PAUSED )
@@ -223,28 +234,57 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 
 void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s )
 {
-    time = t;
-    displayQuestionAndChoices();
-    status = s;
+    if( !loggedIn )
+        return;
+    //if( !( q >= 0 && q < sd.questions.size()) )
+    //    return;
 
-    if( status == QUESTION_RUNNING )
-        runContest();
-    else if( status == QUESTION_STOPPED )
-        stopContest();
-    else if( status == QUESTION_PAUSED )
-        pauseContest();
+    if( status == CONTEST_RUNNING )
+    {
+        time = t;
+        if( qCount != q )
+        {
+            qStatus = QUESTION_STOPPED;
+            qCount = q;     
+            m_finalsChoice_dlg->time_lbl->setText("");
+            m_finalsIdent_dlg->time_lbl->setText("");
+        }
+        else
+            qStatus = s;
+
+        displayQuestionAndChoices();
+
+        if( qStatus == QUESTION_STOPPED )
+            stopQuestion();
+        else if( qStatus == QUESTION_RUNNING )
+            runQuestion();
+        else if( qStatus == QUESTION_PAUSED )
+            pauseQuestion();
+        else
+            stopQuestion();
+    }    
 }
 
 void ContestantApp::onContestTime( ushort t )
 {
     time = t;
+    runContest();
 }
 
 void ContestantApp::onQData ( const QString& xml )
 {
+    if( !loggedIn )
+        return;
+
     sd.questions.clear();
 	XmlUtil::getInstance().readStageData( xml, sd );
 	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );  
+
+    /*
+    if( status == CONTEST_RUNNING || status == CONTEST_PAUSED )
+        if ( round == 3 || round == 4 )
+            m_network->getQuestionState();
+    */
 }
 
 void ContestantApp::onAData ( bool result )
@@ -252,11 +292,6 @@ void ContestantApp::onAData ( bool result )
     if( result )
     {
         showInfo( 0, "Answers successfully sent to server", "" );
-        if( round == 3 || round == 4 )
-        {
-            m_finalsChoice_dlg->submit_btn->setEnabled( false );
-            m_finalsIdent_dlg->submit_btn->setEnabled( false );
-        }
         if( round == 1 || round == 2 )
             exit();
     }
@@ -302,16 +337,21 @@ void ContestantApp::updateTimer()
         }
         if( round == 3 || round == 4 )
         {
-            finalsSubmit();
-            status = QUESTION_PAUSED;
-            pauseContest();
+            qStatus = QUESTION_PAUSED;
+            pauseQuestion();
         }
+        return;
     }
 
     int minute = time/60;
     int second = time - minute*60;
-    QString t = QString::number(minute);
-    t.append(":");
+    QString t;
+    if( t > 0 )
+    {
+        t.append( QString::number(minute) );
+        t.append(":");
+    }
+
     t.append( QString::number(second).leftJustified( 2, ' '));
 
     if( round == 1 )
@@ -339,6 +379,9 @@ void ContestantApp::exit()
 
 void ContestantApp::welcomeStart()
 {
+    if( !loggedIn )
+        return;
+
 	m_welcome_w->hide();
     if( round == 1 )
         m_elims_w->show();
@@ -346,7 +389,8 @@ void ContestantApp::welcomeStart()
         m_semifinals_w->show();
 
     //finals/tiebreaker dialog showing handled by displayQuestionAndChoices
-    initializeAnswerData();
+    if( round == 1 || round == 2 )
+        initializeAnswerData();
     displayQuestionAndChoices();
 }
 
@@ -437,6 +481,9 @@ void ContestantApp::review()
 
 void ContestantApp::submit()
 {
+    if( !loggedIn )
+        return;
+
     m_network->aDataSend( round, ad );
 }
 
@@ -444,7 +491,11 @@ void ContestantApp::finalsSubmit()
 {
     recordAnswer();
     m_network->aDataSend( round, ad );
+    qStatus = QUESTION_PAUSED;
+    pauseQuestion();
 }
+
+//convenience methods
 
 void ContestantApp::displayQuestionAndChoices()
 {
@@ -546,19 +597,29 @@ void ContestantApp::displayAnswer()
 
 void ContestantApp::displayStatus()
 {
-    QString s;
-    if( status == CONTEST_RUNNING || status == QUESTION_RUNNING )
+    QString s, qs;
+    if( status == CONTEST_RUNNING )
         s = "RUNNING";
-    else if( status == CONTEST_STOPPED || status == QUESTION_STOPPED )
+    else if( status == CONTEST_STOPPED )
         s = "STOPPED";
-    else if( status == CONTEST_PAUSED || status == QUESTION_PAUSED )
+    else if( status == CONTEST_PAUSED )
         s = "PAUSED";
+
+    if( qStatus == QUESTION_RUNNING )
+        qs = "RUNNING";
+    else if( qStatus == QUESTION_STOPPED )
+        qs = "STOPPED";
+    else if( qStatus == QUESTION_PAUSED )
+        qs = "PAUSED";
 
     m_welcome_dlg->status_lbl->setText( s );
     if( round == 1 )
         m_elims_dlg->status_lbl->setText( s );
     else if( round == 2 )
         m_semifinals_dlg->status_lbl->setText( s );
+
+    m_finalsChoice_dlg->status_lbl->setText( qs );
+    m_finalsIdent_dlg->status_lbl->setText( qs );
 }
 
 void ContestantApp::recordAnswer()
@@ -589,21 +650,24 @@ void ContestantApp::recordAnswer()
     }
     else if( round == 3 || round == 4 )
     {
-        if( ad[qCount].ans_type == Question::IDENTIFICATION )
-        {
-            ad[qCount].id_answer = m_finalsIdent_dlg->answer_line->text();
-        }
-        else if( ad[qCount].ans_type == Question::CHOOSE_ANY || ad[qCount].ans_type == Question::CHOOSE_ONE )
-        {
-            if( m_finalsChoice_dlg->a_choice->isChecked() )
-                ad[qCount].multi_choice.push_back(1);
-            if( m_finalsChoice_dlg->b_choice->isChecked() )
-                ad[qCount].multi_choice.push_back(2);
-            if( m_finalsChoice_dlg->c_choice->isChecked() )
-                ad[qCount].multi_choice.push_back(3);
-            if( m_finalsChoice_dlg->d_choice->isChecked() )
-                ad[qCount].multi_choice.push_back(4);
-        }
+        ad.clear();
+        Answer a;
+        if( sd.questions[qCount].type == Question::IDENTIFICATION )
+            a.ans_type = Question::IDENTIFICATION;
+        else
+            a.ans_type = sd.questions[qCount].type;
+
+        a.id_answer = m_finalsIdent_dlg->answer_line->text();
+
+        if( m_finalsChoice_dlg->a_choice->isChecked() )
+            a.multi_choice.push_back(1);
+        if( m_finalsChoice_dlg->b_choice->isChecked() )
+            a.multi_choice.push_back(2);
+        if( m_finalsChoice_dlg->c_choice->isChecked() )
+            a.multi_choice.push_back(3);
+        if( m_finalsChoice_dlg->d_choice->isChecked() )
+            a.multi_choice.push_back(4);
+        ad.push_back( a );
     }
 }
 
@@ -624,99 +688,104 @@ void ContestantApp::stopContest()
 {
     timer->stop();
 
-    if( round == 1 || round == 2 ) // stop contest
-    {
-        if( round == 1 )
-            m_elims_w->hide();
-        else if( round == 2 )
-            m_semifinals_w->hide();
+    m_elims_w->hide();
+    m_semifinals_w->hide();
+    m_finalsChoice_w->hide();
+    m_finalsIdent_w->hide();
+    m_summary_w->hide();
 
-        qCount = 0;
-        m_welcome_dlg->start_btn->setEnabled( false );
-        m_summary_w->hide();
-        m_welcome_w->show();
-    }
-    else if( round == 3 || round == 4 ) //stop question
-    {
-        m_finalsChoice_dlg->a_choice->setChecked(false);
-        m_finalsChoice_dlg->b_choice->setChecked(false);
-        m_finalsChoice_dlg->c_choice->setChecked(false);
-        m_finalsChoice_dlg->d_choice->setChecked(false);
-        m_finalsChoice_dlg->a_choice->setCheckable(false);
-        m_finalsChoice_dlg->b_choice->setCheckable(false);
-        m_finalsChoice_dlg->c_choice->setCheckable(false);
-        m_finalsChoice_dlg->d_choice->setCheckable(false);
-        m_finalsChoice_dlg->submit_btn->setEnabled(false);
-
-        m_finalsIdent_dlg->answer_line->setText("");
-        m_finalsIdent_dlg->answer_line->setEnabled(false);
-        m_finalsIdent_dlg->submit_btn->setEnabled(false);
-    }
+    qCount = 0;
+    m_welcome_dlg->start_btn->setEnabled( false );
+    m_welcome_w->show();
 
     displayStatus();
 }
 
 void ContestantApp::pauseContest()
 {
-    if( round == 1 || round == 2 ) //pause contest
-    {
-        m_welcome_dlg->start_btn->setEnabled( false );
-        if( round == 1 )
-        {
-            m_elims_dlg->prev_btn->setEnabled( false );
-            m_elims_dlg->next_btn->setEnabled( false );
-        }
-        else if( round == 2 )
-        {
-            m_semifinals_dlg->prev_btn->setEnabled( false );
-            m_semifinals_dlg->next_btn->setEnabled( false );
-        }
-        m_summary_dlg->submit_btn->setEnabled( false );
-    }
-    else if( round == 3 || round == 4 ) //stop question
-    {
-        m_finalsChoice_dlg->a_choice->setCheckable(false);
-        m_finalsChoice_dlg->b_choice->setCheckable(false);
-        m_finalsChoice_dlg->c_choice->setCheckable(false);
-        m_finalsChoice_dlg->d_choice->setCheckable(false);
-        m_finalsChoice_dlg->submit_btn->setEnabled(false);
-
-        m_finalsIdent_dlg->answer_line->setEnabled(false);
-        m_finalsIdent_dlg->submit_btn->setEnabled(false);
-    }
-
     timer->stop();
+
+    m_welcome_dlg->start_btn->setEnabled( false );
+    m_elims_dlg->prev_btn->setEnabled( false );
+    m_elims_dlg->next_btn->setEnabled( false );
+
+    m_semifinals_dlg->prev_btn->setEnabled( false );
+    m_semifinals_dlg->next_btn->setEnabled( false );
+
+    m_summary_dlg->submit_btn->setEnabled( false );
+
+    pauseQuestion();
     displayStatus();
 }
 
 void ContestantApp::runContest()
 {
-    if( round == 1 || round == 2 ) //run contest
-    {
+    if( round == 1 || round == 2 )
         m_welcome_dlg->start_btn->setEnabled( true );
-        if( round == 1 )
-        {
-            m_elims_dlg->prev_btn->setEnabled( true );
-            m_elims_dlg->next_btn->setEnabled( true );
-        }
-        else if( round == 2 )
-        {
-            m_semifinals_dlg->prev_btn->setEnabled( true );
-            m_semifinals_dlg->next_btn->setEnabled( true );
-        }
-        m_summary_dlg->submit_btn->setEnabled( true );
-    }
-    else if( round == 3 || round == 4 ) //stop question
-    {
-        m_finalsChoice_dlg->a_choice->setCheckable(true);
-        m_finalsChoice_dlg->b_choice->setCheckable(true);
-        m_finalsChoice_dlg->c_choice->setCheckable(true);
-        m_finalsChoice_dlg->d_choice->setCheckable(true);
-        m_finalsChoice_dlg->submit_btn->setEnabled(true);
+    m_elims_dlg->prev_btn->setEnabled( true );
+    m_elims_dlg->next_btn->setEnabled( true );
 
-        m_finalsIdent_dlg->answer_line->setEnabled(true);
-        m_finalsIdent_dlg->submit_btn->setEnabled(true);
-    }
+    m_semifinals_dlg->prev_btn->setEnabled( true );
+    m_semifinals_dlg->next_btn->setEnabled( true );
+
+    m_summary_dlg->submit_btn->setEnabled( true );
+
+    if( round == 1 || round == 2 )
+        timer->start( 1000 );
+    displayStatus();
+}
+
+void ContestantApp::stopQuestion()
+{
+    timer->stop();
+
+    m_finalsChoice_dlg->a_choice->setChecked(false);
+    m_finalsChoice_dlg->b_choice->setChecked(false);
+    m_finalsChoice_dlg->c_choice->setChecked(false);
+    m_finalsChoice_dlg->d_choice->setChecked(false);
+    m_finalsChoice_dlg->a_choice->setCheckable(false);
+    m_finalsChoice_dlg->b_choice->setCheckable(false);
+    m_finalsChoice_dlg->c_choice->setCheckable(false);
+    m_finalsChoice_dlg->d_choice->setCheckable(false);
+    m_finalsChoice_dlg->submit_btn->setEnabled(false);
+
+    m_finalsIdent_dlg->answer_line->setText("");
+    m_finalsIdent_dlg->answer_line->setEnabled(false);
+    m_finalsIdent_dlg->submit_btn->setEnabled(false);
+
+    displayStatus();
+}
+
+void ContestantApp::pauseQuestion()
+{
+    timer->stop();
+
+    m_finalsChoice_dlg->a_choice->setEnabled(false);
+    m_finalsChoice_dlg->b_choice->setEnabled(false);
+    m_finalsChoice_dlg->c_choice->setEnabled(false);
+    m_finalsChoice_dlg->d_choice->setEnabled(false);
+    m_finalsChoice_dlg->submit_btn->setEnabled(false);
+
+    m_finalsIdent_dlg->answer_line->setEnabled(false);
+    m_finalsIdent_dlg->submit_btn->setEnabled(false);
+
+    displayStatus();
+}
+
+void ContestantApp::runQuestion()
+{
+    m_finalsChoice_dlg->a_choice->setEnabled(true);
+    m_finalsChoice_dlg->b_choice->setEnabled(true);
+    m_finalsChoice_dlg->c_choice->setEnabled(true);
+    m_finalsChoice_dlg->d_choice->setEnabled(true);
+    m_finalsChoice_dlg->a_choice->setCheckable(true);
+    m_finalsChoice_dlg->b_choice->setCheckable(true);
+    m_finalsChoice_dlg->c_choice->setCheckable(true);
+    m_finalsChoice_dlg->d_choice->setCheckable(true);
+    m_finalsChoice_dlg->submit_btn->setEnabled(true);
+
+    m_finalsIdent_dlg->answer_line->setEnabled(true);
+    m_finalsIdent_dlg->submit_btn->setEnabled(true);
 
     timer->start( 1000 );
     displayStatus();

@@ -145,7 +145,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>timer</string>
+      <string/>
      </property>
     </widget>
    </item>

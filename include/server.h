@@ -54,13 +54,19 @@ public:
 
 	/*!
 	*/
-	void dropConnection( ContestantConnection* cc );
+	void dropConnection( QString c_user );
 
 	double getScore ( QString c_user );
 
 	void setScore ( QString c_user, double score );
 
 	void setRound( int round );
+
+	void showTimeLeft();
+
+	void showRankings();
+
+	void showQuestionTime();
 
 signals:
 	void badC ( TempConnection* con );
@@ -70,6 +76,8 @@ signals:
 	void newProjector ( ProjectorConnection* pc );
 
 private slots:
+
+	//Contestant slots
 	/*!
 	Called when there is a new connection
 	*/
@@ -89,6 +97,10 @@ private slots:
 
 	void onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data );
 
+	//Projector slots
+	void projectorConnect( ProjectorConnection* pc );
+
+	void projectorDisconnect( ProjectorConnection* pc);
 
 
 
@@ -102,6 +114,7 @@ private:
 	ServerConfig m_config;
 	vector<QString> m_questions;
 	vector<QString> m_answers;
+	QHash<QString,ContestantConnection*> hash;
 
 };
 

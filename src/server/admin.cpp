@@ -40,7 +40,8 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 			this, SLOT (onContestantListClick(QModelIndex)));
 	connect(m_dlg->change_score_btn, SIGNAL (clicked()), this, SLOT (onChangeScore()));
 	connect(m_dlg->drop_con_btn, SIGNAL (clicked()), this, SLOT (onDropContestant()));
-
+	connect(m_dlg->p_show_qtime_btn, SIGNAL (clicked()), this, SLOT (onShowQuestionTime()));
+	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
 	// connect server signals and slots here
 	m_server = new Server();
 	connect(m_server, SIGNAL (contestantC(QString)), this, SLOT (addContestant(QString)));
@@ -97,6 +98,7 @@ void Admin::onContestantListClick(const QModelIndex& index){
 
 void Admin::onDropContestant(){
 	this->removeContestant( selected_user );
+	m_server->dropConnection( selected_user );
 }
 
 void Admin::onViewAnswers(){
@@ -104,18 +106,19 @@ void Admin::onViewAnswers(){
 
 void Admin::onChangeScore(){
 	bool* ok;
-	Qt::WindowFlags flags = 0;
-	double score = QInputDialog::getDouble( this, "Change score", "Enter the new score: ",
-									  0, -1000, 1000, 1, ok, flags);
+	double score = QInputDialog::getDouble( this, tr("Change score"), tr("Enter the new score: "), 0, -1000, 1000, 1, ok);
 	m_server->setScore( selected_user, score );
+	m_dlg->score_lbl->setText(QString("%1").arg(score));
 }
 
 
 // projector control
 void Admin::onShowTimeLeft(){
+	m_server->showTimeLeft();
 }
 
 void Admin::onShowRankings(){
+	m_server->showRankings();
 }
 
 void Admin::onShowNothing(){
@@ -137,6 +140,7 @@ void Admin::onShowAnswer(){
 }
 
 void Admin::onShowQuestionTime(){
+	m_server->showQuestionTime();
 }
 
 int main ( int argc, char* argv[] )

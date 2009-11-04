@@ -77,6 +77,7 @@ Server::~Server() {
 	delete m_network;
 }
 
+//Contestant slots
 void Server::newContestant( ContestantConnection* cc ) {
 	if( testing ) cout << "A new contestant has connected." << endl;
 	connect ( cc, SIGNAL ( onAuthentication( ContestantConnection*, const QString& ) ),
@@ -92,6 +93,7 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
 			 this, SLOT( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ) );
 	m_network->getContestantList();
+	hash[c_username] = cc;
 	emit contestantC( c_username );
 }
 
@@ -122,6 +124,18 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 	}
 }
 
+//Presenter slots
+void Server::projectorConnect( ProjectorConnection* pc){
+	if( testing ) cout << "Projector has connected.\n";
+}
+
+void Server::projectorDisconnect( ProjectorConnection* pc){
+	if( testing ) cout << "Projector has been disconnected.\n";
+}
+
+
+
+//Admin functions
 void Server::stopContest() {
 	if( testing ) cout << "Contest stopped. \n";
 	m_network->setStatus( CONTEST_STOPPED );
@@ -145,8 +159,9 @@ void Server::checkAnswersManually() {
 
 }
 
-void Server::dropConnection( ContestantConnection* cc ) {
-
+void Server::dropConnection( QString c_user ) {
+	ContestantConnection* cc = hash[c_user];
+	cc->dropClient();
 }
 
 double Server::getScore( QString c_user ){
@@ -155,9 +170,21 @@ double Server::getScore( QString c_user ){
 
 void Server::setScore( QString c_user, double score ){
 	SqlUtil::getInstance().setScore( c_user, score );
+	if( testing ) cout << c_user.toStdString() << "'s score has been set to " << score << endl;
 }
 
 void Server::setRound( int round ){
 	m_network->setRound(round);
 	if( testing ) cout << "Contest set to Round " << round << ".\n";
+}
+
+void Server::showTimeLeft(){
+}
+
+void Server::showRankings(){
+	m_network->showContestRanks();
+}
+
+void Server::showQuestionTime(){
+	m_network->showQuestionTime();
 }
