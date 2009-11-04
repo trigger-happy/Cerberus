@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>279</width>
-    <height>267</height>
+    <width>600</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -76,6 +76,11 @@
          </disabled>
         </palette>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Contest Status</string>
        </property>
@@ -83,6 +88,11 @@
      </item>
      <item>
       <widget class="QLabel" name="instruction_lbl">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Instructions</string>
        </property>
@@ -92,6 +102,11 @@
       <widget class="QPlainTextEdit" name="instructions_txt">
        <property name="enabled">
         <bool>true</bool>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
        </property>
        <property name="readOnly">
         <bool>true</bool>
@@ -111,6 +126,11 @@ The instructions are parsed from the XML.</string>
      </item>
      <item>
       <widget class="QPushButton" name="start_btn">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Start</string>
        </property>

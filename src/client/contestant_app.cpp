@@ -234,10 +234,13 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 
 void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s )
 {
+    std::cout<<q<<"\n";
+    std::cout<<t<<"\n";
+
     if( !loggedIn )
         return;
-    //if( !( q >= 0 && q < sd.questions.size()) )
-    //    return;
+    if( q >= sd.questions.size() )
+        return;
 
     if( status == CONTEST_RUNNING )
     {
@@ -248,11 +251,12 @@ void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s
             qCount = q;     
             m_finalsChoice_dlg->time_lbl->setText("");
             m_finalsIdent_dlg->time_lbl->setText("");
+            displayQuestionAndChoices();
         }
         else
             qStatus = s;
 
-        displayQuestionAndChoices();
+
 
         if( qStatus == QUESTION_STOPPED )
             stopQuestion();
@@ -280,11 +284,11 @@ void ContestantApp::onQData ( const QString& xml )
 	XmlUtil::getInstance().readStageData( xml, sd );
 	m_welcome_dlg->instructions_txt->setPlainText( sd.welcome_msg );  
 
-    /*
+
     if( status == CONTEST_RUNNING || status == CONTEST_PAUSED )
         if ( round == 3 || round == 4 )
             m_network->getQuestionState();
-    */
+
 }
 
 void ContestantApp::onAData ( bool result )
@@ -722,6 +726,9 @@ void ContestantApp::runContest()
 {
     if( round == 1 || round == 2 )
         m_welcome_dlg->start_btn->setEnabled( true );
+    else if( round == 3 || round == 4 )
+        m_welcome_dlg->start_btn->setEnabled( false );
+
     m_elims_dlg->prev_btn->setEnabled( true );
     m_elims_dlg->next_btn->setEnabled( true );
 

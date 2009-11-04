@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
-    <height>153</height>
+    <width>456</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,8 +32,16 @@
    </item>
    <item>
     <widget class="QLabel" name="review_lbl">
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Please review your answers before submitting them.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -52,6 +60,11 @@
    </item>
    <item>
     <widget class="QPushButton" name="review_btn">
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Review Answers</string>
      </property>
@@ -59,6 +72,11 @@
    </item>
    <item>
     <widget class="QPushButton" name="submit_btn">
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Submit Answers</string>
      </property>

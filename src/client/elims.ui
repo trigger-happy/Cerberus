@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>700</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,6 +80,11 @@
        </disabled>
       </palette>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Contest Status</string>
      </property>
@@ -92,6 +97,11 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
      </property>
      <property name="text">
       <string/>
@@ -118,6 +128,11 @@
      </item>
      <item>
       <widget class="QLabel" name="question_lbl">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Question text goes here.</string>
        </property>
@@ -139,7 +154,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>379</width>
-       <height>28</height>
+       <height>80</height>
       </size>
      </property>
     </spacer>
@@ -166,6 +181,11 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QGroupBox" name="choicesgroup">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="title">
           <string>Choices</string>
          </property>
@@ -247,6 +267,11 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="prev_btn">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Previous</string>
        </property>
@@ -254,6 +279,11 @@
      </item>
      <item>
       <widget class="QPushButton" name="next_btn">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Next</string>
        </property>
