@@ -94,6 +94,7 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 			 this, SLOT( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ) );
 	m_network->getContestantList();
 	hash[c_username] = cc;
+	hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
 	emit contestantC( c_username );
 }
 
@@ -126,8 +127,8 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 			allAnswers.append( answer );
 		}
 	}
-	hash_answers[user].insert( round, allAnswers );
-
+	hash_answers[user].replace( round-1, allAnswers );
+	if ( testing ) cout << "Replaced index " << round-1 << endl;
 }
 
 //Presenter slots
@@ -158,6 +159,7 @@ void Server::pauseContest() {
 }
 
 QString Server::viewSubmittedAnswers( QString c_user, int round ) {
+	if ( testing ) cout << "Attempting to view answers by " << c_user.toStdString() << " at round " << round+1 << endl;
 	QString answers = hash_answers[c_user].at( round );
 	return answers;
 }
