@@ -166,13 +166,14 @@ ContestantApp::~ContestantApp()
 
 void ContestantApp::onConnect()
 {
-    showInfo( 0, "Connected to Server.", "" );
+    showInfo( 0, "Connected to server", "" );
 	m_login_w->show();
 }
 
 void ContestantApp::onDisconnect()
 {
-
+    showInfo( 1, "Disconnected from server", "Please reconnect if in the middle of the contest" );
+    exit();
 }
 
 void ContestantApp::onAuthenticate ( bool result )
@@ -308,7 +309,7 @@ void ContestantApp::onContestError ( ERROR_MESSAGES err )
 
 void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
 {
-
+    showInfo( 1, QString ( "Socket error: %1" ).arg ( err ), "" );
 }
 
 void ContestantApp::updateTimer()

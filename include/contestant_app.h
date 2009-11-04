@@ -28,7 +28,6 @@ namespace Ui
 {
 	class login_dlg;
 	class welcome_dlg;
-	class reconnect_dlg;
 	class elims_dlg;
     class semifinals_dlg;
     class finalsChoice_dlg;
@@ -127,17 +126,7 @@ private slots:
 	/*!
 	Slot for when the user clicks the Start button on the welcome screen.
 	*/
-	void welcomeStart();
-
-	/*!
-	Slot for the Reconnect button on the dialog which appears upon connection problems.
-	*/
-	void reconnectTry();
-
-	/*!
-	Slot for the Cancel button on the dialog which appears upon connection problems.
-	*/
-	void reconnectCancel();
+    void welcomeStart();
 
 	/*!
     Slot for the Previous button on the elims & semis dialog.
@@ -173,7 +162,6 @@ private:
 	ContestantNetwork* m_network;
 	Ui::login_dlg* m_login_dlg;
 	Ui::welcome_dlg* m_welcome_dlg;
-	Ui::reconnect_dlg* m_reconnect_dlg;
 	Ui::elims_dlg* m_elims_dlg;
     Ui::semifinals_dlg* m_semifinals_dlg;
     Ui::finalsChoice_dlg* m_finalsChoice_dlg;
@@ -182,7 +170,6 @@ private:
 
 	QDialog* m_login_w;
 	QDialog* m_welcome_w;
-	QDialog* m_reconnect_w;
 	QDialog* m_elims_w;
     QDialog* m_semifinals_w;
     QDialog* m_finalsChoice_w;
