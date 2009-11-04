@@ -26,10 +26,10 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 		m_dlg( new Ui::server_dlg ) {
 
 	//TODO: Set up the view_answers dialog
-	/*m_answers_dlg = new Ui::view_answers_dlg;
+	m_answers_dlg = new Ui::view_answers_dlg;
 	m_answers_w = new QDialog( this );
 	m_answers_dlg->setupUi( m_answers_w );
-	m_answers_w->hide();*/
+	m_answers_w->hide();
 	m_dlg->setupUi( this );
 
 	contestants = new QStandardItemModel( this );
