@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "error_defs.h"
 #include "ui_login.h"
 #include "ui_welcome.h"
-#include "ui_reconnect.h"
 #include "ui_elims.h"
 #include "ui_semifinals.h"
 #include "ui_finalsChoice.h"
@@ -29,7 +28,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QFile>
 #include <QTextStream>
 #include <vector>
-#include <iostream>
 #include <cassert>
 
 
@@ -42,7 +40,6 @@ ContestantApp::ContestantApp ( QWidget* parent )
 {
 	m_login_dlg = new Ui::login_dlg;
 	m_welcome_dlg = new Ui::welcome_dlg;
-	m_reconnect_dlg = new Ui::reconnect_dlg;
 	m_elims_dlg = new Ui::elims_dlg;
     m_semifinals_dlg = new Ui::semifinals_dlg;
     m_finalsChoice_dlg = new Ui::finalsChoice_dlg;
@@ -53,10 +50,6 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_welcome_w = new QDialog( this );
 	m_welcome_dlg->setupUi( m_welcome_w );
 	m_welcome_w->hide();
-
-	m_reconnect_w = new QDialog( this );
-	m_reconnect_dlg->setupUi( m_reconnect_w );
-	m_reconnect_w->hide();
 
 	m_elims_w = new QDialog( this );
 	m_elims_dlg->setupUi( m_elims_w );
@@ -109,10 +102,6 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
 	// connections for the welcome dialog
 	connect( m_welcome_dlg->start_btn, SIGNAL ( clicked() ), this, SLOT ( welcomeStart() ) );
-
-	// connections for the reconnect dialog
-	connect( m_reconnect_dlg->try_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectTry() ) );
-	connect( m_reconnect_dlg->cancel_btn, SIGNAL ( clicked() ), this, SLOT ( reconnectCancel() ) );
 
     // connections for the elims and semis dialog
     connect( m_elims_dlg->prev_btn, SIGNAL ( clicked() ), this, SLOT ( elimSemiPrev() ) );
@@ -169,7 +158,6 @@ ContestantApp::~ContestantApp()
 	delete m_network;
 	delete m_login_w;
 	delete m_welcome_w;
-	delete m_reconnect_w;
 	delete m_elims_w;
     delete m_semifinals_w;
     delete timer;
@@ -390,32 +378,6 @@ void ContestantApp::welcomeStart()
     if( round == 1 || round == 2 )
         initializeAnswerData();
     displayQuestionAndChoices();
-}
-
-void ContestantApp::reconnectTry()
-{
-
-}
-
-void ContestantApp::reconnectCancel()
-{
-	QMessageBox msgBox;
-	msgBox.setWindowTitle ( "Confirm Disconnection" );
-	msgBox.setText ( DISCONNECT_QUESTION );
-	msgBox.setInformativeText ( DISCONNECT_INFORMATION );
-	msgBox.setStandardButtons ( QMessageBox::Yes | QMessageBox::No );
-	msgBox.setDefaultButton ( QMessageBox::No );
-	msgBox.setIcon ( QMessageBox::Question );
-	int disconnect = msgBox.exec();
-
-	switch ( disconnect )
-	{
-		case QMessageBox::Yes:
-			this->close();
-			break;
-		case QMessageBox::No:
-			break;
-	}
 }
 
 void ContestantApp::elimSemiNext()
