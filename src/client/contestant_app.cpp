@@ -234,9 +234,6 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
 
 void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s )
 {
-    std::cout<<q<<"\n";
-    std::cout<<t<<"\n";
-
     if( !loggedIn )
         return;
     if( q >= sd.questions.size() )
@@ -244,19 +241,16 @@ void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s
 
     if( status == CONTEST_RUNNING )
     {
+        m_welcome_w->hide();
         time = t;
-        if( qCount != q )
-        {
-            qStatus = QUESTION_STOPPED;
-            qCount = q;     
-            m_finalsChoice_dlg->time_lbl->setText("");
-            m_finalsIdent_dlg->time_lbl->setText("");
-            displayQuestionAndChoices();
-        }
-        else
-            qStatus = s;
 
+        qCount = q;
+        m_finalsChoice_dlg->time_lbl->setText("");
+        m_finalsIdent_dlg->time_lbl->setText("");
 
+        qStatus = s;
+
+        displayQuestionAndChoices();
 
         if( qStatus == QUESTION_STOPPED )
             stopQuestion();
