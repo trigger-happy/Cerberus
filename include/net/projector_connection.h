@@ -18,7 +18,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef PROJECTOR_CONNECTION_H
 #define PROJECTOR_CONNECTION_H
 #include <QtNetwork>
+#include <vector>
 #include "net/protocol.h"
+#include "data_types.h"
+
+using std::vector;
 
 class ProjectorConnection : public QObject {
 	Q_OBJECT;
@@ -63,12 +67,6 @@ public:
 	void showContestTime();
 
 	/*!
-	Show the current contesant rankings on the projectors.
-	\note Parameters are subject to change.
-	*/
-	void showContestRanks();
-
-	/*!
 	Show the question time on screen.
 	*/
 	void showQuestionTime();
@@ -85,6 +83,11 @@ public:
 	/*!
 	*/
 	void sendContestTime();
+
+	/*!
+	Show the current contesant rankings on the projectors.
+	*/
+	void showContestRanks( const vector<RankData>& rd );
 
 public slots:
 	/*!

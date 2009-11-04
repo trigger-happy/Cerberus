@@ -174,7 +174,7 @@ public:
 	Show the current contesant rankings on the projectors.
 	\note Parameters are subject to change.
 	*/
-	void showContestRanks();
+	void showContestRanks( const vector<RankData>& rd );
 
 	/*!
 	Show the question time on screen.

@@ -253,11 +253,11 @@ void ServerNetwork::showContestTime() {
 	}
 }
 
-void ServerNetwork::showContestRanks() {
+void ServerNetwork::showContestRanks( const std::vector< RankData >& rd ) {
 	projector_list::iterator i = m_projectors.begin();
 
 	for ( ; i != m_projectors.end(); i++ ) {
-		( *i )->showContestRanks();
+		( *i )->showContestRanks( rd );
 	}
 }
 

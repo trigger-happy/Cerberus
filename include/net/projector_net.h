@@ -18,7 +18,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef PROJECTOR_NET_H
 #define PROJECTOR_NET_H
 #include <QtNetwork>
+#include <vector>
 #include "net/protocol.h"
+#include "data_types.h"
+
+using std::vector;
 
 /*!
 \brief Networking layer for the projector.
@@ -96,8 +100,7 @@ signals:
 	void onContestState( ushort round, CONTEST_STATUS status );
 	void onContestTime( ushort time );
 	void onShowContestTime();
-	// NOTE: params for this will change
-	void onShowContestRanks();
+	void onShowContestRanks( const vector<RankData>& rd );
 	void onQuestionTime();
 	void onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status );
 	void onShowAnswer();

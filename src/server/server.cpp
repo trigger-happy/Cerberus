@@ -182,7 +182,8 @@ void Server::showTimeLeft(){
 }
 
 void Server::showRankings(){
-	m_network->showContestRanks();
+	// TODO: change this
+	// m_network->showContestRanks();
 }
 
 void Server::showQuestionTime(){

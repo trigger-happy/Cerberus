@@ -15,7 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
+#include <vector>
 #include "net/projector_net.h"
+#include "data_types.h"
+
+using std::vector;
 
 ProjectorNet::ProjectorNet( QObject* parent ) : QObject( parent ) {
 	m_socket = new QTcpSocket ( this );
@@ -133,7 +137,31 @@ void ProjectorNet::ready() {
 			emit onShowContestTime();
 			break;
 
-		case PJR_SHOW_RANKS:
+		case PJR_SHOW_RANKS: {
+				// here comes a load of insanity
+				ushort num_entries;
+				in >> num_entries;
+				vector<RankData> rd;
+
+				for ( int i = 0; i < num_entries; i++ ) {
+					RankData temp;
+					in >> temp.rank;
+					in >> temp.score;
+					ushort size;
+					in >> size;
+					QByteArray buffer;
+					buffer = in.device()->read( size );
+					temp.fullname = buffer;
+					buffer.clear();
+					in >> size;
+					buffer = in.device()->read( size );
+					temp.teamname = buffer;
+					rd.push_back( temp );
+				}
+
+				emit onShowContestRanks( rd );
+			}
+
 			break;
 
 		case INF_QUESTION_TIME:

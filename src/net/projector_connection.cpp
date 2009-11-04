@@ -15,8 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
+#include <vector>
 #include "net/projector_connection.h"
 #include "net/protocol.h"
+#include "data_types.h"
+
+using std::vector;
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket ) : QObject( parent ), m_socket( socket ) {
 	m_ready = false;
@@ -134,9 +138,6 @@ void ProjectorConnection::showContestTime() {
 	m_socket->write ( block );
 }
 
-void ProjectorConnection::showContestRanks() {
-}
-
 void ProjectorConnection::showQuestionTime() {
 	showContestTime();
 }
@@ -193,5 +194,38 @@ void ProjectorConnection::sendContestTime() {
 	hdr.length = sizeof ( ushort );
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( ushort ) m_contime;
+	m_socket->write ( block );
+}
+
+void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
+
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = PJR_SHOW_RANKS;
+	out.writeRawData( ( const char* )&hdr, sizeof( p_header ) );
+
+	out << ( ushort ) rd.size();
+
+	for ( int i = 0; i < rd.size(); i++ ) {
+		out << ( ushort ) rd[i].rank;
+		out << ( double ) rd[i].score;
+		out << ( ushort ) rd[i].fullname.size();
+		out.writeRawData( rd[i].fullname.toAscii().data(), rd[i].fullname.size() );
+		out << ( ushort ) rd[i].teamname.size();
+		out.writeRawData( rd[i].teamname.toAscii().data(), rd[i].teamname.size() );
+	}
+
+	//write the data
+	hdr.length = block.size() - sizeof( p_header );
+
+	out.device()->seek( 0 );
+
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+
+	m_socket->write ( block );
+
 	m_socket->write ( block );
 }
