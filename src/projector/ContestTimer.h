@@ -21,22 +21,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include <QObject>
 #include <QTime>
+#include <algorithm>
 
 class ContestTimer : public QObject
 {
 	Q_OBJECT
 
 	QTime m_time_tracker;
-	unsigned int m_interval, m_duration;
+	unsigned int m_interval, m_duration, m_offset;
 	int m_timer_id;
 public:
 	ContestTimer( unsigned int interval );
 	void start();
+	void restart();
+	void restart(unsigned int duration);
 	void stop();
+	void pause();
 
 	bool isRunning() { return m_timer_id > 0; }
 	void setInterval(unsigned int interval);
+	/*!
+	  \param duration The duration of the timer in miliseconds.
+	  */
 	void setDuration(unsigned int duration);
+	int timeLeft() const {
+		return std::max(0, (int)m_duration - (int)(m_time_tracker.elapsed() + m_offset));
+	}
+
 protected:
 	virtual void timerEvent(QTimerEvent *event);
 signals:

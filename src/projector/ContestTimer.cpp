@@ -18,10 +18,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include "ContestTimer.h"
-#include <algorithm>
 
 ContestTimer::ContestTimer( unsigned int interval ) :
-		m_interval(interval), m_duration(0), m_timer_id(0) {
+		m_interval(interval), m_duration(0), m_timer_id(0), m_offset(0) {
 }
 
 void ContestTimer::start() {
@@ -31,10 +30,40 @@ void ContestTimer::start() {
 	timerEvent(NULL);
 }
 
+void ContestTimer::restart() {
+	if ( !isRunning() ) {
+		start();
+		return;
+	}
+	m_offset = 0;
+	m_time_tracker.start();
+	timerEvent(NULL);
+}
+
+
+void ContestTimer::restart(unsigned int duration) {
+	m_duration = duration;
+	if ( !isRunning() ) {
+		start();
+		return;
+	}
+	m_offset = 0;
+	m_time_tracker.start();
+	timerEvent(NULL);
+}
+
 void ContestTimer::stop() {
 	if ( !isRunning() ) return;
 	killTimer(m_timer_id);
 	m_timer_id = 0;
+	m_offset = 0;
+}
+
+void ContestTimer::pause() {
+	if ( !isRunning() ) return;
+	killTimer(m_timer_id);
+	m_timer_id = 0;
+	m_offset += m_time_tracker.restart();
 }
 
 void ContestTimer::setInterval(unsigned int interval) {
@@ -47,11 +76,15 @@ void ContestTimer::setInterval(unsigned int interval) {
 
 void ContestTimer::setDuration(unsigned int duration) {
 	m_duration = duration;
+	if ( isRunning() ) {
+		emit timeUpdate(timeLeft());
+	} else
+		emit timeUpdate(m_duration);
 }
 
 void ContestTimer::timerEvent(QTimerEvent *event) {
-	const int timeLeft = std::max(0, (int)m_duration - m_time_tracker.elapsed());
-	emit timeUpdate(timeLeft);
-	if ( timeLeft == 0 )
+	const int tl = timeLeft();
+	emit timeUpdate(tl);
+	if ( tl == 0 )
 		stop();
 }
