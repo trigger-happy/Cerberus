@@ -92,8 +92,8 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
 	connect( m_network, SIGNAL ( onContestError ( ERROR_MESSAGES ) ),
 	         this, SLOT ( onContestError ( ERROR_MESSAGES ) ) );
-	connect( m_network, SIGNAL ( onError ( QAbstractSocket::SocketError ) ),
-	         this, SLOT ( onError ( QAbstractSocket::SocketError ) ) );
+	connect( m_network, SIGNAL(onError(QString)),
+	         this, SLOT ( onError ( QString ) ) );
 
 
 	// connections for the login dialog
@@ -307,9 +307,9 @@ void ContestantApp::onContestError ( ERROR_MESSAGES err )
     }
 }
 
-void ContestantApp::onError ( const QAbstractSocket::SocketError& err )
+void ContestantApp::onError ( const QString& err )
 {
-    showInfo( 1, QString ( "Socket error: %1" ).arg ( err ), "" );
+    showInfo( 1, err, "" );
 }
 
 void ContestantApp::updateTimer()

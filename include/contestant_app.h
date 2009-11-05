@@ -105,9 +105,9 @@ private slots:
 
 	/*!
 	Emitted when there's an error with the connection.
-	\param err SocketError
+	\param err The socket error
 	*/
-	void onError ( const QAbstractSocket::SocketError& err );
+	void onError ( const QString& err );
 
 	//Below: slots for widgets
 
