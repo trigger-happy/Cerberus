@@ -837,7 +837,7 @@
           <item>
            <layout class="QFormLayout" name="formLayout_6">
             <item row="0" column="0">
-             <widget class="QLabel" name="label_18">
+             <widget class="QLabel" name="label_duration_r3">
               <property name="text">
                <string>Round 3 Duration:</string>
               </property>
@@ -1256,7 +1256,7 @@
           <item>
            <layout class="QFormLayout" name="formLayout_11">
             <item row="0" column="0">
-             <widget class="QLabel" name="label_15">
+             <widget class="QLabel" name="label_duration_r4">
               <property name="text">
                <string>Tie-Breaker Duration:</string>
               </property>

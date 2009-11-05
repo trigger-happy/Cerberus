@@ -293,6 +293,13 @@ QEditor::QEditor(QWidget *parent) : QMainWindow(parent), q_ui(new Ui::q_editor)
 	connect(q_ui->act_exit,SIGNAL(triggered(bool)),this,SLOT(exit()));
 	
 	this->setWindowTitle("untitled - QEditor");
+	
+	saved=true;
+	
+	q_ui->label_duration_r3->setVisible(false);
+	q_ui->label_duration_r4->setVisible(false);
+	duration[2]->setVisible(false);
+	duration[3]->setVisible(false);
 }
 
 QEditor::~QEditor()
