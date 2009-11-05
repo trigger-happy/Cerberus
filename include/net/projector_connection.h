@@ -89,6 +89,14 @@ public:
 	*/
 	void showContestRanks( const vector<RankData>& rd );
 
+	/*!
+	Set the pointer to the question data. This is to be used by ServerNet.
+	\param qdata pointer to a vector of QString containing the xml data.
+	*/
+	inline void setQData ( const vector<QString>* qdata ) {
+		m_qdata = qdata;
+	}
+
 public slots:
 	/*!
 	Called when there's a socket error.
@@ -128,6 +136,8 @@ signals:
 	void onError( const QString& error );
 
 private:
+	void sendQData( const QString& xml );
+	const vector<QString>* m_qdata;
 	bool m_ready;
 	ushort m_round;
 	ushort m_contime;

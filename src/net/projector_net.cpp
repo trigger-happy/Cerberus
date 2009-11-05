@@ -99,6 +99,29 @@ void ProjectorNet::ready() {
 
 	switch ( m_hdr->command ) {
 
+		case INF_QUESTION_DATA:
+			//we have our question data
+			{
+				QString xml;
+				uchar hash[20];
+				in.readRawData ( ( char* ) hash, 20 );
+				in >> xml;
+				QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+				QByteArray testhash2;
+
+				for ( int i = 0; i < 20; i++ ) {
+					testhash2.push_back ( hash[i] );
+				}
+
+				if ( testhash == testhash2 ) {
+					emit onQData ( xml );
+				} else {
+					// TODO: act on invalid data
+				}
+			}
+
+			break;
+
 		case NET_CONNECTION_RESULT:
 			// check the result
 			{
@@ -232,4 +255,34 @@ void ProjectorNet::sendReadyState() {
 	hdr.command = QRY_PROJECTOR_READY;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
+}
+
+bool ProjectorNet::qDataRequest( int round ) {
+	if ( !m_socket->isWritable() ) {
+		return false;
+	}
+
+	// construct the packet
+	QByteArray block;
+
+	QDataStream out ( &block, QIODevice::WriteOnly );
+
+	out.setVersion ( QDataStream::Qt_4_5 );
+
+	p_header hdr;
+
+	hdr.command = QRY_QUESTION_REQUEST;
+
+	// construct the payload
+	hdr.length = sizeof ( ushort );
+
+	// write it
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( hdr ) );
+
+	out << ( ushort ) round;
+
+	// send it
+	m_socket->write ( block );
+
+	return true;
 }

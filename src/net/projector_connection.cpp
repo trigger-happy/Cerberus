@@ -79,6 +79,14 @@ void ProjectorConnection::ready() {
 
 	switch ( m_hdr->command ) {
 
+		case QRY_QUESTION_REQUEST:
+			//contestant is asking for question data
+			ushort round;
+			in >> round;
+			sendQData ( m_qdata->at ( round - 1 ) );
+
+			break;
+
 		case QRY_CONTEST_STATE:
 			//contestant is asking for the contest state.
 
@@ -228,5 +236,21 @@ void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
 
 	m_socket->write ( block );
 
+	m_socket->write ( block );
+}
+
+void ProjectorConnection::sendQData( const QString& xml ) {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = INF_QUESTION_DATA;
+	QByteArray hash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
+	hdr.length = hash.size() + xml.size();
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out.writeRawData ( hash.data(), hash.size() );
+	out << xml;
 	m_socket->write ( block );
 }

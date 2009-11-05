@@ -70,6 +70,13 @@ public:
 	*/
 	void sendReadyState();
 
+	/*!
+	Request for the question data from the server. Use onQdata signal
+	for the xml data.
+	\return true if the data was sent, false otherwise.
+	*/
+	bool qDataRequest ( int round );
+
 public slots:
 	/*!
 	Called when the app is able to connect to the server.
@@ -93,6 +100,12 @@ public slots:
 	void ready();
 
 signals:
+	/*!
+	Emitted when the question data has arrived.
+	\param xml Question data in xml format
+	*/
+	void onQData ( const QString& xml );
+
 	void onConnect();
 	void onDisconnect();
 	void onError( const QString& error );
