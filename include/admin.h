@@ -48,6 +48,10 @@ public slots:
 	void onDropContestant();
 	void onViewAnswers();
 	void onChangeScore();
+
+	// view Answers
+	void onAnswersRoundSelection(int index);
+	void onAnswersOk();
 	
 	// projector control
 	void onShowTimeLeft();

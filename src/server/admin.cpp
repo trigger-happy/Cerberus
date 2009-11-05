@@ -49,6 +49,9 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect(m_dlg->change_score_btn, SIGNAL (clicked()), this, SLOT (onChangeScore()));
 	connect(m_dlg->drop_con_btn, SIGNAL (clicked()), this, SLOT (onDropContestant()));
 	connect(m_dlg->view_ans_btn, SIGNAL (clicked()), this, SLOT (onViewAnswers()));
+	connect(m_answers_dlg->view_answers_rounds, SIGNAL (currentIndexChanged(int)),
+			this, SLOT (onAnswersRoundSelection(int)));
+	connect(m_answers_dlg->view_answers_ok, SIGNAL (clicked()), this, SLOT (onAnswersOk()));
 	connect(m_dlg->p_show_qtime_btn, SIGNAL (clicked()), this, SLOT (onShowQuestionTime()));
 	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
 	// connect server signals and slots here
@@ -114,8 +117,21 @@ void Admin::onDropContestant(){
 }
 
 void Admin::onViewAnswers(){
-	int round;
-	m_server->viewSubmittedAnswers( selected_user, round );
+	int round = m_answers_dlg->view_answers_rounds->currentIndex();
+	if( !selected_user.isEmpty() ){
+		QString answers = m_server->viewSubmittedAnswers( selected_user, round );
+		m_answers_dlg->view_answers_browser->setText( answers );
+		m_answers_w->show();
+	}
+}
+
+void Admin::onAnswersRoundSelection(int index){
+	QString answers = m_server->viewSubmittedAnswers( selected_user, index );
+	m_answers_dlg->view_answers_browser->setText( answers );
+}
+
+void Admin::onAnswersOk(){
+	m_answers_w->hide();
 }
 
 void Admin::onChangeScore(){
