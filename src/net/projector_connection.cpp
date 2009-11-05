@@ -45,6 +45,7 @@ ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket ) 
 }
 
 void ProjectorConnection::error( const QAbstractSocket::SocketError& err ) {
+	emit onError( m_socket->errorString() );
 }
 
 void ProjectorConnection::ready() {

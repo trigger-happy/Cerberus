@@ -126,8 +126,8 @@ public slots:
 
 signals:
 	/*!
-		Emitted when a contestant disconnects
-		\param cc Pointer to a ContestantConnection with the contestant that disconnected.
+	Emitted when a contestant disconnects
+	\param cc Pointer to a ContestantConnection with the contestant that disconnected.
 	*/
 	void contestantDisconnect ( ContestantConnection* cc );
 
@@ -149,6 +149,12 @@ signals:
 	\param ans The answer data.
 	*/
 	void onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& ans );
+
+	/*!
+	Emitted when a socket error occurs
+	\param error A const reference to a QString containing the error message
+	*/
+	void onError( const QString& error );
 
 private:
 	//some private functions

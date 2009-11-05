@@ -121,6 +121,12 @@ signals:
 	*/
 	void projectorReady( ProjectorConnection* p );
 
+	/*!
+	Emitted when a socket error occurs
+	\param error A const reference to a QString containing the error message
+	*/
+	void onError( const QString& error );
+
 private:
 	bool m_ready;
 	ushort m_round;

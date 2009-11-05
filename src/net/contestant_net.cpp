@@ -28,8 +28,6 @@ ContestantNetwork::ContestantNetwork ( QObject* parent ) : QObject ( parent ) {
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
 	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
 	          this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
-	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
-	          this, SIGNAL ( onError ( QAbstractSocket::SocketError ) ) );
 	connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SIGNAL ( onDisconnect() ) );
 	m_authenticated = false;
@@ -189,8 +187,7 @@ void ContestantNetwork::disconnected() {
 }
 
 void ContestantNetwork::error ( const QAbstractSocket::SocketError& err ) {
-	// TODO: do something better here
-	cerr << "Error " << err << endl;
+	emit onError( m_socket->errorString() );
 }
 
 void ContestantNetwork::ready() {

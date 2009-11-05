@@ -27,8 +27,6 @@ ProjectorNet::ProjectorNet( QObject* parent ) : QObject( parent ) {
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
 	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
 	          this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
-	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
-	          this, SIGNAL ( onError ( QAbstractSocket::SocketError ) ) );
 	connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
 	m_hdr = NULL;
 }
@@ -66,6 +64,8 @@ void ProjectorNet::disconnected() {
 }
 
 void ProjectorNet::error( const QAbstractSocket::SocketError& error ) {
+	QString msg = m_socket->errorString();
+	emit onError( msg );
 }
 
 void ProjectorNet::ready() {

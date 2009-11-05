@@ -52,7 +52,7 @@ ContestantConnection::ContestantConnection ( ServerNetwork* sn, QTcpSocket* sock
 }
 
 void ContestantConnection::error ( const QAbstractSocket::SocketError& err ) {
-	//do something about the error here
+	emit onError( m_socket->errorString() );
 }
 
 void ContestantConnection::ready() {

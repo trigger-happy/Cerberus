@@ -146,10 +146,10 @@ signals:
 	void onContestStateChange ( int round, CONTEST_STATUS status );
 
 	/*!
-	Emitted when there's an error with the connection.
-	\param err SocketError
+	Emitted when a socket error occurs
+	\param error A const reference to a QString containing the error message
 	*/
-	void onError ( const QAbstractSocket::SocketError& err );
+	void onError ( const QString& error );
 
 	/*!
 	Emitted when there's a contest error.
