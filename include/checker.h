@@ -16,6 +16,24 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+/*
+	Usage:
+	addQuestion(Question&) - use this to start inputting questions to be
+	checked. Usually this is done for the start of the round. Note that only one Question
+	object is added at a time. The sequence in which the Questions are pushed will also
+	be in the same order in the vector of questions.
+	
+	resetQuestionSet() - this basically clears the contents of the question vector. This
+	is expected to be called at the end of the round, or when the question set must be refreshed.
+	Note that this calls clear(), which destroys all the objects that our Question set vector
+	contains.
+	
+	score(AnswerData&) - The sequence of the Answers at the AnswerData vector must be correspondent
+	to the sequence of the Questions in the Questions Set vector in this class. This should not
+	be a problem since the order of the Questions are also controlled by the user of this class.
+
+*/
+
 #ifndef CHECKER_H
 #define CHECKER_H
 
