@@ -114,7 +114,7 @@ void ProjectorNet::ready() {
 				}
 
 				if ( testhash == testhash2 ) {
-					emit onQData ( xml );
+					emit onStageData ( xml );
 				} else {
 					// TODO: act on invalid data
 				}
@@ -257,32 +257,18 @@ void ProjectorNet::sendReadyState() {
 	m_socket->write ( block );
 }
 
-bool ProjectorNet::qDataRequest( int round ) {
-	if ( !m_socket->isWritable() ) {
-		return false;
-	}
-
+void ProjectorNet::getStageData( int round ) {
 	// construct the packet
 	QByteArray block;
-
 	QDataStream out ( &block, QIODevice::WriteOnly );
-
 	out.setVersion ( QDataStream::Qt_4_5 );
-
 	p_header hdr;
-
 	hdr.command = QRY_QUESTION_REQUEST;
-
 	// construct the payload
 	hdr.length = sizeof ( ushort );
-
 	// write it
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( hdr ) );
-
 	out << ( ushort ) round;
-
 	// send it
 	m_socket->write ( block );
-
-	return true;
 }

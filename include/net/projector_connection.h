@@ -90,10 +90,10 @@ public:
 	void showContestRanks( const vector<RankData>& rd );
 
 	/*!
-	Set the pointer to the question data. This is to be used by ServerNet.
+	Set the pointer to the stage data. This is to be used by ServerNet.
 	\param qdata pointer to a vector of QString containing the xml data.
 	*/
-	inline void setQData ( const vector<QString>* qdata ) {
+	inline void setStageData ( const vector<QString>* qdata ) {
 		m_qdata = qdata;
 	}
 

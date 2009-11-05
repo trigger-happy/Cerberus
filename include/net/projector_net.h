@@ -79,7 +79,7 @@ public:
 	for the xml data.
 	\return true if the data was sent, false otherwise.
 	*/
-	bool qDataRequest ( int round );
+	void getStageData ( int round );
 
 public slots:
 	/*!
@@ -105,10 +105,10 @@ public slots:
 
 signals:
 	/*!
-	Emitted when the question data has arrived.
-	\param xml Question data in xml format
+	Emitted when the stage data has arrived.
+	\param xml Stage data in xml format
 	*/
-	void onQData ( const QString& xml );
+	void onStageData ( const QString& xml );
 
 	/*!
 	Emitted when a connection to the server has been established.
