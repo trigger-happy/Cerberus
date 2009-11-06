@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QFile>
 #include <QWebFrame>
 #include <string>
+#include <algorithm>
 #include "ProjectorWindow.h"
 #include "ui_ProjectorWindow.h"
 #include <ctemplate/template.h>
@@ -44,6 +45,8 @@ ProjectorWindow::ProjectorWindow(QWidget *parent) :
 	m_tpl_key(TemplateManager::INDEX),
 	m_controller(0),
 	m_dict(new ctemplate::TemplateDictionary("main")),
+	m_qDisplayDict(new ctemplate::TemplateDictionary("qdisplay")),
+	m_rankDict(0),
 	m_timer(ProjectorConfig::DEFAULT_TIME_PRECISION)
 {
 	connect(&m_timer, SIGNAL(timeUpdate(uint)), this, SLOT(setTimeLeft(uint)));
@@ -54,13 +57,15 @@ ProjectorWindow::ProjectorWindow(QWidget *parent) :
 
 ProjectorWindow::~ProjectorWindow()
 {
+	delete m_qDisplayDict;
+	delete m_rankDict;
 	delete m_dict;
 	delete m_controller;
 	delete m_cfg;
 	delete m_ui;
 }
 
-const unsigned int MSEC_PER_SEC = 1000;
+static const unsigned int MSEC_PER_SEC = 1000;
 
 void ProjectorWindow::setTimeLeft(unsigned int val) {
 	const QVariant &result =
@@ -70,14 +75,22 @@ void ProjectorWindow::setTimeLeft(unsigned int val) {
 
 	//format the thing differently if it's over a minute
 	if ( val > MSEC_PER_SEC * 60 ) {
-		m_dict->SetFormattedValue("TIME_LEFT", "%d:%.1lf", val/(MSEC_PER_SEC * 60), (double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC);
+		ctemplate::TemplateDictionary::SetGlobalValue(
+				"TIME_LEFT",
+				QString("%1:%2").
+				arg(QString::number(val/(MSEC_PER_SEC * 60))).
+				arg(QString::number(
+						(double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC, 'g', 1)
+					).toStdString());
 	} else {
-		m_dict->SetFormattedValue("TIME_LEFT", "%.1lf", (double)val/MSEC_PER_SEC);
+		ctemplate::TemplateDictionary::SetGlobalValue(
+				"TIME_LEFT",
+				QString::number((double)val/MSEC_PER_SEC, 'g', 1).toStdString());
 	}
 
 	if ( result.toBool() ) return;
 	//The page has no handler which accepts time update, refresh the page.
-	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
+	refresh();
 }
 
 void ProjectorWindow::setTemplate(ctemplate::Template *tpl) {
@@ -142,7 +155,7 @@ void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 					   arg(WINDOW_TITLE).
 					   arg(cfg.contest_name));
 
-	m_dict->SetValue("CONTEST_NAME", cfg.contest_name.toStdString());
+	ctemplate::TemplateDictionary::SetGlobalValue("CONTEST_NAME", cfg.contest_name.toStdString());
 	m_timer.setInterval(cfg.time_precision);
 
 	if ( change_ctrl ) {
@@ -170,4 +183,51 @@ void ProjectorWindow::changeEvent(QEvent *e)
 
 void ProjectorWindow::refresh() {
 	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
+}
+
+
+void ProjectorWindow::flushQDisplay() {
+	//ctemplate::TemplateDictionary has no "clear" function,
+	//so we'll have to destroy it and recreate it ourselves
+	delete m_qDisplayDict;
+	m_qDisplayDict = new ctemplate::TemplateDictionary("qdisplay");
+}
+
+void ProjectorWindow::setQuestionNumber(int qnum) {
+	ctemplate::TemplateDictionary::SetGlobalValue("QUESTION_NUMBER",
+												  QString::number(qnum).toStdString());
+}
+
+void ProjectorWindow::setQuestionTotal(size_t nQuestions) {
+	ctemplate::TemplateDictionary::SetGlobalValue("QUESTION_TOTAL",
+												  QString::number(nQuestions).toStdString());
+}
+
+void ProjectorWindow::setAnswer(const QString &theAnswer) {
+	m_qDisplayDict->SetValue("ANSWER", theAnswer.toStdString());
+	m_qDisplayDict->ShowSection("ANSWER_SECTION");
+}
+
+void ProjectorWindow::setQuestion(const QString &theQuestion) {
+	m_qDisplayDict->SetValue("QUESTION", theQuestion.toStdString());
+	m_qDisplayDict->ShowSection("QUESTION_SECTION");
+}
+
+void ProjectorWindow::setStageNumber(int stageNumber) {
+	ctemplate::TemplateDictionary::SetGlobalValue("ROUND_NUMBER", QString::number(stageNumber).toStdString());
+}
+
+void ProjectorWindow::setContestRanks( const vector<RankData>& rd ) {
+	using ctemplate::TemplateDictionary;
+	delete m_rankDict;
+	m_rankDict = new TemplateDictionary("rankDict");
+
+	for ( size_t i = 0; i < rd.size(); ++i ) {
+		const RankData &r = rd[i];
+		TemplateDictionary *contestant_section = m_rankDict->AddSectionDictionary("CONTESTANT_SECTION");
+		contestant_section->SetIntValue("RANK", r.rank);
+		contestant_section->SetValue("NAME", r.fullname.toStdString());
+		contestant_section->SetValue("GROUP", r.teamname.toStdString());
+		contestant_section->SetFormattedValue("SCORE", "%.2lf", r.score);
+	}
 }

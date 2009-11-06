@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include <QtGui/QMainWindow>
 #include <QUrl>
+#include <vector>
+#include "data_types.h"
 #include "TemplateManager.h"
 #include "ContestTimer.h"
 
@@ -45,9 +47,19 @@ public:
 	void setConfig(const ProjectorConfig &cfg);
 	const ProjectorConfig& getConfig() const;
 
+	void setQuestion(const QString &theQuestion);
+	void setAnswer(const QString &theAnswer);
+	void flushQDisplay();
+	void setStageNumber(int stageNumber);
+	void setQuestionNumber(int qnum);
+	void setQuestionTotal(size_t nQuestions);
+	void setContestRanks( const std::vector<RankData>& rd );
+
 	ContestTimer& getContestTimer() { return m_timer; }
 
 	TemplateManager::TKey getView() const { return m_tpl_key; }
+
+	void displayError(const char *brief, const char *detail, bool persist = false);
 protected:
 	void changeEvent(QEvent *e);
 	void keyReleaseEvent(QKeyEvent *event);
@@ -58,11 +70,10 @@ private:
 	TemplateManager m_tpl_mgr;
 	TemplateManager::TKey m_tpl_key;
 	ProjectorController *m_controller;
-	ctemplate::TemplateDictionary *m_dict;
+	ctemplate::TemplateDictionary *m_dict, *m_qDisplayDict, *m_rankDict;
 	ContestTimer m_timer;
 
 	void setTemplate(ctemplate::Template *tpl);
-	void displayError(const char *brief, const char *detail, bool persist = false);
 public slots:
 	void setTimeLeft(unsigned int);
 	void refresh();
