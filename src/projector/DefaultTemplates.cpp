@@ -64,7 +64,7 @@ const char * const DEFAULT_TEMPLATE_TIMEBOARD =
 const char * const DEFAULT_TEMPLATE_QDISPLAY =
 "<html>"
 "	<body>"
-"		<h1>{{CONTEST_NAME}} - Round {{ROUND_NUMBER}}</h1>"
+"		<h1>{{CONTEST_NAME}} - Round {{STAGE_NUMBER}}</h1>"
 "		<h1>Question Number: {{QUESTION_NUMBER}} out of {{QUESTION_TOTAL}}</h1>"
 "		<h2>Time: {{TIME_LEFT}}</h2>"
 "		{{#QUESTION_SECTION}}<h2>Question: {{QUESTION}}</h2>{{/QUESTION_SECTION}}"
