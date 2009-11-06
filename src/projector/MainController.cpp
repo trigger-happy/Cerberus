@@ -16,6 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+
 #include "MainController.h"
 #include "ProjectorWindow.h"
 #include <QKeyEvent>
@@ -56,6 +57,7 @@ bool MainController::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void MainController::onConnect() {
+	(qDebug() << "MainController::onConnect\n");
 	m_net->sendReadyState();
 	m_connected = true;
 	//show the last thing that was viewed
@@ -63,22 +65,34 @@ void MainController::onConnect() {
 }
 
 void MainController::onDisconnect() {
+	(qDebug() << "MainController::onDisconnect\n");
 	m_connected = false;
+	m_target.displayError("Connection error. Reconnecting...", m_lastError.toStdString().c_str());
 	QTimer::singleShot(RECONNECT_DELAY, this, SLOT(connectToServer()));
 }
 
 void MainController::onError( const QString& error ) {
-	m_target.displayError("Connection error. Reconnecting...", error.toStdString().c_str());
-	//assume onDisconnect will get called...
+	(qDebug() << "MainController::onError\n");
+	m_lastError = error;
+	if ( m_connected ) {
+		//assume onDisconnect will get called...
+		m_target.displayError("Connection error.", error.toStdString().c_str());
+	} else {
+		onDisconnect();
+	}
+
 }
 
 void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
+	(qDebug() << "MainController::onContestState(" << round << ", " << status << ")\n");
 	m_target.setStageNumber(round);
 	ContestTimer &tmr = m_target.getContestTimer();
+	if ( m_stageData == 0 )
+		qWarning() << "MainController::onContestState called without valid stage data.";
 	switch ( status ) {
 		case CONTEST_RUNNING:
 			//start the thingo! (make sure we set the time first)
-			if ( m_stageData->hasContestTime() ) {
+			if ( m_stageData && m_stageData->hasContestTime() ) {
 				tmr.setDuration(m_stageData->contest_time);
 				tmr.start();
 				m_target.setView(m_view = TemplateManager::TIMEBOARD);
@@ -97,6 +111,7 @@ void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
 }
 
 void MainController::onStageData(const QString &xml) {
+	(qDebug() << "MainController::onStageData\n");
 	//it's time to load a new stage!
 	m_target.getContestTimer().stop();
 	delete m_stageData;
@@ -112,15 +127,18 @@ void MainController::onStageData(const QString &xml) {
 }
 
 void MainController::onContestTime( ushort time ) {
+	(qDebug() << "MainController::onContestTime(" << time << ")\n");
 	m_target.getContestTimer().restart(time * 1000u);
 }
 
 void MainController::onShowContestTime() {
+	(qDebug() << "MainController::onShowContestTime\n");
 	m_target.setTimeLeft(m_target.getContestTimer().timeLeft());
 	m_target.setView(m_view = TemplateManager::TIMEBOARD);
 }
 
 void MainController::onShowContestRanks( const vector<RankData>& rd ) {
+	(qDebug() << "MainController::onShowContestRanks");
 	m_target.setView(m_view = TemplateManager::SCOREBOARD);
 }
 
@@ -146,6 +164,7 @@ bool MainController::assertQuestionState(ushort qnum) const {
 }
 
 void MainController::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status ) {
+	(qDebug() << "MainController::onQuestionState(" << qnum << ", " << time << ", " << status << ")\n");
 	if ( !assertQuestionState(qnum) ) return;
 	ContestTimer &tmr = m_target.getContestTimer();
 	Question &q = m_stageData->questions[qnum];
@@ -197,12 +216,14 @@ QString MainController::printfAnswerKey(const Question &q) {
 }
 
 void MainController::onShowAnswer() {
+	(qDebug() << "MainController::onShowAnswer\n");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setAnswer(printfAnswerKey(m_stageData->questions[m_activeQuestionIndex]));
 	m_target.setView(m_view = TemplateManager::QDISPLAY);
 }
 
 void MainController::onShowQuestion() {
+	(qDebug() << "MainController::onShowQuestion\n");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setQuestion(m_stageData->questions[m_activeQuestionIndex].question);
 	m_target.setView(m_view = TemplateManager::QDISPLAY);

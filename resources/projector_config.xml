@@ -1,0 +1,13 @@
+<config>
+	<contest_name>Mamma Mia!</contest_name>
+	<port>2652</port>
+	<ip>127.0.0.1</ip>
+	<author_mode enabled="false">
+		<q>What is 1 + 1?</q>
+		<a>10</a>
+		<scores>
+			<entry name="Person 1" group="Group A">1 2 3 5 1</entry>
+			<entry name="Person 2" group="Group B">2 3 1 5 2</entry>
+		</scores>
+	</author_mode>
+</config>
