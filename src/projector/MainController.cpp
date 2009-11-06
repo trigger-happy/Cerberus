@@ -16,12 +16,23 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+
 #include "MainController.h"
 #include "ProjectorWindow.h"
 #include <QKeyEvent>
 #include <QTimer>
 #include "util/xml_util.h"
 
+
+//#define DODEBUG
+
+#ifdef DODEBUG
+#include <iostream>
+using std::cout;
+#define IFDEBUG(x) x
+#else
+#define IFDEBUG(x)
+#endif
 static const int CONNECT_DELAY = 1000;
 static const int RECONNECT_DELAY = 3000;
 
@@ -56,6 +67,7 @@ bool MainController::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void MainController::onConnect() {
+	IFDEBUG(cout << "MainController::onConnect\n");
 	m_net->sendReadyState();
 	m_connected = true;
 	//show the last thing that was viewed
@@ -63,12 +75,14 @@ void MainController::onConnect() {
 }
 
 void MainController::onDisconnect() {
+	IFDEBUG(cout << "MainController::onDisconnect\n");
 	m_connected = false;
 	m_target.displayError("Connection error. Reconnecting...", m_lastError.toStdString().c_str());
 	QTimer::singleShot(RECONNECT_DELAY, this, SLOT(connectToServer()));
 }
 
 void MainController::onError( const QString& error ) {
+	IFDEBUG(cout << "MainController::onError\n");
 	m_lastError = error;
 	if ( m_connected ) {
 		//assume onDisconnect will get called...
@@ -80,12 +94,15 @@ void MainController::onError( const QString& error ) {
 }
 
 void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
+	IFDEBUG(cout << "MainController::onContestState(" << round << ", " << status << ")\n");
 	m_target.setStageNumber(round);
 	ContestTimer &tmr = m_target.getContestTimer();
+	if ( m_stageData == 0 )
+		qWarning() << "MainController::onContestState called without valid stage data.";
 	switch ( status ) {
 		case CONTEST_RUNNING:
 			//start the thingo! (make sure we set the time first)
-			if ( m_stageData->hasContestTime() ) {
+			if ( m_stageData && m_stageData->hasContestTime() ) {
 				tmr.setDuration(m_stageData->contest_time);
 				tmr.start();
 				m_target.setView(m_view = TemplateManager::TIMEBOARD);
@@ -104,6 +121,7 @@ void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
 }
 
 void MainController::onStageData(const QString &xml) {
+	IFDEBUG(cout << "MainController::onStageData\n");
 	//it's time to load a new stage!
 	m_target.getContestTimer().stop();
 	delete m_stageData;
@@ -119,15 +137,18 @@ void MainController::onStageData(const QString &xml) {
 }
 
 void MainController::onContestTime( ushort time ) {
+	IFDEBUG(cout << "MainController::onContestTime(" << time << ")\n");
 	m_target.getContestTimer().restart(time * 1000u);
 }
 
 void MainController::onShowContestTime() {
+	IFDEBUG(cout << "MainController::onShowContestTime\n");
 	m_target.setTimeLeft(m_target.getContestTimer().timeLeft());
 	m_target.setView(m_view = TemplateManager::TIMEBOARD);
 }
 
 void MainController::onShowContestRanks( const vector<RankData>& rd ) {
+	IFDEBUG(cout << "MainController::onShowContestRanks");
 	m_target.setView(m_view = TemplateManager::SCOREBOARD);
 }
 
@@ -153,6 +174,7 @@ bool MainController::assertQuestionState(ushort qnum) const {
 }
 
 void MainController::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status ) {
+	IFDEBUG(cout << "MainController::onQuestionState(" << qnum << ", " << time << ", " << status << ")\n");
 	if ( !assertQuestionState(qnum) ) return;
 	ContestTimer &tmr = m_target.getContestTimer();
 	Question &q = m_stageData->questions[qnum];
@@ -204,12 +226,14 @@ QString MainController::printfAnswerKey(const Question &q) {
 }
 
 void MainController::onShowAnswer() {
+	IFDEBUG(cout << "MainController::onShowAnswer\n");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setAnswer(printfAnswerKey(m_stageData->questions[m_activeQuestionIndex]));
 	m_target.setView(m_view = TemplateManager::QDISPLAY);
 }
 
 void MainController::onShowQuestion() {
+	IFDEBUG(cout << "MainController::onShowQuestion\n");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setQuestion(m_stageData->questions[m_activeQuestionIndex].question);
 	m_target.setView(m_view = TemplateManager::QDISPLAY);
