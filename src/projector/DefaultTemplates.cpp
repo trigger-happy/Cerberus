@@ -56,7 +56,7 @@ const char * const DEFAULT_TEMPLATE_SCOREBOARD =
 const char * const DEFAULT_TEMPLATE_TIMEBOARD =
 "<html>"
 "	<body>"
-"		<h1>{{CONTEST_NAME}} - Round {{ROUND_NUMBER}}</h1>"
+"		<h1>{{CONTEST_NAME}} - Round {{STAGE_NUMBER}}</h1>"
 "		<h2>Time: {{TIME_LEFT}}</h2>"
 "	<body>"
 "</html>";

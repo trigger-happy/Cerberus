@@ -217,7 +217,7 @@ void ProjectorWindow::setQuestion(const QString &theQuestion) {
 }
 
 void ProjectorWindow::setStageNumber(int stageNumber) {
-	ctemplate::TemplateDictionary::SetGlobalValue("ROUND_NUMBER", QString::number(stageNumber).toStdString());
+	ctemplate::TemplateDictionary::SetGlobalValue("STAGE_NUMBER", QString::number(stageNumber).toStdString());
 }
 
 void ProjectorWindow::setContestRanks( const vector<RankData>& rd ) {
