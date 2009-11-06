@@ -38,6 +38,10 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 		StageData sd;
 		XmlUtil::getInstance().readStageData( fileString, sd );
 		vector<Question> questions = sd.questions;
+		if(i == 3)
+			questions3 = questions;
+		else if(i == 4)
+			questions4 = questions;
 		int size = questions.size();
 		Checker* checker = new Checker();
 		for( int j=0; j<size; j++ ){
@@ -139,8 +143,6 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 		}
 	}
 	hash_answers[user].replace( round-1, allAnswers );
-	if ( testing ) cout << "Trying to check at " << round-1 << endl;
-	if ( testing ) cout << "This checker has " << m_checkers.at(round-1)->m_qset->size() << " questions.\n";
 	double points = m_checkers.at(round-1)->score( new_data );
 	if ( testing ) cout << user.toStdString() << "'s got " << points << " points.\n";
 	double new_score = this->getScore(user) + points;
@@ -215,4 +217,7 @@ void Server::showQuestionTime(){
 	m_network->showQuestionTime();
 }
 
+void Server::startQuestionTime(int num, int time){
+	m_network->setQuestionState(num, time, QUESTION_RUNNING);
+}
 

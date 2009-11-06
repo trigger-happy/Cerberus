@@ -69,6 +69,12 @@ public:
 
 	void showQuestionTime();
 
+	void startQuestionTime(int num, int time);
+
+	vector<Question> questions3;
+
+	vector<Question> questions4;
+
 signals:
 	void badC ( TempConnection* con );
 	void contestantC ( const QString& c_username );

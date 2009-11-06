@@ -63,15 +63,24 @@ public slots:
 	void onShowQuestion();
 	void onShowAnswer();
 	void onShowQuestionTime();
+	void onStartQuestionTime();
+	void onPauseQuestionTime();
+	void onStopQuestionTime();
 
 private:
 	Ui::server_dlg* m_dlg;
 	Ui::view_answers_dlg* m_answers_dlg;
 	QDialog* m_answers_w;
 	Server* m_server;
-	QStandardItemModel* contestants, questions;
+	QStandardItemModel* contestants;
+	QStandardItemModel* questions3;
+	QStandardItemModel* questions4;
+	vector<Question> q3_v;
+	vector<Question> q4_v;
 	QString selected_user;
+	int selected_question;
 	int selectedRound;
+	int currentRound;
 };
 
 #endif //ADMIN_H

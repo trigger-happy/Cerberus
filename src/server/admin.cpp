@@ -32,10 +32,13 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	m_answers_w->hide();
 	m_dlg->setupUi( this );
 
+	questions3 = new QStandardItemModel ( this );
+	questions4 = new QStandardItemModel ( this );
 	contestants = new QStandardItemModel( this );
-	//questions = new QStandardItemModel ( questions_model );
 	m_dlg->contestants_listv->setModel( contestants );
 	m_dlg->contestants_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	m_dlg->p_q_listv->setModel( questions3 );
+	m_dlg->p_q_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	// connect dialog signals and slots here
 	connect(m_dlg->round_combo, SIGNAL(currentIndexChanged(int)),
@@ -54,11 +57,36 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect(m_answers_dlg->view_answers_ok, SIGNAL (clicked()), this, SLOT (onAnswersOk()));
 	connect(m_dlg->p_show_qtime_btn, SIGNAL (clicked()), this, SLOT (onShowQuestionTime()));
 	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
+	connect(m_dlg->p_q_listv, SIGNAL (clicked(QModelIndex)),
+			this, SLOT (onQuestionListClick(QModelIndex)));
+	connect(m_dlg->qstart_btn, SIGNAL (clicked()), this, SLOT (onStartQuestionTime()));
+	connect(m_dlg->qstop_btn, SIGNAL (clicked()), this, SLOT (onStopQuestionTime()));
+	connect(m_dlg->qpause_btn, SIGNAL (clicked()), this, SLOT (onPauseQuestionTime()));
+
+
 	// connect server signals and slots here
 	m_server = new Server();
 	connect(m_server, SIGNAL (contestantC(QString)), this, SLOT (addContestant(QString)));
 	connect(m_server, SIGNAL (contestantDc(QString)), this, SLOT (removeContestant(QString)));
 	selectedRound = 1;
+
+	q3_v = m_server->questions3;
+	q4_v = m_server->questions4;
+	QStandardItem* item;
+	int size = q3_v.size();
+	for(int i=0; i<size; i++){
+		item = new QStandardItem(q3_v.at(i).question);
+		questions3->appendRow(item);
+	}
+
+	size = q4_v.size();
+	for(int i=0; i<size; i++){
+		item = new QStandardItem(q4_v.at(i).question);
+		questions4->appendRow(item);
+	}
+
+	selected_question = 0;
+
 }
 
 Admin::~Admin() {
@@ -66,7 +94,12 @@ Admin::~Admin() {
 
 // contest control
 void Admin::onApplyBtn(){
+	currentRound = selectedRound;
 	m_server->setRound(selectedRound);
+	if (selectedRound == 3)
+		m_dlg->p_q_listv->setModel(questions3);
+	else if (selectedRound == 4)
+		m_dlg->p_q_listv->setModel(questions4);
 }
 
 
@@ -160,6 +193,8 @@ void Admin::onShowNothing(){
 }
 
 void Admin::onQuestionListClick(const QModelIndex& index){
+	selected_question = index.row();
+	cout << "Selected question " << selected_question << endl;
 }
 
 void Admin::onPreviousQuestion(){
@@ -177,6 +212,24 @@ void Admin::onShowAnswer(){
 void Admin::onShowQuestionTime(){
 	m_server->showQuestionTime();
 }
+
+void Admin::onStartQuestionTime(){
+	if(currentRound == 3){
+		m_server->startQuestionTime(selected_question, q3_v.at(selected_question).time_limit);
+	}
+	else if(currentRound == 4){
+		m_server->startQuestionTime(selected_question, q4_v.at(selected_question).time_limit);
+	}
+}
+
+void Admin::onPauseQuestionTime(){
+
+}
+
+void Admin::onStopQuestionTime(){
+
+}
+
 
 int main ( int argc, char* argv[] )
 {
