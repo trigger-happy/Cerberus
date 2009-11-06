@@ -9,8 +9,8 @@ include(${QT_USE_FILE})
 set(PROJECTOR_SRC main.cpp ProjectorWindow.cpp TemplateManager.cpp DefaultTemplates.cpp
 				  ProjectorController.cpp MainController.cpp AuthorController.cpp ContestTimer.cpp)
 set(PROJECTOR_HDR TemplateManager.h DefaultTemplates.h
-				  ProjectorController.h MainController.h AuthorController.h)
-set(PROJECTOR_MHDR ProjectorWindow.h ContestTimer.h)
+				  ProjectorController.h AuthorController.h)
+set(PROJECTOR_MHDR ProjectorWindow.h ContestTimer.h MainController.h)
 qt4_wrap_cpp(PROJECTOR_MSRC ${PROJECTOR_MHDR})
 
 set(PROJECTOR_UIS ProjectorWindow.ui)
