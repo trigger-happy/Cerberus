@@ -47,7 +47,7 @@ ProjectorWindow::ProjectorWindow(QWidget *parent) :
 	m_controller(0),
 	m_dict(new ctemplate::TemplateDictionary("main")),
 	m_qDisplayDict(new ctemplate::TemplateDictionary("qdisplay")),
-	m_rankDict(0),
+	m_rankDict(new ctemplate::TemplateDictionary("rankDict")),
 	m_timer(ProjectorConfig::DEFAULT_TIME_PRECISION)
 {
 	connect(&m_timer, SIGNAL(timeUpdate(uint)), this, SLOT(setTimeLeft(uint)));
@@ -96,15 +96,27 @@ void ProjectorWindow::setTimeLeft(unsigned int val) {
 	refresh();
 }
 
-void ProjectorWindow::setTemplate(ctemplate::Template *tpl) {
+void ProjectorWindow::setTemplate(ctemplate::Template *tpl, ctemplate::TemplateDictionary *dict) {
 	Q_ASSERT(tpl != 0);
 	std::string buffer;
-	tpl->Expand(&buffer, m_dict);
+	if ( dict != NULL )
+		tpl->Expand(&buffer, dict);
 	m_ui->webView->setHtml(QString(buffer.c_str()), m_base_url);
 }
 
 void ProjectorWindow::setView(TemplateManager::TKey v) {
-	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key = v));
+	ctemplate::TemplateDictionary *dict;
+	switch( v ) {
+		case TemplateManager::QDISPLAY:
+			dict = m_qDisplayDict;
+			break;
+		case TemplateManager::SCOREBOARD:
+			dict = m_rankDict;
+			break;
+		default:
+			dict = m_dict;
+	}
+	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key = v), dict);
 }
 
 void ProjectorWindow::displayError(const char *brief, const char *detail, bool persist) {
@@ -112,7 +124,7 @@ void ProjectorWindow::displayError(const char *brief, const char *detail, bool p
 	m_dict->SetValue("ERROR_DETAIL", detail);
 	if ( persist )
 		m_tpl_key = TemplateManager::ERROR;
-	setTemplate(m_tpl_mgr.getTemplate(TemplateManager::ERROR));
+	setTemplate(m_tpl_mgr.getTemplate(TemplateManager::ERROR), m_dict);
 }
 
 #include <QKeyEvent>
@@ -185,7 +197,7 @@ void ProjectorWindow::changeEvent(QEvent *e)
 }
 
 void ProjectorWindow::refresh() {
-	setTemplate(m_tpl_mgr.getTemplate(m_tpl_key));
+	setView(m_tpl_key);
 }
 
 

@@ -73,7 +73,7 @@ private:
 	ctemplate::TemplateDictionary *m_dict, *m_qDisplayDict, *m_rankDict;
 	ContestTimer m_timer;
 
-	void setTemplate(ctemplate::Template *tpl);
+	void setTemplate(ctemplate::Template *tpl, ctemplate::TemplateDictionary *dict);
 public slots:
 	void setTimeLeft(unsigned int);
 	void refresh();
