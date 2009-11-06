@@ -64,12 +64,19 @@ void MainController::onConnect() {
 
 void MainController::onDisconnect() {
 	m_connected = false;
+	m_target.displayError("Connection error. Reconnecting...", m_lastError.toStdString().c_str());
 	QTimer::singleShot(RECONNECT_DELAY, this, SLOT(connectToServer()));
 }
 
 void MainController::onError( const QString& error ) {
-	m_target.displayError("Connection error. Reconnecting...", error.toStdString().c_str());
-	//assume onDisconnect will get called...
+	m_lastError = error;
+	if ( m_connected ) {
+		//assume onDisconnect will get called...
+		m_target.displayError("Connection error.", error.toStdString().c_str());
+	} else {
+		onDisconnect();
+	}
+
 }
 
 void MainController::onContestState( ushort round, CONTEST_STATUS status ) {

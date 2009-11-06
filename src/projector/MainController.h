@@ -33,6 +33,7 @@ class MainController : public QObject, public ProjectorController
 	bool m_connected;
 	TemplateManager::TKey m_view;
 	int m_activeQuestionIndex;
+	QString m_lastError;
 
 	bool assertQuestionState(ushort qnum) const;
 	static QString printfAnswerKey(const Question &q);
