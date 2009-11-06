@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QWebFrame>
 #include <string>
 #include <algorithm>
+#include <cstdio>
 #include "ProjectorWindow.h"
 #include "ui_ProjectorWindow.h"
 #include <ctemplate/template.h>
@@ -73,19 +74,21 @@ void ProjectorWindow::setTimeLeft(unsigned int val) {
 			evaluateJavaScript(
 					JS_TRIGGER_TIME.arg(QString::number(val)));
 
+	static char buffer[1024];
 	//format the thing differently if it's over a minute
 	if ( val > MSEC_PER_SEC * 60 ) {
+		std::sprintf(buffer, "%d:%.1lf",
+					 val/(MSEC_PER_SEC * 60),
+					 (double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC);
+
 		ctemplate::TemplateDictionary::SetGlobalValue(
-				"TIME_LEFT",
-				QString("%1:%2").
-				arg(QString::number(val/(MSEC_PER_SEC * 60))).
-				arg(QString::number(
-						(double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC, 'g', 1)
-					).toStdString());
+				"TIME_LEFT", buffer);
 	} else {
+		std::sprintf(buffer, "%.1lf", (double)val/MSEC_PER_SEC);
+
 		ctemplate::TemplateDictionary::SetGlobalValue(
 				"TIME_LEFT",
-				QString::number((double)val/MSEC_PER_SEC, 'g', 1).toStdString());
+				buffer);
 	}
 
 	if ( result.toBool() ) return;
