@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_server.h"
 #include "net/server_net.h"
 #include "net/contestant_connection.h"
+#include "checker.h"
 #include <iostream>
 #include <string>
 #include <QtGui>
@@ -33,7 +34,17 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 	for ( int i = 1; i <= 4; i++ ) {
 		QFile file ( QString ( "resources/stage%1.xml" ).arg ( i ) );
 		file.open ( QIODevice::ReadOnly );
-		m_questions.push_back ( file.readAll() );
+		QString fileString = file.readAll();
+		StageData sd;
+		XmlUtil::getInstance().readStageData( fileString, sd );
+		vector<Question> questions = sd.questions;
+		int size = questions.size();
+		Checker* checker = new Checker();
+		for( int j=0; j<size; j++ ){
+			checker->addQuestion(questions.at(j));
+		}
+		m_checkers.push_back ( checker );
+		m_questions.push_back ( fileString );
 	}
 
 	//reads the server config from the XML file
@@ -91,7 +102,7 @@ void Server::badClient ( TempConnection* tc ) {
 void Server::onAuthentication( ContestantConnection* cc, const QString& c_username ) {
 	if ( testing ) cout << c_username.toStdString() << " has authenticated." << endl;
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
-			 this, SLOT( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ) );
+			 this, SLOT ( onAnswerSubmission(ContestantConnection*,int,AnswerData ) ) );
 	m_network->getContestantList();
 	hash[c_username] = cc;
 	hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
@@ -106,7 +117,7 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data )
 {
-	//return here should be a vector of QStrings to be submitted to admin. Or something.
+	AnswerData new_data = data;
 	const QString& user = cc->getUserName();
 	QString allAnswers, answer;
 	cout << ( QString( "%1 has submitted answer data for round %2" ).arg( user ).arg( round ) ).toStdString() << endl;
@@ -128,7 +139,12 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 		}
 	}
 	hash_answers[user].replace( round-1, allAnswers );
-	if ( testing ) cout << "Replaced index " << round-1 << endl;
+	if ( testing ) cout << "Trying to check at " << round-1 << endl;
+	if ( testing ) cout << "This checker has " << m_checkers.at(round-1)->m_qset->size() << " questions.\n";
+	double points = m_checkers.at(round-1)->score( new_data );
+	if ( testing ) cout << user.toStdString() << "'s got " << points << " points.\n";
+	double new_score = this->getScore(user) + points;
+	this->setScore( user, new_score );
 }
 
 //Presenter slots

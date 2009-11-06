@@ -9,7 +9,7 @@
 		<choice>Choice 3</choice>
 		<choice>Choice 4</choice>
 	</choose>
-	<choose score="1" multiple="true">
+	<choose score="1">
 		<!-- this can have multiple selects (i.e. choices are presented as checkboxes, not radio buttons) -->
 		<q>Who is Mr. Shires?</q>
 		<choice>Sir Diy</choice>

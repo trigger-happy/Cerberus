@@ -23,7 +23,7 @@ int main ( int argc, char* argv[] )
 {
 		QApplication app ( argc, argv );
 		ProjectorWindow pw;
-		pw.loadConfigFromFile("projector_config.xml");
+		pw.loadConfigFromFile("resources/projector_config.xml");
 		pw.show();
 		return app.exec();
 }

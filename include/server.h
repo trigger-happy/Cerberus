@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QtGui/QtGui>
 #include <QtNetwork>
 #include "net/server_net.h"
+#include "checker.h"
 
 class ServerNetwork;
 
@@ -113,7 +114,7 @@ private:
 	ServerNetwork* m_network;
 	ServerConfig m_config;
 	vector<QString> m_questions;
-	vector<QString> m_answers;
+	vector<Checker*> m_checkers;
 	QHash<QString,ContestantConnection*> hash;
 	QHash<QString, QStringList> hash_answers;
 
