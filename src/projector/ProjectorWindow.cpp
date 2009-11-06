@@ -141,7 +141,9 @@ void ProjectorWindow::keyReleaseEvent(QKeyEvent *event) {
 void ProjectorWindow::loadConfigFromFile(const QString &file_path) {
 	QFile file(file_path);
 	if ( !file.open(QIODevice::ReadOnly) ) {
-		displayError("Unable to open configuration file", "", true);
+		displayError("Config file not found",
+					 QString("Unable to open %1 for reading").
+					 arg(file_path).toStdString().c_str(), true);
 		return;
 	}
 	try {
