@@ -47,6 +47,13 @@ public:
 	void setConfig(const ProjectorConfig &cfg);
 	const ProjectorConfig& getConfig() const;
 
+	/************************
+	 * View state setters.
+	 * Note that these just sets the internal states of the view...
+	 * IT DOES NOT alter the view itself. To make the changes
+	 * in the internal state affect the view, call refresh()
+	 * after calling any of them.
+	 */
 	void setQuestion(const QString &theQuestion);
 	void setAnswer(const QString &theAnswer);
 	void flushQDisplay();

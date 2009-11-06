@@ -246,6 +246,7 @@ struct ProjectorConfig : public NetworkConfig {
 
 	QString theme_path;
 	QString contest_name;
+	/*! time update interval in milliseconds */
 	unsigned int time_precision;
 	AuthorMode *author_mode;
 
