@@ -1,2 +1,3 @@
 build/projector.exe projector.exe
+build/projector projector
 resources/presenter_config.xml presenter_config.xml

@@ -1,1 +1,2 @@
+build/qeditor qeditor
 build/qeditor.exe qeditor.exe

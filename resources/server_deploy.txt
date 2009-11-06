@@ -1,4 +1,5 @@
-build/server.exe server.exe
+build/server2.exe server2.exe
+build/server server
 resources/stage1.xml stage1.xml
 resources/stage2.xml stage2.xml
 resources/stage3.xml stage3.xml
