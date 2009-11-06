@@ -87,10 +87,24 @@ void Installer::deploy( QString& source, QString& component ) {
     QTextStream in(&f);
 
     bool isSuccessful = true;
+    bool hasExe = false;
+    int round = 0;
     while (!in.atEnd()) {
+        round++;
         QString line = in.readLine();
         QStringList strlist = line.split(" ");
         QFile temp(strlist.at(0));
+
+        if( temp.exists() && round == 1 ) {
+            hasExe = true;
+        }
+        else if( !temp.exists() && round == 1 ) {
+            continue;
+        }
+        else if( !temp.exists() && round == 2 && hasExe == true ) {
+            continue;
+        }
+
         QString dest = QString("%1%2").arg(list[QString(component)]).arg(QString("/%1").arg(strlist.at(1)) );
         if( QFile::exists( dest ) ) {
             isSuccessful = false;
