@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <algorithm>
 #include <stdexcept>
 #include <QString>
+#include <iostream>
+
+using namespace std;
 
 struct Question {
 	struct AnswerKeyEntry {
@@ -41,7 +44,7 @@ struct Question {
 	unsigned int score;
 	int time_limit;
 	QString question;
-
+	QString answer;
 	Type type;
 	/*!
 	  The choices/answers for the question. They're interpreted based on the type of the question:
@@ -77,9 +80,10 @@ struct Question {
 	bool checkAnswer(const size_t choice) const {
 		if ( type != CHOOSE_ONE )
 			throw std::logic_error("Question::checkAnswer(const size_t) called on a non-CHOOSE_ONE type.");
-		if ( choice >= answer_key.size() )
+		if ( choice > answer_key.size() )
 			return false;
-		return answer_key[choice].is_answer;
+		cout << (QString("Choice %1 yields an answer that is %2. Answer = %3.").arg(choice).arg(answer_key[choice].is_answer).arg(answer)).toStdString() << endl;
+		return answer_key[choice-1].is_answer;
 	}
 
 	/*!
@@ -138,14 +142,15 @@ struct Question {
 				key_correct_length++;
 			}
 		}
-
+		QString result;
 		for ( size_t i = 0; i < answer_key.size(); ++i )
 		{
 
-			if ( choiceIndex < choices.size() && i == choices[choiceIndex] )
+			if ( choiceIndex < choices.size() && i == (choices[choiceIndex]-1) )
 			{
 				// if it is one of the choices, and it is wrong,
 				// no credit.
+				result.append(QString("Choice %1 = %2 ").arg(i).arg(answer_key[i].is_answer));
 				if( !answer_key[i].is_answer )
 				{
 					correct = 0;
@@ -158,7 +163,7 @@ struct Question {
 				++choiceIndex;
 			}
 		}
-
+		cout << result.toStdString() << " Answer = " << answer.toStdString() << endl;
 		return correct/key_correct_length;
 	}
 

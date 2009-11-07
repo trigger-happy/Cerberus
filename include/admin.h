@@ -78,6 +78,7 @@ private:
 	vector<Question> q3_v;
 	vector<Question> q4_v;
 	QString selected_user;
+	QHash<QString,QStandardItem*> users;
 	int selected_question;
 	int selectedRound;
 	int currentRound;

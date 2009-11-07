@@ -131,14 +131,27 @@ void Admin::onRoundSelection(int index){
 
 // contestant control
 void Admin::addContestant(const QString& c_user){
-	QStandardItem* item = new QStandardItem(c_user);
+
+	QStandardItem* item;
+
+	if(!users.contains(c_user)){
+		item = new QStandardItem(c_user);
+		users[c_user] = item;
+	}
+	else
+		item = users[c_user];
 	contestants->appendRow(item);
 	contestants->sort( 0, Qt::AscendingOrder);
 }
 
 void Admin::removeContestant(const QString& c_user){
-	QStandardItem* item = new QStandardItem(c_user);
-	contestants->removeRow(0,contestants->indexFromItem(item));
+	QModelIndex index = contestants->indexFromItem(users[c_user]);
+	if(index.row() != -1){
+		cout << (QString("Removing contestant %1 from index %2").arg(c_user).arg(index.row())).toStdString() << endl;
+		bool removed = contestants->removeRow(index.row(),QModelIndex());
+		if(removed) cout << "Contestant successfully removed.\n";
+		else cout << "Remove failed.\n";
+	}
 }
 
 void Admin::onContestantListClick(const QModelIndex& index){

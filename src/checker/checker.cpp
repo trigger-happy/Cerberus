@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include <cmath>
-
+#include <iostream>
 #include "checker.h"
 #include "data_types.h"
 
@@ -54,12 +54,14 @@ Checker::score(AnswerData &answerData)
 		if(questionType == Question::IDENTIFICATION)
 		{
 			value += m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].id_answer);
+			cout << "The contestant's answer is " << answerData[i].id_answer.toStdString() << endl;
 		}
 		else if (questionType == Question::CHOOSE_ONE)
 		{
 			if(answerData[i].multi_choice.size() > 0) // does not check if there is nothing inside
 			{
 			value += floor(m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].multi_choice[0]));
+			cout << "The contestant's answer is " << answerData[i].multi_choice[0] << endl;
 			}
 		}
 		else if (questionType == Question::CHOOSE_ANY)
@@ -70,7 +72,9 @@ Checker::score(AnswerData &answerData)
 		{	
 			// throw an exception
 		}
-		
+
+		cout << "The correct answer is " << m_qset->at(i).answer.toStdString() << endl;
+
 	}
 	
 	return value;

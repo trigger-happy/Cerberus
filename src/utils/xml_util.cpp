@@ -125,7 +125,10 @@ Question XmlUtil::parseChooseQuestion(QXmlStreamReader &reader) {
 			} else if ( reader.name() == "choice" )  {
 				bool is_answer = false;
 				optional_assign(reader.attributes(), "answer", is_answer, reader);
-				q.answer_key.push_back(Question::AnswerKeyEntry(reader.readElementText(), is_answer));
+				QString answer = reader.readElementText();
+				q.answer_key.push_back(Question::AnswerKeyEntry(answer, is_answer));
+				if( is_answer ) q.answer.append(answer+" - ");
+
 			} else if ( reader.name() == "choose" ) {
 				throw InvalidXmlException("'choose' tag found inside 'choose'.", reader);
 			} else {
@@ -157,7 +160,9 @@ Question XmlUtil::parseIdentificationQuestion(QXmlStreamReader &reader) {
 			if ( reader.name() == "q" ) {
 				q.question = reader.readElementText();
 			} else if ( reader.name() == "a" )  {
-				q.answer_key.push_back(Question::AnswerKeyEntry(reader.readElementText(), true));
+				QString answer = reader.readElementText();
+				q.answer_key.push_back(Question::AnswerKeyEntry(answer, true));
+				q.answer.append(answer+" - ");
 			} else if ( reader.name() == "identification" ) {
 				throw InvalidXmlException("'identification' tag found inside 'identification'.", reader);
 			} else {
