@@ -71,6 +71,14 @@ public:
 
 	void startQuestionTime(int num, int time);
 
+	void stopQuestionTime(int num, int time);
+
+	void pauseQuestionTime(int num, int time);
+
+	void showQuestion();
+
+	void showAnswer();
+
 	vector<Question> questions3;
 
 	vector<Question> questions4;

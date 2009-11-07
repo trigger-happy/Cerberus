@@ -67,6 +67,10 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 			  this, SLOT ( badClient ( TempConnection* ) ) );
 	connect ( m_network, SIGNAL ( contestantDc ( ContestantConnection* ) ),
 			  this, SLOT ( contestantDisconnect ( ContestantConnection* ) ) );
+	connect ( m_network, SIGNAL (newProjector(ProjectorConnection*)),
+			  this, SLOT (projectorConnect(ProjectorConnection*)));
+	connect ( m_network, SIGNAL (projectorDc(ProjectorConnection*)),
+			  this, SLOT (projectorDisconnect(ProjectorConnection*)));
 	m_network->listen ( m_port );
 	m_network->setRound ( 1 );
 	m_network->setStatus ( CONTEST_STOPPED );
@@ -206,6 +210,7 @@ void Server::setRound( int round ){
 }
 
 void Server::showTimeLeft(){
+	m_network->showContestTime();
 }
 
 void Server::showRankings(){
@@ -217,7 +222,23 @@ void Server::showQuestionTime(){
 	m_network->showQuestionTime();
 }
 
+void Server::showQuestion(){
+	m_network->showQuestion();
+}
+
+void Server::showAnswer(){
+	m_network->showAnswer();
+}
+
 void Server::startQuestionTime(int num, int time){
 	m_network->setQuestionState(num, time, QUESTION_RUNNING);
+}
+
+void Server::stopQuestionTime(int num, int time){
+	m_network->setQuestionState(num, time, QUESTION_STOPPED);
+}
+
+void Server::pauseQuestionTime(int num, int time){
+	m_network->setQuestionState(num, time, QUESTION_PAUSED);
 }
 

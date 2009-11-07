@@ -49,6 +49,8 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect(m_dlg->pause_btn, SIGNAL (clicked()), this, SLOT (onPauseBtn()));
 	connect(m_dlg->contestants_listv, SIGNAL (clicked(QModelIndex)),
 			this, SLOT (onContestantListClick(QModelIndex)));
+	connect(m_dlg->contestants_listv, SIGNAL (activated(QModelIndex)),
+			this, SLOT (onContestantListClick(QModelIndex)));
 	connect(m_dlg->change_score_btn, SIGNAL (clicked()), this, SLOT (onChangeScore()));
 	connect(m_dlg->drop_con_btn, SIGNAL (clicked()), this, SLOT (onDropContestant()));
 	connect(m_dlg->view_ans_btn, SIGNAL (clicked()), this, SLOT (onViewAnswers()));
@@ -56,8 +58,13 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 			this, SLOT (onAnswersRoundSelection(int)));
 	connect(m_answers_dlg->view_answers_ok, SIGNAL (clicked()), this, SLOT (onAnswersOk()));
 	connect(m_dlg->p_show_qtime_btn, SIGNAL (clicked()), this, SLOT (onShowQuestionTime()));
+	connect(m_dlg->p_show_a_btn, SIGNAL (clicked()), this, SLOT (onShowAnswer()));
+	connect(m_dlg->p_show_q_btn, SIGNAL (clicked()), this, SLOT (onShowQuestion()));
+	connect(m_dlg->p_con_time_show_btn, SIGNAL (clicked()), this, SLOT (onShowAnswer()));
 	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
 	connect(m_dlg->p_q_listv, SIGNAL (clicked(QModelIndex)),
+			this, SLOT (onQuestionListClick(QModelIndex)));
+	connect(m_dlg->p_q_listv, SIGNAL (activated(QModelIndex)),
 			this, SLOT (onQuestionListClick(QModelIndex)));
 	connect(m_dlg->qstart_btn, SIGNAL (clicked()), this, SLOT (onStartQuestionTime()));
 	connect(m_dlg->qstop_btn, SIGNAL (clicked()), this, SLOT (onStopQuestionTime()));
@@ -186,15 +193,28 @@ void Admin::onShowTimeLeft(){
 }
 
 void Admin::onShowRankings(){
-	m_server->showRankings();
+	//m_server->showRankings();
 }
 
 void Admin::onShowNothing(){
 }
 
 void Admin::onQuestionListClick(const QModelIndex& index){
+	QString question_text;
+	QString time_limit;
+	Question question;
 	selected_question = index.row();
-	cout << "Selected question " << selected_question << endl;
+
+	if (currentRound == 4)
+		question = q4_v.at(selected_question);
+	else
+		question = q3_v.at(selected_question);
+
+	question_text = question.question;
+	time_limit = question.time_limit;
+
+	m_dlg->p_question_line->setText( question_text );
+	m_dlg->p_time_line->setText( time_limit );
 }
 
 void Admin::onPreviousQuestion(){
@@ -204,9 +224,11 @@ void Admin::onNextQuestion(){
 }
 
 void Admin::onShowQuestion(){
+	m_server->showQuestion();
 }
 
 void Admin::onShowAnswer(){
+	m_server->showAnswer();
 }
 
 void Admin::onShowQuestionTime(){
@@ -223,11 +245,21 @@ void Admin::onStartQuestionTime(){
 }
 
 void Admin::onPauseQuestionTime(){
-
+	if(currentRound == 3){
+		m_server->pauseQuestionTime(selected_question, q3_v.at(selected_question).time_limit);
+	}
+	else if(currentRound == 4){
+		m_server->pauseQuestionTime(selected_question, q4_v.at(selected_question).time_limit);
+	}
 }
 
 void Admin::onStopQuestionTime(){
-
+	if(currentRound == 3){
+		m_server->stopQuestionTime(selected_question, q3_v.at(selected_question).time_limit);
+	}
+	else if(currentRound == 4){
+		m_server->stopQuestionTime(selected_question, q4_v.at(selected_question).time_limit);
+	}
 }
 
 
