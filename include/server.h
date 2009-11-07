@@ -129,9 +129,13 @@ private:
 	ServerConfig m_config;
 	vector<QString> m_questions;
 	vector<Checker*> m_checkers;
+	//Keeps track of each user's ContestantConnection
 	QHash<QString,ContestantConnection*> hash;
+	//Keeps track of each user's answers per round
 	QHash<QString, QStringList> hash_answers;
-
+	//Keeps track of the current question number of each user for rounds 3/4
+	QHash<QString, int> hash_questions;
+	int selected_question_num;
 };
 
 #endif //SERVER_H

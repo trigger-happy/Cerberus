@@ -50,7 +50,7 @@ Checker::score(AnswerData &answerData)
 	for(unsigned int i = 0; i < answerData.size(); i++)
 	{
 		// check type of question
-		Question::Type questionType = answerData[i].ans_type;
+		Question::Type questionType = m_qset->at(i).type;
 		if(questionType == Question::IDENTIFICATION)
 		{
 			value += m_qset->at(i).score * (double)m_qset->at(i).checkAnswer(answerData[i].id_answer);
@@ -90,7 +90,7 @@ Checker::score(AnswerData &answerData)
 bool
 Checker::resetQuestionSet()
 {
-	if(m_qset->empty())
+	if(!m_qset->empty())
 	{
 		m_qset->clear();
 		return true;

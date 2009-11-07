@@ -38,18 +38,21 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 		StageData sd;
 		XmlUtil::getInstance().readStageData( fileString, sd );
 		vector<Question> questions = sd.questions;
-		if(i == 3)
-			questions3 = questions;
-		else if(i == 4)
-			questions4 = questions;
-		int size = questions.size();
 		Checker* checker = new Checker();
-		for( int j=0; j<size; j++ ){
-			checker->addQuestion(questions.at(j));
+		if( i < 3 ){
+			int size = questions.size();
+			for( int j=0; j<size; j++ ){
+				checker->addQuestion(questions.at(j));
+			}
+		}
+		else{
+			if(i == 3) questions3 = questions;
+			else questions4 = questions;
 		}
 		m_checkers.push_back ( checker );
 		m_questions.push_back ( fileString );
 	}
+	selected_question_num = 0;
 
 	//reads the server config from the XML file
 	QFile file ( QString ( "resources/server_config.xml" ) );
@@ -114,6 +117,7 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 	m_network->getContestantList();
 	hash[c_username] = cc;
 	hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
+	hash_questions[c_username] = 0;
 	emit contestantC( c_username );
 }
 
@@ -147,7 +151,21 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 		}
 	}
 	hash_answers[user].replace( round-1, allAnswers );
-	double points = m_checkers.at(round-1)->score( new_data );
+	Checker* checker = m_checkers.at(round-1);
+
+	if(round>=3){
+		vector<Question> questions;
+		if(round == 3)
+			questions = questions3;
+		else
+			questions = questions4;
+		checker->resetQuestionSet();
+		cout << "Checking at question number " << selected_question_num << endl;
+		cout << "The question is " << questions.at(selected_question_num).question.toStdString() << endl;
+		checker->addQuestion(questions.at(selected_question_num));
+	}
+
+	double points = checker->score( new_data );
 	if ( testing ) cout << user.toStdString() << "'s got " << points << " points.\n";
 	double new_score = this->getScore(user) + points;
 	this->setScore( user, new_score );
@@ -232,6 +250,7 @@ void Server::showAnswer(){
 
 void Server::startQuestionTime(int num, int time){
 	m_network->setQuestionState(num, time, QUESTION_RUNNING);
+	selected_question_num = num;
 }
 
 void Server::stopQuestionTime(int num, int time){
