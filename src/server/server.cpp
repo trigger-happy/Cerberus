@@ -113,11 +113,11 @@ void Server::badClient ( TempConnection* tc ) {
 void Server::onAuthentication( ContestantConnection* cc, const QString& c_username ) {
 	if ( testing ) cout << c_username.toStdString() << " has authenticated." << endl;
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
-			 this, SLOT ( onAnswerSubmission(ContestantConnection*,int,AnswerData ) ) );
-	m_network->getContestantList();
-	hash[c_username] = cc;
-	hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
-	hash_questions[c_username] = 0;
+				 this, SLOT ( onAnswerSubmission(ContestantConnection*,int,AnswerData ) ) );
+	if(!hash.contains(c_username)){
+		hash[c_username] = cc;
+		hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
+	}
 	emit contestantC( c_username );
 }
 

@@ -1,20 +1,27 @@
 <?xml version="1.0"?>
-<stage time_limit="3600" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" xmlns="http://cerberus.compsat.org">
-    <welcome_msg>Round 1</welcome_msg>
-	
-	<choose score="1">
-        <q>The answer to this question is choice 1. Just making this longer to see it would look on screen.</q>
-		<choice answer="true">Choice 1</choice>
-		<choice>Choice 2</choice>
-		<choice>Choice 3</choice>
-		<choice>Choice 4</choice>
-	</choose>
-	<choose score="1">
-		<!-- this can have multiple selects (i.e. choices are presented as checkboxes, not radio buttons) -->
-		<q>Who is Mr. Shires?</q>
-		<choice>Sir Diy</choice>
-		<choice>Doc Mana</choice>
-		<choice>Fr. David</choice>
-		<choice answer="true">Michael Jackson</choice>
-	</choose>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd">
+    <welcome_msg>Welcome to this year's /IT Inter-High School Quiz Bee Competition!
+
+This is the first elimination round. Each question will only yield one possible answer. Choose carefully.</welcome_msg>
+    <choose score="1" id="1">
+        <q>How many Genins made it into the preliminaries of the Third Chunnin Exam?</q>
+        <choice>20</choice>
+        <choice answer="true">21</choice>
+        <choice>16</choice>
+        <choice>17</choice>
+    </choose>
+    <choose score="2" id="2">
+        <q>What is the name of Naruto's rival?</q>
+        <choice>Gaara</choice>
+        <choice>Neji</choice>
+        <choice answer="true">Sasuke</choice>
+        <choice>Rock Lee</choice>
+    </choose>
+    <choose score="1" id="3">
+        <q>How many Chakra Gates are there in the body?</q>
+        <choice>3</choice>
+		<choice answer="true">8</choice>
+		<choice>11</choice>
+		<choice>14</choice>
+    </choose>
 </stage>

@@ -1,25 +1,36 @@
 <?xml version="1.0"?>
-<stage time_limit="3600" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" xmlns="http://cerberus.compsat.org">
-    <welcome_msg>Round 2</welcome_msg>
-	<choose score="1">
-		<q>The answer to this question is choice 1.</q>
-		<choice answer="true">Choice 1</choice>
-		<choice>Choice 2</choice>
-		<choice>Choice 3</choice>
-		<choice>Choice 4</choice>
-	</choose>
-	<choose score="1">
-		<q>Who is Mr. Shires?</q>
-		<choice>Sir Diy</choice>
-		<choice>Doc Mana</choice>
-		<choice>Fr. David</choice>
-		<choice answer="true">Michael Jackson</choice>
-	</choose>
-	<choose score="2" multiple="true">
-		<q>This is a 2 point question, correct answers are choice 3 and 4.</q>
-		<choice>Choice 1</choice>
-		<choice>Choice 2</choice>
-		<choice answer="true">Choice 3</choice>
-		<choice answer="true">Choice 4</choice>
-	</choose>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd">
+    <welcome_msg>This is the 2nd round. 
+
+Since you've made it this far, then you must be tough!
+
+Let's see if you can get these next questions.</welcome_msg>
+    <choose multiple="true" score="3" id="1">
+        <q>Who among the following does not belong to Gai's team?</q>
+        <choice>Neji</choice>
+        <choice answer="true">Chouji</choice>
+        <choice answer="true">Hinata</choice>
+        <choice>Tenten</choice>
+    </choose>
+    <choose multiple="true" score="3" id="2">
+        <q>What are the names of Gaara's siblings?</q>
+        <choice>Tenten</choice>
+        <choice answer="true">Temari</choice>
+        <choice>Ken Lee</choice>
+        <choice answer="true">Kankurou</choice>
+    </choose>
+    <choose multiple="true" score="5" id="3">
+        <q>Who among the following have been given Orochimaru's cursed seal?</q>
+        <choice>Zabu</choice>
+        <choice>Kin</choice>
+        <choice answer="true">Anko</choice>
+        <choice answer="true">Sasuke</choice>
+    </choose>
+    <choose multiple="true" score="1" id="4">
+        <q>Who among the following possess a Bloodline Limit ability?</q>
+        <choice>Uzumaki Naruto</choice>
+        <choice answer="true">Uchiha Sasuka</choice>
+        <choice>Haruno Sakura</choice>
+        <choice answer="true">Hyuuga Neji</choice>
+    </choose>
 </stage>

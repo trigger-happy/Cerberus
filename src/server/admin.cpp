@@ -134,12 +134,12 @@ void Admin::addContestant(const QString& c_user){
 
 	QStandardItem* item;
 
-	if(!users.contains(c_user)){
+	//if(!users.contains(c_user)){
 		item = new QStandardItem(c_user);
 		users[c_user] = item;
-	}
+	/*}
 	else
-		item = users[c_user];
+		item = users[c_user];*/
 	contestants->appendRow(item);
 	contestants->sort( 0, Qt::AscendingOrder);
 }

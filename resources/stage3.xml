@@ -1,33 +1,20 @@
 <?xml version="1.0"?>
-<stage time_limit="3600" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" xmlns="http://cerberus.compsat.org">
-    <welcome_msg>Round 3</welcome_msg>
-	<choose score="1" time_limit="60">
-		<q>The answer to this choose is choice 1.</q>
-		<choice answer="true">Choice 1</choice>
-		<choice>Choice 2</choice>
-		<choice>Choice 3</choice>
-		<choice>Choice 4</choice>
-	</choose>
-	<choose score="1" time_limit="60">
-		<q>Who is Mr. Shires?</q>
-		<choice>Sir Diy</choice>
-		<choice>Doc Mana</choice>
-		<choice>Fr. David</choice>
-		<choice answer="true">Michael Jackson</choice>
-	</choose>
-	<choose score="2" time_limit="60" multiple="true">
-		<q>This is a 2 point choose, correct answer is choice 3 and 4.</q>
-		<choice>Choice 1</choice>
-		<choice>Choice 2</choice>
-		<choice answer="true">Choice 3</choice>
-		<choice answer="true">Choice 4</choice>
-	</choose>
-	<identification score="6" time_limit="120">
-		<q>The correct answer is "18" without quotes.</q>
-		<a>18</a>
-	</identification>
-	<identification score="6" time_limit="120">
-		<q>The correct answer is "Intel Corporation" without quotes.</q>
-		<a>Intel Corporation</a>
-	</identification>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd">
+    <welcome_msg>This is the Final Round.
+
+If you have the guts, go for the glory! \m/</welcome_msg>
+    <identification score="10" time_limit="30" id="1">
+        <q>What is the name of Naruto's teacher who is known to be the frog hermit?</q>
+        <a>Gamabunta</a>
+        <a>Kakashi</a>
+        <a>Muga</a>
+        <a>Jiraiyo</a>
+    </identification>
+    <choose multiple="true" score="5" time_limit="30" id="2">
+        <q>Which ninjas among the following do not belong to the village of Konoha?</q>
+        <choice>Tenten</choice>
+        <choice answer="true">Temari</choice>
+        <choice answer="true">Kin</choice>
+        <choice>Rock lee</choice>
+    </choose>
 </stage>
