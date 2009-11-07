@@ -82,7 +82,6 @@ struct Question {
 			throw std::logic_error("Question::checkAnswer(const size_t) called on a non-CHOOSE_ONE type.");
 		if ( choice > answer_key.size() )
 			return false;
-		cout << (QString("Choice %1 yields an answer that is %2. Answer = %3.").arg(choice).arg(answer_key[choice-1].is_answer).arg(answer)).toStdString() << endl;
 		return answer_key[choice-1].is_answer;
 	}
 
@@ -150,7 +149,6 @@ struct Question {
 			{
 				// if it is one of the choices, and it is wrong,
 				// no credit.
-				result.append(QString("Choice %1 = %2 ").arg(i).arg(answer_key[i].is_answer));
 				if( !answer_key[i].is_answer )
 				{
 					correct = 0;
@@ -163,7 +161,6 @@ struct Question {
 				++choiceIndex;
 			}
 		}
-		cout << result.toStdString() << " Answer = " << answer.toStdString() << endl;
 		return correct/key_correct_length;
 	}
 
@@ -174,7 +171,6 @@ struct Question {
 	  \throws std::length_error There are no entries in the answer_key.
 	*/
 	bool checkAnswer(const QString &ans) const {
-		cout << "Answer = " << answer.toStdString() << endl;
 		if ( type != IDENTIFICATION )
 			throw std::logic_error("Question::checkAnswer(const QString &) called on a non-IDENTIFICATION type.");
 		if ( answer_key.size() < 1 )

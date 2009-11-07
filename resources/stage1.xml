@@ -4,7 +4,7 @@
 
 This is the first elimination round. Each question will only yield one possible answer. Choose carefully.</welcome_msg>
     <choose score="1" id="1">
-        <q>How many Genins made it into the preliminaries of the Third Chunnin Exam?</q>
+		<q>How many Genins made it into the preliminaries of the Third Chuunin Exam?</q>
         <choice>20</choice>
         <choice answer="true">21</choice>
         <choice>16</choice>

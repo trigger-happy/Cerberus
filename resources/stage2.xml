@@ -29,7 +29,7 @@ Let's see if you can get these next questions.</welcome_msg>
     <choose multiple="true" score="1" id="4">
         <q>Who among the following possess a Bloodline Limit ability?</q>
         <choice>Uzumaki Naruto</choice>
-        <choice answer="true">Uchiha Sasuka</choice>
+		<choice answer="true">Uchiha Sasuke</choice>
         <choice>Haruno Sakura</choice>
         <choice answer="true">Hyuuga Neji</choice>
     </choose>

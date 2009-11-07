@@ -5,10 +5,7 @@
 If you have the guts, go for the glory! \m/</welcome_msg>
     <identification score="10" time_limit="30" id="1">
         <q>What is the name of Naruto's teacher who is known to be the frog hermit?</q>
-        <a>Gamabunta</a>
-        <a>Kakashi</a>
-        <a>Muga</a>
-        <a>Jiraiyo</a>
+		<a>Jiraiya</a>
     </identification>
     <choose multiple="true" score="5" time_limit="30" id="2">
         <q>Which ninjas among the following do not belong to the village of Konoha?</q>
