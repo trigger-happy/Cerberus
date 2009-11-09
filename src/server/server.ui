@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -177,19 +177,19 @@
       </rect>
      </property>
      <property name="title">
-      <string>Round 3 / Tie Breaker Control</string>
+      <string>Contest/Question Time</string>
      </property>
-     <widget class="QLabel" name="label_11">
+     <widget class="QLCDNumber" name="time_lcd">
       <property name="geometry">
        <rect>
-        <x>100</x>
-        <y>30</y>
-        <width>361</width>
-        <height>18</height>
+        <x>43</x>
+        <y>52</y>
+        <width>491</width>
+        <height>51</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Controls here can be found in the projector control tab.</string>
+      <property name="segmentStyle">
+       <enum>QLCDNumber::Flat</enum>
       </property>
      </widget>
     </widget>
@@ -306,7 +306,7 @@
        <x>0</x>
        <y>0</y>
        <width>581</width>
-       <height>131</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="title">
@@ -350,9 +350,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>129</y>
+       <y>69</y>
        <width>581</width>
-       <height>351</height>
+       <height>411</height>
       </rect>
      </property>
      <property name="title">
@@ -493,6 +493,22 @@
         </layout>
        </item>
       </layout>
+     </widget>
+     <widget class="QLCDNumber" name="time2_lcd">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>350</y>
+        <width>491</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="segmentStyle">
+       <enum>QLCDNumber::Flat</enum>
+      </property>
+      <property name="intValue" stdset="0">
+       <number>0</number>
+      </property>
      </widget>
     </widget>
    </widget>
