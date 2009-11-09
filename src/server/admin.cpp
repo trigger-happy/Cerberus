@@ -94,6 +94,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 
 	selected_question = 0;
 
+	onRoundSelection(0);
 }
 
 Admin::~Admin() {
@@ -127,6 +128,15 @@ void Admin::onPauseBtn() {
 
 void Admin::onRoundSelection(int index){
 	selectedRound = index + 1;
+	int time = 0;
+	if(selectedRound < 3){
+		time = m_server->getRoundTime(selectedRound);
+	}else{
+		time = m_server->getQuestionTime(selectedRound, 0);
+	}
+	m_dlg->timer_spin->setValue(time);
+	m_dlg->time_lcd->display(time);
+	m_dlg->time2_lcd->display(time);
 }
 
 // contestant control

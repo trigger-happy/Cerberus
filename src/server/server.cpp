@@ -262,3 +262,21 @@ void Server::pauseQuestionTime(int num, int time){
 	m_network->setQuestionState(num, time, QUESTION_PAUSED);
 }
 
+int Server::getRoundTime(int round){
+	if(round > 0 && round < 3){
+		StageData temp;
+		XmlUtil::getInstance().readStageData(m_questions[round-1], temp);
+		return temp.contest_time;
+	}
+	return -1;
+}
+
+int Server::getQuestionTime(int round, int question){
+	if(round > 2){
+		StageData temp;
+		XmlUtil::getInstance().readStageData(m_questions[round-1], temp);
+		return temp.questions[question].time_limit;
+	}
+	return -1;
+}
+

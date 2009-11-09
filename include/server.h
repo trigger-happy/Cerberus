@@ -82,6 +82,10 @@ public:
 	vector<Question> questions3;
 
 	vector<Question> questions4;
+	
+	int getRoundTime(int round);
+	
+	int getQuestionTime(int round, int question);
 
 signals:
 	void badC ( TempConnection* con );
