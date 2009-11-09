@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="60">
+    <welcome_msg>ADURDURDUR</welcome_msg>
+    <choose score="1" id="1">
+        <q>new question</q>
+        <choice answer="true"></choice>
+        <choice></choice>
+        <choice></choice>
+        <choice></choice>
+    </choose>
+    <choose score="1" id="2">
+        <q>How many licks does it take to get to the center of a tootsie roll?</q>
+        <choice>5</choice>
+        <choice>6</choice>
+        <choice>10</choice>
+        <choice answer="true">500000</choice>
+    </choose>
+    <choose score="1" id="3">
+        <q>f</q>
+        <choice answer="true"></choice>
+        <choice></choice>
+        <choice></choice>
+        <choice></choice>
+    </choose>
+</stage>

@@ -17,15 +17,4 @@
         <q>What does dota stands for?</q>
         <a>Defense of the ancients</a>
     </identification>
-    <choose multiple="true" score="5" time_limit="30" id="5">
-        <q>Which ninjas among the following do not belong to the village of Konoha?</q>
-        <choice>Tenten</choice>
-        <choice answer="true">Temari</choice>
-        <choice answer="true">Kin</choice>
-        <choice>Rock lee</choice>
-    </choose>
-    <identification score="10" time_limit="30" id="6">
-        <q>What is the name of Naruto's teacher who is known to be the frog hermit?</q>
-        <a>Jiraiya</a>
-    </identification>
 </stage>

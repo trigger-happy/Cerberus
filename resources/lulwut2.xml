@@ -22,39 +22,11 @@
         <choice>FEDORA MAN</choice>
         <choice answer="true">a sentient being</choice>
     </choose>
-    <choose multiple="true" score="3" id="4">
-        <q>Who among the following does not belong to Gai's team?</q>
-        <choice>Neji</choice>
-        <choice answer="true">Chouji</choice>
-        <choice answer="true">Hinata</choice>
-        <choice>Tenten</choice>
-    </choose>
-    <choose multiple="true" score="8" id="5">
+    <choose multiple="true" score="8" id="4">
         <q>Why am i the only one testing?</q>
         <choice>because no one wants to</choice>
         <choice answer="true">not enough laptop</choice>
         <choice>it's my birthday</choice>
         <choice answer="true">they want to</choice>
-    </choose>
-    <choose multiple="true" score="3" id="6">
-        <q>What are the names of Gaara's siblings?</q>
-        <choice>Tenten</choice>
-        <choice answer="true">Temari</choice>
-        <choice>Ken Lee</choice>
-        <choice answer="true">Kankurou</choice>
-    </choose>
-    <choose multiple="true" score="5" id="7">
-        <q>Who among the following have been given Orochimaru's cursed seal?</q>
-        <choice>Zabu</choice>
-        <choice>Kin</choice>
-        <choice answer="true">Anko</choice>
-        <choice answer="true">Sasuke</choice>
-    </choose>
-    <choose multiple="true" score="1" id="8">
-        <q>Who among the following possess a Bloodline Limit ability?</q>
-        <choice>Uzumaki Naruto</choice>
-        <choice answer="true">Uchiha Sasuke</choice>
-        <choice>Haruno Sakura</choice>
-        <choice answer="true">Hyuuga Neji</choice>
     </choose>
 </stage>

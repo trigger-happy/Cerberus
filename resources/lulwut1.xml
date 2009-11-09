@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="60">
+    <welcome_msg>ADURDURDUR</welcome_msg>
+    <choose score="1" id="1">
+        <q>Where am I?</q>
+        <choice answer="true">Here</choice>
+        <choice>There</choice>
+        <choice>No where</choice>
+        <choice>everywhere</choice>
+    </choose>
+    <choose score="1" id="2">
+        <q>How many licks does it take to get to the center of a tootsie roll?</q>
+        <choice>5</choice>
+        <choice>6</choice>
+        <choice>10</choice>
+        <choice answer="true">500000</choice>
+    </choose>
+    <choose score="1" id="3">
+        <q>Where am I?</q>
+        <choice answer="true">Here</choice>
+        <choice>There</choice>
+        <choice>No where</choice>
+        <choice>everywhere</choice>
+    </choose>
+    <choose score="1" id="4">
+        <q>How many licks does it take to get to the center of a tootsie roll?</q>
+        <choice>100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000022032032032020320302032032032030203203012030124591458745903426928367587516543965409706578537863567869086978756564758965078763126487769085436258960875398</choice>
+        <choice>6</choice>
+        <choice>10</choice>
+        <choice answer="true">500000</choice>
+    </choose>
+</stage>

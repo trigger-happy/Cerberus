@@ -651,10 +651,7 @@ void QEditor::import()
 	{
 		rec[ctr]=roundmodel[ctr]->rowCount();
 	}
-	
-	file_prefix=load_dlg.selectedFiles().join("");
-	file_prefix.replace(QString(".xgrp"),QString(""));
-	
+		
 	if (file_prefix=="")
 		return;
 	for (int ctr=0;ctr<CHOICE;ctr++)
