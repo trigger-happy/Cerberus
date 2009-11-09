@@ -30,9 +30,18 @@ using namespace std;
 bool testing = true;
 
 Server::Server ( QWidget* parent ) : QObject ( parent ) {
+	
+	//reads the server config from the XML file
+	QFile file ( QString ( "resources/server_config.xml" ) );
+	file.open ( QIODevice::ReadOnly );
+	QString serverConfigXml = file.readAll();
+	XmlUtil::getInstance().readServerConfig( serverConfigXml, m_config );
+	m_port = m_config.port;
+	QString m_db_path = m_config.db_path;
+	
 	//Fills up the m_questions vector with the question data in XML.
 	for ( int i = 1; i <= 4; i++ ) {
-		QFile file ( QString ( "resources/stage%1.xml" ).arg ( i ) );
+		QFile file ( m_config.stage_files.at( i - 1 ) );
 		file.open ( QIODevice::ReadOnly );
 		QString fileString = file.readAll();
 		StageData sd;
@@ -53,14 +62,6 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 		m_questions.push_back ( fileString );
 	}
 	selected_question_num = 0;
-
-	//reads the server config from the XML file
-	QFile file ( QString ( "resources/server_config.xml" ) );
-	file.open ( QIODevice::ReadOnly );
-	QString serverConfigXml = file.readAll();
-	XmlUtil::getInstance().readServerConfig( serverConfigXml, m_config );
-	m_port = m_config.port;
-	QString m_db_path = m_config.db_path;
 
 	//Instantiates the ServerNetwork class, networking stuff go here
 	m_network = new ServerNetwork ( this );
