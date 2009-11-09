@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd">
+    <welcome_msg>Young people now-a-days are a sucker for punishment</welcome_msg>
+    <identification score="9" time_limit="1" id="1">
+        <q>WHAT IS FEDORA MAN'S FULL NAME(with titles)</q>
+        <a>James Andrew Chung Choa ROTC phD md esquire bachelor of science in computer science double major minor super saiyan magical slave leader butler girl no maid guy</a>
+    </identification>
+    <identification score="9" time_limit="1" id="2">
+        <q>What does dota stands for?</q>
+        <a>Defense of the ancients</a>
+    </identification>
+</stage>

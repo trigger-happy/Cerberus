@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd">
+    <welcome_msg></welcome_msg>
+</stage>
