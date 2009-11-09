@@ -66,6 +66,9 @@ public slots:
 	void onStartQuestionTime();
 	void onPauseQuestionTime();
 	void onStopQuestionTime();
+	
+	//timer
+	void onTimeUpdate();
 
 private:
 	Ui::server_dlg* m_dlg;
@@ -82,6 +85,8 @@ private:
 	int selected_question;
 	int selectedRound;
 	int currentRound;
+	QTimer* m_timer;
+	int m_timeleft;
 };
 
 #endif //ADMIN_H

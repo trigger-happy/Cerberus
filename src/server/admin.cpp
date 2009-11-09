@@ -37,7 +37,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	contestants = new QStandardItemModel( this );
 	m_dlg->contestants_listv->setModel( contestants );
 	m_dlg->contestants_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	m_dlg->p_q_listv->setModel( questions3 );
+	m_dlg->p_q_listv->setModel( NULL );
 	m_dlg->p_q_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	// connect dialog signals and slots here
@@ -95,33 +95,53 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	selected_question = 0;
 
 	onRoundSelection(0);
+	onApplyBtn();
+	m_timer = new QTimer(this);
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeUpdate()));
 }
 
 Admin::~Admin() {
 }
 
+void Admin::onTimeUpdate(){
+	m_timeleft--;
+	m_dlg->time_lcd->display(m_timeleft);
+	m_dlg->time2_lcd->display(m_timeleft);
+	if(m_timeleft <= 0){
+		onStopBtn();
+	}
+}
+
 // contest control
 void Admin::onApplyBtn(){
 	currentRound = selectedRound;
+	m_timeleft = m_dlg->timer_spin->value();
+	m_dlg->time_lcd->display(m_timeleft);
+	m_dlg->time2_lcd->display(m_timeleft);
 	m_server->setRound(selectedRound);
 	if (selectedRound == 3)
 		m_dlg->p_q_listv->setModel(questions3);
 	else if (selectedRound == 4)
 		m_dlg->p_q_listv->setModel(questions4);
+	else
+		m_dlg->p_q_listv->setModel(NULL);
 }
 
 
 void Admin::onStopBtn() {
+	m_timer->stop();
 	m_server->stopContest();
 	m_dlg->status_lbl->setText("Stopped");
 }
 
 void Admin::onStartBtn() {
+	m_timer->start(1000);
 	m_server->startContest();
 	m_dlg->status_lbl->setText("Running");
 }
 
 void Admin::onPauseBtn() {
+	m_timer->stop();
 	m_server->pauseContest();
 	m_dlg->status_lbl->setText("Paused");
 }
@@ -135,8 +155,8 @@ void Admin::onRoundSelection(int index){
 		time = m_server->getQuestionTime(selectedRound, 0);
 	}
 	m_dlg->timer_spin->setValue(time);
-	m_dlg->time_lcd->display(time);
-	m_dlg->time2_lcd->display(time);
+	//m_dlg->time_lcd->display(time);
+	//m_dlg->time2_lcd->display(time);
 }
 
 // contestant control
