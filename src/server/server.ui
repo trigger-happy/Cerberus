@@ -497,7 +497,7 @@
      <widget class="QLCDNumber" name="time2_lcd">
       <property name="geometry">
        <rect>
-        <x>50</x>
+        <x>40</x>
         <y>350</y>
         <width>491</width>
         <height>51</height>

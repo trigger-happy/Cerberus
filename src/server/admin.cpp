@@ -60,8 +60,11 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect(m_dlg->p_show_qtime_btn, SIGNAL (clicked()), this, SLOT (onShowQuestionTime()));
 	connect(m_dlg->p_show_a_btn, SIGNAL (clicked()), this, SLOT (onShowAnswer()));
 	connect(m_dlg->p_show_q_btn, SIGNAL (clicked()), this, SLOT (onShowQuestion()));
-	connect(m_dlg->p_con_time_show_btn, SIGNAL (clicked()), this, SLOT (onShowAnswer()));
+	connect(m_dlg->p_con_time_show_btn, SIGNAL (clicked()), this, SLOT (onShowTimeLeft()));
 	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
+	connect(m_dlg->p_show_nothing_btn, SIGNAL(clicked()), this, SLOT(onShowNothing()));
+	connect(m_dlg->p_next_q_btn, SIGNAL(clicked()), this, SLOT(onNextQuestion()));
+	connect(m_dlg->p_prev_q_btn, SIGNAL(clicked()), this, SLOT(onPreviousQuestion()));
 	connect(m_dlg->p_q_listv, SIGNAL (clicked(QModelIndex)),
 			this, SLOT (onQuestionListClick(QModelIndex)));
 	connect(m_dlg->p_q_listv, SIGNAL (activated(QModelIndex)),
@@ -69,6 +72,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect(m_dlg->qstart_btn, SIGNAL (clicked()), this, SLOT (onStartQuestionTime()));
 	connect(m_dlg->qstop_btn, SIGNAL (clicked()), this, SLOT (onStopQuestionTime()));
 	connect(m_dlg->qpause_btn, SIGNAL (clicked()), this, SLOT (onPauseQuestionTime()));
+	connect(m_dlg->p_show_qtime_btn, SIGNAL(clicked()), this, SLOT(onShowQuestionTime()));
 
 
 	// connect server signals and slots here
