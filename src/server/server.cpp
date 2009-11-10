@@ -92,6 +92,8 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 		msg.setText ( "Failed to load db" );
 		msg.exec();
 	}
+	
+	m_rankmodel = new QStandardItemModel(this);
 
 	if ( testing ) cout << "Finished with setting up Server." << endl;
 }
@@ -280,3 +282,15 @@ int Server::getQuestionTime(int round, int question){
 	return -1;
 }
 
+void Server::getRankData(vector<RankData>& out){
+	// get stuff from the item model and then shove it into out.
+	out.clear();
+	for(int i = 0; i < m_rankmodel->rowCount(); i++){
+		RankData temp;
+		temp.rank = m_rankmodel->item(i, 0)->text().toUShort();
+		temp.fullname = m_rankmodel->item(i, 1)->text();
+		temp.teamname = m_rankmodel->item(i, 2)->text();
+		temp.score = m_rankmodel->item(i, 3)->text().toDouble();
+		out.push_back(temp);
+	}
+}

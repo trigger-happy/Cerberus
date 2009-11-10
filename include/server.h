@@ -86,6 +86,8 @@ public:
 	int getRoundTime(int round);
 	
 	int getQuestionTime(int round, int question);
+	
+	void getRankData(vector<RankData>& out);
 
 signals:
 	void badC ( TempConnection* con );
@@ -140,6 +142,7 @@ private:
 	//Keeps track of the current question number of each user for rounds 3/4
 	QHash<QString, int> hash_questions;
 	int selected_question_num;
+	QStandardItemModel* m_rankmodel;
 };
 
 #endif //SERVER_H
