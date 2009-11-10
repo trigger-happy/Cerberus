@@ -58,8 +58,6 @@ public slots:
 	void onShowRankings();
 	void onShowNothing();
 	void onQuestionListClick(const QModelIndex& index);
-	void onPreviousQuestion();
-	void onNextQuestion();
 	void onShowQuestion();
 	void onShowAnswer();
 	void onShowQuestionTime();

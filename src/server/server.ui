@@ -381,22 +381,7 @@
           <widget class="QListView" name="p_q_listv"/>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_10">
-           <item>
-            <widget class="QPushButton" name="p_prev_q_btn">
-             <property name="text">
-              <string>&amp;Previous</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="p_next_q_btn">
-             <property name="text">
-              <string>&amp;Next</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="horizontalLayout_10"/>
          </item>
         </layout>
        </item>

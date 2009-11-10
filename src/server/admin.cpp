@@ -63,8 +63,6 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect(m_dlg->p_con_time_show_btn, SIGNAL (clicked()), this, SLOT (onShowTimeLeft()));
 	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
 	connect(m_dlg->p_show_nothing_btn, SIGNAL(clicked()), this, SLOT(onShowNothing()));
-	connect(m_dlg->p_next_q_btn, SIGNAL(clicked()), this, SLOT(onNextQuestion()));
-	connect(m_dlg->p_prev_q_btn, SIGNAL(clicked()), this, SLOT(onPreviousQuestion()));
 	connect(m_dlg->p_q_listv, SIGNAL (clicked(QModelIndex)),
 			this, SLOT (onQuestionListClick(QModelIndex)));
 	connect(m_dlg->p_q_listv, SIGNAL (activated(QModelIndex)),
@@ -262,12 +260,6 @@ void Admin::onQuestionListClick(const QModelIndex& index){
 
 	m_dlg->p_question_line->setText( question_text );
 	m_dlg->p_time_line->setText( time_limit );
-}
-
-void Admin::onPreviousQuestion(){
-}
-
-void Admin::onNextQuestion(){
 }
 
 void Admin::onShowQuestion(){
