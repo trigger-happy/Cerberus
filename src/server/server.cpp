@@ -121,6 +121,8 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		hash[c_username] = cc;
 		hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
 	}
+	
+	//TODO: get information on the user and shove it into m_rankmodel
 	emit contestantC( c_username );
 }
 
@@ -128,6 +130,8 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 	QString c_user = cc->getUserName();
 	if( testing ) cout << c_user.toStdString() << " has been disconnected.\n";
 	if(!c_user.isNull()) emit contestantDc( c_user );
+	
+	//TODO: remove the contestant from m_rankmodel.
 }
 
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data )
@@ -172,6 +176,8 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 	if ( testing ) cout << user.toStdString() << "'s got " << points << " points.\n";
 	double new_score = this->getScore(user) + points;
 	this->setScore( user, new_score );
+	
+	//TODO: update score info for m_rankmodel
 }
 
 //Presenter slots
