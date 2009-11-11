@@ -141,6 +141,7 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 				pc->setStatus( m_con_status );
 				pc->setRound( m_round );
 				pc->setContestTime( m_contime );
+				pc->setStageData( m_questiondata );
 				connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
 				         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
 				connect( pc, SIGNAL( contestTimeRequest( ushort& ) ),
