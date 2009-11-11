@@ -105,6 +105,7 @@ void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
 			tmr.pause();
 			break;
 		case CONTEST_STOPPED:
+			m_net->getStageData(round);
 			tmr.stop();
 			break;
 	}
