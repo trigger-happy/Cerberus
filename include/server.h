@@ -69,11 +69,11 @@ public:
 
 	void showQuestionTime();
 
-	void startQuestionTime(int num, int time);
+	void startQuestionTime( int num, int time );
 
-	void stopQuestionTime(int num, int time);
+	void stopQuestionTime( int num, int time );
 
-	void pauseQuestionTime(int num, int time);
+	void pauseQuestionTime( int num, int time );
 
 	void showQuestion();
 
@@ -82,13 +82,13 @@ public:
 	vector<Question> questions3;
 
 	vector<Question> questions4;
-	
-	int getRoundTime(int round);
-	
-	int getQuestionTime(int round, int question);
-	
-	void getRankData(vector<RankData>& out);
-	
+
+	int getRoundTime( int round );
+
+	int getQuestionTime( int round, int question );
+
+	void getRankData( vector<RankData>& out );
+
 	void updateRankData();
 
 signals:
@@ -123,7 +123,7 @@ private slots:
 	//Projector slots
 	void projectorConnect( ProjectorConnection* pc );
 
-	void projectorDisconnect( ProjectorConnection* pc);
+	void projectorDisconnect( ProjectorConnection* pc );
 
 
 
@@ -138,7 +138,7 @@ private:
 	vector<QString> m_questions;
 	vector<Checker*> m_checkers;
 	//Keeps track of each user's ContestantConnection
-	QHash<QString,ContestantConnection*> hash;
+	QHash<QString, ContestantConnection*> hash;
 	//Keeps track of each user's answers per round
 	QHash<QString, QStringList> hash_answers;
 	//Keeps track of the current question number of each user for rounds 3/4

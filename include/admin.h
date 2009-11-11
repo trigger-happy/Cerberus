@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 namespace Ui {
 
 	class server_dlg;
+
 	class view_answers_dlg;
 }
 
@@ -39,32 +40,32 @@ public slots:
 	void onStartBtn();
 	void onPauseBtn();
 	void onStopBtn();
-	void onRoundSelection(int index);
-	
+	void onRoundSelection( int index );
+
 	// contestant control
-	void addContestant(const QString& c_user);
-	void removeContestant(const QString& c_user);
-	void onContestantListClick(const QModelIndex& index);
+	void addContestant( const QString& c_user );
+	void removeContestant( const QString& c_user );
+	void onContestantListClick( const QModelIndex& index );
 	void onDropContestant();
 	void onViewAnswers();
 	void onChangeScore();
 
 	// view Answers
-	void onAnswersRoundSelection(int index);
+	void onAnswersRoundSelection( int index );
 	void onAnswersOk();
-	
+
 	// projector control
 	void onShowTimeLeft();
 	void onShowRankings();
 	void onShowNothing();
-	void onQuestionListClick(const QModelIndex& index);
+	void onQuestionListClick( const QModelIndex& index );
 	void onShowQuestion();
 	void onShowAnswer();
 	void onShowQuestionTime();
 	void onStartQuestionTime();
 	void onPauseQuestionTime();
 	void onStopQuestionTime();
-	
+
 	//timer
 	void onTimeUpdate();
 
@@ -79,7 +80,7 @@ private:
 	vector<Question> q3_v;
 	vector<Question> q4_v;
 	QString selected_user;
-	QHash<QString,QStandardItem*> users;
+	QHash<QString, QStandardItem*> users;
 	int selected_question;
 	int selectedRound;
 	int currentRound;

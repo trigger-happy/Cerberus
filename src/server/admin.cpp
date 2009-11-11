@@ -36,274 +36,283 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	questions4 = new QStandardItemModel ( this );
 	contestants = new QStandardItemModel( this );
 	m_dlg->contestants_listv->setModel( contestants );
-	m_dlg->contestants_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	m_dlg->contestants_listv->setEditTriggers( QAbstractItemView::NoEditTriggers );
 	m_dlg->p_q_listv->setModel( NULL );
-	m_dlg->p_q_listv->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	m_dlg->p_q_listv->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
 	// connect dialog signals and slots here
-	connect(m_dlg->round_combo, SIGNAL(currentIndexChanged(int)),
-			this, SLOT(onRoundSelection(int)));
-	connect(m_dlg->apply_btn, SIGNAL (clicked()), this, SLOT (onApplyBtn()));
-	connect(m_dlg->stop_btn, SIGNAL (clicked()), this, SLOT (onStopBtn()));
-	connect(m_dlg->start_btn, SIGNAL (clicked()), this, SLOT (onStartBtn()));
-	connect(m_dlg->pause_btn, SIGNAL (clicked()), this, SLOT (onPauseBtn()));
-	connect(m_dlg->contestants_listv, SIGNAL (clicked(QModelIndex)),
-			this, SLOT (onContestantListClick(QModelIndex)));
-	connect(m_dlg->contestants_listv, SIGNAL (activated(QModelIndex)),
-			this, SLOT (onContestantListClick(QModelIndex)));
-	connect(m_dlg->change_score_btn, SIGNAL (clicked()), this, SLOT (onChangeScore()));
-	connect(m_dlg->drop_con_btn, SIGNAL (clicked()), this, SLOT (onDropContestant()));
-	connect(m_dlg->view_ans_btn, SIGNAL (clicked()), this, SLOT (onViewAnswers()));
-	connect(m_answers_dlg->view_answers_rounds, SIGNAL (currentIndexChanged(int)),
-			this, SLOT (onAnswersRoundSelection(int)));
-	connect(m_answers_dlg->view_answers_ok, SIGNAL (clicked()), this, SLOT (onAnswersOk()));
-	connect(m_dlg->p_show_qtime_btn, SIGNAL (clicked()), this, SLOT (onShowQuestionTime()));
-	connect(m_dlg->p_show_a_btn, SIGNAL (clicked()), this, SLOT (onShowAnswer()));
-	connect(m_dlg->p_show_q_btn, SIGNAL (clicked()), this, SLOT (onShowQuestion()));
-	connect(m_dlg->p_con_time_show_btn, SIGNAL (clicked()), this, SLOT (onShowTimeLeft()));
-	connect(m_dlg->p_show_ranks_btn, SIGNAL (clicked()), this, SLOT (onShowRankings()));
-	connect(m_dlg->p_show_nothing_btn, SIGNAL(clicked()), this, SLOT(onShowNothing()));
-	connect(m_dlg->p_q_listv, SIGNAL (clicked(QModelIndex)),
-			this, SLOT (onQuestionListClick(QModelIndex)));
-	connect(m_dlg->p_q_listv, SIGNAL (activated(QModelIndex)),
-			this, SLOT (onQuestionListClick(QModelIndex)));
-	connect(m_dlg->qstart_btn, SIGNAL (clicked()), this, SLOT (onStartQuestionTime()));
-	connect(m_dlg->qstop_btn, SIGNAL (clicked()), this, SLOT (onStopQuestionTime()));
-	connect(m_dlg->qpause_btn, SIGNAL (clicked()), this, SLOT (onPauseQuestionTime()));
-	connect(m_dlg->p_show_qtime_btn, SIGNAL(clicked()), this, SLOT(onShowQuestionTime()));
+	connect( m_dlg->round_combo, SIGNAL( currentIndexChanged( int ) ),
+	         this, SLOT( onRoundSelection( int ) ) );
+	connect( m_dlg->apply_btn, SIGNAL ( clicked() ), this, SLOT ( onApplyBtn() ) );
+	connect( m_dlg->stop_btn, SIGNAL ( clicked() ), this, SLOT ( onStopBtn() ) );
+	connect( m_dlg->start_btn, SIGNAL ( clicked() ), this, SLOT ( onStartBtn() ) );
+	connect( m_dlg->pause_btn, SIGNAL ( clicked() ), this, SLOT ( onPauseBtn() ) );
+	connect( m_dlg->contestants_listv, SIGNAL ( clicked( QModelIndex ) ),
+	         this, SLOT ( onContestantListClick( QModelIndex ) ) );
+	connect( m_dlg->contestants_listv, SIGNAL ( activated( QModelIndex ) ),
+	         this, SLOT ( onContestantListClick( QModelIndex ) ) );
+	connect( m_dlg->change_score_btn, SIGNAL ( clicked() ), this, SLOT ( onChangeScore() ) );
+	connect( m_dlg->drop_con_btn, SIGNAL ( clicked() ), this, SLOT ( onDropContestant() ) );
+	connect( m_dlg->view_ans_btn, SIGNAL ( clicked() ), this, SLOT ( onViewAnswers() ) );
+	connect( m_answers_dlg->view_answers_rounds, SIGNAL ( currentIndexChanged( int ) ),
+	         this, SLOT ( onAnswersRoundSelection( int ) ) );
+	connect( m_answers_dlg->view_answers_ok, SIGNAL ( clicked() ), this, SLOT ( onAnswersOk() ) );
+	connect( m_dlg->p_show_qtime_btn, SIGNAL ( clicked() ), this, SLOT ( onShowQuestionTime() ) );
+	connect( m_dlg->p_show_a_btn, SIGNAL ( clicked() ), this, SLOT ( onShowAnswer() ) );
+	connect( m_dlg->p_show_q_btn, SIGNAL ( clicked() ), this, SLOT ( onShowQuestion() ) );
+	connect( m_dlg->p_con_time_show_btn, SIGNAL ( clicked() ), this, SLOT ( onShowTimeLeft() ) );
+	connect( m_dlg->p_show_ranks_btn, SIGNAL ( clicked() ), this, SLOT ( onShowRankings() ) );
+	connect( m_dlg->p_show_nothing_btn, SIGNAL( clicked() ), this, SLOT( onShowNothing() ) );
+	connect( m_dlg->p_q_listv, SIGNAL ( clicked( QModelIndex ) ),
+	         this, SLOT ( onQuestionListClick( QModelIndex ) ) );
+	connect( m_dlg->p_q_listv, SIGNAL ( activated( QModelIndex ) ),
+	         this, SLOT ( onQuestionListClick( QModelIndex ) ) );
+	connect( m_dlg->qstart_btn, SIGNAL ( clicked() ), this, SLOT ( onStartQuestionTime() ) );
+	connect( m_dlg->qstop_btn, SIGNAL ( clicked() ), this, SLOT ( onStopQuestionTime() ) );
+	connect( m_dlg->qpause_btn, SIGNAL ( clicked() ), this, SLOT ( onPauseQuestionTime() ) );
+	connect( m_dlg->p_show_qtime_btn, SIGNAL( clicked() ), this, SLOT( onShowQuestionTime() ) );
 
 
 	// connect server signals and slots here
 	m_server = new Server();
-	connect(m_server, SIGNAL (contestantC(QString)), this, SLOT (addContestant(QString)));
-	connect(m_server, SIGNAL (contestantDc(QString)), this, SLOT (removeContestant(QString)));
+	connect( m_server, SIGNAL ( contestantC( QString ) ), this, SLOT ( addContestant( QString ) ) );
+	connect( m_server, SIGNAL ( contestantDc( QString ) ), this, SLOT ( removeContestant( QString ) ) );
 	selectedRound = 1;
 
 	q3_v = m_server->questions3;
 	q4_v = m_server->questions4;
 	QStandardItem* item;
 	int size = q3_v.size();
-	for(int i=0; i<size; i++){
-		item = new QStandardItem(q3_v.at(i).question);
-		questions3->appendRow(item);
+
+	for ( int i = 0; i < size; i++ ) {
+		item = new QStandardItem( q3_v.at( i ).question );
+		questions3->appendRow( item );
 	}
 
 	size = q4_v.size();
-	for(int i=0; i<size; i++){
-		item = new QStandardItem(q4_v.at(i).question);
-		questions4->appendRow(item);
+
+	for ( int i = 0; i < size; i++ ) {
+		item = new QStandardItem( q4_v.at( i ).question );
+		questions4->appendRow( item );
 	}
 
 	selected_question = 0;
 
-	onRoundSelection(0);
+	onRoundSelection( 0 );
 	onApplyBtn();
-	m_timer = new QTimer(this);
-	connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeUpdate()));
+	m_timer = new QTimer( this );
+	connect( m_timer, SIGNAL( timeout() ), this, SLOT( onTimeUpdate() ) );
 }
 
 Admin::~Admin() {
 }
 
-void Admin::onTimeUpdate(){
+void Admin::onTimeUpdate() {
 	m_timeleft--;
-	m_dlg->time_lcd->display(m_timeleft);
-	m_dlg->time2_lcd->display(m_timeleft);
-	if(m_timeleft <= 0){
+	m_dlg->time_lcd->display( m_timeleft );
+	m_dlg->time2_lcd->display( m_timeleft );
+
+	if ( m_timeleft <= 0 ) {
 		onStopBtn();
 	}
 }
 
 // contest control
-void Admin::onApplyBtn(){
+void Admin::onApplyBtn() {
 	currentRound = selectedRound;
 	m_timeleft = m_dlg->timer_spin->value();
-	m_dlg->time_lcd->display(m_timeleft);
-	m_dlg->time2_lcd->display(m_timeleft);
-	m_server->setRound(selectedRound);
-	if (selectedRound == 3)
-		m_dlg->p_q_listv->setModel(questions3);
-	else if (selectedRound == 4)
-		m_dlg->p_q_listv->setModel(questions4);
+	m_dlg->time_lcd->display( m_timeleft );
+	m_dlg->time2_lcd->display( m_timeleft );
+	m_server->setRound( selectedRound );
+
+	if ( selectedRound == 3 )
+		m_dlg->p_q_listv->setModel( questions3 );
+	else if ( selectedRound == 4 )
+		m_dlg->p_q_listv->setModel( questions4 );
 	else
-		m_dlg->p_q_listv->setModel(NULL);
+		m_dlg->p_q_listv->setModel( NULL );
 }
 
 
 void Admin::onStopBtn() {
 	m_timer->stop();
 	m_server->stopContest();
-	m_dlg->status_lbl->setText("Stopped");
+	m_dlg->status_lbl->setText( "Stopped" );
 }
 
 void Admin::onStartBtn() {
-	m_timer->start(1000);
+	m_timer->start( 1000 );
 	m_server->startContest();
-	m_dlg->status_lbl->setText("Running");
+	m_dlg->status_lbl->setText( "Running" );
 }
 
 void Admin::onPauseBtn() {
 	m_timer->stop();
 	m_server->pauseContest();
-	m_dlg->status_lbl->setText("Paused");
+	m_dlg->status_lbl->setText( "Paused" );
 }
 
-void Admin::onRoundSelection(int index){
+void Admin::onRoundSelection( int index ) {
 	selectedRound = index + 1;
 	int time = 0;
-	if(selectedRound < 3){
-		time = m_server->getRoundTime(selectedRound);
-	}else{
-		time = m_server->getQuestionTime(selectedRound, 0);
+
+	if ( selectedRound < 3 ) {
+		time = m_server->getRoundTime( selectedRound );
+	} else {
+		time = m_server->getQuestionTime( selectedRound, 0 );
 	}
-	m_dlg->timer_spin->setValue(time);
+
+	m_dlg->timer_spin->setValue( time );
+
 	//m_dlg->time_lcd->display(time);
 	//m_dlg->time2_lcd->display(time);
 }
 
 // contestant control
-void Admin::addContestant(const QString& c_user){
+void Admin::addContestant( const QString& c_user ) {
 
 	QStandardItem* item;
 
 	//if(!users.contains(c_user)){
-		item = new QStandardItem(c_user);
-		users[c_user] = item;
+	item = new QStandardItem( c_user );
+	users[c_user] = item;
 	/*}
 	else
 		item = users[c_user];*/
-	contestants->appendRow(item);
-	contestants->sort( 0, Qt::AscendingOrder);
+	contestants->appendRow( item );
+	contestants->sort( 0, Qt::AscendingOrder );
 }
 
-void Admin::removeContestant(const QString& c_user){
-	QModelIndex index = contestants->indexFromItem(users[c_user]);
-	if(index.row() != -1){
-		cout << (QString("Removing contestant %1 from index %2").arg(c_user).arg(index.row())).toStdString() << endl;
-		bool removed = contestants->removeRow(index.row(),QModelIndex());
-		if(removed) cout << "Contestant successfully removed.\n";
+void Admin::removeContestant( const QString& c_user ) {
+	QModelIndex index = contestants->indexFromItem( users[c_user] );
+
+	if ( index.row() != -1 ) {
+		cout << ( QString( "Removing contestant %1 from index %2" ).arg( c_user ).arg( index.row() ) ).toStdString() << endl;
+		bool removed = contestants->removeRow( index.row(), QModelIndex() );
+
+		if ( removed ) cout << "Contestant successfully removed.\n";
 		else cout << "Remove failed.\n";
 	}
 }
 
-void Admin::onContestantListClick(const QModelIndex& index){
-	QString c_user = contestants->itemFromIndex(index)->text();
-	m_dlg->user_lbl->setText(c_user);
-	m_dlg->score_lbl->setText(QString("%1").arg(m_server->getScore(c_user)));
+void Admin::onContestantListClick( const QModelIndex& index ) {
+	QString c_user = contestants->itemFromIndex( index )->text();
+	m_dlg->user_lbl->setText( c_user );
+	m_dlg->score_lbl->setText( QString( "%1" ).arg( m_server->getScore( c_user ) ) );
 	selected_user = c_user;
 }
 
-void Admin::onDropContestant(){
-	if( !selected_user.isEmpty() ){
+void Admin::onDropContestant() {
+	if ( !selected_user.isEmpty() ) {
 		this->removeContestant( selected_user );
 		m_server->dropConnection( selected_user );
 		selected_user = "";
 	}
 }
 
-void Admin::onViewAnswers(){
+void Admin::onViewAnswers() {
 	int round = m_answers_dlg->view_answers_rounds->currentIndex();
-	if( !selected_user.isEmpty() ){
+
+	if ( !selected_user.isEmpty() ) {
 		QString answers = m_server->viewSubmittedAnswers( selected_user, round );
 		m_answers_dlg->view_answers_browser->setText( answers );
 		m_answers_w->show();
 	}
 }
 
-void Admin::onAnswersRoundSelection(int index){
+void Admin::onAnswersRoundSelection( int index ) {
 	QString answers = m_server->viewSubmittedAnswers( selected_user, index );
 	m_answers_dlg->view_answers_browser->setText( answers );
 }
 
-void Admin::onAnswersOk(){
+void Admin::onAnswersOk() {
 	m_answers_w->hide();
 }
 
-void Admin::onChangeScore(){
-	if( !selected_user.isEmpty() ){
+void Admin::onChangeScore() {
+	if ( !selected_user.isEmpty() ) {
 		bool ok;
-		double score = QInputDialog::getDouble( this, tr("Change score"), tr("Enter the new score: "),
-												m_server->getScore( selected_user ), 0, 10000, 0, &ok);
-		if( ok ){
+		double score = QInputDialog::getDouble( this, tr( "Change score" ), tr( "Enter the new score: " ),
+		                                        m_server->getScore( selected_user ), 0, 10000, 0, &ok );
+
+		if ( ok ) {
 			m_server->setScore( selected_user, score );
-			m_dlg->score_lbl->setText(QString("%1").arg(score));
+			m_dlg->score_lbl->setText( QString( "%1" ).arg( score ) );
 		}
 	}
 }
 
 
 // projector control
-void Admin::onShowTimeLeft(){
+void Admin::onShowTimeLeft() {
 	m_server->showTimeLeft();
 }
 
-void Admin::onShowRankings(){
+void Admin::onShowRankings() {
 	m_server->showRankings();
 }
 
-void Admin::onShowNothing(){
+void Admin::onShowNothing() {
 }
 
-void Admin::onQuestionListClick(const QModelIndex& index){
+void Admin::onQuestionListClick( const QModelIndex& index ) {
 	QString question_text;
 	QString time_limit;
 	Question question;
 	selected_question = index.row();
 
-	if (currentRound == 4)
-		question = q4_v.at(selected_question);
+	if ( currentRound == 4 )
+		question = q4_v.at( selected_question );
 	else
-		question = q3_v.at(selected_question);
+		question = q3_v.at( selected_question );
 
 	question_text = question.question;
+
 	time_limit = question.time_limit;
 
 	m_dlg->p_question_line->setText( question_text );
+
 	m_dlg->p_time_line->setText( time_limit );
 }
 
-void Admin::onShowQuestion(){
+void Admin::onShowQuestion() {
 	m_server->showQuestion();
 }
 
-void Admin::onShowAnswer(){
+void Admin::onShowAnswer() {
 	m_server->showAnswer();
 }
 
-void Admin::onShowQuestionTime(){
+void Admin::onShowQuestionTime() {
 	m_server->showQuestionTime();
 }
 
-void Admin::onStartQuestionTime(){
-	if(currentRound == 3){
-		m_server->startQuestionTime(selected_question, q3_v.at(selected_question).time_limit);
-	}
-	else if(currentRound == 4){
-		m_server->startQuestionTime(selected_question, q4_v.at(selected_question).time_limit);
-	}
-}
-
-void Admin::onPauseQuestionTime(){
-	if(currentRound == 3){
-		m_server->pauseQuestionTime(selected_question, q3_v.at(selected_question).time_limit);
-	}
-	else if(currentRound == 4){
-		m_server->pauseQuestionTime(selected_question, q4_v.at(selected_question).time_limit);
+void Admin::onStartQuestionTime() {
+	if ( currentRound == 3 ) {
+		m_server->startQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
+	} else if ( currentRound == 4 ) {
+		m_server->startQuestionTime( selected_question, q4_v.at( selected_question ).time_limit );
 	}
 }
 
-void Admin::onStopQuestionTime(){
-	if(currentRound == 3){
-		m_server->stopQuestionTime(selected_question, q3_v.at(selected_question).time_limit);
+void Admin::onPauseQuestionTime() {
+	if ( currentRound == 3 ) {
+		m_server->pauseQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
+	} else if ( currentRound == 4 ) {
+		m_server->pauseQuestionTime( selected_question, q4_v.at( selected_question ).time_limit );
 	}
-	else if(currentRound == 4){
-		m_server->stopQuestionTime(selected_question, q4_v.at(selected_question).time_limit);
+}
+
+void Admin::onStopQuestionTime() {
+	if ( currentRound == 3 ) {
+		m_server->stopQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
+	} else if ( currentRound == 4 ) {
+		m_server->stopQuestionTime( selected_question, q4_v.at( selected_question ).time_limit );
 	}
 }
 
 
-int main ( int argc, char* argv[] )
-{
+int main ( int argc, char* argv[] ) {
 	QApplication a ( argc, argv );
 	string cmd;
 	Admin admin;
