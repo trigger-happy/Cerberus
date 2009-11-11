@@ -36,6 +36,8 @@ public:
 	~Admin();
 
 public slots:
+	// other slots
+	void onContestTimeRequest( ushort& contime );
 	// contest control tab
 	void onApplyBtn();
 	void onStartBtn();

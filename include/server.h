@@ -101,9 +101,9 @@ signals:
 	void contestantDc ( QString c_user );
 	void newAdmin ( AdminConnection* ac );
 	void newProjector ( ProjectorConnection* pc );
+	void onContestTimeRequest( ushort& contime );
 
 private slots:
-
 	//Contestant slots
 	/*!
 	Called when there is a new connection
@@ -128,11 +128,6 @@ private slots:
 	void projectorConnect( ProjectorConnection* pc );
 
 	void projectorDisconnect( ProjectorConnection* pc );
-
-
-
-signals:
-	// TODO: add signals when certain events happen
 
 private:
 	QString log, m_db_path;

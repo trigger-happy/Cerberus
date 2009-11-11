@@ -78,6 +78,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	m_server = new Server();
 	connect( m_server, SIGNAL ( contestantC( QString ) ), this, SLOT ( addContestant( QString ) ) );
 	connect( m_server, SIGNAL ( contestantDc( QString ) ), this, SLOT ( removeContestant( QString ) ) );
+	connect( m_server, SIGNAL( onContestTimeRequest( ushort& ) ), this, SLOT( onContestTimeRequest( ushort& ) ) );
 	selectedRound = 1;
 
 	q3_v = m_server->questions3;
@@ -118,6 +119,10 @@ void Admin::onTimeUpdate() {
 	if ( m_timeleft <= 0 ) {
 		onStopBtn();
 	}
+}
+
+void Admin::onContestTimeRequest( ushort& contime ) {
+	contime = m_timeleft;
 }
 
 // contest control

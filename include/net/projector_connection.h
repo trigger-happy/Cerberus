@@ -123,7 +123,7 @@ signals:
 
 	/*!
 	*/
-	void contestTimeRequest( ushort& contime );
+	void onContestTimeRequest( ushort& contime );
 
 	/*!
 	*/

@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_server.h"
 #include "net/server_net.h"
 #include "net/contestant_connection.h"
+#include "net/projector_connection.h"
 #include "checker.h"
 #include <iostream>
 #include <string>
@@ -116,6 +117,9 @@ void Server::newContestant( ContestantConnection* cc ) {
 
 	connect ( cc, SIGNAL ( onAuthentication( ContestantConnection*, const QString& ) ),
 	          this, SLOT ( onAuthentication( ContestantConnection*, const QString& ) ) );
+
+	connect ( cc, SIGNAL( onContestTimeRequest( ushort& ) ),
+	          this, SIGNAL( onContestTimeRequest( ushort& ) ) );
 }
 
 void Server::badClient ( TempConnection* tc ) {
@@ -163,10 +167,10 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 	QString c_user = cc->getUserName();
 	// remove the contestant from m_rankmodel.
 	UserData ud;
-	
-	try{
+
+	try {
 		SqlUtil::getInstance().getSpecificUser( c_user, ud );
-	}catch(SqlUtil::SqlUtilException e){
+	} catch ( SqlUtil::SqlUtilException e ) {
 		// unauthorized Contestant dced
 		return;
 	}
@@ -255,6 +259,8 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 //Presenter slots
 void Server::projectorConnect( ProjectorConnection* pc ) {
 	if ( testing ) cout << "Projector has connected.\n";
+
+	connect( pc, SIGNAL( onContestTimeRequest( ushort& ) ), this, SIGNAL( onContestTimeRequest( ushort& ) ) );
 }
 
 void Server::projectorDisconnect( ProjectorConnection* pc ) {
