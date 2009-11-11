@@ -88,6 +88,8 @@ public:
 	int getQuestionTime(int round, int question);
 	
 	void getRankData(vector<RankData>& out);
+	
+	void updateRankData();
 
 signals:
 	void badC ( TempConnection* con );

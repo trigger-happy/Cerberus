@@ -122,7 +122,22 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
 	}
 	
-	//TODO: get information on the user and shove it into m_rankmodel
+	// get information on the user and shove it into m_rankmodel
+	UserData ud;
+	SqlUtil::getInstance().getSpecificUser(c_username, ud);
+	QList<QStandardItem*> listing;
+	// rank column
+	listing.append(new QStandardItem(QString("%1").arg(m_rankmodel->rowCount()+1)));
+	// full name
+	listing.append(new QStandardItem(QString("%1 %2").arg(ud.firstname).arg(ud.lastname)));
+	// team name
+	listing.append(new QStandardItem(ud.teamname));
+	// score
+	listing.append(new QStandardItem(QString("0.0")));
+	m_rankmodel->appendRow(listing);
+	
+	updateRankData();
+	
 	emit contestantC( c_username );
 }
 
@@ -131,7 +146,23 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 	if( testing ) cout << c_user.toStdString() << " has been disconnected.\n";
 	if(!c_user.isNull()) emit contestantDc( c_user );
 	
-	//TODO: remove the contestant from m_rankmodel.
+	// remove the contestant from m_rankmodel.
+	UserData ud;
+	SqlUtil::getInstance().getSpecificUser(c_user, ud);
+	QString target = ud.firstname + " " + ud.lastname;
+	QStandardItem* temp;
+	for(int i = 0; i < m_rankmodel->rowCount(); i++){
+		temp = m_rankmodel->item(i, 1);
+		if(temp->text() == target){
+			break;
+		}
+	}
+	QList<QStandardItem*> listing = m_rankmodel->takeRow(temp->row());
+	for(int i = 0; i < listing.size(); i++){
+		delete listing[i];
+	}
+	
+	updateRankData();
 }
 
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data )
@@ -176,8 +207,6 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 	if ( testing ) cout << user.toStdString() << "'s got " << points << " points.\n";
 	double new_score = this->getScore(user) + points;
 	this->setScore( user, new_score );
-	
-	//TODO: update score info for m_rankmodel
 }
 
 //Presenter slots
@@ -228,6 +257,19 @@ double Server::getScore( QString c_user ){
 
 void Server::setScore( QString c_user, double score ){
 	SqlUtil::getInstance().setScore( c_user, score );
+	// update m_rankmodel's score info
+	UserData ud;
+	SqlUtil::getInstance().getSpecificUser(c_user, ud);
+	QString target = ud.firstname + " " + ud.lastname;
+	QStandardItem* temp;
+	for(int i = 0; i < m_rankmodel->rowCount(); i++){
+		temp = m_rankmodel->item(i, 1);
+		if(temp->text() == target){
+			m_rankmodel->item(i, 3)->setText(QString("%1").arg(score));
+			updateRankData();
+			break;
+		}
+	}
 	if( testing ) cout << c_user.toStdString() << "'s score has been set to " << score << endl;
 }
 
@@ -241,8 +283,9 @@ void Server::showTimeLeft(){
 }
 
 void Server::showRankings(){
-	// TODO: change this
-	// m_network->showContestRanks();
+	vector<RankData> rd;
+	getRankData(rd);
+	m_network->showContestRanks(rd);
 }
 
 void Server::showQuestionTime(){
@@ -298,5 +341,12 @@ void Server::getRankData(vector<RankData>& out){
 		temp.teamname = m_rankmodel->item(i, 2)->text();
 		temp.score = m_rankmodel->item(i, 3)->text().toDouble();
 		out.push_back(temp);
+	}
+}
+
+void Server::updateRankData(){
+	m_rankmodel->sort(3, Qt::DescendingOrder);
+	for(int i = 0; i < m_rankmodel->rowCount(); i++){
+		m_rankmodel->item(i,0)->setText(QString("%1").arg(i));
 	}
 }
