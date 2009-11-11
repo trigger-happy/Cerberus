@@ -651,13 +651,16 @@ void QEditor::import()
 	{
 		rec[ctr]=roundmodel[ctr]->rowCount();
 	}
-		
-	if (file_prefix=="")
+	
+	QString temp_file_prefix=load_dlg.selectedFiles().join("");
+	temp_file_prefix.replace(QString(".xgrp"),QString(""));
+	
+	if (temp_file_prefix=="")
 		return;
 	for (int ctr=0;ctr<CHOICE;ctr++)
 	{
 		StageData sd;
-		QFile fs(file_prefix+QString::number(ctr+1)+".xml");
+		QFile fs(temp_file_prefix+QString::number(ctr+1)+".xml");
 		if(fs.open(QIODevice::ReadOnly))
 		{
 			QString stage_xml=fs.readAll();
@@ -668,7 +671,7 @@ void QEditor::import()
 				QMessageBox notice;
 				notice.setWindowTitle("Ooops... - QEditor ^_^;");
 				notice.setText("i guess something went wrong while reading "+
-						file_prefix+QString::number(ctr+1)+".xml");
+				temp_file_prefix+QString::number(ctr+1)+".xml");
 				notice.setDetailedText(e.what());
 				notice.exec();
 				continue;
