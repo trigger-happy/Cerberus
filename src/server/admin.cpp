@@ -238,7 +238,7 @@ void Admin::onShowTimeLeft(){
 }
 
 void Admin::onShowRankings(){
-	//m_server->showRankings();
+	m_server->showRankings();
 }
 
 void Admin::onShowNothing(){
