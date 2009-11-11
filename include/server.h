@@ -91,6 +91,10 @@ public:
 
 	void updateRankData();
 
+	inline QStandardItemModel* getRankModel() {
+		return m_rankmodel;
+	}
+
 signals:
 	void badC ( TempConnection* con );
 	void contestantC ( const QString& c_username );
