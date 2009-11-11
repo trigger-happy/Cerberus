@@ -1,19 +1,27 @@
 <?xml version="1.0"?>
 <stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd">
-    <welcome_msg>MORTAL KOMBAT</welcome_msg>
-    <identification score="1" time_limit="1" id="1">
-        <q>What is 1+1</q>
+    <welcome_msg>MORTAL KOMBAT. Final Round.</welcome_msg>
+    <identification score="3" time_limit="10" id="1">
+        <q>What is 1+1 in decimal?</q>
         <a>2</a>
     </identification>
-    <choose multiple="true" score="1" time_limit="1" id="2">
-        <q>What is 1+1</q>
-        <choice answer="true">2</choice>
+    <choose multiple="true" score="1" time_limit="20" id="2">
+        <q>What is 1+1 in binary</q>
+        <choice answer="true">10</choice>
         <choice>hahahaha</choice>
-        <choice answer="true">two</choice>
+        <choice>two</choice>
         <choice>eh?</choice>
     </choose>
-    <identification score="5" id="3">
+    <identification score="5" time_limit="10" id="3">
         <q>Which company created Java?</q>
         <a>Sun Microsystems</a>
+    </identification>
+    <identification score="5" time_limit="20" id="4">
+        <q>What does  BASH stand for?</q>
+        <a>Bourne Again Shell</a>
+    </identification>
+    <identification score="4" time_limit="10" id="5">
+        <q>What is the name of this program?</q>
+        <a>Cerberus</a>
     </identification>
 </stage>

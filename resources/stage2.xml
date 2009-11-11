@@ -1,60 +1,32 @@
 <?xml version="1.0"?>
-<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="5">
-    <welcome_msg>You guys are screwed</welcome_msg>
-    <choose multiple="true" score="10" id="1">
-        <q>What is a man?</q>
-        <choice answer="true">A miserable pile of bullshit</choice>
-        <choice>huh?</choice>
-        <choice>FEDORA MAN</choice>
-        <choice answer="true">a sentient being</choice>
-    </choose>
-    <choose multiple="true" score="8" id="2">
-        <q>Why am i the only one testing?</q>
-        <choice>because no one wants to</choice>
-        <choice answer="true">not enough laptop</choice>
-        <choice>it's my birthday</choice>
-        <choice answer="true">they want to</choice>
-    </choose>
-    <choose multiple="true" score="10" id="3">
-        <q>What is a man?</q>
-        <choice answer="true">A miserable pile of bullshit</choice>
-        <choice>huh?</choice>
-        <choice>FEDORA MAN</choice>
-        <choice answer="true">a sentient being</choice>
-    </choose>
-    <choose multiple="true" score="3" id="4">
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="45">
+    <welcome_msg>ROUND 2! Select all possible answers</welcome_msg>
+    <choose multiple="true" score="3" id="1">
         <q>Who among the following does not belong to Gai's team?</q>
         <choice>Neji</choice>
         <choice answer="true">Chouji</choice>
         <choice answer="true">Hinata</choice>
         <choice>Tenten</choice>
     </choose>
-    <choose multiple="true" score="8" id="5">
-        <q>Why am i the only one testing?</q>
-        <choice>because no one wants to</choice>
-        <choice answer="true">not enough laptop</choice>
-        <choice>it's my birthday</choice>
-        <choice answer="true">they want to</choice>
-    </choose>
-    <choose multiple="true" score="3" id="6">
+    <choose multiple="true" score="3" id="2">
         <q>What are the names of Gaara's siblings?</q>
         <choice>Tenten</choice>
         <choice answer="true">Temari</choice>
         <choice>Ken Lee</choice>
         <choice answer="true">Kankurou</choice>
     </choose>
-    <choose multiple="true" score="5" id="7">
-        <q>Who among the following have been given Orochimaru's cursed seal?</q>
-        <choice>Zabu</choice>
-        <choice>Kin</choice>
-        <choice answer="true">Anko</choice>
-        <choice answer="true">Sasuke</choice>
-    </choose>
-    <choose multiple="true" score="1" id="8">
+    <choose multiple="true" score="1" id="3">
         <q>Who among the following possess a Bloodline Limit ability?</q>
         <choice>Uzumaki Naruto</choice>
         <choice answer="true">Uchiha Sasuke</choice>
         <choice>Haruno Sakura</choice>
         <choice answer="true">Hyuuga Neji</choice>
+    </choose>
+    <choose multiple="true" score="1" id="4">
+        <q>Who among the following are part of the Shichibukai?</q>
+        <choice answer="true">Flamingo</choice>
+        <choice answer="true">Blackbeard</choice>
+        <choice>Dragoon</choice>
+        <choice>Whitebeard</choice>
     </choose>
 </stage>

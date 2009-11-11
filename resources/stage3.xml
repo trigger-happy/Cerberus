@@ -1,31 +1,30 @@
 <?xml version="1.0"?>
 <stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd">
-    <welcome_msg>Young people now-a-days are a sucker for punishment</welcome_msg>
-    <identification score="9" time_limit="30" id="1">
-        <q>WHAT IS FEDORA MAN'S FULL NAME(with titles)</q>
-        <a>James Andrew Chung Choa ROTC phD md esquire bachelor of science in computer science double major minor super saiyan magical slave leader butler girl no maid guy</a>
-    </identification>
-    <identification score="9" time_limit="30" id="2">
-        <q>What does dota stands for?</q>
-        <a>Defense of the ancients</a>
-    </identification>
-    <identification score="9" time_limit="30" id="3">
-        <q>WHAT IS FEDORA MAN'S FULL NAME(with titles)</q>
-        <a>James Andrew Chung Choa ROTC phD md esquire bachelor of science in computer science double major minor super saiyan magical slave leader butler girl no maid guy</a>
-    </identification>
-    <identification score="9" time_limit="1" id="4">
-        <q>What does dota stands for?</q>
-        <a>Defense of the ancients</a>
-    </identification>
-    <choose multiple="true" score="5" time_limit="30" id="5">
+    <welcome_msg>ROUND 3!</welcome_msg>
+    <choose multiple="true" score="5" time_limit="30" id="1">
         <q>Which ninjas among the following do not belong to the village of Konoha?</q>
         <choice>Tenten</choice>
         <choice answer="true">Temari</choice>
         <choice answer="true">Kin</choice>
         <choice>Rock lee</choice>
     </choose>
-    <identification score="10" time_limit="30" id="6">
-        <q>What is the name of Naruto's teacher who is known to be the frog hermit?</q>
-        <a>Jiraiya</a>
+    <identification score="1" time_limit="30" id="2">
+        <q>Who is the Chef of the Strawhat pirates?</q>
+        <a>Sanji</a>
+    </identification>
+    <identification score="5" time_limit="30" id="3">
+        <q>What is the name of the devil fruit Luffy ate?</q>
+        <a>Gomu gomu fruit</a>
+    </identification>
+    <choose multiple="true" score="5" time_limit="30" id="4">
+        <q>What is the name of the female protagonist in Pokemon HeartGold &amp; SoulSilver?</q>
+        <choice>Haruka</choice>
+        <choice answer="true">Kotone</choice>
+        <choice>Hibiki</choice>
+        <choice>Konata</choice>
+    </choose>
+    <identification score="10" time_limit="30" id="5">
+        <q>Up to how many Individual Vaules can a Pokemon have for a single stat?</q>
+        <a>31</a>
     </identification>
 </stage>
