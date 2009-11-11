@@ -91,8 +91,8 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 	//Opens the SQL Database with the specified db_path
 	bool result;
 
-	if ( testing ) result = SqlUtil::getInstance().init ( "resources/test.db" );
-	else result = SqlUtil::getInstance().init ( m_db_path );
+
+	result = SqlUtil::getInstance().init ( m_db_path );
 
 	//This will be deleted as soon as SqlUtil return types become void
 	if ( !result ) {
@@ -161,15 +161,20 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 
 void Server::contestantDisconnect( ContestantConnection* cc ) {
 	QString c_user = cc->getUserName();
+	// remove the contestant from m_rankmodel.
+	UserData ud;
+	
+	try{
+		SqlUtil::getInstance().getSpecificUser( c_user, ud );
+	}catch(SqlUtil::SqlUtilException e){
+		// unauthorized Contestant dced
+		return;
+	}
 
 	if ( testing ) cout << c_user.toStdString() << " has been disconnected.\n";
 
 	if ( !c_user.isNull() ) emit contestantDc( c_user );
 
-	// remove the contestant from m_rankmodel.
-	UserData ud;
-
-	SqlUtil::getInstance().getSpecificUser( c_user, ud );
 
 	QString target = ud.firstname + " " + ud.lastname;
 

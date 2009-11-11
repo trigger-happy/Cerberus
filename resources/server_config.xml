@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config>
 	<port>2652</port>
-	<db>resources/test.db</db>
+	<db>resources/server.db</db>
 	<stage_file>resources/stage1.xml</stage_file>
 	<stage_file>resources/stage2.xml</stage_file>
 	<stage_file>resources/stage3.xml</stage_file>
