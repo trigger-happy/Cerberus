@@ -223,29 +223,29 @@ void Admin::onContestantListClick( const QModelIndex& index ) {
 	QString c_user = m_contestants->itemFromIndex( index )->text();
 	m_dlg->user_lbl->setText( c_user );
 	m_dlg->score_lbl->setText( QString( "%1" ).arg( m_server->getScore( c_user ) ) );
-	selected_user = c_user;
+	m_selected_user = c_user;
 }
 
 void Admin::onDropContestant() {
-	if ( !selected_user.isEmpty() ) {
-		this->removeContestant( selected_user );
-		m_server->dropConnection( selected_user );
-		selected_user = "";
+	if ( !m_selected_user.isEmpty() ) {
+		this->removeContestant( m_selected_user );
+		m_server->dropConnection( m_selected_user );
+		m_selected_user = "";
 	}
 }
 
 void Admin::onViewAnswers() {
 	int round = m_answers_dlg->view_answers_rounds->currentIndex();
 
-	if ( !selected_user.isEmpty() ) {
-		QString answers = m_server->viewSubmittedAnswers( selected_user, round );
+	if ( !m_selected_user.isEmpty() ) {
+		QString answers = m_server->viewSubmittedAnswers( m_selected_user, round );
 		m_answers_dlg->view_answers_browser->setText( answers );
 		m_answers_w->show();
 	}
 }
 
 void Admin::onAnswersRoundSelection( int index ) {
-	QString answers = m_server->viewSubmittedAnswers( selected_user, index );
+	QString answers = m_server->viewSubmittedAnswers( m_selected_user, index );
 	m_answers_dlg->view_answers_browser->setText( answers );
 }
 
@@ -254,13 +254,13 @@ void Admin::onAnswersOk() {
 }
 
 void Admin::onChangeScore() {
-	if ( !selected_user.isEmpty() ) {
+	if ( !m_selected_user.isEmpty() ) {
 		bool ok;
 		double score = QInputDialog::getDouble( this, tr( "Change score" ), tr( "Enter the new score: " ),
-		                                        m_server->getScore( selected_user ), 0, 10000, 0, &ok );
+		                                        m_server->getScore( m_selected_user ), 0, 10000, 0, &ok );
 
 		if ( ok ) {
-			m_server->setScore( selected_user, score );
+			m_server->setScore( m_selected_user, score );
 			m_dlg->score_lbl->setText( QString( "%1" ).arg( score ) );
 		}
 	}

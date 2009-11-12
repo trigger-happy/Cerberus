@@ -82,7 +82,7 @@ private:
 	QStandardItemModel* m_questions4;
 	vector<Question> m_q3_v;
 	vector<Question> m_q4_v;
-	QString selected_user;
+	QString m_selected_user;
 	QHash<QString, QStandardItem*> m_users;
 	int m_selected_question;
 	int m_selectedRound;
