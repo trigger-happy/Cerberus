@@ -129,7 +129,7 @@ void MainController::onStageData(const QString &xml) {
 
 void MainController::onContestTime( ushort time ) {
 	(qDebug() << "MainController::onContestTime(" << time << ")\n");
-	m_target.getContestTimer().restart(time * 1000u);
+	m_target.getContestTimer().setDuration(time * 1000u);
 }
 
 void MainController::onShowContestTime() {
