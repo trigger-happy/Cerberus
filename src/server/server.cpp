@@ -104,6 +104,13 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 
 	m_rankmodel = new QStandardItemModel( this );
 
+	QStringList headers;
+	headers.insert( 0, QString( "Rank" ) );
+	headers.insert( 1, QString( "Name" ) );
+	headers.insert( 2, QString( "Team" ) );
+	headers.insert( 3, QString( "Score" ) );
+	m_rankmodel->setHorizontalHeaderLabels( headers );
+
 	if ( testing ) cout << "Finished with setting up Server." << endl;
 }
 
