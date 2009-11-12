@@ -140,6 +140,8 @@ signals:
 	void contestantDisconnect ( ContestantConnection* cc );
 
 	/*!
+	Emitted when the contestant requests for the contest time.
+	\param contime Reference to a ushort that will contain the contest time.
 	*/
 	void onContestTimeRequest( ushort& contime );
 

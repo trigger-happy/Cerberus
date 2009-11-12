@@ -31,6 +31,8 @@ public:
 	ProjectorConnection( QObject* parent = 0, QTcpSocket* socket = 0 );
 
 	/*!
+	Send the contest time to the projector.
+	\param time The contest time.
 	*/
 	inline void setContestTime( ushort time ) {
 		m_contime = time;
@@ -38,16 +40,21 @@ public:
 	}
 
 	/*!
+	Send the contest round to the projector.
+	\param round The contest round
 	*/
 	inline void setRound( int round ) {
 		m_round = round;
 	}
 
 	/*!
+	Send the contest state to the projector.
 	*/
 	void sendContestState();
 
 	/*!
+	Set the contest status.
+	\param s The contest status.
 	*/
 	inline void setStatus( CONTEST_STATUS s ) {
 		m_con_status = s;
@@ -77,10 +84,13 @@ public:
 	void showAnswer();
 
 	/*!
+	Show the question on the projector.
+	\todo Consider merging this with showQuestionTime.
 	*/
 	void showQuestion();
 
 	/*!
+	Send the contest time to the projector.
 	*/
 	void sendContestTime();
 
@@ -122,10 +132,14 @@ signals:
 	void projectorDisconnect( ProjectorConnection* p );
 
 	/*!
+	Emitted when the projector requests for the contest time.
+	\param contime Reference to a ushort that will contain the contest time.
 	*/
 	void onContestTimeRequest( ushort& contime );
 
 	/*!
+	Emitted when the projector is ready to receive commands.
+	\param p Pointer to the ProjectorConnection that signaled it's ready.
 	*/
 	void projectorReady( ProjectorConnection* p );
 
