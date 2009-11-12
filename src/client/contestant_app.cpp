@@ -151,6 +151,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     status = CONTEST_STOPPED;
     qStatus = QUESTION_STOPPED;
     loggedIn = false;
+    closing = false;
 }
 
 ContestantApp::~ContestantApp()
@@ -172,8 +173,8 @@ void ContestantApp::onConnect()
 
 void ContestantApp::onDisconnect()
 {
-    showInfo( 2, "Exiting...", "Please reconnect if in the middle of the contest" );
-    exit();
+    if( !closing )
+        showInfo( 1, "Disconnected from server", "Please reconnect if still in the middle of the contest" );
 }
 
 void ContestantApp::onAuthenticate ( bool result )
@@ -766,6 +767,12 @@ void ContestantApp::showInfo( int i, QString s, QString inform )
     msg.setDefaultButton( QMessageBox::Ok );
     msg.setIcon( QMessageBox::Information );
     msg.exec();
+}
+
+void ContestantApp::closeEvent ( QCloseEvent * event )
+{
+    closing = true;
+    event->accept();
 }
 
 int main ( int argc, char* argv[] )

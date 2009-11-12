@@ -204,6 +204,10 @@ private:
 	int qCount;
     int time;
     bool loggedIn;
+    bool closing;
+
+protected:
+    void closeEvent(QCloseEvent*);
 };
 
 #endif //CONTESTANT_APP_H
