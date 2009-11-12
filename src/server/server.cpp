@@ -145,13 +145,26 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		cc->enableAnswerSubmission( m_cansubmit[c_username] );
 	}
 
+	UserData ud;
+
+	SqlUtil::getInstance().getSpecificUser( c_username, ud );
+
+	if ( m_network->getRound() > 1 ) {
+		if ( m_teamconnected.contains( ud.teamname ) ) {
+			if ( m_teamconnected[ud.teamname] ) {
+				cc->dropClient();
+				return;
+			}
+		}
+	}
+
 	if ( !hash.contains( c_username ) ) {
+		// brand new connection
 		hash[c_username] = cc;
+		m_teamconnected[ud.teamname] = true;
 		hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
 
 		// get information on the user and shove it into m_rankmodel
-		UserData ud;
-		SqlUtil::getInstance().getSpecificUser( c_username, ud );
 		QList<QStandardItem*> listing;
 		// rank column
 		listing.append( new QStandardItem( QString( "%1" ).arg( m_rankmodel->rowCount() + 1 ) ) );
@@ -164,6 +177,7 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		m_rankmodel->appendRow( listing );
 		updateRankData();
 	} else {
+		// duplicate connection
 		hash[c_username]->dropClient();
 		hash[c_username] = cc;
 	}
@@ -182,6 +196,8 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 		// unauthorized Contestant dced
 		return;
 	}
+
+	m_teamconnected[ud.teamname] = false;
 
 	if ( testing ) cout << c_user.toStdString() << " has been disconnected.\n";
 
