@@ -280,7 +280,11 @@ void ContestantApp::onAData ( bool result )
     {
         showInfo( 0, "Answers successfully sent to server", "" );
         if( round == 1 || round == 2 )
-            exit();
+        {
+            m_summary_w->hide();
+            m_welcome_w->show();
+            m_welcome_dlg->start_btn->setEnabled( false );
+        }
     }
     else
         showInfo( 1, "Answers not sent. Please try again.", "" );
