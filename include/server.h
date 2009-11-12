@@ -130,7 +130,7 @@ private slots:
 	void projectorDisconnect( ProjectorConnection* pc );
 
 private:
-	QString log, m_db_path;
+	QString m_log, m_db_path;
 	quint16 m_port;
 	ServerNetwork* m_network;
 	ServerConfig m_config;
