@@ -324,11 +324,15 @@ void ContestantApp::updateTimer()
         {
             status = CONTEST_STOPPED;
             stopContest();
+            m_elims_dlg->time_lbl->setText("");
+            m_semifinals_dlg->time_lbl->setText("");
         }
         if( round == 3 || round == 4 )
         {
             qStatus = QUESTION_PAUSED;
             pauseQuestion();
+            m_finalsChoice_dlg->time_lbl->setText("");
+            m_finalsIdent_dlg->time_lbl->setText("");
         }
         return;
     }
@@ -559,7 +563,7 @@ void ContestantApp::displayAnswer()
 
 void ContestantApp::displayStatus()
 {
-    QString s, qs;
+    QString s;
     if( status == CONTEST_RUNNING )
         s = "RUNNING";
     else if( status == CONTEST_STOPPED )
@@ -567,21 +571,11 @@ void ContestantApp::displayStatus()
     else if( status == CONTEST_PAUSED )
         s = "PAUSED";
 
-    if( qStatus == QUESTION_RUNNING )
-        qs = "RUNNING";
-    else if( qStatus == QUESTION_STOPPED )
-        qs = "STOPPED";
-    else if( qStatus == QUESTION_PAUSED )
-        qs = "PAUSED";
-
     m_welcome_dlg->status_lbl->setText( s );
-    if( round == 1 )
-        m_elims_dlg->status_lbl->setText( s );
-    else if( round == 2 )
-        m_semifinals_dlg->status_lbl->setText( s );
-
-    m_finalsChoice_dlg->status_lbl->setText( qs );
-    m_finalsIdent_dlg->status_lbl->setText( qs );
+    m_elims_dlg->status_lbl->setText( s );
+    m_semifinals_dlg->status_lbl->setText( s );
+    m_finalsChoice_dlg->status_lbl->setText( s );
+    m_finalsIdent_dlg->status_lbl->setText( s );
 }
 
 void ContestantApp::recordAnswer()
