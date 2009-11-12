@@ -102,6 +102,14 @@ public:
 		m_answer_capable = b;
 	}
 
+	/*!
+	Check if this contestant can still submit.
+	\return true if it can, false otherwise.
+	*/
+	inline bool canSubmitAnswers() {
+		return m_answer_capable;
+	}
+
 public slots:
 	/*!
 	Called when there's a socket error.

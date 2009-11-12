@@ -289,3 +289,11 @@ void ServerNetwork::showQuestion() {
 void ServerNetwork::contestTimeResponse( ushort& contime ) {
 	contime = m_contime;
 }
+
+void ServerNetwork::enableContestSubmission( bool e ) {
+	contestant_list::iterator i = m_contestants.begin();
+
+	while ( i != m_contestants.end() ) {
+		( *i )->enableAnswerSubmission( e );
+	}
+}

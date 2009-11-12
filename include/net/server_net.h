@@ -190,6 +190,10 @@ public:
 	*/
 	void showQuestion();
 
+	/*!
+	*/
+	void enableContestSubmission( bool e );
+
 public slots:
 
 	/*!

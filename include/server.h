@@ -142,6 +142,8 @@ private:
 	QHash<QString, QStringList> hash_answers;
 	//Keeps track of the current question number of each user for rounds 3/4
 	QHash<QString, int> hash_questions;
+	//a switch that determines if the user can still submit or not
+	QHash<QString, bool> m_cansubmit;
 	int selected_question_num;
 	QStandardItemModel* m_rankmodel;
 };

@@ -132,33 +132,31 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 	connect( cc, SIGNAL( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ),
 	         this, SLOT ( onAnswerSubmission( ContestantConnection*, int, AnswerData ) ) );
 
+	if ( !m_cansubmit.contains( c_username ) ) {
+		m_cansubmit[c_username] = true;
+	} else {
+		cc->enableAnswerSubmission( m_cansubmit[c_username] );
+	}
+
 	if ( !hash.contains( c_username ) ) {
 		hash[c_username] = cc;
 		hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
+
+		// get information on the user and shove it into m_rankmodel
+		UserData ud;
+		SqlUtil::getInstance().getSpecificUser( c_username, ud );
+		QList<QStandardItem*> listing;
+		// rank column
+		listing.append( new QStandardItem( QString( "%1" ).arg( m_rankmodel->rowCount() + 1 ) ) );
+		// full name
+		listing.append( new QStandardItem( QString( "%1 %2" ).arg( ud.firstname ).arg( ud.lastname ) ) );
+		// team name
+		listing.append( new QStandardItem( ud.teamname ) );
+		// score
+		listing.append( new QStandardItem( QString( "0.0" ) ) );
+		m_rankmodel->appendRow( listing );
+		updateRankData();
 	}
-
-	// get information on the user and shove it into m_rankmodel
-	UserData ud;
-
-	SqlUtil::getInstance().getSpecificUser( c_username, ud );
-
-	QList<QStandardItem*> listing;
-
-	// rank column
-	listing.append( new QStandardItem( QString( "%1" ).arg( m_rankmodel->rowCount() + 1 ) ) );
-
-	// full name
-	listing.append( new QStandardItem( QString( "%1 %2" ).arg( ud.firstname ).arg( ud.lastname ) ) );
-
-	// team name
-	listing.append( new QStandardItem( ud.teamname ) );
-
-	// score
-	listing.append( new QStandardItem( QString( "0.0" ) ) );
-
-	m_rankmodel->appendRow( listing );
-
-	updateRankData();
 
 	emit contestantC( c_username );
 }
@@ -179,33 +177,43 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 
 	if ( !c_user.isNull() ) emit contestantDc( c_user );
 
+	if ( m_cansubmit[c_user] ) {
+		// user has not submitted
+		QString target = ud.firstname + " " + ud.lastname;
+		QStandardItem* temp;
 
-	QString target = ud.firstname + " " + ud.lastname;
+		for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
+			temp = m_rankmodel->item( i, 1 );
 
-	QStandardItem* temp;
-
-	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
-		temp = m_rankmodel->item( i, 1 );
-
-		if ( temp->text() == target ) {
-			break;
+			if ( temp->text() == target ) {
+				break;
+			}
 		}
+
+		QList<QStandardItem*> listing = m_rankmodel->takeRow( temp->row() );
+
+		for ( int i = 0; i < listing.size(); i++ ) {
+			delete listing[i];
+		}
+
+		updateRankData();
 	}
-
-	QList<QStandardItem*> listing = m_rankmodel->takeRow( temp->row() );
-
-	for ( int i = 0; i < listing.size(); i++ ) {
-		delete listing[i];
-	}
-
-	updateRankData();
 }
 
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data ) {
 	AnswerData new_data = data;
 	const QString& user = cc->getUserName();
+
+	if ( !m_cansubmit[user] ) {
+		return;
+	}
+
 	QString allAnswers, answer;
+
 	cout << ( QString( "%1 has submitted answer data for round %2" ).arg( user ).arg( round ) ).toStdString() << endl;
+
+	cc->enableAnswerSubmission( false );
+	m_cansubmit[user] = false;
 
 	for ( int i = 0; i < data.size(); i++ ) {
 		if ( data[i].ans_type == Question::IDENTIFICATION ) {
@@ -333,6 +341,15 @@ void Server::setScore( QString c_user, double score ) {
 void Server::setRound( int round ) {
 	m_network->setRound( round );
 
+	QMutableHashIterator<QString, bool> i( m_cansubmit );
+
+	while ( i.hasNext() ) {
+		i.next();
+		i.setValue( true );
+	}
+
+	m_network->enableContestSubmission( true );
+
 	if ( testing ) cout << "Contest set to Round " << round << ".\n";
 }
 
@@ -409,6 +426,6 @@ void Server::updateRankData() {
 	m_rankmodel->sort( 3, Qt::DescendingOrder );
 
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
-		m_rankmodel->item( i, 0 )->setText( QString( "%1" ).arg( i ) );
+		m_rankmodel->item( i, 0 )->setText( QString( "%1" ).arg( i + 1 ) );
 	}
 }
