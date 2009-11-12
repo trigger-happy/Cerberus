@@ -195,7 +195,7 @@ struct Answer{
 	// answer for identification
 	QString id_answer;
 	// answer for multiple choice
-	std::vector<uint> multi_choice;
+	std::vector<size_t> multi_choice;
 };
 
 typedef std::vector<Answer> AnswerData;
