@@ -137,16 +137,16 @@ private:
 	vector<QString> m_questions;
 	vector<Checker*> m_checkers;
 	//Keeps track of each user's ContestantConnection
-	QHash<QString, ContestantConnection*> hash;
+	QHash<QString, ContestantConnection*> m_hash;
 	//Keeps track of each user's answers per round
-	QHash<QString, QStringList> hash_answers;
+	QHash<QString, QStringList> m_hash_answers;
 	//Keeps track of the current question number of each user for rounds 3/4
-	QHash<QString, int> hash_questions;
+	QHash<QString, int> m_hash_questions;
 	//a switch that determines if the user can still submit or not
 	QHash<QString, bool> m_cansubmit;
 	// keep track of team connections.
 	QHash<QString, bool> m_teamconnected;
-	int selected_question_num;
+	int m_selected_question_num;
 	QStandardItemModel* m_rankmodel;
 };
 

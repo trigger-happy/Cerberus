@@ -33,10 +33,10 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	m_answers_w->hide();
 	m_dlg->setupUi( this );
 
-	questions3 = new QStandardItemModel ( this );
-	questions4 = new QStandardItemModel ( this );
-	contestants = new QStandardItemModel( this );
-	m_dlg->contestants_listv->setModel( contestants );
+	m_questions3 = new QStandardItemModel ( this );
+	m_questions4 = new QStandardItemModel ( this );
+	m_contestants = new QStandardItemModel( this );
+	m_dlg->contestants_listv->setModel( m_contestants );
 	m_dlg->contestants_listv->setEditTriggers( QAbstractItemView::NoEditTriggers );
 	m_dlg->p_q_listv->setModel( NULL );
 	m_dlg->p_q_listv->setEditTriggers( QAbstractItemView::NoEditTriggers );
@@ -79,26 +79,26 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_server, SIGNAL ( contestantC( QString ) ), this, SLOT ( addContestant( QString ) ) );
 	connect( m_server, SIGNAL ( contestantDc( QString ) ), this, SLOT ( removeContestant( QString ) ) );
 	connect( m_server, SIGNAL( onContestTimeRequest( ushort& ) ), this, SLOT( onContestTimeRequest( ushort& ) ) );
-	selectedRound = 1;
+	m_selectedRound = 1;
 
-	q3_v = m_server->questions3;
-	q4_v = m_server->questions4;
+	m_q3_v = m_server->questions3;
+	m_q4_v = m_server->questions4;
 	QStandardItem* item;
-	int size = q3_v.size();
+	int size = m_q3_v.size();
 
 	for ( int i = 0; i < size; i++ ) {
-		item = new QStandardItem( q3_v.at( i ).question );
-		questions3->appendRow( item );
+		item = new QStandardItem( m_q3_v.at( i ).question );
+		m_questions3->appendRow( item );
 	}
 
-	size = q4_v.size();
+	size = m_q4_v.size();
 
 	for ( int i = 0; i < size; i++ ) {
-		item = new QStandardItem( q4_v.at( i ).question );
-		questions4->appendRow( item );
+		item = new QStandardItem( m_q4_v.at( i ).question );
+		m_questions4->appendRow( item );
 	}
 
-	selected_question = 0;
+	m_selected_question = 0;
 
 	onRoundSelection( 0 );
 	onApplyBtn();
@@ -117,7 +117,7 @@ void Admin::onTimeUpdate() {
 	m_dlg->time2_lcd->display( m_timeleft );
 
 	if ( m_timeleft <= 0 ) {
-		if ( selectedRound < 3 ) {
+		if ( m_selectedRound < 3 ) {
 			onStopBtn();
 		} else {
 			onStopQuestionTime();
@@ -131,23 +131,23 @@ void Admin::onContestTimeRequest( ushort& contime ) {
 
 // contest control
 void Admin::onApplyBtn() {
-	currentRound = selectedRound;
+	m_currentRound = m_selectedRound;
 	m_timeleft = m_dlg->timer_spin->value();
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
-	m_server->setRound( selectedRound );
+	m_server->setRound( m_selectedRound );
 
-	if ( selectedRound == 3 )
-		m_dlg->p_q_listv->setModel( questions3 );
-	else if ( selectedRound == 4 )
-		m_dlg->p_q_listv->setModel( questions4 );
+	if ( m_selectedRound == 3 )
+		m_dlg->p_q_listv->setModel( m_questions3 );
+	else if ( m_selectedRound == 4 )
+		m_dlg->p_q_listv->setModel( m_questions4 );
 	else
 		m_dlg->p_q_listv->setModel( NULL );
 }
 
 
 void Admin::onStopBtn() {
-	if ( selectedRound < 3 ) {
+	if ( m_selectedRound < 3 ) {
 		m_timer->stop();
 	}
 
@@ -157,7 +157,7 @@ void Admin::onStopBtn() {
 }
 
 void Admin::onStartBtn() {
-	if ( selectedRound < 3 ) {
+	if ( m_selectedRound < 3 ) {
 		m_timer->start( 1000 );
 	}
 
@@ -167,7 +167,7 @@ void Admin::onStartBtn() {
 }
 
 void Admin::onPauseBtn() {
-	if ( selectedRound < 3 ) {
+	if ( m_selectedRound < 3 ) {
 		m_timer->stop();
 	}
 
@@ -177,13 +177,13 @@ void Admin::onPauseBtn() {
 }
 
 void Admin::onRoundSelection( int index ) {
-	selectedRound = index + 1;
+	m_selectedRound = index + 1;
 	int time = 0;
 
-	if ( selectedRound < 3 ) {
-		time = m_server->getRoundTime( selectedRound );
+	if ( m_selectedRound < 3 ) {
+		time = m_server->getRoundTime( m_selectedRound );
 	} else {
-		time = m_server->getQuestionTime( selectedRound, 0 );
+		time = m_server->getQuestionTime( m_selectedRound, 0 );
 	}
 
 	m_dlg->timer_spin->setValue( time );
@@ -199,20 +199,20 @@ void Admin::addContestant( const QString& c_user ) {
 
 	//if(!users.contains(c_user)){
 	item = new QStandardItem( c_user );
-	users[c_user] = item;
+	m_users[c_user] = item;
 	/*}
 	else
 		item = users[c_user];*/
-	contestants->appendRow( item );
-	contestants->sort( 0, Qt::AscendingOrder );
+	m_contestants->appendRow( item );
+	m_contestants->sort( 0, Qt::AscendingOrder );
 }
 
 void Admin::removeContestant( const QString& c_user ) {
-	QModelIndex index = contestants->indexFromItem( users[c_user] );
+	QModelIndex index = m_contestants->indexFromItem( m_users[c_user] );
 
 	if ( index.row() != -1 ) {
 		cout << ( QString( "Removing contestant %1 from index %2" ).arg( c_user ).arg( index.row() ) ).toStdString() << endl;
-		bool removed = contestants->removeRow( index.row(), QModelIndex() );
+		bool removed = m_contestants->removeRow( index.row(), QModelIndex() );
 
 		if ( removed ) cout << "Contestant successfully removed.\n";
 		else cout << "Remove failed.\n";
@@ -220,7 +220,7 @@ void Admin::removeContestant( const QString& c_user ) {
 }
 
 void Admin::onContestantListClick( const QModelIndex& index ) {
-	QString c_user = contestants->itemFromIndex( index )->text();
+	QString c_user = m_contestants->itemFromIndex( index )->text();
 	m_dlg->user_lbl->setText( c_user );
 	m_dlg->score_lbl->setText( QString( "%1" ).arg( m_server->getScore( c_user ) ) );
 	selected_user = c_user;
@@ -283,12 +283,12 @@ void Admin::onQuestionListClick( const QModelIndex& index ) {
 	QString question_text;
 	QString time_limit;
 	Question question;
-	selected_question = index.row();
+	m_selected_question = index.row();
 
-	if ( currentRound == 4 )
-		question = q4_v.at( selected_question );
+	if ( m_currentRound == 4 )
+		question = m_q4_v.at( m_selected_question );
 	else
-		question = q3_v.at( selected_question );
+		question = m_q3_v.at( m_selected_question );
 
 	question_text = question.question;
 
@@ -317,30 +317,30 @@ void Admin::onStartQuestionTime() {
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_timer->start( 1000 );
 
-	if ( currentRound == 3 ) {
-		m_server->startQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
-	} else if ( currentRound == 4 ) {
-		m_server->startQuestionTime( selected_question, q4_v.at( selected_question ).time_limit );
+	if ( m_currentRound == 3 ) {
+		m_server->startQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
+	} else if ( m_currentRound == 4 ) {
+		m_server->startQuestionTime( m_selected_question, m_q4_v.at( m_selected_question ).time_limit );
 	}
 }
 
 void Admin::onPauseQuestionTime() {
 	m_timer->stop();
 
-	if ( currentRound == 3 ) {
-		m_server->pauseQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
-	} else if ( currentRound == 4 ) {
-		m_server->pauseQuestionTime( selected_question, q4_v.at( selected_question ).time_limit );
+	if ( m_currentRound == 3 ) {
+		m_server->pauseQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
+	} else if ( m_currentRound == 4 ) {
+		m_server->pauseQuestionTime( m_selected_question, m_q4_v.at( m_selected_question ).time_limit );
 	}
 }
 
 void Admin::onStopQuestionTime() {
 	m_timer->stop();
 
-	if ( currentRound == 3 ) {
-		m_server->stopQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
-	} else if ( currentRound == 4 ) {
-		m_server->stopQuestionTime( selected_question, q4_v.at( selected_question ).time_limit );
+	if ( m_currentRound == 3 ) {
+		m_server->stopQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
+	} else if ( m_currentRound == 4 ) {
+		m_server->stopQuestionTime( m_selected_question, m_q4_v.at( m_selected_question ).time_limit );
 	}
 }
 

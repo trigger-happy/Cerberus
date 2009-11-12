@@ -68,7 +68,7 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 		m_questions.push_back ( fileString );
 	}
 
-	selected_question_num = 0;
+	m_selected_question_num = 0;
 
 	//Instantiates the ServerNetwork class, networking stuff go here
 	m_network = new ServerNetwork ( this );
@@ -158,11 +158,11 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		}
 	}
 
-	if ( !hash.contains( c_username ) ) {
+	if ( !m_hash.contains( c_username ) ) {
 		// brand new connection
-		hash[c_username] = cc;
+		m_hash[c_username] = cc;
 		m_teamconnected[ud.teamname] = true;
-		hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
+		m_hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
 
 		// get information on the user and shove it into m_rankmodel
 		QList<QStandardItem*> listing;
@@ -178,8 +178,8 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		updateRankData();
 	} else {
 		// duplicate connection
-		hash[c_username]->dropClient();
-		hash[c_username] = cc;
+		m_hash[c_username]->dropClient();
+		m_hash[c_username] = cc;
 	}
 
 	emit contestantC( c_username );
@@ -262,7 +262,7 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 		}
 	}
 
-	hash_answers[user].replace( round - 1, allAnswers );
+	m_hash_answers[user].replace( round - 1, allAnswers );
 
 	Checker* checker = m_checkers.at( round - 1 );
 
@@ -276,11 +276,11 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 
 		checker->resetQuestionSet();
 
-		cout << "Checking at question number " << selected_question_num << endl;
+		cout << "Checking at question number " << m_selected_question_num << endl;
 
-		cout << "The question is " << questions.at( selected_question_num ).question.toStdString() << endl;
+		cout << "The question is " << questions.at( m_selected_question_num ).question.toStdString() << endl;
 
-		checker->addQuestion( questions.at( selected_question_num ) );
+		checker->addQuestion( questions.at( m_selected_question_num ) );
 	}
 
 	double points = checker->score( new_data );
@@ -327,7 +327,7 @@ void Server::pauseContest() {
 QString Server::viewSubmittedAnswers( QString c_user, int round ) {
 	if ( testing ) cout << "Attempting to view answers by " << c_user.toStdString() << " at round " << round + 1 << endl;
 
-	QString answers = hash_answers[c_user].at( round );
+	QString answers = m_hash_answers[c_user].at( round );
 
 	return answers;
 }
@@ -337,7 +337,7 @@ void Server::checkAnswersManually() {
 }
 
 void Server::dropConnection( QString c_user ) {
-	ContestantConnection* cc = hash[c_user];
+	ContestantConnection* cc = m_hash[c_user];
 	cc->dropClient();
 }
 
@@ -405,7 +405,7 @@ void Server::showAnswer() {
 
 void Server::startQuestionTime( int num, int time ) {
 	m_network->setQuestionState( num, time, QUESTION_RUNNING );
-	selected_question_num = num;
+	m_selected_question_num = num;
 
 	QMutableHashIterator<QString, bool> i( m_cansubmit );
 
