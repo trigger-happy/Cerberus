@@ -187,10 +187,13 @@ public:
 	void showAnswer();
 
 	/*!
+	Send a command to projecors to show the question.
 	*/
 	void showQuestion();
 
 	/*!
+	Dis/Allow contestants to submit answers.
+	\param e true to allow, false otherwise
 	*/
 	void enableContestSubmission( bool e );
 
@@ -227,15 +230,41 @@ public slots:
 	void invalidClient ( TempConnection* con );
 
 	/*!
+	Called in response to a request to the contest time by either
+	projector or contestant.
+	\param contime Reference to a ushort that will contain the contest time.
 	*/
 	void contestTimeResponse( ushort& contime );
 
 signals:
+	/*!
+	Emitted when an invalid client connects.
+    \param con Pointer to a TempConnection.
+	*/
 	void badClient ( TempConnection* con );
+	
+	/*!
+	Emitted when a contestant client connects to the server.
+	\param cc Pointer to the ContestantConnection to the contestant.
+	*/
 	void newContestant ( ContestantConnection* cc );
+	
+	/*!
+	Emitted when the contestant disconnects.
+	\param cc Pointer to the ContestantConnection that disconnected.
+	*/
 	void contestantDc ( ContestantConnection* cc );
-	void newAdmin ( AdminConnection* ac );
+	
+	/*!
+	Emitted when a new projector connects.
+	\param pc Pointer to the ProjectorConnection that connected.
+	*/
 	void newProjector ( ProjectorConnection* pc );
+	
+	/*!
+	Emitted when a projector disconnects.
+	\param pc Pointer to the ProjectorConnection that disconnected.
+	*/
 	void projectorDc( ProjectorConnection* pc );
 
 protected:
