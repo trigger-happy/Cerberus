@@ -470,3 +470,7 @@ void Server::updateRankData() {
 void Server::setContestTime( ushort time ) {
 	m_network->setContestTime( time );
 }
+
+void Server::scoreReset() {
+	SqlUtil::getInstance().scoreReset();
+}

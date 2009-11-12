@@ -171,7 +171,16 @@ public:
 		return m_rankmodel;
 	}
 
+	/*!
+	Set the contest time for the projectors.
+	\param time The contest time.
+	*/
 	void setContestTime ( ushort time );
+
+	/*!
+	Reset the scores
+	*/
+	void scoreReset();
 
 	// public stuff
 	vector<Question> questions3;

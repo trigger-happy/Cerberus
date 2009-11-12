@@ -426,3 +426,11 @@ bool SqlUtil::verifyDB ( const QStringList& sl )
         result &= ( bool ) sl.contains ( "team" );
         return result;
 }
+
+void SqlUtil::scoreReset(){
+	QString sql = "update scores set score=0";
+	bool result = query->exec ( sql );
+	if(!result){
+		throw SqlUtilException(query->lastError().databaseText());
+	}
+}

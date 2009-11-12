@@ -69,6 +69,9 @@ public slots:
 	void onPauseQuestionTime();
 	void onStopQuestionTime();
 
+	// score control
+	void onScoreReset();
+
 	//timer
 	void onTimeUpdate();
 

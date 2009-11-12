@@ -72,6 +72,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_dlg->qstop_btn, SIGNAL ( clicked() ), this, SLOT ( onStopQuestionTime() ) );
 	connect( m_dlg->qpause_btn, SIGNAL ( clicked() ), this, SLOT ( onPauseQuestionTime() ) );
 	connect( m_dlg->p_show_qtime_btn, SIGNAL( clicked() ), this, SLOT( onShowQuestionTime() ) );
+	connect( m_dlg->reset_score_btn, SIGNAL( clicked() ), this, SLOT( onScoreReset() ) );
 
 
 	// connect server signals and slots here
@@ -345,6 +346,9 @@ void Admin::onStopQuestionTime() {
 	}
 }
 
+void Admin::onScoreReset() {
+	m_server->scoreReset();
+}
 
 int main ( int argc, char* argv[] ) {
 	QApplication a ( argc, argv );

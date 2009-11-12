@@ -216,6 +216,11 @@ public:
         \return true of valid, false otherwise.
         */
         bool verifyDB ( const QStringList& sl );
+		
+		/*!
+		Reset the scores to all 0.
+		*/
+        void scoreReset();
 private:
         /*!
         Create the database tables if they don't exist
