@@ -283,7 +283,6 @@ void ContestantApp::onAData ( bool result )
         {
             m_summary_w->hide();
             m_welcome_w->show();
-            m_welcome_dlg->start_btn->setEnabled( false );
         }
     }
     else
@@ -456,8 +455,6 @@ void ContestantApp::finalsSubmit()
 {
     recordAnswer();
     m_network->aDataSend( round, ad );
-    qStatus = QUESTION_PAUSED;
-    pauseQuestion();
 }
 
 //convenience methods
