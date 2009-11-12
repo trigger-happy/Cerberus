@@ -172,7 +172,7 @@ void ContestantApp::onConnect()
 
 void ContestantApp::onDisconnect()
 {
-    showInfo( 1, "Disconnected from server", "Please reconnect if in the middle of the contest" );
+    showInfo( 2, "Exiting...", "Please reconnect if in the middle of the contest" );
     exit();
 }
 
@@ -755,8 +755,11 @@ void ContestantApp::showInfo( int i, QString s, QString inform )
     QMessageBox msg;
     if( i == 0 )
         msg.setWindowTitle( "Success" );
-    else
+    else if( i == 1 )
         msg.setWindowTitle( "Error" );
+    else if( i == 2 )
+        msg.setWindowTitle( "Information" );
+
     msg.setText( s );
     msg.setInformativeText( inform );
     msg.setStandardButtons( QMessageBox::Ok );
