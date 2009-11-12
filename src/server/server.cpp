@@ -156,6 +156,9 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		listing.append( new QStandardItem( QString( "0.0" ) ) );
 		m_rankmodel->appendRow( listing );
 		updateRankData();
+	} else {
+		hash[c_username]->dropClient();
+		hash[c_username] = cc;
 	}
 
 	emit contestantC( c_username );
@@ -177,6 +180,7 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 
 	if ( !c_user.isNull() ) emit contestantDc( c_user );
 
+	/*
 	if ( m_cansubmit[c_user] ) {
 		// user has not submitted
 		QString target = ud.firstname + " " + ud.lastname;
@@ -198,6 +202,7 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 
 		updateRankData();
 	}
+	*/
 }
 
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data ) {
