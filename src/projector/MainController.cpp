@@ -140,6 +140,7 @@ void MainController::onShowContestTime() {
 
 void MainController::onShowContestRanks( const vector<RankData>& rd ) {
 	(qDebug() << "MainController::onShowContestRanks");
+	m_target.setContestRanks(rd);
 	m_target.setView(m_view = TemplateManager::SCOREBOARD);
 }
 
