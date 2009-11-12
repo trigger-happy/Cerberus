@@ -151,6 +151,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     status = CONTEST_STOPPED;
     qStatus = QUESTION_STOPPED;
     loggedIn = false;
+    closing = false;
 }
 
 ContestantApp::~ContestantApp()
@@ -172,8 +173,8 @@ void ContestantApp::onConnect()
 
 void ContestantApp::onDisconnect()
 {
-    showInfo( 1, "Disconnected from server", "Please reconnect if in the middle of the contest" );
-    exit();
+    if( !closing )
+        showInfo( 1, "Disconnected from server", "Please reconnect if still in the middle of the contest" );
 }
 
 void ContestantApp::onAuthenticate ( bool result )
@@ -280,7 +281,10 @@ void ContestantApp::onAData ( bool result )
     {
         showInfo( 0, "Answers successfully sent to server", "" );
         if( round == 1 || round == 2 )
-            exit();
+        {
+            m_summary_w->hide();
+            m_welcome_w->show();
+        }
     }
     else
         showInfo( 1, "Answers not sent. Please try again.", "" );
@@ -321,11 +325,15 @@ void ContestantApp::updateTimer()
         {
             status = CONTEST_STOPPED;
             stopContest();
+            m_elims_dlg->time_lbl->setText("");
+            m_semifinals_dlg->time_lbl->setText("");
         }
         if( round == 3 || round == 4 )
         {
             qStatus = QUESTION_PAUSED;
             pauseQuestion();
+            m_finalsChoice_dlg->time_lbl->setText("");
+            m_finalsIdent_dlg->time_lbl->setText("");
         }
         return;
     }
@@ -452,8 +460,6 @@ void ContestantApp::finalsSubmit()
 {
     recordAnswer();
     m_network->aDataSend( round, ad );
-    qStatus = QUESTION_PAUSED;
-    pauseQuestion();
 }
 
 //convenience methods
@@ -558,7 +564,7 @@ void ContestantApp::displayAnswer()
 
 void ContestantApp::displayStatus()
 {
-    QString s, qs;
+    QString s;
     if( status == CONTEST_RUNNING )
         s = "RUNNING";
     else if( status == CONTEST_STOPPED )
@@ -566,21 +572,11 @@ void ContestantApp::displayStatus()
     else if( status == CONTEST_PAUSED )
         s = "PAUSED";
 
-    if( qStatus == QUESTION_RUNNING )
-        qs = "RUNNING";
-    else if( qStatus == QUESTION_STOPPED )
-        qs = "STOPPED";
-    else if( qStatus == QUESTION_PAUSED )
-        qs = "PAUSED";
-
     m_welcome_dlg->status_lbl->setText( s );
-    if( round == 1 )
-        m_elims_dlg->status_lbl->setText( s );
-    else if( round == 2 )
-        m_semifinals_dlg->status_lbl->setText( s );
-
-    m_finalsChoice_dlg->status_lbl->setText( qs );
-    m_finalsIdent_dlg->status_lbl->setText( qs );
+    m_elims_dlg->status_lbl->setText( s );
+    m_semifinals_dlg->status_lbl->setText( s );
+    m_finalsChoice_dlg->status_lbl->setText( s );
+    m_finalsIdent_dlg->status_lbl->setText( s );
 }
 
 void ContestantApp::recordAnswer()
@@ -760,14 +756,23 @@ void ContestantApp::showInfo( int i, QString s, QString inform )
     QMessageBox msg;
     if( i == 0 )
         msg.setWindowTitle( "Success" );
-    else
+    else if( i == 1 )
         msg.setWindowTitle( "Error" );
+    else if( i == 2 )
+        msg.setWindowTitle( "Information" );
+
     msg.setText( s );
     msg.setInformativeText( inform );
     msg.setStandardButtons( QMessageBox::Ok );
     msg.setDefaultButton( QMessageBox::Ok );
     msg.setIcon( QMessageBox::Information );
     msg.exec();
+}
+
+void ContestantApp::closeEvent ( QCloseEvent * event )
+{
+    closing = true;
+    event->accept();
 }
 
 int main ( int argc, char* argv[] )
