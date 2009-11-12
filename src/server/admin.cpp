@@ -117,7 +117,11 @@ void Admin::onTimeUpdate() {
 	m_dlg->time2_lcd->display( m_timeleft );
 
 	if ( m_timeleft <= 0 ) {
-		onStopBtn();
+		if ( selectedRound < 3 ) {
+			onStopBtn();
+		} else {
+			onStopQuestionTime();
+		}
 	}
 }
 
@@ -143,20 +147,32 @@ void Admin::onApplyBtn() {
 
 
 void Admin::onStopBtn() {
-	m_timer->stop();
+	if ( selectedRound < 3 ) {
+		m_timer->stop();
+	}
+
 	m_server->stopContest();
+
 	m_dlg->status_lbl->setText( "Stopped" );
 }
 
 void Admin::onStartBtn() {
-	m_timer->start( 1000 );
+	if ( selectedRound < 3 ) {
+		m_timer->start( 1000 );
+	}
+
 	m_server->startContest();
+
 	m_dlg->status_lbl->setText( "Running" );
 }
 
 void Admin::onPauseBtn() {
-	m_timer->stop();
+	if ( selectedRound < 3 ) {
+		m_timer->stop();
+	}
+
 	m_server->pauseContest();
+
 	m_dlg->status_lbl->setText( "Paused" );
 }
 
@@ -276,7 +292,7 @@ void Admin::onQuestionListClick( const QModelIndex& index ) {
 
 	question_text = question.question;
 
-	time_limit = question.time_limit;
+	time_limit = QString( "%1" ).arg( question.time_limit );
 
 	m_dlg->p_question_line->setText( question_text );
 
@@ -296,6 +312,11 @@ void Admin::onShowQuestionTime() {
 }
 
 void Admin::onStartQuestionTime() {
+	m_timeleft = m_dlg->p_time_line->text().toInt();
+	m_dlg->time_lcd->display( m_timeleft );
+	m_dlg->time2_lcd->display( m_timeleft );
+	m_timer->start( 1000 );
+
 	if ( currentRound == 3 ) {
 		m_server->startQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
 	} else if ( currentRound == 4 ) {
@@ -304,6 +325,8 @@ void Admin::onStartQuestionTime() {
 }
 
 void Admin::onPauseQuestionTime() {
+	m_timer->stop();
+
 	if ( currentRound == 3 ) {
 		m_server->pauseQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
 	} else if ( currentRound == 4 ) {
@@ -312,6 +335,8 @@ void Admin::onPauseQuestionTime() {
 }
 
 void Admin::onStopQuestionTime() {
+	m_timer->stop();
+
 	if ( currentRound == 3 ) {
 		m_server->stopQuestionTime( selected_question, q3_v.at( selected_question ).time_limit );
 	} else if ( currentRound == 4 ) {

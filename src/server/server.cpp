@@ -378,6 +378,15 @@ void Server::showAnswer() {
 void Server::startQuestionTime( int num, int time ) {
 	m_network->setQuestionState( num, time, QUESTION_RUNNING );
 	selected_question_num = num;
+
+	QMutableHashIterator<QString, bool> i( m_cansubmit );
+
+	while ( i.hasNext() ) {
+		i.next();
+		i.setValue( true );
+	}
+
+	m_network->enableContestSubmission( true );
 }
 
 void Server::stopQuestionTime( int num, int time ) {

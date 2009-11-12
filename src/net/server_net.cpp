@@ -295,5 +295,6 @@ void ServerNetwork::enableContestSubmission( bool e ) {
 
 	while ( i != m_contestants.end() ) {
 		( *i )->enableAnswerSubmission( e );
+		i++;
 	}
 }
