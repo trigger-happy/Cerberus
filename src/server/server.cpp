@@ -473,4 +473,8 @@ void Server::setContestTime( ushort time ) {
 
 void Server::scoreReset() {
 	SqlUtil::getInstance().scoreReset();
+
+	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
+		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
+	}
 }
