@@ -171,6 +171,8 @@ public:
 		return m_rankmodel;
 	}
 
+	void setContestTime ( ushort time );
+
 	// public stuff
 	vector<Question> questions3;
 	vector<Question> questions4;

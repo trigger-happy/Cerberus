@@ -217,13 +217,13 @@ void ServerNetwork::setContestTime ( ushort time ) {
 	for ( ;i != m_contestants.end(); i++ ) {
 		( *i )->setContestTime ( time );
 	}
-
+	*/
 	projector_list::iterator j = m_projectors.begin();
 
 	for ( ; j != m_projectors.end(); j++ ) {
-		( *i )->setContestTime( time );
+		( *j )->setContestTime( time );
 	}
-	*/
+
 }
 
 void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state ) {

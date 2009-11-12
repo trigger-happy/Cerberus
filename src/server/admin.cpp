@@ -136,6 +136,7 @@ void Admin::onApplyBtn() {
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_server->setRound( m_selectedRound );
+	m_server->setContestTime( m_timeleft );
 
 	if ( m_selectedRound == 3 )
 		m_dlg->p_q_listv->setModel( m_questions3 );

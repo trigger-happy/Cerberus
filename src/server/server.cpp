@@ -466,3 +466,7 @@ void Server::updateRankData() {
 		m_rankmodel->item( i, 0 )->setText( QString( "%1" ).arg( i + 1 ) );
 	}
 }
+
+void Server::setContestTime( ushort time ) {
+	m_network->setContestTime( time );
+}
