@@ -263,6 +263,7 @@ void Admin::onChangeScore() {
 		if ( ok ) {
 			m_server->setScore( m_selected_user, score );
 			m_dlg->score_lbl->setText( QString( "%1" ).arg( score ) );
+			m_server->updateRankData();
 		}
 	}
 }
