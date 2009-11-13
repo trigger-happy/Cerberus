@@ -28,7 +28,10 @@ class ProjectorConnection : public QObject {
 	Q_OBJECT;
 
 public:
-	ProjectorConnection( QObject* parent = 0, QTcpSocket* socket = 0 );
+	ProjectorConnection( QObject* parent = 0, QTcpSocket* socket = 0,
+	                     CONTEST_STATUS cstatus = CONTEST_STOPPED,
+	                     int round = 1,
+	                     ushort ctime = 0 );
 
 	/*!
 	Send the contest time to the projector.

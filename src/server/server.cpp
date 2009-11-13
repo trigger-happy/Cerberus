@@ -465,11 +465,23 @@ void Server::getRankData( vector<RankData>& out ) {
 }
 
 void Server::updateRankData() {
-	m_rankmodel->sort( 3, Qt::DescendingOrder );
+	vector<pair<int, QStandardItem*> > temp;
 
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
-		m_rankmodel->item( i, 0 )->setText( QString( "%1" ).arg( i + 1 ) );
+		QStandardItem* ranking = m_rankmodel->item( i, 0 );
+		int score = m_rankmodel->item( i, 3 )->text().toInt();
+		temp.push_back( pair<int, QStandardItem*>( score, ranking ) );
 	}
+
+	sort( temp.begin(), temp.end() );
+
+	reverse( temp.begin(), temp.end() );
+
+	for ( int i = 0; i < temp.size(); i++ ) {
+		temp[i].second->setText( QString( "%1" ).arg( i + 1 ) );
+	}
+
+	m_rankmodel->sort( 0, Qt::AscendingOrder );
 }
 
 void Server::setContestTime( ushort time ) {
