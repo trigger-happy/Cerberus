@@ -137,10 +137,7 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 		case CLIENT_PROJECTOR:
 			// TODO: add code here for creating a new presenter connection
 			{
-				ProjectorConnection* pc = new ProjectorConnection( this, temp_sock );
-				pc->setStatus( m_con_status );
-				pc->setRound( m_round );
-				pc->setContestTime( m_contime );
+				ProjectorConnection* pc = new ProjectorConnection( this, temp_sock, m_con_status, m_round, m_contime );
 				pc->setStageData( m_questiondata );
 				connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
 				         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
