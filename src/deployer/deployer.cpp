@@ -165,8 +165,12 @@ void Installer::deploy( QString& source, QString& component ) {
                     else {
                         bool checker = qfile.copy( dest );
                         if( checker == false ) {
-                            isSuccessful = false;
-                            showInfo( QString( "File %1 was not copied." ).arg(temp.fileName()) );
+
+                            if( qfileinfo.fileName().compare(QString("resources")) != 0 && qfileinfo.fileName(). compare(QString("sqldrivers")) != 0  && component.compare(QString("conf_editor")) == 0 )
+                            {
+                                isSuccessful = false;
+                                showInfo( QString( "File %1 was not copied." ).arg(temp.fileName()) );
+                            }
                         }
                     }
                 }
@@ -250,6 +254,7 @@ void Installer :: install() {
             QString source("resources/qeditor_deploy.txt");
             QString comp("qeditor");
             deploy( source, comp  );
+            break;
         }
 
         case 5:
@@ -258,6 +263,7 @@ void Installer :: install() {
             QString source( "resources/conf_editor_deploy.txt");
             QString comp("conf_editor");
             deploy( source, comp  );
+            break;
         }
         default:
             break;
