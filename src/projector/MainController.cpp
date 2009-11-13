@@ -57,22 +57,28 @@ bool MainController::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void MainController::onConnect() {
-	(qDebug() << "MainController::onConnect\n");
+	(qDebug() << "MainController::onConnect");
+	delete m_stageData;
+	m_stageData = 0;
+
 	m_net->sendReadyState();
+	m_net->getContestState();
+	m_net->getContestTime();
+
 	m_connected = true;
 	//show the last thing that was viewed
 	m_target.setView(m_view);
 }
 
 void MainController::onDisconnect() {
-	(qDebug() << "MainController::onDisconnect\n");
+	(qDebug() << "MainController::onDisconnect");
 	m_connected = false;
 	m_target.displayError("Connection error. Reconnecting...", m_lastError.toStdString().c_str());
 	QTimer::singleShot(RECONNECT_DELAY, this, SLOT(connectToServer()));
 }
 
 void MainController::onError( const QString& error ) {
-	(qDebug() << "MainController::onError\n");
+	(qDebug() << "MainController::onError");
 	m_lastError = error;
 	if ( m_connected ) {
 		//assume onDisconnect will get called...
@@ -84,35 +90,35 @@ void MainController::onError( const QString& error ) {
 }
 
 void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
-	(qDebug() << "MainController::onContestState(" << round << ", " << status << ")\n");
+	(qDebug() << "MainController::onContestState(" << round << ", " << status << ")");
 	m_target.setStageNumber(round);
 	ContestTimer &tmr = m_target.getContestTimer();
-	if ( m_stageData == 0 )
-		qWarning() << "MainController::onContestState called without valid stage data.";
+	if ( m_stageData == 0 ) {
+		qWarning() << "MainController::onContestState called without valid stage data. Requesting...";
+		m_net->getStageData(round);
+	}
 	switch ( status ) {
 		case CONTEST_RUNNING:
 			//start the thingo! (make sure we set the time first)
 			if ( m_stageData && m_stageData->hasContestTime() ) {
-				tmr.setDuration(m_stageData->contest_time);
-				tmr.start();
 				m_target.setView(m_view = TemplateManager::TIMEBOARD);
 			} else {
 				//the contest has no timer?!
 				//it must be one of those per-question rounds!
 			}
+			tmr.start();
 			break;
 		case CONTEST_PAUSED:
 			tmr.pause();
 			break;
 		case CONTEST_STOPPED:
-			m_net->getStageData(round);
 			tmr.stop();
 			break;
 	}
 }
 
 void MainController::onStageData(const QString &xml) {
-	(qDebug() << "MainController::onStageData\n");
+	(qDebug() << "MainController::onStageData");
 	//it's time to load a new stage!
 	m_target.getContestTimer().stop();
 	delete m_stageData;
