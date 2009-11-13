@@ -251,6 +251,14 @@ void Installer :: install() {
             QString comp("qeditor");
             deploy( source, comp  );
         }
+
+        case 5:
+        {
+            cout << list[QString("conf_editor")].toStdString() << endl;
+            QString source( "resources/conf_editor_deploy.txt");
+            QString comp("conf_editor");
+            deploy( source, comp  );
+        }
         default:
             break;
     }
