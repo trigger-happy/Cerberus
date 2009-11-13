@@ -28,16 +28,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QListWidget>
 
 RegistrationApp::RegistrationApp(QWidget* parent) :
-	QDialog(parent),
+	QMainWindow(parent),
 	m_team_table_wnd( new Ui::team_table_wnd ),
 	m_user_table_wnd(new Ui::user_table_wnd),
 	m_user_edit_wnd(new Ui::user_edit_wnd),
 	m_sql(SqlUtil::getInstance())
 {
-	this->setWindowTitle("Registration");
-	this->hide();
-	//this->resize(0, 0);
-	this->setVisible(false);
+	//m_team_table_wnd->setWindowTitle("Registration");
 
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Database Directory"),
@@ -47,9 +44,33 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 			showMessageDialog( QString::fromStdString("Failed to load database. Application will not work."));
 	}
 
-	m_team_table_w = new QDialog(this);
-	m_team_table_wnd->setupUi(m_team_table_w);
-	m_team_table_w->show();
+	//m_team_table_w = new QMainWindow(this);
+	m_team_table_wnd->setupUi(this);
+
+	//tool from http://sector.ynet.sk/qt4-tutorial/my-first-qt-gui-application.html
+			QDesktopWidget *desktop = QApplication::desktop();
+			int screenWidth, width;
+			int screenHeight, height;
+			int x, y;
+			QSize windowSize;
+
+			screenWidth = desktop->width(); // get width of screen
+			screenHeight = desktop->height(); // get height of screen
+
+			windowSize = size(); // size of our application window
+			width = windowSize.width();
+			height = windowSize.height();
+
+			// little computations
+			x = (screenWidth - width) / 2;
+			y = (screenHeight - height) / 2;
+			y -= 50;
+
+			// move window to desired coordinates
+			move ( x, y );
+	//end of tool
+
+	//m_team_table_w->show();
 
 	m_user_table_w = new QDialog(this);
 	m_user_table_wnd->setupUi(m_user_table_w);
@@ -149,7 +170,7 @@ bool RegistrationApp::goToEditTeam(){
 		m_team_table_wnd->teamname_txt->setText("");
 		m_team_table_wnd->teamschool_txt->setText("");
 		refreshUserList(team_nav, users);
-		m_team_table_w->hide();
+		//m_team_table_w->hide();
 		m_user_table_w->show();
 		m_user_table_wnd->lbl_teamname->setText(team_nav);
 		m_user_table_wnd->lbl_schoolname->setText(m_sql.getTeamSchool(m_user_table_wnd->lbl_teamname->text()));
@@ -266,7 +287,7 @@ bool RegistrationApp::deleteUser(){
 bool RegistrationApp::backToTeam(){
 	//goes back to the teams from specific team view, with cleared text fields.
 	refreshTeamList(teams);
-	m_team_table_w->show();
+	//m_team_table_w->show();
 	m_user_table_w->hide();
 }
 
@@ -334,13 +355,9 @@ void RegistrationApp::showMessageDialog(QString text){
 
 int main ( int argc, char* argv[] )
 {
-		//TODO: implement the app stuff here
-
 		QApplication app ( argc, argv );
-
 		RegistrationApp r_app;
 		r_app.show();
-
 		return app.exec();
 }
 

@@ -12,7 +12,7 @@ namespace Ui
 	class user_edit_wnd;
 }
 
-class RegistrationApp : public QDialog
+class RegistrationApp : public QMainWindow
 {
 	Q_OBJECT;
 public:
@@ -58,7 +58,7 @@ private:
 	QStringList teams;
 	QStringList users;
 
-	QDialog* m_team_table_w;
+	//QMainWindow* m_team_table_w;
 	QDialog* m_user_table_w;
 	QDialog* m_user_edit_w;
 

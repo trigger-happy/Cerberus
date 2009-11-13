@@ -1,75 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>team_table_wnd</class>
- <widget class="QDialog" name="team_table_wnd">
+ <widget class="QMainWindow" name="team_table_wnd">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>286</width>
-    <height>300</height>
+    <width>285</width>
+    <height>301</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Team View</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QFormLayout" name="formLayout">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-     </property>
-     <item row="1" column="0">
-      <widget class="QLabel" name="teamnamelabel">
-       <property name="text">
-        <string>Team Name:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="teamname_txt"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="teamschoollabel">
-       <property name="text">
-        <string>School:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="teamschool_txt"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="add_team_btn">
-       <property name="text">
-        <string>Add Team</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QListWidget" name="team_listview"/>
-   </item>
-   <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QPushButton" name="team_edit_btn">
-       <property name="text">
-        <string>Edit Team</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="team_delete_btn">
-       <property name="text">
-        <string>Delete Team</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-  </layout>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <item row="1" column="0">
+         <widget class="QLabel" name="teamnamelabel">
+          <property name="text">
+           <string>Team Name:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="teamname_txt"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="teamschoollabel">
+          <property name="text">
+           <string>School:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="teamschool_txt"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="add_team_btn">
+          <property name="text">
+           <string>Add Team</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QListWidget" name="team_listview"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="team_edit_btn">
+          <property name="text">
+           <string>Edit Team</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="team_delete_btn">
+          <property name="text">
+           <string>Delete Team</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
