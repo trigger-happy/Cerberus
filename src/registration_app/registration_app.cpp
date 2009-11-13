@@ -39,7 +39,7 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Database Directory"),
 										  tr("Database Path:"), QLineEdit::Normal,
-										  "resources/test.db", &ok);
+										  "resources/server.db", &ok);
 	if ( !m_sql.init ( text ) ) {
 			showMessageDialog( QString::fromStdString("Failed to load database. Application will not work."));
 	}
