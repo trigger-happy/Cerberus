@@ -230,7 +230,6 @@ void Admin::onContestantListClick( const QModelIndex& index ) {
 
 void Admin::onDropContestant() {
 	if ( !m_selected_user.isEmpty() ) {
-		this->removeContestant( m_selected_user );
 		m_server->dropConnection( m_selected_user );
 		m_selected_user = "";
 	}
