@@ -188,7 +188,7 @@ void ContestantApp::onAuthenticate ( bool result )
 	}
 	else
 	{
-        showInfo( 0, UNAUTH_TEXT, UNAUTH_INFORMATION );
+        showInfo( 1, UNAUTH_TEXT, UNAUTH_INFORMATION );
         m_login_w->show();
 	}
 }
