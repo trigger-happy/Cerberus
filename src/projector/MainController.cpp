@@ -134,13 +134,14 @@ void MainController::onStageData(const QString &xml) {
 }
 
 void MainController::onContestTime( ushort time ) {
-	(qDebug() << "MainController::onContestTime(" << time << ")\n");
+	(qDebug() << "MainController::onContestTime(" << time << ")");
 	m_target.getContestTimer().setDuration(time * 1000u);
 }
 
 void MainController::onShowContestTime() {
-	(qDebug() << "MainController::onShowContestTime\n");
+	(qDebug() << "MainController::onShowContestTime");
 	m_target.setTimeLeft(m_target.getContestTimer().timeLeft());
+	(qDebug() << "\ttime left:" << m_target.getContestTimer().timeLeft());
 	m_target.setView(m_view = TemplateManager::TIMEBOARD);
 }
 
@@ -172,7 +173,7 @@ bool MainController::assertQuestionState(ushort qnum) const {
 }
 
 void MainController::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status ) {
-	(qDebug() << "MainController::onQuestionState(" << qnum << ", " << time << ", " << status << ")\n");
+	(qDebug() << "MainController::onQuestionState(" << qnum << ", " << time << ", " << status << ")");
 	if ( !assertQuestionState(qnum) ) return;
 	ContestTimer &tmr = m_target.getContestTimer();
 	Question &q = m_stageData->questions[qnum];
@@ -224,14 +225,14 @@ QString MainController::printfAnswerKey(const Question &q) {
 }
 
 void MainController::onShowAnswer() {
-	(qDebug() << "MainController::onShowAnswer\n");
+	(qDebug() << "MainController::onShowAnswer");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setAnswer(printfAnswerKey(m_stageData->questions[m_activeQuestionIndex]));
 	m_target.setView(m_view = TemplateManager::QDISPLAY);
 }
 
 void MainController::onShowQuestion() {
-	(qDebug() << "MainController::onShowQuestion\n");
+	(qDebug() << "MainController::onShowQuestion");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setQuestion(m_stageData->questions[m_activeQuestionIndex].question);
 	m_target.setView(m_view = TemplateManager::QDISPLAY);
