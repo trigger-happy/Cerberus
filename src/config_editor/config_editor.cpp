@@ -113,10 +113,13 @@ void ConfigEditor::save() {
     bool cont = true;
 
     QFile file ( server );
-    if( file.exists() ) {
+    if( file.exists() && server.compare(QString("")) != 0 ) {
         QString temp("server");
         cont = askConfirmation(temp);
 
+    }
+    else if( file.exists() && server.compare(QString("") ) == 0 ) {
+        // give out eror
     }
     
     if( cont ) {

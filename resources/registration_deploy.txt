@@ -1,2 +1,5 @@
-build/registration registration
-build/registration.exe registration.exe
+registration.exe
+registration
+*.dll
+sqldrivers/
+resources/*.db

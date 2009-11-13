@@ -1,3 +1,4 @@
-build/projector.exe projector.exe
-build/projector projector
-resources/presenter_config.xml presenter_config.xml
+projector.exe
+projector
+*.dll
+resources/projector_config.xml
