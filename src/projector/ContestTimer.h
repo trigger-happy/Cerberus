@@ -38,14 +38,16 @@ public:
 	void stop();
 	void pause();
 
-	bool isRunning() { return m_timer_id > 0; }
+	bool isRunning() const { return m_timer_id > 0; }
 	void setInterval(unsigned int interval);
 	/*!
 	  \param duration The duration of the timer in miliseconds.
 	  */
 	void setDuration(unsigned int duration);
 	int timeLeft() const {
-		return std::max(0, (int)m_duration - (int)(m_time_tracker.elapsed() + m_offset));
+		if ( isRunning() )
+			return std::max(0, (int)m_duration - (int)(m_time_tracker.elapsed() + m_offset));
+		return std::max(0, (int)m_duration - (int)m_offset);
 	}
 
 protected:

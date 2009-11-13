@@ -178,7 +178,10 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		updateRankData();
 	} else {
 		// duplicate connection
-		m_hash[c_username]->dropClient();
+		if ( m_hash[c_username] != NULL ) {
+			m_hash[c_username]->dropClient();
+		}
+
 		m_hash[c_username] = cc;
 	}
 
@@ -198,6 +201,8 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 	}
 
 	m_teamconnected[ud.teamname] = false;
+
+	m_hash[c_user] = NULL;
 
 	if ( testing ) cout << c_user.toStdString() << " has been disconnected.\n";
 
@@ -460,11 +465,23 @@ void Server::getRankData( vector<RankData>& out ) {
 }
 
 void Server::updateRankData() {
-	m_rankmodel->sort( 3, Qt::DescendingOrder );
+	vector<pair<int, QStandardItem*> > temp;
 
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
-		m_rankmodel->item( i, 0 )->setText( QString( "%1" ).arg( i + 1 ) );
+		QStandardItem* ranking = m_rankmodel->item( i, 0 );
+		int score = m_rankmodel->item( i, 3 )->text().toInt();
+		temp.push_back( pair<int, QStandardItem*>( score, ranking ) );
 	}
+
+	sort( temp.begin(), temp.end() );
+
+	reverse( temp.begin(), temp.end() );
+
+	for ( int i = 0; i < temp.size(); i++ ) {
+		temp[i].second->setText( QString( "%1" ).arg( i + 1 ) );
+	}
+
+	m_rankmodel->sort( 0, Qt::AscendingOrder );
 }
 
 void Server::setContestTime( ushort time ) {

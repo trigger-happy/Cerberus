@@ -1,9 +1,5 @@
-build/server2.exe server2.exe
-build/server server
-resources/stage1.xml stage1.xml
-resources/stage2.xml stage2.xml
-resources/stage3.xml stage3.xml
-resources/stage4.xml stage4.xml
-resources/server_config.xml server_config.xml
-resources/server.db server.db
-resources/server.key server.key
+server.exe
+server
+*.dll
+resources/
+sqlplugins/

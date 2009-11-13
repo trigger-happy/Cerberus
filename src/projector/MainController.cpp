@@ -57,22 +57,28 @@ bool MainController::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void MainController::onConnect() {
-	(qDebug() << "MainController::onConnect\n");
+	(qDebug() << "MainController::onConnect");
+	delete m_stageData;
+	m_stageData = 0;
+
 	m_net->sendReadyState();
+	m_net->getContestState();
+	m_net->getContestTime();
+
 	m_connected = true;
 	//show the last thing that was viewed
 	m_target.setView(m_view);
 }
 
 void MainController::onDisconnect() {
-	(qDebug() << "MainController::onDisconnect\n");
+	(qDebug() << "MainController::onDisconnect");
 	m_connected = false;
 	m_target.displayError("Connection error. Reconnecting...", m_lastError.toStdString().c_str());
 	QTimer::singleShot(RECONNECT_DELAY, this, SLOT(connectToServer()));
 }
 
 void MainController::onError( const QString& error ) {
-	(qDebug() << "MainController::onError\n");
+	(qDebug() << "MainController::onError");
 	m_lastError = error;
 	if ( m_connected ) {
 		//assume onDisconnect will get called...
@@ -84,35 +90,35 @@ void MainController::onError( const QString& error ) {
 }
 
 void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
-	(qDebug() << "MainController::onContestState(" << round << ", " << status << ")\n");
+	(qDebug() << "MainController::onContestState(" << round << ", " << status << ")");
 	m_target.setStageNumber(round);
 	ContestTimer &tmr = m_target.getContestTimer();
-	if ( m_stageData == 0 )
-		qWarning() << "MainController::onContestState called without valid stage data.";
+	if ( m_stageData == 0 ) {
+		qWarning() << "MainController::onContestState called without valid stage data. Requesting...";
+		m_net->getStageData(round);
+	}
 	switch ( status ) {
 		case CONTEST_RUNNING:
 			//start the thingo! (make sure we set the time first)
 			if ( m_stageData && m_stageData->hasContestTime() ) {
-				tmr.setDuration(m_stageData->contest_time);
-				tmr.start();
 				m_target.setView(m_view = TemplateManager::TIMEBOARD);
 			} else {
 				//the contest has no timer?!
 				//it must be one of those per-question rounds!
 			}
+			tmr.start();
 			break;
 		case CONTEST_PAUSED:
 			tmr.pause();
 			break;
 		case CONTEST_STOPPED:
-			m_net->getStageData(round);
 			tmr.stop();
 			break;
 	}
 }
 
 void MainController::onStageData(const QString &xml) {
-	(qDebug() << "MainController::onStageData\n");
+	(qDebug() << "MainController::onStageData");
 	//it's time to load a new stage!
 	m_target.getContestTimer().stop();
 	delete m_stageData;
@@ -128,13 +134,14 @@ void MainController::onStageData(const QString &xml) {
 }
 
 void MainController::onContestTime( ushort time ) {
-	(qDebug() << "MainController::onContestTime(" << time << ")\n");
-	m_target.getContestTimer().restart(time * 1000u);
+	(qDebug() << "MainController::onContestTime(" << time << ")");
+	m_target.getContestTimer().setDuration(time * 1000u);
 }
 
 void MainController::onShowContestTime() {
-	(qDebug() << "MainController::onShowContestTime\n");
+	(qDebug() << "MainController::onShowContestTime");
 	m_target.setTimeLeft(m_target.getContestTimer().timeLeft());
+	(qDebug() << "\ttime left:" << m_target.getContestTimer().timeLeft());
 	m_target.setView(m_view = TemplateManager::TIMEBOARD);
 }
 
@@ -166,7 +173,7 @@ bool MainController::assertQuestionState(ushort qnum) const {
 }
 
 void MainController::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status ) {
-	(qDebug() << "MainController::onQuestionState(" << qnum << ", " << time << ", " << status << ")\n");
+	(qDebug() << "MainController::onQuestionState(" << qnum << ", " << time << ", " << status << ")");
 	if ( !assertQuestionState(qnum) ) return;
 	ContestTimer &tmr = m_target.getContestTimer();
 	Question &q = m_stageData->questions[qnum];
@@ -218,14 +225,14 @@ QString MainController::printfAnswerKey(const Question &q) {
 }
 
 void MainController::onShowAnswer() {
-	(qDebug() << "MainController::onShowAnswer\n");
+	(qDebug() << "MainController::onShowAnswer");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setAnswer(printfAnswerKey(m_stageData->questions[m_activeQuestionIndex]));
 	m_target.setView(m_view = TemplateManager::QDISPLAY);
 }
 
 void MainController::onShowQuestion() {
-	(qDebug() << "MainController::onShowQuestion\n");
+	(qDebug() << "MainController::onShowQuestion");
 	if ( !assertQuestionState(m_activeQuestionIndex) ) return;
 	m_target.setQuestion(m_stageData->questions[m_activeQuestionIndex].question);
 	m_target.setView(m_view = TemplateManager::QDISPLAY);

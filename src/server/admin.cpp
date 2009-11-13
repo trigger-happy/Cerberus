@@ -230,7 +230,6 @@ void Admin::onContestantListClick( const QModelIndex& index ) {
 
 void Admin::onDropContestant() {
 	if ( !m_selected_user.isEmpty() ) {
-		this->removeContestant( m_selected_user );
 		m_server->dropConnection( m_selected_user );
 		m_selected_user = "";
 	}
@@ -264,6 +263,7 @@ void Admin::onChangeScore() {
 		if ( ok ) {
 			m_server->setScore( m_selected_user, score );
 			m_dlg->score_lbl->setText( QString( "%1" ).arg( score ) );
+			m_server->updateRankData();
 		}
 	}
 }
