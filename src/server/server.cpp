@@ -178,7 +178,10 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		updateRankData();
 	} else {
 		// duplicate connection
-		m_hash[c_username]->dropClient();
+		if ( m_hash[c_username] != NULL ) {
+			m_hash[c_username]->dropClient();
+		}
+
 		m_hash[c_username] = cc;
 	}
 
@@ -198,6 +201,8 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 	}
 
 	m_teamconnected[ud.teamname] = false;
+
+	m_hash[c_user] = NULL;
 
 	if ( testing ) cout << c_user.toStdString() << " has been disconnected.\n";
 
