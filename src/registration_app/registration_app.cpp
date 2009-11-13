@@ -100,8 +100,10 @@ RegistrationApp::RegistrationApp(QWidget* parent) :
 
 
 
-	//start up the QLists
+	//start up the QLists and buttons
 	refreshTeamList(teams);
+
+
 }
 
 void RegistrationApp::refreshTeamList(QStringList& teams){
@@ -117,6 +119,15 @@ void RegistrationApp::refreshTeamList(QStringList& teams){
 		m_team_table_wnd->team_listview->clear();
 		m_team_table_wnd->team_listview->addItems(teams);
 		m_team_table_wnd->team_listview->setCurrentRow(0);
+
+		if (m_team_table_wnd->team_listview->count() == 0){
+			m_team_table_wnd->team_edit_btn->setEnabled(false);
+			m_team_table_wnd->team_delete_btn->setEnabled(false);
+		}
+		else{
+			m_team_table_wnd->team_edit_btn->setEnabled(true);
+			m_team_table_wnd->team_delete_btn->setEnabled(true);
+		}
 
 	}
 	catch(SqlUtil::SqlUtilException e){
@@ -135,6 +146,16 @@ void RegistrationApp::refreshUserList(QString team, QStringList& users){
 		m_user_table_wnd->user_listview->clear();
 		m_user_table_wnd->user_listview->addItems(users);
 		m_user_table_wnd->user_listview->setCurrentRow(0);
+
+
+		if (m_user_table_wnd->user_listview->count() == 0){
+			m_user_table_wnd->edit_user_btn->setEnabled(false);
+			m_user_table_wnd->delete_user_btn->setEnabled(false);
+		}
+		else{
+			m_user_table_wnd->edit_user_btn->setEnabled(true);
+			m_user_table_wnd->delete_user_btn->setEnabled(true);
+		}
 	}
 	catch(SqlUtil::SqlUtilException e){
 		showMessageDialog(  "Couldn't refresh users: error " + e.msg);
@@ -161,9 +182,7 @@ bool RegistrationApp::addTeam(){
 
 
 bool RegistrationApp::goToEditTeam(){
-	if (m_team_table_wnd->team_listview->count() == 0)
-		showMessageDialog(QString("There are no users to edit."));
-	else{
+
 		//change this to access from the list view
 		team_nav = m_team_table_wnd->team_listview->currentItem()->text();
 
@@ -174,30 +193,30 @@ bool RegistrationApp::goToEditTeam(){
 		m_user_table_w->show();
 		m_user_table_wnd->lbl_teamname->setText(team_nav);
 		m_user_table_wnd->lbl_schoolname->setText(m_sql.getTeamSchool(m_user_table_wnd->lbl_teamname->text()));
-	}
 }
 
 bool RegistrationApp::deleteTeam(){
-	//gets the selected school in the list view
-	team_nav = m_team_table_wnd->team_listview->currentItem()->text();
-	//show pop up dialog if they are sure they want to delete that team
-	 QMessageBox msgBox;
-	 msgBox.setText("You are about to delete team " + team_nav +".");
-	 msgBox.setInformativeText("Are you sure?");
-	 msgBox.setWindowTitle("Confirm Deletion");
-	 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-	 msgBox.setDefaultButton(QMessageBox::No);
-	 int ret = msgBox.exec();
-	 if(ret == QMessageBox::Yes){
-		 try {
-			 m_sql.deleteTeam(team_nav);
-			refreshTeamList(teams);
-			showMessageDialog( QString::fromStdString("Team successfully deleted."));
-		 }
-		catch(SqlUtil::SqlUtilException e){
-			showMessageDialog(  "Error deleting team: " + e.msg);
+
+		//gets the selected school in the list view
+		team_nav = m_team_table_wnd->team_listview->currentItem()->text();
+		//show pop up dialog if they are sure they want to delete that team
+		 QMessageBox msgBox;
+		 msgBox.setText("You are about to delete team " + team_nav +".");
+		 msgBox.setInformativeText("Are you sure?");
+		 msgBox.setWindowTitle("Confirm Deletion");
+		 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		 msgBox.setDefaultButton(QMessageBox::No);
+		 int ret = msgBox.exec();
+		 if(ret == QMessageBox::Yes){
+			 try {
+				 m_sql.deleteTeam(team_nav);
+				refreshTeamList(teams);
+				showMessageDialog( QString::fromStdString("Team successfully deleted."));
+			 }
+			catch(SqlUtil::SqlUtilException e){
+				showMessageDialog(  "Error deleting team: " + e.msg);
+			}
 		}
-	}
 }
 
 
@@ -241,9 +260,6 @@ bool RegistrationApp::addUser(){
 }
 
 bool RegistrationApp::editUser(){
-	if (m_user_table_wnd->user_listview->count() == 0)
-		showMessageDialog(QString("There are no users to edit."));
-	else{
 		//pass the username of the selected value in the list view to user_nav
 		user_nav = m_user_table_wnd->user_listview->currentItem()->text();
 		//get the original data of that user
@@ -257,30 +273,29 @@ bool RegistrationApp::editUser(){
 		m_user_edit_wnd->lbl_userteam->setText(ud.teamname);
 		m_user_edit_wnd->lbl_userschool->setText(m_sql.getTeamSchool(ud.teamname));
 		m_user_edit_w->show();
-	}
 }
 
 bool RegistrationApp::deleteUser(){
-	//gets the selected user in the list view
-	user_nav = m_user_table_wnd->user_listview->currentItem()->text();
-	//show pop up dialog if they are sure they want to delete that user
-	 QMessageBox msgBox;
-	 msgBox.setText("You are about to delete " + user_nav +".");
-	 msgBox.setWindowTitle("Confirm Deletion");
-	 msgBox.setInformativeText("Are you sure?");
-	 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-	 msgBox.setDefaultButton(QMessageBox::No);
-	 int ret = msgBox.exec();
-	 if(ret == QMessageBox::Yes){
-		try{
-			m_sql.deleteUser(user_nav);
-			refreshUserList(team_nav, users);
-			showMessageDialog( QString::fromStdString("User successfully deleted"));
+		//gets the selected user in the list view
+		user_nav = m_user_table_wnd->user_listview->currentItem()->text();
+		//show pop up dialog if they are sure they want to delete that user
+		 QMessageBox msgBox;
+		 msgBox.setText("You are about to delete " + user_nav +".");
+		 msgBox.setWindowTitle("Confirm Deletion");
+		 msgBox.setInformativeText("Are you sure?");
+		 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		 msgBox.setDefaultButton(QMessageBox::No);
+		 int ret = msgBox.exec();
+		 if(ret == QMessageBox::Yes){
+			try{
+				m_sql.deleteUser(user_nav);
+				refreshUserList(team_nav, users);
+				showMessageDialog( QString::fromStdString("User successfully deleted"));
+			}
+			catch(SqlUtil::SqlUtilException e){
+				showMessageDialog( "Error deleting user: " + e.msg);
+			}
 		}
-		catch(SqlUtil::SqlUtilException e){
-			showMessageDialog( "Error deleting user: " + e.msg);
-		}
-	}
 }
 
 
