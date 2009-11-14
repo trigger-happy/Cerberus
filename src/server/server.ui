@@ -217,7 +217,7 @@
        <x>270</x>
        <y>10</y>
        <width>301</width>
-       <height>163</height>
+       <height>187</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -270,6 +270,24 @@
          <widget class="QLabel" name="cstatus_lbl">
           <property name="text">
            <string>status</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>team:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="team_lbl">
+          <property name="text">
+           <string>team </string>
           </property>
          </widget>
         </item>
