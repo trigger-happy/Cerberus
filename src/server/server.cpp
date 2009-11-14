@@ -400,12 +400,12 @@ void Server::showQuestionTime() {
 	m_network->showQuestionTime();
 }
 
-void Server::showQuestion() {
-	m_network->showQuestion();
-}
-
 void Server::showAnswer() {
 	m_network->showAnswer();
+}
+
+void Server::hideAnswer() {
+	m_network->hideAnswer();
 }
 
 void Server::startQuestionTime( int num, int time ) {

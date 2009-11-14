@@ -58,12 +58,11 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_answers_dlg->view_answers_rounds, SIGNAL ( currentIndexChanged( int ) ),
 	         this, SLOT ( onAnswersRoundSelection( int ) ) );
 	connect( m_answers_dlg->view_answers_ok, SIGNAL ( clicked() ), this, SLOT ( onAnswersOk() ) );
-	connect( m_dlg->p_show_qtime_btn, SIGNAL ( clicked() ), this, SLOT ( onShowQuestionTime() ) );
 	connect( m_dlg->p_show_a_btn, SIGNAL ( clicked() ), this, SLOT ( onShowAnswer() ) );
-	connect( m_dlg->p_show_q_btn, SIGNAL ( clicked() ), this, SLOT ( onShowQuestion() ) );
+	connect( m_dlg->p_hide_a_btn, SIGNAL ( clicked() ), this, SLOT ( onHideAnswer() ) );
 	connect( m_dlg->p_con_time_show_btn, SIGNAL ( clicked() ), this, SLOT ( onShowTimeLeft() ) );
 	connect( m_dlg->p_show_ranks_btn, SIGNAL ( clicked() ), this, SLOT ( onShowRankings() ) );
-	connect( m_dlg->p_show_nothing_btn, SIGNAL( clicked() ), this, SLOT( onShowNothing() ) );
+	connect( m_dlg->p_show_main_btn, SIGNAL( clicked() ), this, SLOT( onShowMainScreen() ) );
 	connect( m_dlg->p_q_listv, SIGNAL ( clicked( QModelIndex ) ),
 	         this, SLOT ( onQuestionListClick( QModelIndex ) ) );
 	connect( m_dlg->p_q_listv, SIGNAL ( activated( QModelIndex ) ),
@@ -71,7 +70,6 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_dlg->qstart_btn, SIGNAL ( clicked() ), this, SLOT ( onStartQuestionTime() ) );
 	connect( m_dlg->qstop_btn, SIGNAL ( clicked() ), this, SLOT ( onStopQuestionTime() ) );
 	connect( m_dlg->qpause_btn, SIGNAL ( clicked() ), this, SLOT ( onPauseQuestionTime() ) );
-	connect( m_dlg->p_show_qtime_btn, SIGNAL( clicked() ), this, SLOT( onShowQuestionTime() ) );
 	connect( m_dlg->reset_score_btn, SIGNAL( clicked() ), this, SLOT( onScoreReset() ) );
 
 
@@ -278,7 +276,7 @@ void Admin::onShowRankings() {
 	m_server->showRankings();
 }
 
-void Admin::onShowNothing() {
+void Admin::onShowMainScreen() {
 }
 
 void Admin::onQuestionListClick( const QModelIndex& index ) {
@@ -301,8 +299,8 @@ void Admin::onQuestionListClick( const QModelIndex& index ) {
 	m_dlg->p_time_line->setText( time_limit );
 }
 
-void Admin::onShowQuestion() {
-	m_server->showQuestion();
+void Admin::onHideAnswer() {
+	m_server->hideAnswer();
 }
 
 void Admin::onShowAnswer() {
@@ -314,6 +312,7 @@ void Admin::onShowQuestionTime() {
 }
 
 void Admin::onStartQuestionTime() {
+	//m_server->showQuestionTime();
 	m_timeleft = m_dlg->p_time_line->text().toInt();
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );

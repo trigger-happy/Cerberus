@@ -87,10 +87,9 @@ public:
 	void showAnswer();
 
 	/*!
-	Show the question on the projector.
-	\todo Consider merging this with showQuestionTime.
+	Hide the answer.
 	*/
-	void showQuestion();
+	void hideAnswer();
 
 	/*!
 	Send the contest time to the projector.

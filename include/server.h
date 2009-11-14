@@ -136,6 +136,11 @@ public:
 	void showAnswer();
 
 	/*!
+	Send a command to the projector to hide the answer to the current question.
+	*/
+	void hideAnswer();
+
+	/*!
 	Get the contest time for a certain round.
 	\param round The round to query.
 	\return The contest time in seconds.

@@ -60,9 +60,9 @@ public slots:
 	// projector control
 	void onShowTimeLeft();
 	void onShowRankings();
-	void onShowNothing();
+	void onShowMainScreen();
 	void onQuestionListClick( const QModelIndex& index );
-	void onShowQuestion();
+	void onHideAnswer();
 	void onShowAnswer();
 	void onShowQuestionTime();
 	void onStartQuestionTime();

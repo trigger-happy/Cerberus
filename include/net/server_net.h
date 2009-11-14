@@ -187,9 +187,9 @@ public:
 	void showAnswer();
 
 	/*!
-	Send a command to projecors to show the question.
+	Tell the projectors to hide the answer.
 	*/
-	void showQuestion();
+	void hideAnswer();
 
 	/*!
 	Dis/Allow contestants to submit answers.
@@ -239,28 +239,28 @@ public slots:
 signals:
 	/*!
 	Emitted when an invalid client connects.
-    \param con Pointer to a TempConnection.
+	\param con Pointer to a TempConnection.
 	*/
 	void badClient ( TempConnection* con );
-	
+
 	/*!
 	Emitted when a contestant client connects to the server.
 	\param cc Pointer to the ContestantConnection to the contestant.
 	*/
 	void newContestant ( ContestantConnection* cc );
-	
+
 	/*!
 	Emitted when the contestant disconnects.
 	\param cc Pointer to the ContestantConnection that disconnected.
 	*/
 	void contestantDc ( ContestantConnection* cc );
-	
+
 	/*!
 	Emitted when a new projector connects.
 	\param pc Pointer to the ProjectorConnection that connected.
 	*/
 	void newProjector ( ProjectorConnection* pc );
-	
+
 	/*!
 	Emitted when a projector disconnects.
 	\param pc Pointer to the ProjectorConnection that disconnected.

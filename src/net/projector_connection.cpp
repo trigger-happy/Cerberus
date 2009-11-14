@@ -168,14 +168,14 @@ void ProjectorConnection::showAnswer() {
 	m_socket->write ( block );
 }
 
-void ProjectorConnection::showQuestion() {
+void ProjectorConnection::hideAnswer() {
 	//construct the packet and send it
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
 	out.setVersion ( QDataStream::Qt_4_5 );
 	// construct the header
 	p_header hdr;
-	hdr.command = PJR_SHOW_QUESTION;
+	hdr.command = PJR_HIDE_ANSWER;
 	hdr.length = 0;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );

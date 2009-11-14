@@ -275,11 +275,11 @@ void ServerNetwork::showAnswer() {
 	}
 }
 
-void ServerNetwork::showQuestion() {
+void ServerNetwork::hideAnswer() {
 	projector_list::iterator i = m_projectors.begin();
 
 	for ( ; i != m_projectors.end(); i++ ) {
-		( *i )->showQuestion();
+		( *i )->hideAnswer();
 	}
 }
 

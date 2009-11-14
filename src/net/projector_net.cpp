@@ -203,8 +203,8 @@ void ProjectorNet::ready() {
 			emit onShowAnswer();
 			break;
 
-		case PJR_SHOW_QUESTION:
-			emit onShowQuestion();
+		case PJR_HIDE_ANSWER:
+			emit onHideAnswer();
 			break;
 
 		default:

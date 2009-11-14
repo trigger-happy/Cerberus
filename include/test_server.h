@@ -53,7 +53,6 @@ private slots:
 	void onShowRanksBtn();
 	void onShowQTimeBtn();
 	void onShowAnswerBtn();
-	void onShowQuestionBtn();
 	void onStartQuestionBtn();
 	void onStopQuestionBtn();
 	void onPauseQuestionBtn();

@@ -171,10 +171,10 @@ signals:
 	void onShowAnswer();
 
 	/*!
-	Emitted when the server sends an instruction to show the current
-	question on screen.
+	Emitted when the server sends an instruction to hide the answer
+	of the current question on screen.
 	*/
-	void onShowQuestion();
+	void onHideAnswer();
 
 private:
 	QTcpSocket* m_socket;
