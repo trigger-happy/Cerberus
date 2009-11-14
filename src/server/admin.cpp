@@ -360,6 +360,12 @@ void Admin::onNewRankModel( QStandardItemModel* model ) {
 	m_dlg->score_tbv->setModel( model );
 }
 
+void Admin::onTeamView() {
+}
+
+void Admin::onUserView() {
+}
+
 int main ( int argc, char* argv[] ) {
 	QApplication a ( argc, argv );
 	string cmd;
