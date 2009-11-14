@@ -223,6 +223,10 @@ void Admin::onContestantListClick( const QModelIndex& index ) {
 	QString c_user = m_contestants->itemFromIndex( index )->text();
 	m_dlg->user_lbl->setText( c_user );
 	m_dlg->score_lbl->setText( QString( "%1" ).arg( m_server->getScore( c_user ) ) );
+
+	UserData ud;
+	SqlUtil::getInstance().getSpecificUser( c_user, ud );
+	m_dlg->team_lbl->setText( QString( "%1" ).arg( ud.teamname ) );
 	m_selected_user = c_user;
 }
 
