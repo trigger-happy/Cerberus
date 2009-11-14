@@ -472,17 +472,19 @@ void Server::getRankData( vector<RankData>& out ) {
 }
 
 void Server::updateRankData() {
-	vector<pair<int, QStandardItem*> > temp;
+	// for those curious why QStandardItemModel::sort is not used
+	// just remember that it sorts it ALPHABETICALLY, not NUMERICALLY.
+	vector<pair<RankData, QStandardItem*> > temp;
 
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
 		QStandardItem* ranking = m_rankmodel->item( i, 0 );
-		int score = m_rankmodel->item( i, 3 )->text().toInt();
-		temp.push_back( pair<int, QStandardItem*>( score, ranking ) );
+		RankData rd;
+		rd.score = m_rankmodel->item( i, 3 )->text().toInt();
+		rd.time = m_rankmodel->item( i, 4 )->text().toInt();
+		temp.push_back( pair<RankData, QStandardItem*>( rd, ranking ) );
 	}
 
 	sort( temp.begin(), temp.end() );
-
-	reverse( temp.begin(), temp.end() );
 
 	QStandardItemModel* tempmodel = new QStandardItemModel( this );
 
@@ -526,6 +528,7 @@ void Server::scoreReset() {
 
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
 		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
+		m_rankmodel->item( i, 4 )->setText( QString( "0" ) );
 	}
 }
 

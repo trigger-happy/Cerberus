@@ -26,16 +26,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 using namespace std;
 
 struct Question {
+
 	struct AnswerKeyEntry {
 		QString c;
 		bool is_answer;
-		AnswerKeyEntry() : is_answer(false) {}
-		AnswerKeyEntry(const QString &c, bool is_answer = false) : c(c), is_answer(is_answer) {}
+		AnswerKeyEntry() : is_answer( false ) {}
 
-		bool operator==(const AnswerKeyEntry &rhs) const {
+		AnswerKeyEntry( const QString &c, bool is_answer = false ) : c( c ), is_answer( is_answer ) {}
+
+		bool operator==( const AnswerKeyEntry &rhs ) const {
 			return c == rhs.c && is_answer == rhs.is_answer;
 		}
 	};
+
 	typedef std::vector<AnswerKeyEntry> AnswerKey;
 
 	enum Type {IDENTIFICATION, CHOOSE_ONE, CHOOSE_ANY};
@@ -54,22 +57,27 @@ struct Question {
 	*/
 	AnswerKey answer_key;
 
-	Question(){
+	Question() {
 		score = 1;
 		time_limit = -1;
 	}
 
-	bool hasTimeLimit() const { return time_limit > 0; }
-	bool hasId() const { return !id.isEmpty(); }
+	bool hasTimeLimit() const {
+		return time_limit > 0;
+	}
 
-	bool operator==(const Question &rhs) const {
+	bool hasId() const {
+		return !id.isEmpty();
+	}
+
+	bool operator==( const Question &rhs ) const {
 		return id == rhs.id &&
-			   score == rhs.score &&
-			   time_limit == rhs.time_limit &&
-			   question == rhs.question &&
-			   type == rhs.type &&
-			   answer_key.size() == rhs.answer_key.size() &&
-			   std::equal(answer_key.begin(), answer_key.end(), rhs.answer_key.begin());
+		       score == rhs.score &&
+		       time_limit == rhs.time_limit &&
+		       question == rhs.question &&
+		       type == rhs.type &&
+		       answer_key.size() == rhs.answer_key.size() &&
+		       std::equal( answer_key.begin(), answer_key.end(), rhs.answer_key.begin() );
 	}
 
 	/*!
@@ -77,11 +85,13 @@ struct Question {
 	  \return boolean if the choice is correct.
 	  \throws std::logic_error The Question's type is not CHOOSE_ONE.
 	*/
-	bool checkAnswer(const size_t choice) const {
+	bool checkAnswer( const size_t choice ) const {
 		if ( type != CHOOSE_ONE )
-			throw std::logic_error("Question::checkAnswer(const size_t) called on a non-CHOOSE_ONE type.");
+			throw std::logic_error( "Question::checkAnswer(const size_t) called on a non-CHOOSE_ONE type." );
+
 		if ( choice > answer_key.size() )
 			return false;
+
 		return answer_key[choice-1].is_answer;
 	}
 
@@ -97,14 +107,15 @@ struct Question {
 	  \throws std::logic_error The Question's type is not CHOOSE_ANY.
 	  \throws std::length_error There are no entries in the answer_key.
 	*/
-	double checkAnswer(const std::vector<size_t> &choices) const {
+	double checkAnswer( const std::vector<size_t> &choices ) const {
 		if ( type != CHOOSE_ANY )
-			throw std::logic_error("Question::checkAnswer(const std::vector<size_t>&) called on a non-CHOOSE_ANY type.");
+			throw std::logic_error( "Question::checkAnswer(const std::vector<size_t>&) called on a non-CHOOSE_ANY type." );
 
 		if ( answer_key.size() == 0 )
-			throw std::length_error("There are no entries in the answer key... (so how do you expect me to grade it, hmmm?!)");
+			throw std::length_error( "There are no entries in the answer key... (so how do you expect me to grade it, hmmm?!)" );
 
 		double correct = 0;
+
 		size_t choiceIndex = 0;
 
 		/* Let me try another algorithm -- Nick
@@ -125,6 +136,7 @@ struct Question {
 
 
 		int key_correct_length = 0;
+
 		// This is the one I'm using until I find a more efficient way of coding this.
 		/*
 			I've noticed that since the answer key in each question is invariant, I would
@@ -134,34 +146,31 @@ struct Question {
 		*/
 
 		// count the number of correct answers
-		for ( size_t i = 0; i < answer_key.size(); ++i )
-		{
-			if( answer_key[i].is_answer )
-			{
+		for ( size_t i = 0; i < answer_key.size(); ++i ) {
+			if ( answer_key[i].is_answer ) {
 				key_correct_length++;
 			}
 		}
-		QString result;
-		for ( size_t i = 0; i < answer_key.size(); ++i )
-		{
 
-			if ( choiceIndex < choices.size() && i == (choices[choiceIndex]-1) )
-			{
+		QString result;
+
+		for ( size_t i = 0; i < answer_key.size(); ++i ) {
+
+			if ( choiceIndex < choices.size() && i == ( choices[choiceIndex] - 1 ) ) {
 				// if it is one of the choices, and it is wrong,
 				// no credit.
-				if( !answer_key[i].is_answer )
-				{
+				if ( !answer_key[i].is_answer ) {
 					correct = 0;
 					break;
-				}
-				else
-				{
+				} else {
 					++correct;
 				}
+
 				++choiceIndex;
 			}
 		}
-		return correct/key_correct_length;
+
+		return correct / key_correct_length;
 	}
 
 	/*!
@@ -170,16 +179,20 @@ struct Question {
 	  \throws std::logic_error The Question's type is not IDENTIFICATION.
 	  \throws std::length_error There are no entries in the answer_key.
 	*/
-	bool checkAnswer(const QString &ans) const {
+	bool checkAnswer( const QString &ans ) const {
 		if ( type != IDENTIFICATION )
-			throw std::logic_error("Question::checkAnswer(const QString &) called on a non-IDENTIFICATION type.");
+			throw std::logic_error( "Question::checkAnswer(const QString &) called on a non-IDENTIFICATION type." );
+
 		if ( answer_key.size() < 1 )
-			throw std::length_error("Answer key has no data to check against.");
+			throw std::length_error( "Answer key has no data to check against." );
+
 		for ( size_t i = 0; i < answer_key.size(); ++i ) {
 			if ( !answer_key[i].is_answer ) continue;
-			if ( ans.compare(answer_key[i].c, Qt::CaseInsensitive) == 0 )
+
+			if ( ans.compare( answer_key[i].c, Qt::CaseInsensitive ) == 0 )
 				return true;
 		}
+
 		return false;
 	}
 };
@@ -190,7 +203,8 @@ ans_type determines which of the fields should be set.
 IDENTIFICATION: id_answer must have the answer data.
 CHOOSE_ONE or CHOOSE_ANY: multi_choice must contain the answer(s)
 */
-struct Answer{
+
+struct Answer {
 	Question::Type ans_type;
 	// answer for identification
 	QString id_answer;
@@ -201,7 +215,7 @@ struct Answer{
 typedef std::vector<Answer> AnswerData;
 
 struct StageData {
-	StageData(){
+	StageData() {
 		contest_time = -1;
 	}
 
@@ -209,23 +223,26 @@ struct StageData {
 	std::vector<Question> questions;
 	int contest_time;
 
-	bool operator==(const StageData &rhs) const {
+	bool operator==( const StageData &rhs ) const {
 		return welcome_msg == rhs.welcome_msg &&
-			   questions.size() == rhs.questions.size() &&
-			   std::equal(questions.begin(), questions.end(), rhs.questions.begin()) &&
-			   contest_time == rhs.contest_time;
+		       questions.size() == rhs.questions.size() &&
+		       std::equal( questions.begin(), questions.end(), rhs.questions.begin() ) &&
+		       contest_time == rhs.contest_time;
 	}
 
-	bool hasContestTime() const { return contest_time > 0; }
+	bool hasContestTime() const {
+		return contest_time > 0;
+	}
 };
 
 struct NetworkConfig {
 	QString ip;
 	int port;
 
-	bool operator==(const NetworkConfig &rhs) const {
+	bool operator==( const NetworkConfig &rhs ) const {
 		return ip == rhs.ip && port == rhs.port;
 	}
+
 	virtual ~NetworkConfig() {}
 };
 
@@ -233,7 +250,9 @@ struct ClientConfig : public NetworkConfig {
 };
 
 struct ProjectorConfig : public NetworkConfig {
+
 	struct AuthorMode {
+
 		struct ScoreEntry {
 			QString name;
 			QString group;
@@ -252,11 +271,17 @@ struct ProjectorConfig : public NetworkConfig {
 	unsigned int time_precision;
 	AuthorMode *author_mode;
 
-	bool hasAuthorMode() const { return author_mode != 0; }
+	bool hasAuthorMode() const {
+		return author_mode != 0;
+	}
+
 	enum { DEFAULT_TIME_PRECISION = 100 };
 	ProjectorConfig() :
-			time_precision(DEFAULT_TIME_PRECISION), author_mode(0) {}
-	~ProjectorConfig() { delete author_mode; }
+			time_precision( DEFAULT_TIME_PRECISION ), author_mode( 0 ) {}
+
+	~ProjectorConfig() {
+		delete author_mode;
+	}
 };
 
 struct AdminConfig : public NetworkConfig {
@@ -269,17 +294,30 @@ struct ServerConfig {
 	QString db_path;
 	std::vector<StageFile> stage_files;
 
-	bool operator==(const ServerConfig &rhs) const {
+	bool operator==( const ServerConfig &rhs ) const {
 		return port == rhs.port &&
-			   db_path == rhs.db_path &&
-			   stage_files.size() == rhs.stage_files.size() &&
-			   std::equal(stage_files.begin(), stage_files.end(), rhs.stage_files.begin());
+		       db_path == rhs.db_path &&
+		       stage_files.size() == rhs.stage_files.size() &&
+		       std::equal( stage_files.begin(), stage_files.end(), rhs.stage_files.begin() );
 	}
 };
 
 struct RankData {
+	bool operator<( const RankData& rhs ) const {
+		if ( score > rhs.score ) {
+			return true;
+		} else if ( score == rhs.score ) {
+			if ( time < rhs.time ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	ushort rank;
 	double score;
+	ushort time;
 	QString fullname;
 	QString teamname;
 };
