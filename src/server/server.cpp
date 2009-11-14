@@ -109,7 +109,10 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 	headers.insert( 1, QString( "Name" ) );
 	headers.insert( 2, QString( "Team" ) );
 	headers.insert( 3, QString( "Score" ) );
+	headers.insert( 4, QString( "Time" ) );
 	m_rankmodel->setHorizontalHeaderLabels( headers );
+
+	m_timeleft = 0;
 
 	if ( testing ) cout << "Finished with setting up Server." << endl;
 }
@@ -174,6 +177,8 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		listing.append( new QStandardItem( ud.teamname ) );
 		// score
 		listing.append( new QStandardItem( QString( "0.0" ) ) );
+		// time
+		listing.append( new QStandardItem( QString( "0" ) ) );
 		m_rankmodel->appendRow( listing );
 		updateRankData();
 	} else {
@@ -363,6 +368,7 @@ void Server::setScore( QString c_user, double score ) {
 
 		if ( temp->text() == target ) {
 			m_rankmodel->item( i, 3 )->setText( QString( "%1" ).arg( score ) );
+			m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg( getRoundTime( m_round ) - m_timeleft ) );
 			updateRankData();
 			break;
 		}
@@ -372,6 +378,7 @@ void Server::setScore( QString c_user, double score ) {
 }
 
 void Server::setRound( int round ) {
+	m_round = round;
 	m_network->setRound( round );
 
 	QMutableHashIterator<QString, bool> i( m_cansubmit );
@@ -484,6 +491,7 @@ void Server::updateRankData() {
 	headers.insert( 1, QString( "Name" ) );
 	headers.insert( 2, QString( "Team" ) );
 	headers.insert( 3, QString( "Score" ) );
+	headers.insert( 4, QString( "Time" ) );
 	tempmodel->setHorizontalHeaderLabels( headers );
 
 	for ( int i = 0; i < temp.size(); i++ ) {
@@ -497,6 +505,8 @@ void Server::updateRankData() {
 		listing.append( new QStandardItem( m_rankmodel->item( row, 2 )->text() ) );
 		// score
 		listing.append( new QStandardItem( m_rankmodel->item( row, 3 )->text() ) );
+		// time
+		listing.append( new QStandardItem( m_rankmodel->item( row, 4 )->text() ) );
 		tempmodel->appendRow( listing );
 	}
 
@@ -508,6 +518,7 @@ void Server::updateRankData() {
 
 void Server::setContestTime( ushort time ) {
 	m_network->setContestTime( time );
+	m_timeleft = time;
 }
 
 void Server::scoreReset() {
@@ -520,4 +531,8 @@ void Server::scoreReset() {
 
 void Server::showMainScreen() {
 	m_network->showMainScreen();
+}
+
+void Server::timerTick() {
+	m_timeleft--;
 }

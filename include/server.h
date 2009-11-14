@@ -278,9 +278,15 @@ private slots:
 	*/
 	void projectorDisconnect( ProjectorConnection* pc );
 
+	/*!
+	Slot for the contest count down timer.
+	*/
+	void timerTick();
+
 private:
 	QString m_log, m_db_path;
 	quint16 m_port;
+	int m_round;
 	ServerNetwork* m_network;
 	ServerConfig m_config;
 	vector<QString> m_questions;
@@ -297,6 +303,8 @@ private:
 	QHash<QString, bool> m_teamconnected;
 	int m_selected_question_num;
 	QStandardItemModel* m_rankmodel;
+	// internal timer
+	ushort m_timeleft;
 };
 
 #endif //SERVER_H

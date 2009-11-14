@@ -104,6 +104,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	onApplyBtn();
 	m_timer = new QTimer( this );
 	connect( m_timer, SIGNAL( timeout() ), this, SLOT( onTimeUpdate() ) );
+	connect( m_timer, SIGNAL( timeout() ), m_server, SLOT( timerTick() ) );
 
 	m_dlg->score_tbv->setModel( m_server->getRankModel() );
 }
