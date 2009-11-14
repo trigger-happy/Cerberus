@@ -77,9 +77,11 @@ enum PROTOCOL_COMMAND {
 
 	// show answer
 	PJR_SHOW_ANSWER,
-
 	// hide the answer
-	PJR_HIDE_ANSWER
+	PJR_HIDE_ANSWER,
+
+	// show main screen
+	PJR_SHOW_MAINSCREEN
 
 	// TODO: Add admin commands here
 };

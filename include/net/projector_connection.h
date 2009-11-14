@@ -102,6 +102,11 @@ public:
 	void showContestRanks( const vector<RankData>& rd );
 
 	/*!
+	Show the main screen on the projector.
+	*/
+	void showMainScreen();
+
+	/*!
 	Set the pointer to the stage data. This is to be used by ServerNet.
 	\param qdata pointer to a vector of QString containing the xml data.
 	*/

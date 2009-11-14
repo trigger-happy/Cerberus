@@ -207,6 +207,10 @@ void ProjectorNet::ready() {
 			emit onHideAnswer();
 			break;
 
+		case PJR_SHOW_MAINSCREEN:
+			emit onShowMainScreen();
+			break;
+
 		default:
 			;
 	}

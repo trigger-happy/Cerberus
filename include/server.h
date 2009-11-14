@@ -187,6 +187,11 @@ public:
 	*/
 	void scoreReset();
 
+	/*!
+	Show the main screen on the projector.
+	*/
+	void showMainScreen();
+
 	// public stuff
 	vector<Question> questions3;
 	vector<Question> questions4;

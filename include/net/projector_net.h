@@ -176,6 +176,11 @@ signals:
 	*/
 	void onHideAnswer();
 
+	/*!
+	Emitted when the main screen should be shown.
+	*/
+	void onShowMainScreen();
+
 private:
 	QTcpSocket* m_socket;
 	p_header* m_hdr;

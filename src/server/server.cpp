@@ -495,3 +495,7 @@ void Server::scoreReset() {
 		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
 	}
 }
+
+void Server::showMainScreen() {
+	m_network->showMainScreen();
+}

@@ -258,3 +258,16 @@ void ProjectorConnection::sendQData( const QString& xml ) {
 	out << xml;
 	m_socket->write ( block );
 }
+
+void ProjectorConnection::showMainScreen() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = PJR_SHOW_MAINSCREEN;
+	hdr.length = 0;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
+}

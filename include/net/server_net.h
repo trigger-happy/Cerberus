@@ -192,6 +192,11 @@ public:
 	void hideAnswer();
 
 	/*!
+	Show the main screen on the projectors.
+	*/
+	void showMainScreen();
+
+	/*!
 	Dis/Allow contestants to submit answers.
 	\param e true to allow, false otherwise
 	*/

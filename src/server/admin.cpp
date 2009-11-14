@@ -277,6 +277,7 @@ void Admin::onShowRankings() {
 }
 
 void Admin::onShowMainScreen() {
+	m_server->showMainScreen();
 }
 
 void Admin::onQuestionListClick( const QModelIndex& index ) {

@@ -283,6 +283,14 @@ void ServerNetwork::hideAnswer() {
 	}
 }
 
+void ServerNetwork::showMainScreen() {
+	projector_list::iterator i = m_projectors.begin();
+
+	for ( ; i != m_projectors.end(); i++ ) {
+		( *i )->showMainScreen();
+	}
+}
+
 void ServerNetwork::contestTimeResponse( ushort& contime ) {
 	contime = m_contime;
 }
