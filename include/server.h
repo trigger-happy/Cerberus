@@ -226,6 +226,13 @@ signals:
 	*/
 	void onContestTimeRequest( ushort& contime );
 
+	/*!
+	Emitted when the model has been renewed. This is a work
+	around for the sorting fail for score view.
+	\param model The new QStandardItemModel
+	*/
+	void newRankModel( QStandardItemModel* model );
+
 private slots:
 	//Contestant slots
 	/*!

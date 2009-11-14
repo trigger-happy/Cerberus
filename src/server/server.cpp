@@ -477,11 +477,33 @@ void Server::updateRankData() {
 
 	reverse( temp.begin(), temp.end() );
 
+	QStandardItemModel* tempmodel = new QStandardItemModel( this );
+
+	QStringList headers;
+	headers.insert( 0, QString( "Rank" ) );
+	headers.insert( 1, QString( "Name" ) );
+	headers.insert( 2, QString( "Team" ) );
+	headers.insert( 3, QString( "Score" ) );
+	tempmodel->setHorizontalHeaderLabels( headers );
+
 	for ( int i = 0; i < temp.size(); i++ ) {
-		temp[i].second->setText( QString( "%1" ).arg( i + 1 ) );
+		int row = temp[i].second->row();
+		QList<QStandardItem*> listing;
+		// rank column
+		listing.append( new QStandardItem( QString( "%1" ).arg( i + 1 ) ) );
+		// full name
+		listing.append( new QStandardItem( m_rankmodel->item( row, 1 )->text() ) );
+		// team name
+		listing.append( new QStandardItem( m_rankmodel->item( row, 2 )->text() ) );
+		// score
+		listing.append( new QStandardItem( m_rankmodel->item( row, 3 )->text() ) );
+		tempmodel->appendRow( listing );
 	}
 
-	m_rankmodel->sort( 0, Qt::AscendingOrder );
+	emit newRankModel( tempmodel );
+
+	delete m_rankmodel;
+	m_rankmodel = tempmodel;
 }
 
 void Server::setContestTime( ushort time ) {

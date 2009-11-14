@@ -71,6 +71,7 @@ public slots:
 
 	// score control
 	void onScoreReset();
+	void onNewRankModel( QStandardItemModel* model );
 
 	//timer
 	void onTimeUpdate();

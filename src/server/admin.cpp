@@ -78,6 +78,7 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_server, SIGNAL ( contestantC( QString ) ), this, SLOT ( addContestant( QString ) ) );
 	connect( m_server, SIGNAL ( contestantDc( QString ) ), this, SLOT ( removeContestant( QString ) ) );
 	connect( m_server, SIGNAL( onContestTimeRequest( ushort& ) ), this, SLOT( onContestTimeRequest( ushort& ) ) );
+	connect( m_server, SIGNAL( newRankModel( QStandardItemModel* ) ), this, SLOT( onNewRankModel( QStandardItemModel* ) ) );
 	m_selectedRound = 1;
 
 	m_q3_v = m_server->questions3;
@@ -352,6 +353,10 @@ void Admin::onStopQuestionTime() {
 
 void Admin::onScoreReset() {
 	m_server->scoreReset();
+}
+
+void Admin::onNewRankModel( QStandardItemModel* model ) {
+	m_dlg->score_tbv->setModel( model );
 }
 
 int main ( int argc, char* argv[] ) {
