@@ -170,6 +170,7 @@ void ProjectorNet::ready() {
 					RankData temp;
 					in >> temp.rank;
 					in >> temp.score;
+					in >> temp.time;
 					ushort size;
 					in >> size;
 					QByteArray buffer;

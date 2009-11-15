@@ -225,6 +225,7 @@ void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
 	for ( int i = 0; i < rd.size(); i++ ) {
 		out << ( ushort ) rd[i].rank;
 		out << ( double ) rd[i].score;
+		out << ( ushort ) rd[i].time;
 		out << ( ushort ) rd[i].fullname.size();
 		out.writeRawData( rd[i].fullname.toAscii().data(), rd[i].fullname.size() );
 		out << ( ushort ) rd[i].teamname.size();
