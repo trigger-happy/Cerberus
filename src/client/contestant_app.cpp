@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_finalsChoice.h"
 #include "ui_finalsIdent.h"
 #include "ui_summary.h"
+#include "ui_ending.h"
 #include <QString>
 #include <QFile>
 #include <QTextStream>
@@ -44,6 +45,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     m_finalsChoice_dlg = new Ui::finalsChoice_dlg;
     m_finalsIdent_dlg = new Ui::finalsIdent_dlg;
     m_summary_dlg = new Ui::summary_dlg;
+    m_ending_dlg = new Ui::ending_dlg;
 
 	this->hide();
 	m_welcome_w = new QDialog( this );
@@ -69,6 +71,10 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_summary_w = new QDialog( this );
 	m_summary_dlg->setupUi( m_summary_w );
 	m_summary_w->hide();
+
+    m_ending_w = new QDialog( this );
+    m_ending_dlg->setupUi( m_ending_w );
+    m_ending_w->hide();
 
 	m_login_w = new QDialog( this );
 	m_login_dlg->setupUi( m_login_w );
@@ -115,6 +121,9 @@ ContestantApp::ContestantApp ( QWidget* parent )
     // connections for finals dialog
     connect( m_finalsChoice_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
     connect( m_finalsIdent_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
+
+    // connections for ending dialog
+    connect( m_ending_dlg->exit_btn, SIGNAL( clicked() ), this, SLOT( exit() ) );
 
     // slot for timer
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateTimer() ) );
@@ -311,8 +320,7 @@ void ContestantApp::onAData ( bool result )
         if( round == 1 || round == 2 )
         {
             m_summary_w->hide();
-            m_welcome_w->show();
-            m_welcome_dlg->start_btn->setEnabled( false );
+            m_ending_w->show();
         }
     }
     else
@@ -355,7 +363,8 @@ void ContestantApp::updateTimer()
             status = CONTEST_STOPPED;
             stopContest();
             m_elims_dlg->time_lbl->setText("");
-            m_semifinals_dlg->time_lbl->setText("");   
+            m_semifinals_dlg->time_lbl->setText("");
+            m_ending_dlg->time_lbl->setText("");
         }
         if( round == 3 || round == 4 )
         {
@@ -383,6 +392,7 @@ void ContestantApp::updateTimer()
     t.append( QString::number(second) );
 
     m_welcome_dlg->time_lbl->setText( t );
+    m_ending_dlg->time_lbl->setText( t );
     if( round == 1 )
         m_elims_dlg->time_lbl->setText( t );
     else if( round == 2 )
@@ -621,6 +631,7 @@ void ContestantApp::displayStatus()
     m_semifinals_dlg->status_lbl->setText( s );
     m_finalsChoice_dlg->status_lbl->setText( s );
     m_finalsIdent_dlg->status_lbl->setText( s );
+    m_ending_dlg->status_lbl->setText( s );
 }
 
 void ContestantApp::recordAnswer()

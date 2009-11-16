@@ -33,6 +33,7 @@ namespace Ui
     class finalsChoice_dlg;
     class finalsIdent_dlg;
 	class summary_dlg;
+    class ending_dlg;
 }
 
 class ContestantNetwork;
@@ -167,6 +168,7 @@ private:
     Ui::finalsChoice_dlg* m_finalsChoice_dlg;
     Ui::finalsIdent_dlg* m_finalsIdent_dlg;
 	Ui::summary_dlg* m_summary_dlg;
+    Ui::ending_dlg* m_ending_dlg;
 
 	QDialog* m_login_w;
 	QDialog* m_welcome_w;
@@ -175,6 +177,7 @@ private:
     QDialog* m_finalsChoice_w;
     QDialog* m_finalsIdent_w;
 	QDialog* m_summary_w;
+    QDialog* m_ending_w;
 
 	const QString DISCONNECT_QUESTION;
 	const QString DISCONNECT_INFORMATION;
