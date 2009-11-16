@@ -196,7 +196,14 @@ void ContestantApp::onAuthenticate ( bool result )
         loggedIn = true;
 		m_login_w->hide();
 		m_welcome_w->show();
-		m_network->getContestState();
+        m_network->getContestState();
+
+        QString name = m_login_dlg->username_line->text();
+        m_welcome_dlg->name_lbl->setText( name );
+        m_elims_dlg->name_lbl->setText( name );
+        m_semifinals_dlg->name_lbl->setText( name );
+        m_finalsChoice_dlg->name_lbl->setText( name );
+        m_finalsIdent_dlg->name_lbl->setText( name );
 	}
 	else
 	{
@@ -348,7 +355,7 @@ void ContestantApp::updateTimer()
             status = CONTEST_STOPPED;
             stopContest();
             m_elims_dlg->time_lbl->setText("");
-            m_semifinals_dlg->time_lbl->setText("");
+            m_semifinals_dlg->time_lbl->setText("");   
         }
         if( round == 3 || round == 4 )
         {
@@ -357,6 +364,7 @@ void ContestantApp::updateTimer()
             m_finalsChoice_dlg->time_lbl->setText("");
             m_finalsIdent_dlg->time_lbl->setText("");
         }
+        m_welcome_dlg->time_lbl->setText("");
         return;
     }
 
@@ -374,6 +382,7 @@ void ContestantApp::updateTimer()
 
     t.append( QString::number(second) );
 
+    m_welcome_dlg->time_lbl->setText( t );
     if( round == 1 )
         m_elims_dlg->time_lbl->setText( t );
     else if( round == 2 )
@@ -680,6 +689,7 @@ void ContestantApp::stopContest()
 {
     timer->stop();
 
+    m_welcome_dlg->time_lbl->setText("");
     m_elims_w->hide();
     m_semifinals_w->hide();
     m_finalsChoice_w->hide();
