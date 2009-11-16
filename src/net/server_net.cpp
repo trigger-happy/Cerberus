@@ -143,7 +143,7 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 				pc->setStageData( m_questiondata );
 				connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
 				         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
-				connect( pc, SIGNAL( contestTimeRequest( ushort& ) ),
+				connect( pc, SIGNAL( onContestTimeRequest( ushort& ) ) ,
 				         this, SLOT( contestTimeResponse( ushort& ) ) );
 				m_projectors.insert( m_projectors.end(), pc );
 				emit newProjector( pc );
