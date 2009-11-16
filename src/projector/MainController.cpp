@@ -231,7 +231,7 @@ void MainController::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS 
 	//note: Question indexes are 0-based
 	const Question &q = sd.questions[qnum];
 
-	m_target.setQuestionNumber(qnum);
+	m_target.setQuestionNumber(qnum + 1);
 	m_target.setQuestionTotal(sd.questions.size());
 
 	switch ( status ) {
