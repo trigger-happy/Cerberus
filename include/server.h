@@ -69,7 +69,7 @@ public:
 	void dropConnection( QString c_user );
 
 	/*!
-	Ge the score for a specific user.
+	Get the score for a specific user.
 	\param c_user The user name.
 	\return The score in double.
 	*/
@@ -297,7 +297,8 @@ private slots:
 	*/
 	void timerTick();
 
-	void onPreciseTimerTick(unsigned int msec);
+	void onPreciseTimerTick( unsigned int msec );
+
 private:
 	/*!
 	Filter the score view by teams instead. Scores of users from the
