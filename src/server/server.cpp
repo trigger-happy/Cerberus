@@ -363,6 +363,8 @@ double Server::getScore( QString c_user ) {
 	return SqlUtil::getInstance().getScore( c_user );
 }
 
+static const unsigned int SCORE_TIME_PRECISION = 100; //100ms precision
+
 void Server::setScore( QString c_user, double score ) {
 	SqlUtil::getInstance().setScore( c_user, score );
 	// update m_rankmodel's score info
@@ -376,7 +378,12 @@ void Server::setScore( QString c_user, double score ) {
 
 		if ( temp->text() == target ) {
 			m_rankmodel->item( i, 3 )->setText( QString( "%1" ).arg( score ) );
-			m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg( getRoundTime( m_round ) - m_timeleft ) );
+			m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg(
+					(getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
+					 m_preciseTimeLeft +
+					 SCORE_TIME_PRECISION/2) //for rounding off to the nearest SCORE_TIME_PRECISON
+					/SCORE_TIME_PRECISION //truncate the rest of the score off
+					) );
 			updateRankData();
 			break;
 		}
@@ -475,7 +482,7 @@ void Server::getRankData( vector<RankData>& out ) {
 		temp.fullname = m_rankmodel->item( i, 1 )->text();
 		temp.teamname = m_rankmodel->item( i, 2 )->text();
 		temp.score = m_rankmodel->item( i, 3 )->text().toDouble();
-		temp.time = m_rankmodel->item( i, 4 )->text().toUShort();
+		temp.time = m_rankmodel->item( i, 4 )->text().toUInt();
 		out.push_back( temp );
 	}
 }
@@ -489,7 +496,7 @@ void Server::updateRankData() {
 		QStandardItem* ranking = m_rankmodel->item( i, 0 );
 		RankData rd;
 		rd.score = m_rankmodel->item( i, 3 )->text().toInt();
-		rd.time = m_rankmodel->item( i, 4 )->text().toInt();
+		rd.time = m_rankmodel->item( i, 4 )->text().toUInt();
 		temp.push_back( pair<RankData, QStandardItem*>( rd, ranking ) );
 	}
 

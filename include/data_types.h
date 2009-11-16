@@ -317,7 +317,7 @@ struct RankData {
 
 	ushort rank;
 	double score;
-	ushort time;
+	uint time;
 	QString fullname;
 	QString teamname;
 };
