@@ -233,6 +233,7 @@ void MainController::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS 
 
 	m_target.setQuestionNumber(qnum + 1);
 	m_target.setQuestionTotal(sd.questions.size());
+	m_target.setQuestion(q.question);
 
 	switch ( status ) {
 		case QUESTION_RUNNING:
