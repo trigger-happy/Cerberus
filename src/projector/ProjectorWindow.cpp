@@ -234,7 +234,6 @@ void ProjectorWindow::setAnswer(const QString &theAnswer) {
 
 void ProjectorWindow::setQuestion(const QString &theQuestion) {
 	m_qDisplayDict->SetValue("QUESTION", theQuestion.toStdString());
-	m_qDisplayDict->ShowSection("QUESTION_SECTION");
 }
 
 void ProjectorWindow::setStageNumber(int stageNumber) {
