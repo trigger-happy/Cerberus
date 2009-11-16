@@ -177,6 +177,13 @@ public:
 	}
 
 	/*!
+	Get the team model
+	*/
+	inline QStandardItemModel* getTeamModel() {
+		return m_teammodel;
+	}
+
+	/*!
 	Set the contest time for the projectors.
 	\param time The contest time.
 	*/
@@ -233,6 +240,13 @@ signals:
 	*/
 	void newRankModel( QStandardItemModel* model );
 
+	/*!
+	Emitted when the model has been renewed. Same work around
+	as above.
+	\param model The new QStandardItemModel
+	*/
+	void newTeamModel( QStandardItemModel* model );
+
 private slots:
 	//Contestant slots
 	/*!
@@ -284,6 +298,12 @@ private slots:
 	void timerTick();
 
 private:
+	/*!
+	Filter the score view by teams instead. Scores of users from the
+	same team will be added together into a single entity.
+	*/
+	void filterTeamView();
+
 	QString m_log, m_db_path;
 	quint16 m_port;
 	int m_round;
@@ -303,6 +323,7 @@ private:
 	QHash<QString, bool> m_teamconnected;
 	int m_selected_question_num;
 	QStandardItemModel* m_rankmodel;
+	QStandardItemModel* m_teammodel;
 	// internal timer
 	ushort m_timeleft;
 };

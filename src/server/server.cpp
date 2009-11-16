@@ -112,6 +112,14 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 	headers.insert( 4, QString( "Time" ) );
 	m_rankmodel->setHorizontalHeaderLabels( headers );
 
+	m_teammodel = new QStandardItemModel( this );
+	headers.clear();
+	headers.insert( 0, QString( "Rank" ) );
+	headers.insert( 1, QString( "Team" ) );
+	headers.insert( 2, QString( "Score" ) );
+	headers.insert( 3, QString( "Time" ) );
+	m_teammodel->setHorizontalHeaderLabels( headers );
+
 	m_timeleft = 0;
 
 	if ( testing ) cout << "Finished with setting up Server." << endl;
@@ -516,6 +524,61 @@ void Server::updateRankData() {
 
 	delete m_rankmodel;
 	m_rankmodel = tempmodel;
+	filterTeamView();
+}
+
+void Server::filterTeamView() {
+	vector<RankData> rd;
+	this->getRankData( rd );
+	map<QString, RankData> td;
+
+	for ( int i = 0; i < rd.size(); i++ ) {
+		if ( td.find( rd[i].teamname ) == td.end() ) {
+			td[rd[i].teamname] = rd[i];
+		} else {
+			td[rd[i].teamname].score += rd[i].score;
+			td[rd[i].teamname].time += rd[i].time;
+		}
+	}
+
+	rd.clear();
+
+	map<QString, RankData>::iterator iter = td.begin();
+
+	while ( iter != td.end() ) {
+		rd.push_back( iter->second );
+		iter++;
+	}
+
+	sort( rd.begin(), rd.end() );
+
+	// shove the team data into the view
+	QStandardItemModel* tempmodel = new QStandardItemModel( this );
+
+	QStringList headers;
+	headers.insert( 0, QString( "Rank" ) );
+	headers.insert( 1, QString( "Team" ) );
+	headers.insert( 2, QString( "Score" ) );
+	headers.insert( 3, QString( "Time" ) );
+	tempmodel->setHorizontalHeaderLabels( headers );
+
+	for ( int i = 0; i < rd.size(); i++ ) {
+		QList<QStandardItem*> listing;
+		// rank column
+		listing.append( new QStandardItem( QString( "%1" ).arg( i + 1 ) ) );
+		// team name
+		listing.append( new QStandardItem( rd[i].teamname ) );
+		// score
+		listing.append( new QStandardItem( QString( "%1" ).arg( rd[i].score ) ) );
+		// time
+		listing.append( new QStandardItem( QString( "%1" ).arg( rd[i].time ) ) );
+		tempmodel->appendRow( listing );
+	}
+
+	emit newTeamModel( tempmodel );
+
+	delete m_teammodel;
+	m_teammodel = tempmodel;
 }
 
 void Server::setContestTime( ushort time ) {
