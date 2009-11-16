@@ -76,6 +76,22 @@ public:
 	}
 
 	/*!
+	Set the number of rounds this contest will have.
+	\param rounds The number of rounds
+	*/
+	inline void setNumRounds( int rounds ) {
+		m_numrounds = rounds;
+	}
+
+	/*!
+	Get the number of rounds this contest will have.
+	\return The number of rounds
+	*/
+	inline int getNumRounds() {
+		return m_numrounds;
+	}
+
+	/*!
 	Set the current round of the contest.
 	\param round The current round.
 	*/
@@ -289,6 +305,7 @@ protected:
 	projector_list m_projectors;
 	tmpcon_list m_tempconnections;
 	const vector<QString>* m_questiondata;
+	int m_numrounds;
 };
 
 #endif //SERVER_NET_H

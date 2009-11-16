@@ -23,10 +23,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 using std::vector;
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket,
-        CONTEST_STATUS cstatus, int round, ushort ctime ) : QObject( parent ), m_socket( socket ) {
+        CONTEST_STATUS cstatus, int round, ushort max_rounds, ushort ctime ) : QObject( parent ), m_socket( socket ) {
 	m_ready = false;
 	m_con_status = cstatus;
 	m_round = round;
+	m_maxrounds = max_rounds;
 	m_contime = ctime;
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
 	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
@@ -105,6 +106,10 @@ void ProjectorConnection::ready() {
 		case QRY_PROJECTOR_READY:
 			m_ready = true;
 			emit projectorReady( this );
+			break;
+
+		case QRY_NUM_ROUNDS:
+			sendNumRounds();
 			break;
 
 		default:
@@ -270,5 +275,19 @@ void ProjectorConnection::showMainScreen() {
 	hdr.command = PJR_SHOW_MAINSCREEN;
 	hdr.length = 0;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
+}
+
+void ProjectorConnection::sendNumRounds() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = INF_NUM_ROUNDS;
+	hdr.length = sizeof ( ushort );
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out << ( ushort ) m_maxrounds;
 	m_socket->write ( block );
 }

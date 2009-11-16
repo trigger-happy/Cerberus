@@ -58,6 +58,10 @@ enum PROTOCOL_COMMAND {
 	QRY_CONTEST_TIME,
 	INF_CONTEST_TIME,
 
+	// number of rounds
+	QRY_NUM_ROUNDS,
+	INF_NUM_ROUNDS,
+
 	// projector stuff
 	// sent by the presenter when ready
 	QRY_PROJECTOR_READY,

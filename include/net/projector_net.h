@@ -81,6 +81,11 @@ public:
 	*/
 	void getStageData ( int round );
 
+	/*!
+	Request for the number of contest rounds.
+	*/
+	void getNumRounds();
+
 public slots:
 	/*!
 	Called when the app is able to connect to the server.
@@ -180,6 +185,11 @@ signals:
 	Emitted when the main screen should be shown.
 	*/
 	void onShowMainScreen();
+
+	/*!
+	Emitted when we receive the number of rounds from the server.
+	*/
+	void onNumRounds( ushort rounds );
 
 private:
 	QTcpSocket* m_socket;

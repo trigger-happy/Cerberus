@@ -28,9 +28,19 @@ class ProjectorConnection : public QObject {
 	Q_OBJECT;
 
 public:
+	/*!
+	Constructor
+	\param parent Parent object.
+	\param socket The socket connection to manage.
+	\param cstatus The contest status.
+	\param round The current round.
+	\param max_rounds The number of rounds in this contest.
+	\param ctime The contest time.
+	*/
 	ProjectorConnection( QObject* parent = 0, QTcpSocket* socket = 0,
 	                     CONTEST_STATUS cstatus = CONTEST_STOPPED,
 	                     int round = 1,
+	                     ushort max_rounds = 4,
 	                     ushort ctime = 0 );
 
 	/*!
@@ -97,6 +107,11 @@ public:
 	void sendContestTime();
 
 	/*!
+	Send the number of rounds
+	*/
+	void sendNumRounds();
+
+	/*!
 	Show the current contesant rankings on the projectors.
 	*/
 	void showContestRanks( const vector<RankData>& rd );
@@ -161,6 +176,7 @@ private:
 	const vector<QString>* m_qdata;
 	bool m_ready;
 	ushort m_round;
+	ushort m_maxrounds;
 	ushort m_contime;
 	CONTEST_STATUS m_con_status;
 	QTcpSocket* m_socket;

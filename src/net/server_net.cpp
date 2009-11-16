@@ -40,6 +40,8 @@ ServerNetwork::ServerNetwork ( QObject* parent ) : QObject ( parent ) {
 	//initialize stuff here
 	m_server = new QTcpServer ( this );
 	connect ( m_server, SIGNAL ( newConnection() ), this, SLOT ( newConnection() ) );
+	// default for /IT
+	m_numrounds = 4;
 }
 
 ServerNetwork::~ServerNetwork() {
@@ -137,7 +139,7 @@ void ServerNetwork::newClient ( TempConnection* con, CLIENT_ID id ) {
 		case CLIENT_PROJECTOR:
 			// TODO: add code here for creating a new presenter connection
 			{
-				ProjectorConnection* pc = new ProjectorConnection( this, temp_sock, m_con_status, m_round, m_contime );
+				ProjectorConnection* pc = new ProjectorConnection( this, temp_sock, m_con_status, m_round, m_numrounds, m_contime );
 				pc->setStageData( m_questiondata );
 				connect( pc, SIGNAL( projectorDisconnect( ProjectorConnection* ) ),
 				         this, SLOT( projectorDisconnect( ProjectorConnection* ) ) );
