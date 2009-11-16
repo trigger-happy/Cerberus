@@ -71,7 +71,7 @@ void MainController::resetData() {
 }
 
 StageData& MainController::getCurrentStage() {
-	if ( m_activeRound <= 0 || m_stageData.size() > m_activeRound ) {
+	if ( m_activeRound <= 0 || m_stageData.size() < m_activeRound ) {
 		qWarning() << "Round data request out of bounds "
 				   << "(round: " << m_activeRound << ") (maximum: " << m_stageData.size() << ")";
 	}
