@@ -305,6 +305,7 @@ void ContestantApp::onAData ( bool result )
         {
             m_summary_w->hide();
             m_welcome_w->show();
+            m_welcome_dlg->start_btn->setEnabled( false );
         }
     }
     else
@@ -482,8 +483,18 @@ void ContestantApp::submit()
 
 void ContestantApp::finalsSubmit()
 {
-    recordAnswer();
-    m_network->aDataSend( round, ad );
+    QMessageBox msg;
+    msg.setWindowTitle("Confirm answer");
+    msg.setText("Is this your final answer?");
+    msg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok );
+    msg.setDefaultButton(QMessageBox::Cancel);
+    int ret = msg.exec();
+
+    if( ret == QMessageBox::Ok )
+    {
+        recordAnswer();
+        m_network->aDataSend( round, ad );
+    }
 }
 
 //convenience methods
