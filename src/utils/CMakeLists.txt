@@ -7,5 +7,9 @@
 #add_executable(test ${SRCS} ${UIS_H} ${MOC_SRCS})
 
 set(UTIL_SRCS sql_util.cpp
-		xml_util.cpp)
-add_library(util ${UTIL_SRCS})
+		xml_util.cpp ContestTimer.cpp)
+set(UTIL_MHDR ${INCLUDE_DIR}/util/ContestTimer.h)
+
+qt4_wrap_cpp(UTIL_MSRC ${UTIL_MHDR})
+
+add_library(util ${UTIL_SRCS} ${UTIL_MSRC})
