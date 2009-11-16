@@ -226,6 +226,9 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
     if( !loggedIn )
         return;
 
+    status = s;
+    m_network->qDataRequest( r );
+
     if( round != r )
     {
         round = r;
@@ -236,8 +239,6 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
         qStatus = QUESTION_STOPPED;
     }
 
-    m_network->qDataRequest( r );
-
     if( round == 3 || round == 4 )
         m_welcome_dlg->start_btn->setEnabled( false );
     if( round == 4 )
@@ -245,7 +246,6 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
         m_finalsChoice_w->setWindowTitle("Tie-Breaker Round");
         m_finalsIdent_w->setWindowTitle("Tie-Breaker Round");
     }
-    status = s;
 
     if( status == CONTEST_RUNNING )
     {
