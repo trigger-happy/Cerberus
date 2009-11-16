@@ -475,6 +475,7 @@ void Server::getRankData( vector<RankData>& out ) {
 		temp.fullname = m_rankmodel->item( i, 1 )->text();
 		temp.teamname = m_rankmodel->item( i, 2 )->text();
 		temp.score = m_rankmodel->item( i, 3 )->text().toDouble();
+		temp.time = m_rankmodel->item( i, 4 )->text().toUShort();
 		out.push_back( temp );
 	}
 }
