@@ -530,20 +530,6 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="userview_btn">
-          <property name="text">
-           <string>&amp;User view</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="teamview_btn">
-          <property name="text">
-           <string>&amp;&amp;Team View</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="reset_score_btn">
           <property name="text">
            <string>&amp;Reset Scores</string>
@@ -566,6 +552,21 @@
        </layout>
       </item>
      </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_4">
+    <attribute name="title">
+     <string>Team View</string>
+    </attribute>
+    <widget class="QTableView" name="team_tbv">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>581</width>
+       <height>481</height>
+      </rect>
+     </property>
     </widget>
    </widget>
   </widget>
