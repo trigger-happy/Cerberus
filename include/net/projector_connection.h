@@ -172,7 +172,7 @@ signals:
 	void onError( const QString& error );
 
 private:
-	void sendQData( const QString& xml );
+	void sendQData( ushort round, const QString& xml );
 	const vector<QString>* m_qdata;
 	bool m_ready;
 	ushort m_round;

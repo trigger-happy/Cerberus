@@ -102,9 +102,11 @@ void ProjectorNet::ready() {
 		case INF_QUESTION_DATA:
 			//we have our question data
 			{
+				ushort round;
 				QString xml;
 				uchar hash[20];
 				in.readRawData ( ( char* ) hash, 20 );
+				in >> round;
 				in >> xml;
 				QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
 				QByteArray testhash2;
@@ -114,7 +116,7 @@ void ProjectorNet::ready() {
 				}
 
 				if ( testhash == testhash2 ) {
-					emit onStageData ( xml );
+					emit onStageData ( round, xml );
 				} else {
 					// TODO: act on invalid data
 				}

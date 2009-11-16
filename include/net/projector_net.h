@@ -111,9 +111,10 @@ public slots:
 signals:
 	/*!
 	Emitted when the stage data has arrived.
+	\param round The round that the StageData belongs to.
 	\param xml Stage data in xml format
 	*/
-	void onStageData ( const QString& xml );
+	void onStageData ( ushort round, const QString& xml );
 
 	/*!
 	Emitted when a connection to the server has been established.

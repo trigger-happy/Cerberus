@@ -88,7 +88,7 @@ void ProjectorConnection::ready() {
 			//contestant is asking for question data
 			ushort round;
 			in >> round;
-			sendQData ( m_qdata->at ( round - 1 ) );
+			sendQData ( round, m_qdata->at ( round - 1 ) );
 
 			break;
 
@@ -249,7 +249,7 @@ void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
 	m_socket->write ( block );
 }
 
-void ProjectorConnection::sendQData( const QString& xml ) {
+void ProjectorConnection::sendQData( ushort round, const QString& xml ) {
 	//construct the packet and send it
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
@@ -261,6 +261,7 @@ void ProjectorConnection::sendQData( const QString& xml ) {
 	hdr.length = hash.size() + xml.size();
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out.writeRawData ( hash.data(), hash.size() );
+	out << ( ushort ) round;
 	out << xml;
 	m_socket->write ( block );
 }
