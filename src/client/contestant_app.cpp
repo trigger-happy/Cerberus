@@ -30,7 +30,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <vector>
 #include <cassert>
 
-
 ContestantApp::ContestantApp ( QWidget* parent )
 		: QDialog ( parent ),
 		DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
@@ -159,8 +158,11 @@ ContestantApp::~ContestantApp()
 	delete m_network;
 	delete m_login_w;
 	delete m_welcome_w;
-	delete m_elims_w;
+    delete m_elims_w;
     delete m_semifinals_w;
+    delete m_finalsChoice_w;
+    delete m_finalsIdent_w;
+    delete m_summary_w;
     delete timer;
 }
 
@@ -174,7 +176,17 @@ void ContestantApp::onConnect()
 void ContestantApp::onDisconnect()
 {
     if( !closing )
+    {
         showInfo( 1, "Disconnected from server", "Please reconnect if still in the middle of the contest" );
+        m_welcome_w->hide();
+        m_elims_w->hide();
+        m_semifinals_w->hide();
+        m_finalsChoice_w->hide();
+        m_finalsIdent_w->hide();
+        m_summary_w->hide();
+        m_login_w->show();
+        round = 0;
+    }
 }
 
 void ContestantApp::onAuthenticate ( bool result )
@@ -198,8 +210,17 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
     if( !loggedIn )
         return;
 
+    if( round != r )
+    {
+        round = r;
+        ad.clear();
+        qCount = 0;
+        time = 0;
+        status = CONTEST_STOPPED;
+        qStatus = QUESTION_STOPPED;
+    }
+
     m_network->qDataRequest( r );
-	round = r;
 
     if( round == 3 || round == 4 )
         m_welcome_dlg->start_btn->setEnabled( false );
@@ -341,13 +362,16 @@ void ContestantApp::updateTimer()
     int minute = time/60;
     int second = time - minute*60;
     QString t;
-    if( t > 0 )
+    if( minute > 0 )
     {
         t.append( QString::number(minute) );
         t.append(":");
     }
 
-    t.append( QString::number(second).leftJustified( 2, ' '));
+    if( minute > 0 && second < 10 )
+        t.append("0");
+
+    t.append( QString::number(second) );
 
     if( round == 1 )
         m_elims_dlg->time_lbl->setText( t );
