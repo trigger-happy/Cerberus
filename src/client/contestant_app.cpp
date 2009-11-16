@@ -24,12 +24,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_finalsChoice.h"
 #include "ui_finalsIdent.h"
 #include "ui_summary.h"
+#include "ui_ending.h"
 #include <QString>
 #include <QFile>
 #include <QTextStream>
 #include <vector>
 #include <cassert>
-
 
 ContestantApp::ContestantApp ( QWidget* parent )
 		: QDialog ( parent ),
@@ -45,6 +45,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     m_finalsChoice_dlg = new Ui::finalsChoice_dlg;
     m_finalsIdent_dlg = new Ui::finalsIdent_dlg;
     m_summary_dlg = new Ui::summary_dlg;
+    m_ending_dlg = new Ui::ending_dlg;
 
 	this->hide();
 	m_welcome_w = new QDialog( this );
@@ -70,6 +71,10 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_summary_w = new QDialog( this );
 	m_summary_dlg->setupUi( m_summary_w );
 	m_summary_w->hide();
+
+    m_ending_w = new QDialog( this );
+    m_ending_dlg->setupUi( m_ending_w );
+    m_ending_w->hide();
 
 	m_login_w = new QDialog( this );
 	m_login_dlg->setupUi( m_login_w );
@@ -117,6 +122,9 @@ ContestantApp::ContestantApp ( QWidget* parent )
     connect( m_finalsChoice_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
     connect( m_finalsIdent_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
 
+    // connections for ending dialog
+    connect( m_ending_dlg->exit_btn, SIGNAL( clicked() ), this, SLOT( exit() ) );
+
     // slot for timer
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateTimer() ) );
 
@@ -159,8 +167,11 @@ ContestantApp::~ContestantApp()
 	delete m_network;
 	delete m_login_w;
 	delete m_welcome_w;
-	delete m_elims_w;
+    delete m_elims_w;
     delete m_semifinals_w;
+    delete m_finalsChoice_w;
+    delete m_finalsIdent_w;
+    delete m_summary_w;
     delete timer;
 }
 
@@ -174,7 +185,17 @@ void ContestantApp::onConnect()
 void ContestantApp::onDisconnect()
 {
     if( !closing )
+    {
         showInfo( 1, "Disconnected from server", "Please reconnect if still in the middle of the contest" );
+        m_welcome_w->hide();
+        m_elims_w->hide();
+        m_semifinals_w->hide();
+        m_finalsChoice_w->hide();
+        m_finalsIdent_w->hide();
+        m_summary_w->hide();
+        m_login_w->show();
+        round = 0;
+    }
 }
 
 void ContestantApp::onAuthenticate ( bool result )
@@ -184,7 +205,14 @@ void ContestantApp::onAuthenticate ( bool result )
         loggedIn = true;
 		m_login_w->hide();
 		m_welcome_w->show();
-		m_network->getContestState();
+        m_network->getContestState();
+
+        QString name = m_login_dlg->username_line->text();
+        m_welcome_dlg->name_lbl->setText( name );
+        m_elims_dlg->name_lbl->setText( name );
+        m_semifinals_dlg->name_lbl->setText( name );
+        m_finalsChoice_dlg->name_lbl->setText( name );
+        m_finalsIdent_dlg->name_lbl->setText( name );
 	}
 	else
 	{
@@ -198,8 +226,17 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
     if( !loggedIn )
         return;
 
+    if( round != r )
+    {
+        round = r;
+        ad.clear();
+        qCount = 0;
+        time = 0;
+        status = CONTEST_STOPPED;
+        qStatus = QUESTION_STOPPED;
+    }
+
     m_network->qDataRequest( r );
-	round = r;
 
     if( round == 3 || round == 4 )
         m_welcome_dlg->start_btn->setEnabled( false );
@@ -283,7 +320,7 @@ void ContestantApp::onAData ( bool result )
         if( round == 1 || round == 2 )
         {
             m_summary_w->hide();
-            m_welcome_w->show();
+            m_ending_w->show();
         }
     }
     else
@@ -327,6 +364,7 @@ void ContestantApp::updateTimer()
             stopContest();
             m_elims_dlg->time_lbl->setText("");
             m_semifinals_dlg->time_lbl->setText("");
+            m_ending_dlg->time_lbl->setText("");
         }
         if( round == 3 || round == 4 )
         {
@@ -335,20 +373,26 @@ void ContestantApp::updateTimer()
             m_finalsChoice_dlg->time_lbl->setText("");
             m_finalsIdent_dlg->time_lbl->setText("");
         }
+        m_welcome_dlg->time_lbl->setText("");
         return;
     }
 
     int minute = time/60;
     int second = time - minute*60;
     QString t;
-    if( t > 0 )
+    if( minute > 0 )
     {
         t.append( QString::number(minute) );
         t.append(":");
     }
 
-    t.append( QString::number(second).leftJustified( 2, ' '));
+    if( minute > 0 && second < 10 )
+        t.append("0");
 
+    t.append( QString::number(second) );
+
+    m_welcome_dlg->time_lbl->setText( t );
+    m_ending_dlg->time_lbl->setText( t );
     if( round == 1 )
         m_elims_dlg->time_lbl->setText( t );
     else if( round == 2 )
@@ -458,8 +502,18 @@ void ContestantApp::submit()
 
 void ContestantApp::finalsSubmit()
 {
-    recordAnswer();
-    m_network->aDataSend( round, ad );
+    QMessageBox msg;
+    msg.setWindowTitle("Confirm answer");
+    msg.setText("Is this your final answer?");
+    msg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok );
+    msg.setDefaultButton(QMessageBox::Cancel);
+    int ret = msg.exec();
+
+    if( ret == QMessageBox::Ok )
+    {
+        recordAnswer();
+        m_network->aDataSend( round, ad );
+    }
 }
 
 //convenience methods
@@ -577,6 +631,7 @@ void ContestantApp::displayStatus()
     m_semifinals_dlg->status_lbl->setText( s );
     m_finalsChoice_dlg->status_lbl->setText( s );
     m_finalsIdent_dlg->status_lbl->setText( s );
+    m_ending_dlg->status_lbl->setText( s );
 }
 
 void ContestantApp::recordAnswer()
@@ -645,6 +700,7 @@ void ContestantApp::stopContest()
 {
     timer->stop();
 
+    m_welcome_dlg->time_lbl->setText("");
     m_elims_w->hide();
     m_semifinals_w->hide();
     m_finalsChoice_w->hide();
