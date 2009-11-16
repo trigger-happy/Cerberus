@@ -17,10 +17,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#include "ContestTimer.h"
+#include "util/ContestTimer.h"
 #include <limits>
 
-unsigned int ContestTimer::INDEFINITE = std::numeric_limits<unsigned int>::max();
+const unsigned int ContestTimer::INDEFINITE = std::numeric_limits<unsigned int>::max();
 
 ContestTimer::ContestTimer( unsigned int interval ) :
 		m_interval(interval), m_duration(0), m_timer_id(0), m_offset(0) {
