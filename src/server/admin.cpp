@@ -19,9 +19,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_server.h"
 #include "ui_view_answers.h"
 #include "admin.h"
+#include "util/ContestTimer.h"
 #include <iostream>
 
 using namespace std;
+
+static const unsigned int PRECISE_UPDATE_INTERVAL = 100;
 
 Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 		m_dlg( new Ui::server_dlg ) {
@@ -80,6 +83,10 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_server, SIGNAL( onContestTimeRequest( ushort& ) ), this, SLOT( onContestTimeRequest( ushort& ) ) );
 	connect( m_server, SIGNAL( newRankModel( QStandardItemModel* ) ), this, SLOT( onNewRankModel( QStandardItemModel* ) ) );
 	connect( m_server, SIGNAL( newTeamModel( QStandardItemModel* ) ), this, SLOT( onNewTeamModel( QStandardItemModel* ) ) );
+
+	m_preciseTimer = new ContestTimer(PRECISE_UPDATE_INTERVAL);
+	connect(m_preciseTimer, SIGNAL(timeUpdate(uint)), m_server, SLOT(onPreciseTimerTick(uint)));
+
 	m_selectedRound = 1;
 
 	m_q3_v = m_server->questions3;
@@ -136,6 +143,7 @@ void Admin::onContestTimeRequest( ushort& contime ) {
 void Admin::onApplyBtn() {
 	m_currentRound = m_selectedRound;
 	m_timeleft = m_dlg->timer_spin->value();
+	m_preciseTimer->setDuration(m_timeleft * 1000u);
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_server->setRound( m_selectedRound );
@@ -153,6 +161,7 @@ void Admin::onApplyBtn() {
 void Admin::onStopBtn() {
 	if ( m_selectedRound < 3 ) {
 		m_timer->stop();
+		m_preciseTimer->stop();
 	}
 
 	m_server->stopContest();
@@ -163,6 +172,7 @@ void Admin::onStopBtn() {
 void Admin::onStartBtn() {
 	if ( m_selectedRound < 3 ) {
 		m_timer->start( 1000 );
+		m_preciseTimer->start();
 	}
 
 	m_server->startContest();
@@ -173,6 +183,7 @@ void Admin::onStartBtn() {
 void Admin::onPauseBtn() {
 	if ( m_selectedRound < 3 ) {
 		m_timer->stop();
+		m_preciseTimer->pause();
 	}
 
 	m_server->pauseContest();
@@ -323,9 +334,12 @@ void Admin::onShowQuestionTime() {
 void Admin::onStartQuestionTime() {
 	//m_server->showQuestionTime();
 	m_timeleft = m_dlg->p_time_line->text().toInt();
+	m_preciseTimer->setDuration(m_timeleft * 1000u);
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_timer->start( 1000 );
+	m_preciseTimer->start();
+
 
 	if ( m_currentRound == 3 ) {
 		m_server->startQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
@@ -336,6 +350,7 @@ void Admin::onStartQuestionTime() {
 
 void Admin::onPauseQuestionTime() {
 	m_timer->stop();
+	m_preciseTimer->pause();
 
 	if ( m_currentRound == 3 ) {
 		m_server->pauseQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
@@ -346,6 +361,7 @@ void Admin::onPauseQuestionTime() {
 
 void Admin::onStopQuestionTime() {
 	m_timer->stop();
+	m_preciseTimer->stop();
 
 	if ( m_currentRound == 3 ) {
 		m_server->stopQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );

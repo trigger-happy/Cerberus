@@ -603,3 +603,7 @@ void Server::showMainScreen() {
 void Server::timerTick() {
 	m_timeleft--;
 }
+
+void Server::onPreciseTimerTick(unsigned int msec) {
+	m_preciseTimeLeft = msec;
+}

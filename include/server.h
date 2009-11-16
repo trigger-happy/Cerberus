@@ -297,6 +297,7 @@ private slots:
 	*/
 	void timerTick();
 
+	void onPreciseTimerTick(unsigned int msec);
 private:
 	/*!
 	Filter the score view by teams instead. Scores of users from the
@@ -326,6 +327,8 @@ private:
 	QStandardItemModel* m_teammodel;
 	// internal timer
 	ushort m_timeleft;
+	//A more precise time left.
+	unsigned int m_preciseTimeLeft;
 };
 
 #endif //SERVER_H

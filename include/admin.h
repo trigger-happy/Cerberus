@@ -28,6 +28,8 @@ namespace Ui {
 	class view_answers_dlg;
 }
 
+class ContestTimer;
+
 class Admin : public QDialog {
 	Q_OBJECT
 
@@ -93,6 +95,7 @@ private:
 	int m_selectedRound;
 	int m_currentRound;
 	QTimer* m_timer;
+	ContestTimer *m_preciseTimer;
 	int m_timeleft;
 };
 
