@@ -47,6 +47,7 @@ const char * const DEFAULT_TEMPLATE_SCOREBOARD =
 "				<td>{{RANK}}</td>"
 "				<td>{{NAME}}</td><td>{{GROUP}}</td>"
 "				<td>{{SCORE}}</td>"
+"				<td>{{TIME}}</td>"
 "			</tr>"
 "			{{/CONTESTANT_SECTION}}"
 "		<table>"
