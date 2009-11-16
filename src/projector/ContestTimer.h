@@ -31,6 +31,8 @@ class ContestTimer : public QObject
 	unsigned int m_interval, m_duration, m_offset;
 	int m_timer_id;
 public:
+	static unsigned int INDEFINITE;
+
 	ContestTimer( unsigned int interval );
 	void start();
 	void restart();

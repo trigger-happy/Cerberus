@@ -74,21 +74,28 @@ void ProjectorWindow::setTimeLeft(unsigned int val) {
 			evaluateJavaScript(
 					JS_TRIGGER_TIME.arg(QString::number(val)));
 
-	static char buffer[1024];
-	//format the thing differently if it's over a minute
-	if ( val > MSEC_PER_SEC * 60 ) {
-		std::sprintf(buffer, "%d:%.1lf",
-					 val/(MSEC_PER_SEC * 60),
-					 (double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC);
-
-		ctemplate::TemplateDictionary::SetGlobalValue(
-				"TIME_LEFT", buffer);
+	//if the "time left" is infinity, show an infinity symbol instead (javascript handlers should
+	//consider this scenario).
+	if ( ContestTimer::INDEFINITE == val ) {
+		//send infinity symbol
+		ctemplate::TemplateDictionary::SetGlobalValue("TIME_LEFT", ENTITY_INFINITY);
 	} else {
-		std::sprintf(buffer, "%.1lf", (double)val/MSEC_PER_SEC);
+		static char buffer[1024];
+		//format the thing differently if it's over a minute
+		if ( val > MSEC_PER_SEC * 60 ) {
+			std::sprintf(buffer, "%d:%.1lf",
+						 val/(MSEC_PER_SEC * 60),
+						 (double)(val % (MSEC_PER_SEC * 60))/MSEC_PER_SEC);
 
-		ctemplate::TemplateDictionary::SetGlobalValue(
-				"TIME_LEFT",
-				buffer);
+			ctemplate::TemplateDictionary::SetGlobalValue(
+					"TIME_LEFT", buffer);
+		} else {
+			std::sprintf(buffer, "%.1lf", (double)val/MSEC_PER_SEC);
+
+			ctemplate::TemplateDictionary::SetGlobalValue(
+					"TIME_LEFT",
+					buffer);
+		}
 	}
 
 	if ( result.toBool() ) return;
@@ -227,7 +234,6 @@ void ProjectorWindow::setAnswer(const QString &theAnswer) {
 
 void ProjectorWindow::setQuestion(const QString &theQuestion) {
 	m_qDisplayDict->SetValue("QUESTION", theQuestion.toStdString());
-	m_qDisplayDict->ShowSection("QUESTION_SECTION");
 }
 
 void ProjectorWindow::setStageNumber(int stageNumber) {

@@ -67,7 +67,7 @@ const char * const DEFAULT_TEMPLATE_QDISPLAY =
 "		<h1>{{CONTEST_NAME}} - Round {{STAGE_NUMBER}}</h1>"
 "		<h1>Question Number: {{QUESTION_NUMBER}} out of {{QUESTION_TOTAL}}</h1>"
 "		<h2>Time: {{TIME_LEFT}}</h2>"
-"		{{#QUESTION_SECTION}}<h2>Question: {{QUESTION}}</h2>{{/QUESTION_SECTION}}"
+"		<h2>Question: {{QUESTION}}</h2>"
 "		{{#ANSWER_SECTION}}<h2>Answer: {{ANSWER}}</h2>{{/ANSWER_SECTION}}"
 "		<ol>"
 "			{{#CHOICE_SECTION}}<li>{{CHOICE}}</li>{{/CHOICE_SECTION}}"
