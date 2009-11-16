@@ -132,6 +132,7 @@ void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
 	//question
 	if ( m_activeRound != round ) {
 		m_target.flushQDisplay();
+		m_target.setStageNumber(round);
 	}
 
 	m_activeRound = round;
