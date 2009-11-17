@@ -1,4 +1,4 @@
 projector.exe
 projector
 *.dll
-resources/projector_config.xml
+resources/*projector_config.xml

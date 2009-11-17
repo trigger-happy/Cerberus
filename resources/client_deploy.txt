@@ -1,4 +1,4 @@
 Contestant.exe
 Contestant
 *.dll
-resources/client_config.xml
+resources/*client_config.xml
