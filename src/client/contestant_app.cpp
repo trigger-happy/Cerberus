@@ -193,6 +193,7 @@ void ContestantApp::onDisconnect()
         m_finalsChoice_w->hide();
         m_finalsIdent_w->hide();
         m_summary_w->hide();
+        m_ending_w->hide();
         m_login_w->show();
         round = 0;
     }
