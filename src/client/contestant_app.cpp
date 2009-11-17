@@ -214,6 +214,7 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
         round = r;
         ad.clear();
         qCount = 0;
+        stopQuestion();
     }
 
     if( round == 3 || round == 4 )
@@ -298,6 +299,11 @@ void ContestantApp::onAData ( bool result )
         {
             m_summary_w->hide();
             m_ending_w->show();
+        }
+        else if( round == 3 || round == 4 )
+        {
+            pauseQuestion();
+            timer->start( 1000 );
         }
     }
     else
@@ -712,6 +718,7 @@ void ContestantApp::stopContest()
     m_finalsChoice_w->hide();
     m_finalsIdent_w->hide();
     m_summary_w->hide();
+    m_ending_w->hide();
 
     qCount = 0;
     m_welcome_dlg->start_btn->setEnabled( false );
@@ -759,8 +766,6 @@ void ContestantApp::runContest()
 
 void ContestantApp::stopQuestion()
 {
-    timer->stop();
-
     m_finalsChoice_dlg->a_choice->setChecked(false);
     m_finalsChoice_dlg->b_choice->setChecked(false);
     m_finalsChoice_dlg->c_choice->setChecked(false);
@@ -776,12 +781,11 @@ void ContestantApp::stopQuestion()
     m_finalsIdent_dlg->submit_btn->setEnabled(false);
 
     displayStatus();
+    timer->stop();
 }
 
 void ContestantApp::pauseQuestion()
 {
-    timer->stop();
-
     m_finalsChoice_dlg->a_choice->setEnabled(false);
     m_finalsChoice_dlg->b_choice->setEnabled(false);
     m_finalsChoice_dlg->c_choice->setEnabled(false);
@@ -792,6 +796,7 @@ void ContestantApp::pauseQuestion()
     m_finalsIdent_dlg->submit_btn->setEnabled(false);
 
     displayStatus();
+    timer->stop();
 }
 
 void ContestantApp::runQuestion()
