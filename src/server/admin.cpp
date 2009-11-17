@@ -84,8 +84,8 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_server, SIGNAL( newRankModel( QStandardItemModel* ) ), this, SLOT( onNewRankModel( QStandardItemModel* ) ) );
 	connect( m_server, SIGNAL( newTeamModel( QStandardItemModel* ) ), this, SLOT( onNewTeamModel( QStandardItemModel* ) ) );
 
-	m_preciseTimer = new ContestTimer(PRECISE_UPDATE_INTERVAL);
-	connect(m_preciseTimer, SIGNAL(timeUpdate(uint)), m_server, SLOT(onPreciseTimerTick(uint)));
+	m_preciseTimer = new ContestTimer( PRECISE_UPDATE_INTERVAL );
+	connect( m_preciseTimer, SIGNAL( timeUpdate( uint ) ), m_server, SLOT( onPreciseTimerTick( uint ) ) );
 
 	m_selectedRound = 1;
 
@@ -143,7 +143,7 @@ void Admin::onContestTimeRequest( ushort& contime ) {
 void Admin::onApplyBtn() {
 	m_currentRound = m_selectedRound;
 	m_timeleft = m_dlg->timer_spin->value();
-	m_preciseTimer->setDuration(m_timeleft * 1000u);
+	m_preciseTimer->setDuration( m_timeleft * 1000u );
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_server->setRound( m_selectedRound );
@@ -163,6 +163,9 @@ void Admin::onStopBtn() {
 		m_timer->stop();
 		m_preciseTimer->stop();
 	}
+
+	m_dlg->time_lcd->display( 0 );
+	m_dlg->time2_lcd->display( 0 );
 
 	m_server->stopContest();
 
@@ -193,6 +196,7 @@ void Admin::onPauseBtn() {
 
 void Admin::onRoundSelection( int index ) {
 	m_selectedRound = index + 1;
+	m_selected_question = 65535;
 	int time = 0;
 
 	if ( m_selectedRound < 3 ) {
@@ -334,7 +338,7 @@ void Admin::onShowQuestionTime() {
 void Admin::onStartQuestionTime() {
 	//m_server->showQuestionTime();
 	m_timeleft = m_dlg->p_time_line->text().toInt();
-	m_preciseTimer->setDuration(m_timeleft * 1000u);
+	m_preciseTimer->setDuration( m_timeleft * 1000u );
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_timer->start( 1000 );
@@ -362,6 +366,8 @@ void Admin::onPauseQuestionTime() {
 void Admin::onStopQuestionTime() {
 	m_timer->stop();
 	m_preciseTimer->stop();
+	m_dlg->time_lcd->display( 0 );
+	m_dlg->time2_lcd->display( 0 );
 
 	if ( m_currentRound == 3 ) {
 		m_server->stopQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
