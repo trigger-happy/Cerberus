@@ -78,7 +78,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
 	m_login_w = new QDialog( this );
 	m_login_dlg->setupUi( m_login_w );
-	m_login_w->hide();
+    m_login_w->show();
 
 	m_network = new ContestantNetwork ( this );
     timer = new QTimer( this );
@@ -130,30 +130,6 @@ ContestantApp::ContestantApp ( QWidget* parent )
 
 	// Get the client configuration from XmlUtil
 
-    QString xml;
-    QFile file( QString("resources/client_config.xml") );
-    if( !file.exists() )
-    {
-        showInfo( 1, "client_config.xml does not exist", "Make sure file is ready" );
-        exit();
-    }
-    else if( !file.open( QIODevice::ReadOnly ) )
-    {
-        showInfo( 1, "Can't open client_config.xml", "Make sure file is ready" );
-        exit();
-    }
-	QTextStream stream( &file );
-	QString line;
-    do {
-	    line = stream.readLine();
-        xml.append( line );
-    } while( !line.isNull() );
-
-	ClientConfig config;
-    XmlUtil::getInstance().readNetConfig( xml, config );
-
-    m_network->connectToHost ( config.ip , config.port );
-
     qCount = 0;
     time = 0;
     status = CONTEST_STOPPED;
@@ -179,7 +155,7 @@ ContestantApp::~ContestantApp()
 void ContestantApp::onConnect()
 {
     showInfo( 0, "Connected to server", "" );
-	m_login_w->show();
+    m_network->authenticate ( m_login_dlg->username_line->text(), m_login_dlg->password_line->text() );
 }
 
 void ContestantApp::onDisconnect()
@@ -409,7 +385,30 @@ void ContestantApp::updateTimer()
 
 void ContestantApp::login()
 {
-	m_network->authenticate ( m_login_dlg->username_line->text(), m_login_dlg->password_line->text() );
+    QString xml;
+    QFile file( QString("resources/client_config.xml") );
+    if( !file.exists() )
+    {
+        showInfo( 1, "client_config.xml does not exist", "Make sure file is ready" );
+        exit();
+    }
+    else if( !file.open( QIODevice::ReadOnly ) )
+    {
+        showInfo( 1, "Can't open client_config.xml", "Make sure file is ready" );
+        exit();
+    }
+
+    QTextStream stream( &file );
+    QString line;
+    do {
+        line = stream.readLine();
+        xml.append( line );
+    } while( !line.isNull() );
+
+    ClientConfig config;
+    XmlUtil::getInstance().readNetConfig( xml, config );
+
+    m_network->connectToHost( config.ip , config.port );
 }
 
 void ContestantApp::exit()
