@@ -38,7 +38,7 @@ namespace Ui
 
 class ContestantNetwork;
 
-class ContestantApp : public QDialog
+class ContestantApp : public QMainWindow
 {
 	Q_OBJECT;
 

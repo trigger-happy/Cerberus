@@ -30,9 +30,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QTextStream>
 #include <vector>
 #include <cassert>
+#include <iostream>
 
 ContestantApp::ContestantApp ( QWidget* parent )
-		: QDialog ( parent ),
+        : QMainWindow ( parent ),
 		DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
 		DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) ),
 		UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
@@ -845,9 +846,7 @@ void ContestantApp::closeEvent ( QCloseEvent * event )
 int main ( int argc, char* argv[] )
 {
 	QApplication app ( argc, argv );
-
 	ContestantApp c_app;
     c_app.show();
-    c_app.resize( 500, 500 );
 	return app.exec();
 }
