@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="60">
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="3600">
     <welcome_msg>Welcome to Round 1! Get Ready to Rumble!</welcome_msg>
     <choose score="1" id="1">
         <q>How many Genins made it into the preliminaries of the Third Chuunin Exam?</q>
