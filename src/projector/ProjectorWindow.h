@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <vector>
 #include "data_types.h"
 #include "TemplateManager.h"
-#include "ContestTimer.h"
+#include "util/ContestTimer.h"
 
 namespace Ui {
 	class ProjectorWindow;

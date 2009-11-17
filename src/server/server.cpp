@@ -109,7 +109,18 @@ Server::Server ( QWidget* parent ) : QObject ( parent ) {
 	headers.insert( 1, QString( "Name" ) );
 	headers.insert( 2, QString( "Team" ) );
 	headers.insert( 3, QString( "Score" ) );
+	headers.insert( 4, QString( "Time" ) );
 	m_rankmodel->setHorizontalHeaderLabels( headers );
+
+	m_teammodel = new QStandardItemModel( this );
+	headers.clear();
+	headers.insert( 0, QString( "Rank" ) );
+	headers.insert( 1, QString( "Team" ) );
+	headers.insert( 2, QString( "Score" ) );
+	headers.insert( 3, QString( "Time" ) );
+	m_teammodel->setHorizontalHeaderLabels( headers );
+
+	m_timeleft = 0;
 
 	if ( testing ) cout << "Finished with setting up Server." << endl;
 }
@@ -174,6 +185,8 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		listing.append( new QStandardItem( ud.teamname ) );
 		// score
 		listing.append( new QStandardItem( QString( "0.0" ) ) );
+		// time
+		listing.append( new QStandardItem( QString( "0" ) ) );
 		m_rankmodel->appendRow( listing );
 		updateRankData();
 	} else {
@@ -350,6 +363,8 @@ double Server::getScore( QString c_user ) {
 	return SqlUtil::getInstance().getScore( c_user );
 }
 
+static const unsigned int SCORE_TIME_PRECISION = 100; //100ms precision
+
 void Server::setScore( QString c_user, double score ) {
 	SqlUtil::getInstance().setScore( c_user, score );
 	// update m_rankmodel's score info
@@ -363,6 +378,12 @@ void Server::setScore( QString c_user, double score ) {
 
 		if ( temp->text() == target ) {
 			m_rankmodel->item( i, 3 )->setText( QString( "%1" ).arg( score ) );
+			m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg(
+					(getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
+					 m_preciseTimeLeft +
+					 SCORE_TIME_PRECISION/2) //for rounding off to the nearest SCORE_TIME_PRECISON
+					/SCORE_TIME_PRECISION //truncate the rest of the score off
+					) );
 			updateRankData();
 			break;
 		}
@@ -372,6 +393,7 @@ void Server::setScore( QString c_user, double score ) {
 }
 
 void Server::setRound( int round ) {
+	m_round = round;
 	m_network->setRound( round );
 
 	QMutableHashIterator<QString, bool> i( m_cansubmit );
@@ -400,12 +422,12 @@ void Server::showQuestionTime() {
 	m_network->showQuestionTime();
 }
 
-void Server::showQuestion() {
-	m_network->showQuestion();
-}
-
 void Server::showAnswer() {
 	m_network->showAnswer();
+}
+
+void Server::hideAnswer() {
+	m_network->hideAnswer();
 }
 
 void Server::startQuestionTime( int num, int time ) {
@@ -460,32 +482,116 @@ void Server::getRankData( vector<RankData>& out ) {
 		temp.fullname = m_rankmodel->item( i, 1 )->text();
 		temp.teamname = m_rankmodel->item( i, 2 )->text();
 		temp.score = m_rankmodel->item( i, 3 )->text().toDouble();
+		temp.time = m_rankmodel->item( i, 4 )->text().toUInt();
 		out.push_back( temp );
 	}
 }
 
 void Server::updateRankData() {
-	vector<pair<int, QStandardItem*> > temp;
+	// for those curious why QStandardItemModel::sort is not used
+	// just remember that it sorts it ALPHABETICALLY, not NUMERICALLY.
+	vector<pair<RankData, QStandardItem*> > temp;
 
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
 		QStandardItem* ranking = m_rankmodel->item( i, 0 );
-		int score = m_rankmodel->item( i, 3 )->text().toInt();
-		temp.push_back( pair<int, QStandardItem*>( score, ranking ) );
+		RankData rd;
+		rd.score = m_rankmodel->item( i, 3 )->text().toInt();
+		rd.time = m_rankmodel->item( i, 4 )->text().toUInt();
+		temp.push_back( pair<RankData, QStandardItem*>( rd, ranking ) );
 	}
 
 	sort( temp.begin(), temp.end() );
 
-	reverse( temp.begin(), temp.end() );
+	QStandardItemModel* tempmodel = new QStandardItemModel( this );
+
+	QStringList headers;
+	headers.insert( 0, QString( "Rank" ) );
+	headers.insert( 1, QString( "Name" ) );
+	headers.insert( 2, QString( "Team" ) );
+	headers.insert( 3, QString( "Score" ) );
+	headers.insert( 4, QString( "Time" ) );
+	tempmodel->setHorizontalHeaderLabels( headers );
 
 	for ( int i = 0; i < temp.size(); i++ ) {
-		temp[i].second->setText( QString( "%1" ).arg( i + 1 ) );
+		int row = temp[i].second->row();
+		QList<QStandardItem*> listing;
+		// rank column
+		listing.append( new QStandardItem( QString( "%1" ).arg( i + 1 ) ) );
+		// full name
+		listing.append( new QStandardItem( m_rankmodel->item( row, 1 )->text() ) );
+		// team name
+		listing.append( new QStandardItem( m_rankmodel->item( row, 2 )->text() ) );
+		// score
+		listing.append( new QStandardItem( m_rankmodel->item( row, 3 )->text() ) );
+		// time
+		listing.append( new QStandardItem( m_rankmodel->item( row, 4 )->text() ) );
+		tempmodel->appendRow( listing );
 	}
 
-	m_rankmodel->sort( 0, Qt::AscendingOrder );
+	emit newRankModel( tempmodel );
+
+	delete m_rankmodel;
+	m_rankmodel = tempmodel;
+	filterTeamView();
+}
+
+void Server::filterTeamView() {
+	vector<RankData> rd;
+	this->getRankData( rd );
+	map<QString, RankData> td;
+
+	for ( int i = 0; i < rd.size(); i++ ) {
+		if ( td.find( rd[i].teamname ) == td.end() ) {
+			td[rd[i].teamname] = rd[i];
+		} else {
+			td[rd[i].teamname].score += rd[i].score;
+			td[rd[i].teamname].time += rd[i].time;
+		}
+	}
+
+	rd.clear();
+
+	map<QString, RankData>::iterator iter = td.begin();
+
+	while ( iter != td.end() ) {
+		rd.push_back( iter->second );
+		iter++;
+	}
+
+	sort( rd.begin(), rd.end() );
+
+	// shove the team data into the view
+	QStandardItemModel* tempmodel = new QStandardItemModel( this );
+
+	QStringList headers;
+	headers.insert( 0, QString( "Rank" ) );
+	headers.insert( 1, QString( "Team" ) );
+	headers.insert( 2, QString( "Score" ) );
+	headers.insert( 3, QString( "Time" ) );
+	tempmodel->setHorizontalHeaderLabels( headers );
+
+	for ( int i = 0; i < rd.size(); i++ ) {
+		QList<QStandardItem*> listing;
+		// rank column
+		listing.append( new QStandardItem( QString( "%1" ).arg( i + 1 ) ) );
+		// team name
+		listing.append( new QStandardItem( rd[i].teamname ) );
+		// score
+		listing.append( new QStandardItem( QString( "%1" ).arg( rd[i].score ) ) );
+		// time
+		listing.append( new QStandardItem( QString( "%1" ).arg( rd[i].time ) ) );
+		tempmodel->appendRow( listing );
+	}
+
+	emit newTeamModel( tempmodel );
+
+	delete m_teammodel;
+	m_teammodel = tempmodel;
 }
 
 void Server::setContestTime( ushort time ) {
 	m_network->setContestTime( time );
+	m_timeleft = time;
 }
 
 void Server::scoreReset() {
@@ -493,5 +599,18 @@ void Server::scoreReset() {
 
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
 		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
+		m_rankmodel->item( i, 4 )->setText( QString( "0" ) );
 	}
+}
+
+void Server::showMainScreen() {
+	m_network->showMainScreen();
+}
+
+void Server::timerTick() {
+	m_timeleft--;
+}
+
+void Server::onPreciseTimerTick(unsigned int msec) {
+	m_preciseTimeLeft = msec;
 }

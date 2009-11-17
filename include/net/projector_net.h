@@ -81,6 +81,11 @@ public:
 	*/
 	void getStageData ( int round );
 
+	/*!
+	Request for the number of contest rounds.
+	*/
+	void getNumRounds();
+
 public slots:
 	/*!
 	Called when the app is able to connect to the server.
@@ -106,9 +111,10 @@ public slots:
 signals:
 	/*!
 	Emitted when the stage data has arrived.
+	\param round The round that the StageData belongs to.
 	\param xml Stage data in xml format
 	*/
-	void onStageData ( const QString& xml );
+	void onStageData ( ushort round, const QString& xml );
 
 	/*!
 	Emitted when a connection to the server has been established.
@@ -171,10 +177,20 @@ signals:
 	void onShowAnswer();
 
 	/*!
-	Emitted when the server sends an instruction to show the current
-	question on screen.
+	Emitted when the server sends an instruction to hide the answer
+	of the current question on screen.
 	*/
-	void onShowQuestion();
+	void onHideAnswer();
+
+	/*!
+	Emitted when the main screen should be shown.
+	*/
+	void onShowMainScreen();
+
+	/*!
+	Emitted when we receive the number of rounds from the server.
+	*/
+	void onNumRounds( ushort rounds );
 
 private:
 	QTcpSocket* m_socket;

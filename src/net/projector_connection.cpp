@@ -23,10 +23,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 using std::vector;
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket,
-        CONTEST_STATUS cstatus, int round, ushort ctime ) : QObject( parent ), m_socket( socket ) {
+        CONTEST_STATUS cstatus, int round, ushort max_rounds, ushort ctime ) : QObject( parent ), m_socket( socket ) {
 	m_ready = false;
 	m_con_status = cstatus;
 	m_round = round;
+	m_maxrounds = max_rounds;
 	m_contime = ctime;
 	connect ( m_socket, SIGNAL ( disconnected() ), this, SLOT ( disconnected() ) );
 	connect ( m_socket, SIGNAL ( error ( QAbstractSocket::SocketError ) ),
@@ -87,7 +88,7 @@ void ProjectorConnection::ready() {
 			//contestant is asking for question data
 			ushort round;
 			in >> round;
-			sendQData ( m_qdata->at ( round - 1 ) );
+			sendQData ( round, m_qdata->at ( round - 1 ) );
 
 			break;
 
@@ -105,6 +106,10 @@ void ProjectorConnection::ready() {
 		case QRY_PROJECTOR_READY:
 			m_ready = true;
 			emit projectorReady( this );
+			break;
+
+		case QRY_NUM_ROUNDS:
+			sendNumRounds();
 			break;
 
 		default:
@@ -168,14 +173,14 @@ void ProjectorConnection::showAnswer() {
 	m_socket->write ( block );
 }
 
-void ProjectorConnection::showQuestion() {
+void ProjectorConnection::hideAnswer() {
 	//construct the packet and send it
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
 	out.setVersion ( QDataStream::Qt_4_5 );
 	// construct the header
 	p_header hdr;
-	hdr.command = PJR_SHOW_QUESTION;
+	hdr.command = PJR_HIDE_ANSWER;
 	hdr.length = 0;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
@@ -225,6 +230,7 @@ void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
 	for ( int i = 0; i < rd.size(); i++ ) {
 		out << ( ushort ) rd[i].rank;
 		out << ( double ) rd[i].score;
+		out << ( uint ) rd[i].time;
 		out << ( ushort ) rd[i].fullname.size();
 		out.writeRawData( rd[i].fullname.toAscii().data(), rd[i].fullname.size() );
 		out << ( ushort ) rd[i].teamname.size();
@@ -243,7 +249,7 @@ void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
 	m_socket->write ( block );
 }
 
-void ProjectorConnection::sendQData( const QString& xml ) {
+void ProjectorConnection::sendQData( ushort round, const QString& xml ) {
 	//construct the packet and send it
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
@@ -255,6 +261,34 @@ void ProjectorConnection::sendQData( const QString& xml ) {
 	hdr.length = hash.size() + xml.size();
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out.writeRawData ( hash.data(), hash.size() );
+	out << ( ushort ) round;
 	out << xml;
+	m_socket->write ( block );
+}
+
+void ProjectorConnection::showMainScreen() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = PJR_SHOW_MAINSCREEN;
+	hdr.length = 0;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	m_socket->write ( block );
+}
+
+void ProjectorConnection::sendNumRounds() {
+	//construct the packet and send it
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	// construct the header
+	p_header hdr;
+	hdr.command = INF_NUM_ROUNDS;
+	hdr.length = sizeof ( ushort );
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
+	out << ( ushort ) m_maxrounds;
 	m_socket->write ( block );
 }

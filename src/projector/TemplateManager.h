@@ -25,6 +25,10 @@ namespace ctemplate {
 	class Template;
 }
 
+#ifndef ENTITY_INFINITY
+#define ENTITY_INFINITY "&infin;"
+#endif
+
 class TemplateManager
 {
 public:

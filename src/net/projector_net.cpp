@@ -102,9 +102,11 @@ void ProjectorNet::ready() {
 		case INF_QUESTION_DATA:
 			//we have our question data
 			{
+				ushort round;
 				QString xml;
 				uchar hash[20];
 				in.readRawData ( ( char* ) hash, 20 );
+				in >> round;
 				in >> xml;
 				QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
 				QByteArray testhash2;
@@ -114,7 +116,7 @@ void ProjectorNet::ready() {
 				}
 
 				if ( testhash == testhash2 ) {
-					emit onStageData ( xml );
+					emit onStageData ( round, xml );
 				} else {
 					// TODO: act on invalid data
 				}
@@ -170,6 +172,7 @@ void ProjectorNet::ready() {
 					RankData temp;
 					in >> temp.rank;
 					in >> temp.score;
+					in >> temp.time;
 					ushort size;
 					in >> size;
 					QByteArray buffer;
@@ -203,8 +206,20 @@ void ProjectorNet::ready() {
 			emit onShowAnswer();
 			break;
 
-		case PJR_SHOW_QUESTION:
-			emit onShowQuestion();
+		case PJR_HIDE_ANSWER:
+			emit onHideAnswer();
+			break;
+
+		case PJR_SHOW_MAINSCREEN:
+			emit onShowMainScreen();
+			break;
+
+		case INF_NUM_ROUNDS: {
+				ushort num_rounds;
+				in >> num_rounds;
+				emit onNumRounds( num_rounds );
+			}
+
 			break;
 
 		default:
@@ -270,5 +285,17 @@ void ProjectorNet::getStageData( int round ) {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( hdr ) );
 	out << ( ushort ) round;
 	// send it
+	m_socket->write ( block );
+}
+
+void ProjectorNet::getNumRounds() {
+	QByteArray block;
+	QDataStream out ( &block, QIODevice::WriteOnly );
+	out.setVersion ( QDataStream::Qt_4_5 );
+	//construct the header
+	p_header hdr;
+	hdr.length = 0;
+	hdr.command = QRY_NUM_ROUNDS;
+	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
 }

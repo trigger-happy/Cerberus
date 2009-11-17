@@ -19,9 +19,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_server.h"
 #include "ui_view_answers.h"
 #include "admin.h"
+#include "util/ContestTimer.h"
 #include <iostream>
 
 using namespace std;
+
+static const unsigned int PRECISE_UPDATE_INTERVAL = 100;
 
 Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 		m_dlg( new Ui::server_dlg ) {
@@ -58,12 +61,11 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_answers_dlg->view_answers_rounds, SIGNAL ( currentIndexChanged( int ) ),
 	         this, SLOT ( onAnswersRoundSelection( int ) ) );
 	connect( m_answers_dlg->view_answers_ok, SIGNAL ( clicked() ), this, SLOT ( onAnswersOk() ) );
-	connect( m_dlg->p_show_qtime_btn, SIGNAL ( clicked() ), this, SLOT ( onShowQuestionTime() ) );
 	connect( m_dlg->p_show_a_btn, SIGNAL ( clicked() ), this, SLOT ( onShowAnswer() ) );
-	connect( m_dlg->p_show_q_btn, SIGNAL ( clicked() ), this, SLOT ( onShowQuestion() ) );
+	connect( m_dlg->p_hide_a_btn, SIGNAL ( clicked() ), this, SLOT ( onHideAnswer() ) );
 	connect( m_dlg->p_con_time_show_btn, SIGNAL ( clicked() ), this, SLOT ( onShowTimeLeft() ) );
 	connect( m_dlg->p_show_ranks_btn, SIGNAL ( clicked() ), this, SLOT ( onShowRankings() ) );
-	connect( m_dlg->p_show_nothing_btn, SIGNAL( clicked() ), this, SLOT( onShowNothing() ) );
+	connect( m_dlg->p_show_main_btn, SIGNAL( clicked() ), this, SLOT( onShowMainScreen() ) );
 	connect( m_dlg->p_q_listv, SIGNAL ( clicked( QModelIndex ) ),
 	         this, SLOT ( onQuestionListClick( QModelIndex ) ) );
 	connect( m_dlg->p_q_listv, SIGNAL ( activated( QModelIndex ) ),
@@ -71,7 +73,6 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_dlg->qstart_btn, SIGNAL ( clicked() ), this, SLOT ( onStartQuestionTime() ) );
 	connect( m_dlg->qstop_btn, SIGNAL ( clicked() ), this, SLOT ( onStopQuestionTime() ) );
 	connect( m_dlg->qpause_btn, SIGNAL ( clicked() ), this, SLOT ( onPauseQuestionTime() ) );
-	connect( m_dlg->p_show_qtime_btn, SIGNAL( clicked() ), this, SLOT( onShowQuestionTime() ) );
 	connect( m_dlg->reset_score_btn, SIGNAL( clicked() ), this, SLOT( onScoreReset() ) );
 
 
@@ -80,6 +81,12 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	connect( m_server, SIGNAL ( contestantC( QString ) ), this, SLOT ( addContestant( QString ) ) );
 	connect( m_server, SIGNAL ( contestantDc( QString ) ), this, SLOT ( removeContestant( QString ) ) );
 	connect( m_server, SIGNAL( onContestTimeRequest( ushort& ) ), this, SLOT( onContestTimeRequest( ushort& ) ) );
+	connect( m_server, SIGNAL( newRankModel( QStandardItemModel* ) ), this, SLOT( onNewRankModel( QStandardItemModel* ) ) );
+	connect( m_server, SIGNAL( newTeamModel( QStandardItemModel* ) ), this, SLOT( onNewTeamModel( QStandardItemModel* ) ) );
+
+	m_preciseTimer = new ContestTimer(PRECISE_UPDATE_INTERVAL);
+	connect(m_preciseTimer, SIGNAL(timeUpdate(uint)), m_server, SLOT(onPreciseTimerTick(uint)));
+
 	m_selectedRound = 1;
 
 	m_q3_v = m_server->questions3;
@@ -105,8 +112,10 @@ Admin::Admin( QWidget* parent ) : QDialog( parent ), /*m_server( this ),*/
 	onApplyBtn();
 	m_timer = new QTimer( this );
 	connect( m_timer, SIGNAL( timeout() ), this, SLOT( onTimeUpdate() ) );
+	connect( m_timer, SIGNAL( timeout() ), m_server, SLOT( timerTick() ) );
 
 	m_dlg->score_tbv->setModel( m_server->getRankModel() );
+	m_dlg->team_tbv->setModel( m_server->getTeamModel() );
 }
 
 Admin::~Admin() {
@@ -134,6 +143,7 @@ void Admin::onContestTimeRequest( ushort& contime ) {
 void Admin::onApplyBtn() {
 	m_currentRound = m_selectedRound;
 	m_timeleft = m_dlg->timer_spin->value();
+	m_preciseTimer->setDuration(m_timeleft * 1000u);
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_server->setRound( m_selectedRound );
@@ -151,6 +161,7 @@ void Admin::onApplyBtn() {
 void Admin::onStopBtn() {
 	if ( m_selectedRound < 3 ) {
 		m_timer->stop();
+		m_preciseTimer->stop();
 	}
 
 	m_server->stopContest();
@@ -161,6 +172,7 @@ void Admin::onStopBtn() {
 void Admin::onStartBtn() {
 	if ( m_selectedRound < 3 ) {
 		m_timer->start( 1000 );
+		m_preciseTimer->start();
 	}
 
 	m_server->startContest();
@@ -171,6 +183,7 @@ void Admin::onStartBtn() {
 void Admin::onPauseBtn() {
 	if ( m_selectedRound < 3 ) {
 		m_timer->stop();
+		m_preciseTimer->pause();
 	}
 
 	m_server->pauseContest();
@@ -225,6 +238,10 @@ void Admin::onContestantListClick( const QModelIndex& index ) {
 	QString c_user = m_contestants->itemFromIndex( index )->text();
 	m_dlg->user_lbl->setText( c_user );
 	m_dlg->score_lbl->setText( QString( "%1" ).arg( m_server->getScore( c_user ) ) );
+
+	UserData ud;
+	SqlUtil::getInstance().getSpecificUser( c_user, ud );
+	m_dlg->team_lbl->setText( QString( "%1" ).arg( ud.teamname ) );
 	m_selected_user = c_user;
 }
 
@@ -278,7 +295,8 @@ void Admin::onShowRankings() {
 	m_server->showRankings();
 }
 
-void Admin::onShowNothing() {
+void Admin::onShowMainScreen() {
+	m_server->showMainScreen();
 }
 
 void Admin::onQuestionListClick( const QModelIndex& index ) {
@@ -301,8 +319,8 @@ void Admin::onQuestionListClick( const QModelIndex& index ) {
 	m_dlg->p_time_line->setText( time_limit );
 }
 
-void Admin::onShowQuestion() {
-	m_server->showQuestion();
+void Admin::onHideAnswer() {
+	m_server->hideAnswer();
 }
 
 void Admin::onShowAnswer() {
@@ -314,10 +332,14 @@ void Admin::onShowQuestionTime() {
 }
 
 void Admin::onStartQuestionTime() {
+	//m_server->showQuestionTime();
 	m_timeleft = m_dlg->p_time_line->text().toInt();
+	m_preciseTimer->setDuration(m_timeleft * 1000u);
 	m_dlg->time_lcd->display( m_timeleft );
 	m_dlg->time2_lcd->display( m_timeleft );
 	m_timer->start( 1000 );
+	m_preciseTimer->start();
+
 
 	if ( m_currentRound == 3 ) {
 		m_server->startQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
@@ -328,6 +350,7 @@ void Admin::onStartQuestionTime() {
 
 void Admin::onPauseQuestionTime() {
 	m_timer->stop();
+	m_preciseTimer->pause();
 
 	if ( m_currentRound == 3 ) {
 		m_server->pauseQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
@@ -338,6 +361,7 @@ void Admin::onPauseQuestionTime() {
 
 void Admin::onStopQuestionTime() {
 	m_timer->stop();
+	m_preciseTimer->stop();
 
 	if ( m_currentRound == 3 ) {
 		m_server->stopQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
@@ -348,6 +372,14 @@ void Admin::onStopQuestionTime() {
 
 void Admin::onScoreReset() {
 	m_server->scoreReset();
+}
+
+void Admin::onNewRankModel( QStandardItemModel* model ) {
+	m_dlg->score_tbv->setModel( model );
+}
+
+void Admin::onNewTeamModel( QStandardItemModel* model ) {
+	m_dlg->team_tbv->setModel( model );
 }
 
 int main ( int argc, char* argv[] ) {

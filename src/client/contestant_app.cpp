@@ -24,15 +24,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "ui_finalsChoice.h"
 #include "ui_finalsIdent.h"
 #include "ui_summary.h"
+#include "ui_ending.h"
 #include <QString>
 #include <QFile>
 #include <QTextStream>
 #include <vector>
 #include <cassert>
-
+#include <iostream>
 
 ContestantApp::ContestantApp ( QWidget* parent )
-		: QDialog ( parent ),
+        : QMainWindow ( parent ),
 		DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
 		DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) ),
 		UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
@@ -45,6 +46,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     m_finalsChoice_dlg = new Ui::finalsChoice_dlg;
     m_finalsIdent_dlg = new Ui::finalsIdent_dlg;
     m_summary_dlg = new Ui::summary_dlg;
+    m_ending_dlg = new Ui::ending_dlg;
 
 	this->hide();
 	m_welcome_w = new QDialog( this );
@@ -71,9 +73,13 @@ ContestantApp::ContestantApp ( QWidget* parent )
 	m_summary_dlg->setupUi( m_summary_w );
 	m_summary_w->hide();
 
+    m_ending_w = new QDialog( this );
+    m_ending_dlg->setupUi( m_ending_w );
+    m_ending_w->hide();
+
 	m_login_w = new QDialog( this );
 	m_login_dlg->setupUi( m_login_w );
-	m_login_w->hide();
+    m_login_w->show();
 
 	m_network = new ContestantNetwork ( this );
     timer = new QTimer( this );
@@ -117,39 +123,19 @@ ContestantApp::ContestantApp ( QWidget* parent )
     connect( m_finalsChoice_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
     connect( m_finalsIdent_dlg->submit_btn, SIGNAL( clicked() ), this, SLOT( finalsSubmit() ) );
 
+    // connections for ending dialog
+    connect( m_ending_dlg->exit_btn, SIGNAL( clicked() ), this, SLOT( exit() ) );
+
     // slot for timer
     connect( timer, SIGNAL( timeout() ), this, SLOT( updateTimer() ) );
 
 	// Get the client configuration from XmlUtil
 
-    QString xml;
-    QFile file( QString("resources/client_config.xml") );
-    if( !file.exists() )
-    {
-        showInfo( 1, "client_config.xml does not exist", "Make sure file is ready" );
-        exit();
-    }
-    else if( !file.open( QIODevice::ReadOnly ) )
-    {
-        showInfo( 1, "Can't open client_config.xml", "Make sure file is ready" );
-        exit();
-    }
-	QTextStream stream( &file );
-	QString line;
-    do {
-	    line = stream.readLine();
-        xml.append( line );
-    } while( !line.isNull() );
-
-	ClientConfig config;
-    XmlUtil::getInstance().readNetConfig( xml, config );
-
-    m_network->connectToHost ( config.ip , config.port );
-
     qCount = 0;
     time = 0;
     status = CONTEST_STOPPED;
     qStatus = QUESTION_STOPPED;
+    connected = false;
     loggedIn = false;
     closing = false;
 }
@@ -159,22 +145,38 @@ ContestantApp::~ContestantApp()
 	delete m_network;
 	delete m_login_w;
 	delete m_welcome_w;
-	delete m_elims_w;
+    delete m_elims_w;
     delete m_semifinals_w;
+    delete m_finalsChoice_w;
+    delete m_finalsIdent_w;
+    delete m_summary_w;
     delete timer;
 }
 
 
 void ContestantApp::onConnect()
 {
+    connected = true;
     showInfo( 0, "Connected to server", "" );
-	m_login_w->show();
+    m_network->authenticate ( m_login_dlg->username_line->text(), m_login_dlg->password_line->text() );
 }
 
 void ContestantApp::onDisconnect()
 {
+    connected = false;
     if( !closing )
+    {
         showInfo( 1, "Disconnected from server", "Please reconnect if still in the middle of the contest" );
+        m_welcome_w->hide();
+        m_elims_w->hide();
+        m_semifinals_w->hide();
+        m_finalsChoice_w->hide();
+        m_finalsIdent_w->hide();
+        m_summary_w->hide();
+        m_ending_w->hide();
+        m_login_w->show();
+        round = 0;
+    }
 }
 
 void ContestantApp::onAuthenticate ( bool result )
@@ -184,11 +186,18 @@ void ContestantApp::onAuthenticate ( bool result )
         loggedIn = true;
 		m_login_w->hide();
 		m_welcome_w->show();
-		m_network->getContestState();
+        m_network->getContestState();
+
+        QString name = m_login_dlg->username_line->text();
+        m_welcome_dlg->name_lbl->setText( name );
+        m_elims_dlg->name_lbl->setText( name );
+        m_semifinals_dlg->name_lbl->setText( name );
+        m_finalsChoice_dlg->name_lbl->setText( name );
+        m_finalsIdent_dlg->name_lbl->setText( name );
 	}
 	else
 	{
-        showInfo( 0, UNAUTH_TEXT, UNAUTH_INFORMATION );
+        showInfo( 1, UNAUTH_TEXT, UNAUTH_INFORMATION );
         m_login_w->show();
 	}
 }
@@ -198,8 +207,16 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
     if( !loggedIn )
         return;
 
+    status = s;
     m_network->qDataRequest( r );
-	round = r;
+
+    if( round != r )
+    {
+        round = r;
+        ad.clear();
+        qCount = 0;
+        stopQuestion();
+    }
 
     if( round == 3 || round == 4 )
         m_welcome_dlg->start_btn->setEnabled( false );
@@ -208,7 +225,6 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
         m_finalsChoice_w->setWindowTitle("Tie-Breaker Round");
         m_finalsIdent_w->setWindowTitle("Tie-Breaker Round");
     }
-    status = s;
 
     if( status == CONTEST_RUNNING )
     {
@@ -283,7 +299,12 @@ void ContestantApp::onAData ( bool result )
         if( round == 1 || round == 2 )
         {
             m_summary_w->hide();
-            m_welcome_w->show();
+            m_ending_w->show();
+        }
+        else if( round == 3 || round == 4 )
+        {
+            pauseQuestion();
+            timer->start( 1000 );
         }
     }
     else
@@ -327,6 +348,7 @@ void ContestantApp::updateTimer()
             stopContest();
             m_elims_dlg->time_lbl->setText("");
             m_semifinals_dlg->time_lbl->setText("");
+            m_ending_dlg->time_lbl->setText("");
         }
         if( round == 3 || round == 4 )
         {
@@ -335,20 +357,26 @@ void ContestantApp::updateTimer()
             m_finalsChoice_dlg->time_lbl->setText("");
             m_finalsIdent_dlg->time_lbl->setText("");
         }
+        m_welcome_dlg->time_lbl->setText("");
         return;
     }
 
     int minute = time/60;
     int second = time - minute*60;
     QString t;
-    if( t > 0 )
+    if( minute > 0 )
     {
         t.append( QString::number(minute) );
         t.append(":");
     }
 
-    t.append( QString::number(second).leftJustified( 2, ' '));
+    if( minute > 0 && second < 10 )
+        t.append("0");
 
+    t.append( QString::number(second) );
+
+    m_welcome_dlg->time_lbl->setText( t );
+    m_ending_dlg->time_lbl->setText( t );
     if( round == 1 )
         m_elims_dlg->time_lbl->setText( t );
     else if( round == 2 )
@@ -364,7 +392,36 @@ void ContestantApp::updateTimer()
 
 void ContestantApp::login()
 {
-	m_network->authenticate ( m_login_dlg->username_line->text(), m_login_dlg->password_line->text() );
+    if( connected )
+    {
+        m_network->authenticate ( m_login_dlg->username_line->text(), m_login_dlg->password_line->text() );
+        return;
+    }
+
+    QString xml;
+    QFile file( QString("resources/client_config.xml") );
+    if( !file.exists() )
+    {
+        showInfo( 1, "client_config.xml does not exist", "Make sure file is ready" );
+        exit();
+    }
+    else if( !file.open( QIODevice::ReadOnly ) )
+    {
+        showInfo( 1, "Can't open client_config.xml", "Make sure file is ready" );
+        exit();
+    }
+
+    QTextStream stream( &file );
+    QString line;
+    do {
+        line = stream.readLine();
+        xml.append( line );
+    } while( !line.isNull() );
+
+    ClientConfig config;
+    XmlUtil::getInstance().readNetConfig( xml, config );
+
+    m_network->connectToHost( config.ip , config.port );
 }
 
 void ContestantApp::exit()
@@ -458,8 +515,18 @@ void ContestantApp::submit()
 
 void ContestantApp::finalsSubmit()
 {
-    recordAnswer();
-    m_network->aDataSend( round, ad );
+    QMessageBox msg;
+    msg.setWindowTitle("Confirm answer");
+    msg.setText("Is this your final answer?");
+    msg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok );
+    msg.setDefaultButton(QMessageBox::Cancel);
+    int ret = msg.exec();
+
+    if( ret == QMessageBox::Ok )
+    {
+        recordAnswer();
+        m_network->aDataSend( round, ad );
+    }
 }
 
 //convenience methods
@@ -577,6 +644,7 @@ void ContestantApp::displayStatus()
     m_semifinals_dlg->status_lbl->setText( s );
     m_finalsChoice_dlg->status_lbl->setText( s );
     m_finalsIdent_dlg->status_lbl->setText( s );
+    m_ending_dlg->status_lbl->setText( s );
 }
 
 void ContestantApp::recordAnswer()
@@ -645,11 +713,13 @@ void ContestantApp::stopContest()
 {
     timer->stop();
 
+    m_welcome_dlg->time_lbl->setText("");
     m_elims_w->hide();
     m_semifinals_w->hide();
     m_finalsChoice_w->hide();
     m_finalsIdent_w->hide();
     m_summary_w->hide();
+    m_ending_w->hide();
 
     qCount = 0;
     m_welcome_dlg->start_btn->setEnabled( false );
@@ -697,8 +767,6 @@ void ContestantApp::runContest()
 
 void ContestantApp::stopQuestion()
 {
-    timer->stop();
-
     m_finalsChoice_dlg->a_choice->setChecked(false);
     m_finalsChoice_dlg->b_choice->setChecked(false);
     m_finalsChoice_dlg->c_choice->setChecked(false);
@@ -714,12 +782,11 @@ void ContestantApp::stopQuestion()
     m_finalsIdent_dlg->submit_btn->setEnabled(false);
 
     displayStatus();
+    timer->stop();
 }
 
 void ContestantApp::pauseQuestion()
 {
-    timer->stop();
-
     m_finalsChoice_dlg->a_choice->setEnabled(false);
     m_finalsChoice_dlg->b_choice->setEnabled(false);
     m_finalsChoice_dlg->c_choice->setEnabled(false);
@@ -730,6 +797,7 @@ void ContestantApp::pauseQuestion()
     m_finalsIdent_dlg->submit_btn->setEnabled(false);
 
     displayStatus();
+    timer->stop();
 }
 
 void ContestantApp::runQuestion()
@@ -778,9 +846,7 @@ void ContestantApp::closeEvent ( QCloseEvent * event )
 int main ( int argc, char* argv[] )
 {
 	QApplication app ( argc, argv );
-
 	ContestantApp c_app;
     c_app.show();
-    c_app.resize( 500, 500 );
 	return app.exec();
 }

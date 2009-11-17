@@ -48,7 +48,6 @@ ServerDlg::ServerDlg ( QWidget* parent ) : QDialog ( parent ), m_dlg ( new Ui::s
 	connect( m_dlg->shw_ranks_btn, SIGNAL( clicked() ), this, SLOT( onShowRanksBtn() ) );
 	connect( m_dlg->shw_qtime_btn, SIGNAL( clicked() ), this, SLOT( onShowQTimeBtn() ) );
 	connect( m_dlg->shw_answer_btn, SIGNAL( clicked() ), this, SLOT( onShowAnswerBtn() ) );
-	connect( m_dlg->shw_question_btn, SIGNAL( clicked() ), this, SLOT( onShowQuestionBtn() ) );
 	connect( m_dlg->start_q_btn, SIGNAL( clicked() ), this, SLOT( onStartQuestionBtn() ) );
 	connect( m_dlg->stop_q_btn, SIGNAL( clicked() ), this, SLOT( onStopQuestionBtn() ) );
 	connect( m_dlg->pause_q_btn, SIGNAL( clicked() ), this, SLOT( onPauseQuestionBtn() ) );
@@ -186,10 +185,6 @@ void ServerDlg::onShowQTimeBtn() {
 
 void ServerDlg::onShowAnswerBtn() {
 	m_server->showAnswer();
-}
-
-void ServerDlg::onShowQuestionBtn() {
-	m_server->showQuestion();
 }
 
 void ServerDlg::onStartQuestionBtn() {

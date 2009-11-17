@@ -69,7 +69,7 @@ public:
 	void dropConnection( QString c_user );
 
 	/*!
-	Ge the score for a specific user.
+	Get the score for a specific user.
 	\param c_user The user name.
 	\return The score in double.
 	*/
@@ -136,6 +136,11 @@ public:
 	void showAnswer();
 
 	/*!
+	Send a command to the projector to hide the answer to the current question.
+	*/
+	void hideAnswer();
+
+	/*!
 	Get the contest time for a certain round.
 	\param round The round to query.
 	\return The contest time in seconds.
@@ -172,6 +177,13 @@ public:
 	}
 
 	/*!
+	Get the team model
+	*/
+	inline QStandardItemModel* getTeamModel() {
+		return m_teammodel;
+	}
+
+	/*!
 	Set the contest time for the projectors.
 	\param time The contest time.
 	*/
@@ -181,6 +193,11 @@ public:
 	Reset the scores
 	*/
 	void scoreReset();
+
+	/*!
+	Show the main screen on the projector.
+	*/
+	void showMainScreen();
 
 	// public stuff
 	vector<Question> questions3;
@@ -215,6 +232,20 @@ signals:
 	\param contime A reference to a ushort to set the contest time.
 	*/
 	void onContestTimeRequest( ushort& contime );
+
+	/*!
+	Emitted when the model has been renewed. This is a work
+	around for the sorting fail for score view.
+	\param model The new QStandardItemModel
+	*/
+	void newRankModel( QStandardItemModel* model );
+
+	/*!
+	Emitted when the model has been renewed. Same work around
+	as above.
+	\param model The new QStandardItemModel
+	*/
+	void newTeamModel( QStandardItemModel* model );
 
 private slots:
 	//Contestant slots
@@ -261,9 +292,23 @@ private slots:
 	*/
 	void projectorDisconnect( ProjectorConnection* pc );
 
+	/*!
+	Slot for the contest count down timer.
+	*/
+	void timerTick();
+
+	void onPreciseTimerTick( unsigned int msec );
+
 private:
+	/*!
+	Filter the score view by teams instead. Scores of users from the
+	same team will be added together into a single entity.
+	*/
+	void filterTeamView();
+
 	QString m_log, m_db_path;
 	quint16 m_port;
+	int m_round;
 	ServerNetwork* m_network;
 	ServerConfig m_config;
 	vector<QString> m_questions;
@@ -280,6 +325,11 @@ private:
 	QHash<QString, bool> m_teamconnected;
 	int m_selected_question_num;
 	QStandardItemModel* m_rankmodel;
+	QStandardItemModel* m_teammodel;
+	// internal timer
+	ushort m_timeleft;
+	//A more precise time left.
+	unsigned int m_preciseTimeLeft;
 };
 
 #endif //SERVER_H

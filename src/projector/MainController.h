@@ -24,19 +24,34 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QObject>
 #include "net/projector_net.h"
 #include "data_types.h"
+#include <vector>
 
+/**
+ * \brief Projector controller for the actual thing.
+ */
 class MainController : public QObject, public ProjectorController
 {
 	Q_OBJECT
 	ProjectorNet *m_net;
-	StageData *m_stageData;
+	std::vector<StageData> m_stageData;
+	///Counter to keep track the number of stage data received.
+	int m_stageDataCounter;
+
 	bool m_connected;
+	///The last view shown by the system (so we can easily re-show it when the server reconnects)
 	TemplateManager::TKey m_view;
 	int m_activeQuestionIndex;
+	int m_activeRound;
 	QString m_lastError;
 
 	bool assertQuestionState(ushort qnum) const;
 	static QString printfAnswerKey(const Question &q);
+
+	void resetData();
+	StageData& getCurrentStage();
+	const StageData& getCurrentStage() const {
+		return const_cast<MainController*>(this)->getCurrentStage();
+	}
 public:
 	MainController(ProjectorWindow &target);
 	~MainController();
@@ -47,14 +62,16 @@ public slots:
 	void onDisconnect();
 	void onError( const QString& error );
 
-	void onStageData(const QString &xml);
+	void onStageData(ushort round, const QString &xml);
 	void onContestState( ushort round, CONTEST_STATUS status );
 	void onContestTime( ushort time );
 	void onShowContestTime();
 	void onShowContestRanks( const vector<RankData>& rd );
 	void onQuestionState( ushort qnum, ushort time, QUESTION_STATUS status );
 	void onShowAnswer();
-	void onShowQuestion();
+	void onHideAnswer();
+	void onShowMainScreen();
+	void onRoundsReceived(const ushort nRounds);
 
 	void connectToServer();
 };

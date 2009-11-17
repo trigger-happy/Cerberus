@@ -28,6 +28,8 @@ namespace Ui {
 	class view_answers_dlg;
 }
 
+class ContestTimer;
+
 class Admin : public QDialog {
 	Q_OBJECT
 
@@ -60,9 +62,9 @@ public slots:
 	// projector control
 	void onShowTimeLeft();
 	void onShowRankings();
-	void onShowNothing();
+	void onShowMainScreen();
 	void onQuestionListClick( const QModelIndex& index );
-	void onShowQuestion();
+	void onHideAnswer();
 	void onShowAnswer();
 	void onShowQuestionTime();
 	void onStartQuestionTime();
@@ -71,6 +73,8 @@ public slots:
 
 	// score control
 	void onScoreReset();
+	void onNewRankModel( QStandardItemModel* model );
+	void onNewTeamModel( QStandardItemModel* model );
 
 	//timer
 	void onTimeUpdate();
@@ -91,6 +95,7 @@ private:
 	int m_selectedRound;
 	int m_currentRound;
 	QTimer* m_timer;
+	ContestTimer *m_preciseTimer;
 	int m_timeleft;
 };
 

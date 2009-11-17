@@ -58,6 +58,10 @@ enum PROTOCOL_COMMAND {
 	QRY_CONTEST_TIME,
 	INF_CONTEST_TIME,
 
+	// number of rounds
+	QRY_NUM_ROUNDS,
+	INF_NUM_ROUNDS,
+
 	// projector stuff
 	// sent by the presenter when ready
 	QRY_PROJECTOR_READY,
@@ -77,9 +81,11 @@ enum PROTOCOL_COMMAND {
 
 	// show answer
 	PJR_SHOW_ANSWER,
+	// hide the answer
+	PJR_HIDE_ANSWER,
 
-	// show question
-	PJR_SHOW_QUESTION
+	// show main screen
+	PJR_SHOW_MAINSCREEN
 
 	// TODO: Add admin commands here
 };

@@ -76,6 +76,22 @@ public:
 	}
 
 	/*!
+	Set the number of rounds this contest will have.
+	\param rounds The number of rounds
+	*/
+	inline void setNumRounds( int rounds ) {
+		m_numrounds = rounds;
+	}
+
+	/*!
+	Get the number of rounds this contest will have.
+	\return The number of rounds
+	*/
+	inline int getNumRounds() {
+		return m_numrounds;
+	}
+
+	/*!
 	Set the current round of the contest.
 	\param round The current round.
 	*/
@@ -187,9 +203,14 @@ public:
 	void showAnswer();
 
 	/*!
-	Send a command to projecors to show the question.
+	Tell the projectors to hide the answer.
 	*/
-	void showQuestion();
+	void hideAnswer();
+
+	/*!
+	Show the main screen on the projectors.
+	*/
+	void showMainScreen();
 
 	/*!
 	Dis/Allow contestants to submit answers.
@@ -239,28 +260,28 @@ public slots:
 signals:
 	/*!
 	Emitted when an invalid client connects.
-    \param con Pointer to a TempConnection.
+	\param con Pointer to a TempConnection.
 	*/
 	void badClient ( TempConnection* con );
-	
+
 	/*!
 	Emitted when a contestant client connects to the server.
 	\param cc Pointer to the ContestantConnection to the contestant.
 	*/
 	void newContestant ( ContestantConnection* cc );
-	
+
 	/*!
 	Emitted when the contestant disconnects.
 	\param cc Pointer to the ContestantConnection that disconnected.
 	*/
 	void contestantDc ( ContestantConnection* cc );
-	
+
 	/*!
 	Emitted when a new projector connects.
 	\param pc Pointer to the ProjectorConnection that connected.
 	*/
 	void newProjector ( ProjectorConnection* pc );
-	
+
 	/*!
 	Emitted when a projector disconnects.
 	\param pc Pointer to the ProjectorConnection that disconnected.
@@ -284,6 +305,7 @@ protected:
 	projector_list m_projectors;
 	tmpcon_list m_tempconnections;
 	const vector<QString>* m_questiondata;
+	int m_numrounds;
 };
 
 #endif //SERVER_NET_H

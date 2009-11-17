@@ -217,7 +217,7 @@
        <x>270</x>
        <y>10</y>
        <width>301</width>
-       <height>163</height>
+       <height>187</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -276,6 +276,24 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>team:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="team_lbl">
+          <property name="text">
+           <string>team </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QPushButton" name="drop_con_btn">
         <property name="text">
          <string>&amp;Drop contestant</string>
@@ -318,9 +336,9 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>80</x>
         <y>40</y>
-        <width>391</width>
+        <width>418</width>
         <height>29</height>
        </rect>
       </property>
@@ -340,9 +358,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="p_show_nothing_btn">
+        <widget class="QPushButton" name="p_show_main_btn">
          <property name="text">
-          <string>Show N&amp;othing</string>
+          <string>Show &amp;Main screen</string>
          </property>
         </widget>
        </item>
@@ -405,20 +423,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Answer:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="p_answer_line">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QLabel" name="label_10">
            <property name="text">
             <string>Time:</string>
@@ -435,16 +439,16 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
-            <widget class="QPushButton" name="p_show_q_btn">
+            <widget class="QPushButton" name="p_show_a_btn">
              <property name="text">
-              <string>Show &amp;Question</string>
+              <string>&amp;Show Answer</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="p_show_a_btn">
+            <widget class="QPushButton" name="p_hide_a_btn">
              <property name="text">
-              <string>&amp;Show Answer</string>
+              <string>&amp;Hide Answer</string>
              </property>
             </widget>
            </item>
@@ -453,28 +457,21 @@
          <item>
           <widget class="QPushButton" name="qstart_btn">
            <property name="text">
-            <string>Start Question Timer</string>
+            <string>&amp;Begin Question</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="qstop_btn">
            <property name="text">
-            <string>Stop Question Timer</string>
+            <string>Stop Question</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="qpause_btn">
            <property name="text">
-            <string>Pause Question Timer</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="p_show_qtime_btn">
-           <property name="text">
-            <string>Show Question T&amp;ime</string>
+            <string>Pause Question</string>
            </property>
           </widget>
          </item>
@@ -504,7 +501,7 @@
     <attribute name="title">
      <string>Score View</string>
     </attribute>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -555,6 +552,21 @@
        </layout>
       </item>
      </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_4">
+    <attribute name="title">
+     <string>Team View</string>
+    </attribute>
+    <widget class="QTableView" name="team_tbv">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>581</width>
+       <height>481</height>
+      </rect>
+     </property>
     </widget>
    </widget>
   </widget>
