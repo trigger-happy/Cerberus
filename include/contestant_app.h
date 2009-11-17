@@ -206,6 +206,7 @@ private:
 	int round;
 	int qCount;
     int time;
+    bool connected;
     bool loggedIn;
     bool closing;
 

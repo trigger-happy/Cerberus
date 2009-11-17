@@ -134,6 +134,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     time = 0;
     status = CONTEST_STOPPED;
     qStatus = QUESTION_STOPPED;
+    connected = false;
     loggedIn = false;
     closing = false;
 }
@@ -154,12 +155,14 @@ ContestantApp::~ContestantApp()
 
 void ContestantApp::onConnect()
 {
+    connected = true;
     showInfo( 0, "Connected to server", "" );
     m_network->authenticate ( m_login_dlg->username_line->text(), m_login_dlg->password_line->text() );
 }
 
 void ContestantApp::onDisconnect()
 {
+    connected = false;
     if( !closing )
     {
         showInfo( 1, "Disconnected from server", "Please reconnect if still in the middle of the contest" );
@@ -211,9 +214,6 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
         round = r;
         ad.clear();
         qCount = 0;
-        time = 0;
-        status = CONTEST_STOPPED;
-        qStatus = QUESTION_STOPPED;
     }
 
     if( round == 3 || round == 4 )
@@ -385,6 +385,12 @@ void ContestantApp::updateTimer()
 
 void ContestantApp::login()
 {
+    if( connected )
+    {
+        m_network->authenticate ( m_login_dlg->username_line->text(), m_login_dlg->password_line->text() );
+        return;
+    }
+
     QString xml;
     QFile file( QString("resources/client_config.xml") );
     if( !file.exists() )
