@@ -266,6 +266,7 @@ void MainController::onQuestionState( ushort qnum, ushort time, QUESTION_STATUS 
 			break;
 		case QUESTION_STOPPED:
 			tmr.stop();
+			tmr.setDuration(0);
 			break;
 	}
 	m_target.setView(m_view = TemplateManager::QDISPLAY);
