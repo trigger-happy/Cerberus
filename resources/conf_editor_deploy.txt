@@ -1,3 +1,4 @@
-*
+conf_editor.exe
+conf_editor
 resources/
 sqldrivers/

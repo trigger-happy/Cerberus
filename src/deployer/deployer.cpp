@@ -100,6 +100,17 @@ void Installer::deploy( QString& source, QString& component ) {
         QFile temp(line);
         QFileInfo tempInfo(temp);
 
+        //something to "fix" OS problems with .exe files
+        if( temp.exists() && round == 1 ) {
+                hasExe = true;
+        }
+        else if( !temp.exists() && round == 1 ) {
+            continue;
+        }
+        else if( !temp.exists() && round == 2 && hasExe == true ) {
+            continue;
+        }
+
         //folder mode
         if( line.at( line.size()-1) == QChar('/') ) {
             dir.mkdir( QString("%1/%2").arg(filler).arg(line ) );
@@ -114,6 +125,7 @@ void Installer::deploy( QString& source, QString& component ) {
 
 
                 if( QFile::exists( dest ) ) {
+                    QFile::remove(dest);
                     QString temp2 = qfileinfo.fileName();
                     temp2 = temp2.replace( QString("."), QString(""), Qt::CaseSensitive );
                     cout << temp2.toStdString() << "  <---- " << endl;
@@ -121,18 +133,19 @@ void Installer::deploy( QString& source, QString& component ) {
 
                         continue;
                     }
-                    isSuccessful = false;
-                    showInfo( QString( "File %1 already exists." ).arg( dest ) );
+                    //isSuccessful = false;
+                    //showInfo( QString( "File %1 already exists." ).arg( dest ) );
+
                 }
 
-                else {
+               // else {
 
                     bool checker = qfile.copy( dest );
                     if( checker == false ) {
                         isSuccessful = false;
                         showInfo( QString( "File %1 was not copied." ).arg(temp.fileName()) );
                     }
-                }
+                //}
 
             }
         }
@@ -152,17 +165,18 @@ void Installer::deploy( QString& source, QString& component ) {
                     cout << "Copying " << qfileinfo.fileName().toStdString() << endl;
 
                     if( QFile::exists( dest ) ) {
+                        QFile::remove(dest);
                         QString temp2 = qfileinfo.fileName();
                         temp2 = temp2.replace( QString("."), QString(""), Qt::CaseSensitive );
                         cout << temp2.toStdString() << "  <---- " << endl;
                         if( temp2.compare(QString( "" )) == 0 ) {
                             continue;
                         }
-                        isSuccessful = false;
-                        showInfo( QString( "File %1 already exists." ).arg( dest ) );
+                        //isSuccessful = false;
+                        //showInfo( QString( "File %1 already exists." ).arg( dest ) );
                     }
 
-                    else {
+                    //else {
                         bool checker = qfile.copy( dest );
                         if( checker == false ) {
 
@@ -172,7 +186,7 @@ void Installer::deploy( QString& source, QString& component ) {
                                 showInfo( QString( "File %1 was not copied." ).arg(temp.fileName()) );
                             }
                         }
-                    }
+                    //}
                 }
             }
         }
@@ -180,30 +194,21 @@ void Installer::deploy( QString& source, QString& component ) {
         //direct file path
         else {
 
-            if( temp.exists() && round == 1 ) {
-                hasExe = true;
-            }
-            else if( !temp.exists() && round == 1 ) {
-                continue;
-            }
-            else if( !temp.exists() && round == 2 && hasExe == true ) {
-                continue;
-            }
-
             QString dest = QString("%1%2").arg(list[QString(component)]).arg(QString("/%1").arg(tempInfo.fileName()) );
 
             if( QFile::exists( dest ) ) {
-                isSuccessful = false;
-                showInfo( QString( "File %1 already exists." ).arg( dest ) );
+                QFile::remove(dest);
+                //isSuccessful = false;
+                //showInfo( QString( "File %1 already exists." ).arg( dest ) );
             }
 
-            else {
+           // else {
                 bool checker = temp.copy( dest );
                 if( checker == false ) {
                     isSuccessful = false;
                     showInfo( QString( "File %1 was not copied." ).arg(temp.fileName()) );
                 }
-            }
+           // }
          }
     }
     f.close();
