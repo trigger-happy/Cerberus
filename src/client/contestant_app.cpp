@@ -17,6 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #include "contestant_app.h"
 #include "error_defs.h"
+#include "ui_contestant_app.h"
 #include "ui_login.h"
 #include "ui_welcome.h"
 #include "ui_elims.h"
@@ -33,7 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iostream>
 
 ContestantApp::ContestantApp ( QWidget* parent )
-        : QMainWindow ( parent ),
+        : QMainWindow ( parent ), m_dlg ( new Ui::contestant_app_dlg ),
 		DISCONNECT_INFORMATION ( tr ( "There will be a penalty for disconnecting." ) ),
 		DISCONNECT_QUESTION ( tr ( "Are you sure you want to exit the program?" ) ),
 		UNAUTH_TEXT ( tr ( "Unable to obtain authorization." ) ),
@@ -48,7 +49,10 @@ ContestantApp::ContestantApp ( QWidget* parent )
     m_summary_dlg = new Ui::summary_dlg;
     m_ending_dlg = new Ui::ending_dlg;
 
-	this->hide();
+        m_dlg->setupUi( this );
+        QPixmap logo("resources/logo.PNG");
+        m_dlg->cerb_logo_lbl->setPixmap(logo);
+        //this->hide();
 	m_welcome_w = new QDialog( this );
 	m_welcome_dlg->setupUi( m_welcome_w );
 	m_welcome_w->hide();
