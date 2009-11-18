@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <cstring>
 #include <QFileInfo>
 #include <QDir>
+#include <QDebug>
 
 static const QString TEMPLATE_FILENAMES[] =
 { "index.html", "error.html", "scoreboard.html",
@@ -61,15 +62,26 @@ TemplateManager::TemplateManager()
 	initialize();
 }
 
+//#define DEBUG_TEMPLATE_RESOLUTION
+
 ctemplate::Template* TemplateManager::getTemplate(TKey template_key) {
 	using ctemplate::Template;
 
 	QFileInfo fullPath(QDir(m_path), TEMPLATE_FILENAMES[template_key]);
+#ifdef DEBUG_TEMPLATE_RESOLUTION
+	qDebug() << "Requesting for template: " << fullPath.absoluteFilePath();
+#endif
 	if ( fullPath.exists() ) {
+#ifdef DEBUG_TEMPLATE_RESOLUTION
+		qDebug() << "\tSuccess";
+#endif
 		Template *ret = Template::GetTemplate(
 				fullPath.canonicalFilePath().toStdString(), ctemplate::DO_NOT_STRIP);
 		if ( ret )
 			return ret;
 	}
+#ifdef DEBUG_TEMPLATE_RESOLUTION
+	qDebug() << "\tNot found, resorting to default.";
+#endif
 	return Template::GetTemplate(DEFAULT_KEYS[template_key], ctemplate::DO_NOT_STRIP);
 }
