@@ -56,16 +56,6 @@
     </property>
    </item>
   </widget>
-  <widget class="QTextBrowser" name="view_answers_browser">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>80</y>
-     <width>301</width>
-     <height>192</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QComboBox" name="users_box">
    <property name="geometry">
     <rect>
@@ -80,6 +70,16 @@
      <string>user</string>
     </property>
    </item>
+  </widget>
+  <widget class="QTextBrowser" name="view_answers_browser">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>80</y>
+     <width>256</width>
+     <height>192</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <resources/>

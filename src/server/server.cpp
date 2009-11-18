@@ -173,7 +173,7 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		// brand new connection
 		m_hash[c_username] = cc;
 		m_teamconnected[ud.teamname] = true;
-		m_hash_answers[c_username] << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n" << "Not submitted.\n";
+		m_hash_answers[c_username] << "" << "" << "" << "";
 
 		// get information on the user and shove it into m_rankmodel
 		QList<QStandardItem*> listing;
@@ -262,8 +262,11 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 	m_cansubmit[user] = false;
 
 	for ( int i = 0; i < data.size(); i++ ) {
+		int questionNum;
+		if ( round >= 3 ) questionNum = m_selected_question_num;
+		else questionNum = i + 1;
 		if ( data[i].ans_type == Question::IDENTIFICATION ) {
-			answer = QString( "%1 is %2\n" ).arg( i + 1 ).arg( data[i].id_answer );
+			answer = QString( "%1 is %2\n" ).arg( questionNum ).arg( data[i].id_answer );
 			cout << answer.toStdString();
 			allAnswers.append( answer );
 		} else {
@@ -273,14 +276,20 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 				buffer.append( QString( "%1 " ).arg( data[i].multi_choice[j] ) );
 			}
 
-			answer = QString( "%1 is %2\n" ).arg( i + 1 ).arg( buffer );
+			answer = QString( "%1 is %2\n" ).arg( questionNum ).arg( buffer );
 
 			cout << answer.toStdString();
 			allAnswers.append( answer );
 		}
 	}
 
-	m_hash_answers[user].replace( round - 1, allAnswers );
+	if ( round >= 3 ) {
+		QString tempAnswers = m_hash_answers[user].at( round - 1 );
+		tempAnswers.append( allAnswers );
+		m_hash_answers[user].replace( round - 1, tempAnswers );
+	}
+	else
+		m_hash_answers[user].replace( round - 1, allAnswers );
 
 	Checker* checker = m_checkers.at( round - 1 );
 
