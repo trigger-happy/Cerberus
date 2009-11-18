@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Cerberus &mdash; Document</title>
+</head>
+
+<body>
+<h1>General Directions</h1>
+<ol>
+<li>The projector has its own default set of plain templates as fallbacks when there is no provided templates (so you don't have to provide all templates).</li>
+<li>Set the templates to use by setting the theme_path configuration to point to the directory of the templates.</li>
+<li>To check the templates without having to connect to the server, add an author_mode tag to the configuration.</li>
+</ol>
+
+Example configuration:
+<pre>&lt;config&gt;
+	&lt;contest_name&gt;Mamma Mia!&lt;/contest_name&gt;
+	&lt;port&gt;2652&lt;/port&gt;
+	&lt;ip&gt;127.0.0.1&lt;/ip&gt;
+	&lt;theme_path&gt;resources/projector_themes/it&lt;/theme_path&gt;
+	&lt;author_mode/&gt;
+&lt;/config&gt;
+</pre>
+<h1>Basic Syntax</h1>
+<ol>
+<li>Variables that are to be replaces are represented by words inside double curly brackets {{LIKE_THIS}}.</li>
+<li>Section starts with {{#SECTION_NAME}} and ends with {{/SECTION_NAME}}. They are often used for things that are optionally shown or repeated (like the rankings).</li>
+</ol>
+
+<h1>Templates</h1>
+<h2>index.html</h2>
+<pre>&lt;html&gt;
+	&lt;body&gt;
+		&lt;h1&gt;{{CONTEST_NAME}} by Cerberus Contest System&lt;/h1&gt;
+		&lt;h2&gt;&amp;copy; &lt;a href=\'http://www.compsat.org\'&gt;CompSAt&lt;/a&gt;&lt;/h2&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h2>error.html</h2>
+<pre>&lt;html&gt;
+	&lt;body&gt;
+		&lt;h1&gt;An error has occured: {{ERROR_BRIEF}}&lt;/h1&gt;
+		{{ERROR_DETAIL}}
+	&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h2>scoreboard.html</h2>
+<pre>&lt;html&gt;
+	&lt;body&gt;
+		&lt;h1&gt;{{CONTEST_NAME}} - Rankings&lt;/h1&gt;
+		&lt;table&gt;
+			&lt;tr&gt;
+				&lt;th&gt;Rank&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Group&lt;/th&gt;&lt;th&gt;Score&lt;/th&gt;&lt;th&gt;Time&lt;/th&gt;
+			&lt;/tr&gt;
+			{{#CONTESTANT_SECTION}}
+			&lt;tr&gt;
+				&lt;td&gt;{{RANK}}&lt;/td&gt;
+				&lt;td&gt;{{NAME}}&lt;/td&gt;&lt;td&gt;{{GROUP}}&lt;/td&gt;
+				&lt;td&gt;{{SCORE}}&lt;/td&gt;
+				&lt;td&gt;{{TIME}}&lt;/td&gt;
+			&lt;/tr&gt;
+			{{/CONTESTANT_SECTION}}
+		&lt;table&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<h2>qdisplay.html</h2>
+<pre>&lt;html&gt;
+	&lt;body&gt;
+		&lt;h1&gt;{{CONTEST_NAME}} - Round {{STAGE_NUMBER}}&lt;/h1&gt;
+		&lt;h1&gt;Question Number: {{QUESTION_NUMBER}} out of {{QUESTION_TOTAL}}&lt;/h1&gt;
+		&lt;h2&gt;Time: {{TIME_LEFT}}&lt;/h2&gt;
+		&lt;h2&gt;Question: {{QUESTION}}&lt;/h2&gt;
+		{{#ANSWER_SECTION}}&lt;h2&gt;Answer: {{ANSWER}}&lt;/h2&gt;{{/ANSWER_SECTION}}
+		&lt;ol&gt;
+			{{#CHOICE_SECTION}}&lt;li&gt;{{CHOICE}}&lt;/li&gt;{{/CHOICE_SECTION}}
+		&lt;/ol&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h2>timeboard.html</h2>
+<pre>&lt;html&gt;
+	&lt;body&gt;
+		&lt;h1&gt;{{CONTEST_NAME}} - Round {{STAGE_NUMBER}}&lt;/h1&gt;
+		&lt;h2&gt;Time: {{TIME_LEFT}}&lt;/h2&gt;
+	&lt;body&gt;
+&lt;/html&gt;</pre>
+</body>
+</html>
