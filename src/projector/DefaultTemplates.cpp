@@ -40,7 +40,7 @@ const char * const DEFAULT_TEMPLATE_SCOREBOARD =
 "		<h1>{{CONTEST_NAME}} - Rankings</h1>"
 "		<table>"
 "			<tr>"
-"				<th>Rank</th><th>Name</th><th>Group</th><th>Score</th>"
+"				<th>Rank</th><th>Name</th><th>Group</th><th>Score</th><th>Time</th>"
 "			</tr>"
 "			{{#CONTESTANT_SECTION}}"
 "			<tr>"

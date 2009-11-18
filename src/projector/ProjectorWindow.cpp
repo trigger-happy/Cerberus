@@ -251,7 +251,7 @@ void ProjectorWindow::setContestRanks( const vector<RankData>& rd ) {
 		contestant_section->SetIntValue("RANK", r.rank);
 		contestant_section->SetValue("NAME", r.fullname.toStdString());
 		contestant_section->SetValue("GROUP", r.teamname.toStdString());
-		contestant_section->SetFormattedValue("SCORE", "%.2lf", r.score);
+		contestant_section->SetValue("SCORE", QString::number(r.score, 'f', 2).toStdString());
 		contestant_section->SetValue("TIME", QString::number(r.time).toStdString());
 	}
 }
