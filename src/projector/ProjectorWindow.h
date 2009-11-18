@@ -60,7 +60,7 @@ public:
 	void setStageNumber(int stageNumber);
 	void setQuestionNumber(int qnum);
 	void setQuestionTotal(size_t nQuestions);
-	void setContestRanks( const std::vector<RankData>& rd );
+	void setContestRanks( const std::vector<RankData>& rd, bool showNames = true );
 
 	ContestTimer& getContestTimer() { return m_timer; }
 

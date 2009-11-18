@@ -199,7 +199,9 @@ void MainController::onShowContestTime() {
 
 void MainController::onShowContestRanks( const vector<RankData>& rd ) {
 	(qDebug() << "MainController::onShowContestRanks");
-	m_target.setContestRanks(rd);
+	//TODO: WTF WTF HAX.
+	bool showNames = (m_activeRound == 1);
+	m_target.setContestRanks(rd, showNames);
 	m_target.setView(m_view = TemplateManager::SCOREBOARD);
 }
 

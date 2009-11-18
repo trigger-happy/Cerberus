@@ -1,0 +1,33 @@
+* {
+	margin: 0;
+	padding: 0;
+	font: 16px/1.125em Arial, Helvetica, "DejaVu Sans", sans-serif;
+}
+
+body {
+	background-color: #fff;
+	padding: 0 12px;
+}
+
+h1 {
+	font-weight: 600;
+	font-size: 24px;
+	margin: 12px 0;
+}
+
+h2 {
+	font-size: 16px;
+}
+
+td, th {
+	border-right: 1px solid #ccc;
+}
+
+td {
+	background-color: #fefefe;
+}
+
+th {
+	background-color: #eee;
+	font-weight: 600;
+}
