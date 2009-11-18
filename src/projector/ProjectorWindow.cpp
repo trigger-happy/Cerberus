@@ -240,10 +240,13 @@ void ProjectorWindow::setStageNumber(int stageNumber) {
 	ctemplate::TemplateDictionary::SetGlobalValue("STAGE_NUMBER", QString::number(stageNumber).toStdString());
 }
 
-void ProjectorWindow::setContestRanks( const vector<RankData>& rd ) {
+void ProjectorWindow::setContestRanks( const vector<RankData>& rd, bool showNames ) {
 	using ctemplate::TemplateDictionary;
 	delete m_rankDict;
 	m_rankDict = new TemplateDictionary("rankDict");
+
+	if ( showNames )
+		m_rankDict->ShowSection("SHOW_NAME");
 
 	for ( size_t i = 0; i < rd.size(); ++i ) {
 		const RankData &r = rd[i];

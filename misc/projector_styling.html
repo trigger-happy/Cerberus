@@ -49,12 +49,12 @@ Example configuration:
 		&lt;h1&gt;{{CONTEST_NAME}} - Rankings&lt;/h1&gt;
 		&lt;table&gt;
 			&lt;tr&gt;
-				&lt;th&gt;Rank&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Group&lt;/th&gt;&lt;th&gt;Score&lt;/th&gt;&lt;th&gt;Time&lt;/th&gt;
+				&lt;th&gt;Rank&lt;/th&gt;{{#SHOW_NAME}}&lt;th&gt;Name&lt;/th&gt;{{/SHOW_NAME}}&lt;th&gt;Group&lt;/th&gt;&lt;th&gt;Score&lt;/th&gt;&lt;th&gt;Time&lt;/th&gt;
 			&lt;/tr&gt;
 			{{#CONTESTANT_SECTION}}
 			&lt;tr&gt;
 				&lt;td&gt;{{RANK}}&lt;/td&gt;
-				&lt;td&gt;{{NAME}}&lt;/td&gt;&lt;td&gt;{{GROUP}}&lt;/td&gt;
+				{{#SHOW_NAME}}&lt;td&gt;{{NAME}}&lt;/td&gt;{{/SHOW_NAME}}&lt;td&gt;{{GROUP}}&lt;/td&gt;
 				&lt;td&gt;{{SCORE}}&lt;/td&gt;
 				&lt;td&gt;{{TIME}}&lt;/td&gt;
 			&lt;/tr&gt;
