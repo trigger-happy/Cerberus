@@ -50,7 +50,7 @@ const char * const DEFAULT_TEMPLATE_SCOREBOARD =
 "				<td>{{TIME}}</td>"
 "			</tr>"
 "			{{/CONTESTANT_SECTION}}"
-"		<table>"
+"		</table>"
 "	</body>"
 "</html>";
 
@@ -59,7 +59,7 @@ const char * const DEFAULT_TEMPLATE_TIMEBOARD =
 "	<body>"
 "		<h1>{{CONTEST_NAME}} - Round {{STAGE_NUMBER}}</h1>"
 "		<h2>Time: {{TIME_LEFT}}</h2>"
-"	<body>"
+"	</body>"
 "</html>";
 
 const char * const DEFAULT_TEMPLATE_QDISPLAY =
