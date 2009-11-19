@@ -162,7 +162,10 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 
 	if ( m_network->getRound() > 1 ) {
 		if ( m_teamconnected.contains( ud.teamname ) ) {
-			if ( m_teamconnected[ud.teamname] ) {
+			if ( m_teamconnected[ud.teamname] >= 1) {
+				// this is a little work around to avoid a bug
+				m_teamconnected[ud.teamname]++;
+				emit contestantC( c_username );
 				cc->dropClient();
 				return;
 			}
@@ -171,8 +174,6 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 
 	if ( !m_hash.contains( c_username ) ) {
 		// brand new connection
-		m_hash[c_username] = cc;
-		m_teamconnected[ud.teamname] = true;
 		m_hash_answers[c_username] << "" << "" << "" << "";
 
 		// get information on the user and shove it into m_rankmodel
@@ -194,8 +195,13 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 		if ( m_hash[c_username] != NULL ) {
 			m_hash[c_username]->dropClient();
 		}
-
-		m_hash[c_username] = cc;
+	}
+	
+	m_hash[c_username] = cc;
+	if(m_teamconnected.contains(ud.teamname)){
+		m_teamconnected[ud.teamname]++;
+	}else{
+		m_teamconnected[ud.teamname] = 1;
 	}
 
 	emit contestantC( c_username );
@@ -213,7 +219,7 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 		return;
 	}
 
-	m_teamconnected[ud.teamname] = false;
+	m_teamconnected[ud.teamname]--;
 
 	m_hash[c_user] = NULL;
 
