@@ -2,6 +2,7 @@
 	<contest_name>Mamma Mia!</contest_name>
 	<port>2652</port>
 	<ip>127.0.0.1</ip>
+	<theme_path>resources/projector_themes/it</theme_path>
 	<author_mode enabled="false">
 		<q>What is 1 + 1?</q>
 		<a>10</a>
