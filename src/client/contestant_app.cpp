@@ -50,7 +50,7 @@ ContestantApp::ContestantApp ( QWidget* parent )
     m_ending_dlg = new Ui::ending_dlg;
 
         m_dlg->setupUi( this );
-        QPixmap logo("resources/logo.PNG");
+        QPixmap logo("resources/logo.png");
         m_dlg->cerb_logo_lbl->setPixmap(logo);
         //this->hide();
 	m_welcome_w = new QDialog( this );
