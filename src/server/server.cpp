@@ -616,6 +616,7 @@ void Server::scoreReset() {
 		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
 		m_rankmodel->item( i, 4 )->setText( QString( "0" ) );
 	}
+	filterTeamView();
 }
 
 void Server::showMainScreen() {
