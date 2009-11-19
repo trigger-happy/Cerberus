@@ -306,7 +306,8 @@ private:
 	*/
 	void filterTeamView();
 
-	QString m_log, m_db_path;
+	QFile m_log;
+	QString m_db_path;
 	quint16 m_port;
 	int m_round;
 	ServerNetwork* m_network;

@@ -33,6 +33,13 @@ bool testing = true;
 
 Server::Server ( QWidget* parent ) : QObject ( parent ) {
 
+	// open up the answers log for writing
+	m_log.setFileName( "answers.log" );
+
+	if ( !m_log.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
+		qDebug() << "failed to open log file for writing" << endl;
+	}
+
 	//reads the server config from the XML file
 	QFile file ( QString ( "resources/server_config.xml" ) );
 	file.open ( QIODevice::ReadOnly );
@@ -162,7 +169,7 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 
 	if ( m_network->getRound() > 1 ) {
 		if ( m_teamconnected.contains( ud.teamname ) ) {
-			if ( m_teamconnected[ud.teamname] >= 1) {
+			if ( m_teamconnected[ud.teamname] >= 1 ) {
 				// this is a little work around to avoid a bug
 				m_teamconnected[ud.teamname]++;
 				emit contestantC( c_username );
@@ -196,11 +203,12 @@ void Server::onAuthentication( ContestantConnection* cc, const QString& c_userna
 			m_hash[c_username]->dropClient();
 		}
 	}
-	
+
 	m_hash[c_username] = cc;
-	if(m_teamconnected.contains(ud.teamname)){
+
+	if ( m_teamconnected.contains( ud.teamname ) ) {
 		m_teamconnected[ud.teamname]++;
-	}else{
+	} else {
 		m_teamconnected[ud.teamname] = 1;
 	}
 
@@ -255,25 +263,27 @@ void Server::contestantDisconnect( ContestantConnection* cc ) {
 void Server::onAnswerSubmission( ContestantConnection* cc, int round, const AnswerData& data ) {
 	AnswerData new_data = data;
 	const QString& user = cc->getUserName();
+	QTextStream out( &m_log );
 
 	if ( !m_cansubmit[user] ) {
 		return;
 	}
 
 	QString allAnswers, answer;
-
-	cout << ( QString( "%1 has submitted answer data for round %2" ).arg( user ).arg( round ) ).toStdString() << endl;
+	out << QString( "%1 has submitted answer data for round %2\n" ).arg( user ).arg( round );
 
 	cc->enableAnswerSubmission( false );
 	m_cansubmit[user] = false;
 
 	for ( int i = 0; i < data.size(); i++ ) {
 		int questionNum;
+
 		if ( round >= 3 ) questionNum = m_selected_question_num;
 		else questionNum = i + 1;
+
 		if ( data[i].ans_type == Question::IDENTIFICATION ) {
 			answer = QString( "%1 is %2\n" ).arg( questionNum ).arg( data[i].id_answer );
-			cout << answer.toStdString();
+			out << answer;
 			allAnswers.append( answer );
 		} else {
 			QString buffer;
@@ -284,7 +294,7 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 
 			answer = QString( "%1 is %2\n" ).arg( questionNum ).arg( buffer );
 
-			cout << answer.toStdString();
+			out << answer;
 			allAnswers.append( answer );
 		}
 	}
@@ -293,8 +303,7 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 		QString tempAnswers = m_hash_answers[user].at( round - 1 );
 		tempAnswers.append( allAnswers );
 		m_hash_answers[user].replace( round - 1, tempAnswers );
-	}
-	else
+	} else
 		m_hash_answers[user].replace( round - 1, allAnswers );
 
 	Checker* checker = m_checkers.at( round - 1 );
@@ -309,9 +318,9 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 
 		checker->resetQuestionSet();
 
-		cout << "Checking at question number " << m_selected_question_num << endl;
+		out << QString( "Checking question %1\n" ).arg( m_selected_question_num );
 
-		cout << "The question is " << questions.at( m_selected_question_num ).question.toStdString() << endl;
+		out << QString( "Question is: %1\n" ).arg( questions.at( m_selected_question_num ).question );
 
 		checker->addQuestion( questions.at( m_selected_question_num ) );
 	}
@@ -323,6 +332,8 @@ void Server::onAnswerSubmission( ContestantConnection* cc, int round, const Answ
 	double new_score = this->getScore( user ) + points;
 
 	this->setScore( user, new_score );
+
+	out << "\n\n";
 }
 
 //Presenter slots
@@ -394,11 +405,11 @@ void Server::setScore( QString c_user, double score ) {
 		if ( temp->text() == target ) {
 			m_rankmodel->item( i, 3 )->setText( QString( "%1" ).arg( score ) );
 			m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg(
-					(getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
-					 m_preciseTimeLeft +
-					 SCORE_TIME_PRECISION/2) //for rounding off to the nearest SCORE_TIME_PRECISON
-					/SCORE_TIME_PRECISION //truncate the rest of the score off
-					) );
+			                                        ( getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
+			                                          m_preciseTimeLeft +
+			                                          SCORE_TIME_PRECISION / 2 ) //for rounding off to the nearest SCORE_TIME_PRECISON
+			                                        / SCORE_TIME_PRECISION //truncate the rest of the score off
+			                                    ) );
 			updateRankData();
 			break;
 		}
@@ -616,6 +627,7 @@ void Server::scoreReset() {
 		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
 		m_rankmodel->item( i, 4 )->setText( QString( "0" ) );
 	}
+
 	filterTeamView();
 }
 
@@ -627,6 +639,6 @@ void Server::timerTick() {
 	m_timeleft--;
 }
 
-void Server::onPreciseTimerTick(unsigned int msec) {
+void Server::onPreciseTimerTick( unsigned int msec ) {
 	m_preciseTimeLeft = msec;
 }
