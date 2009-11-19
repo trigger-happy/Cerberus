@@ -252,7 +252,8 @@ void ProjectorWindow::setContestRanks( const vector<RankData>& rd, bool showName
 		const RankData &r = rd[i];
 		TemplateDictionary *contestant_section = m_rankDict->AddSectionDictionary("CONTESTANT_SECTION");
 		contestant_section->SetIntValue("RANK", r.rank);
-		contestant_section->SetValue("NAME", r.fullname.toStdString());
+		if ( showNames )
+			contestant_section->SetValueAndShowSection("NAME", r.fullname.toStdString(), "SHOW_NAME");
 		contestant_section->SetValue("GROUP", r.teamname.toStdString());
 		contestant_section->SetValue("SCORE", QString::number(r.score, 'f', 2).toStdString());
 		contestant_section->SetValue("TIME", QString::number(r.time).toStdString());
