@@ -212,7 +212,6 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
         return;
 
     status = s;
-    m_network->qDataRequest( r );
 
     if( round != r )
     {
@@ -239,7 +238,8 @@ void ContestantApp::onContestStateChange ( int r, CONTEST_STATUS s )
     else if( status == CONTEST_STOPPED )
         stopContest();
     else if( status == CONTEST_PAUSED )
-        pauseContest();
+		pauseContest();
+	m_network->qDataRequest( r );
 }
 
 void ContestantApp::onQuestionStateChange( ushort q, ushort t, QUESTION_STATUS s )
