@@ -71,10 +71,11 @@ void MainController::resetData() {
 }
 
 StageData& MainController::getCurrentStage() {
-	if ( m_activeRound <= 0 || m_stageData.size() < m_activeRound ) {
+	if ( !(1 <= m_activeRound && m_activeRound <= m_stageData.size())) {
 		qWarning() << "Round data request out of bounds "
 				   << "(round: " << m_activeRound << ") (maximum: " << m_stageData.size() << ")";
 	}
+
 	return m_stageData[m_activeRound-1];
 }
 
@@ -123,7 +124,7 @@ void MainController::onRoundsReceived(const ushort nRounds) {
 void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
 	(qDebug() << "MainController::onContestState(" << round << ", " << status << ")");
 
-	if ( m_stageData.size() > round ) {
+	if ( m_stageData.size() < round ) {
 		qWarning() << "Round data request out of bounds "
 				   << "(round: " << round << ") (maximum: " << m_stageData.size() << ")";
 	}
