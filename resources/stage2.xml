@@ -1,32 +1,114 @@
 <?xml version="1.0"?>
-<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="3000">
-    <welcome_msg>ROUND 2! Select all possible answers</welcome_msg>
-    <choose multiple="true" score="3" id="1">
-        <q>Who among the following does not belong to Gai's team?</q>
-        <choice>Neji</choice>
-        <choice answer="true">Chouji</choice>
-        <choice answer="true">Hinata</choice>
-        <choice>Tenten</choice>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="1800">
+    <welcome_msg>Welcome to Round 2.
+
+Same instructions as prior apply.
+
+But this time, you will have more than one possible answer for each question.
+</welcome_msg>
+    <choose multiple="true" score="2" id="1">
+        <q>What numbers can be represented as an unsigned, 8-bit integer?</q>
+        <choice answer="true">0</choice>
+        <choice>-94</choice>
+        <choice answer="true">255</choice>
+        <choice>256</choice>
     </choose>
-    <choose multiple="true" score="3" id="2">
-        <q>What are the names of Gaara's siblings?</q>
-        <choice>Tenten</choice>
-        <choice answer="true">Temari</choice>
-        <choice>Ken Lee</choice>
-        <choice answer="true">Kankurou</choice>
+    <choose multiple="true" score="2" id="2">
+        <q>Examples of secondary storage technology include:</q>
+        <choice answer="true">Magnetic tape</choice>
+        <choice answer="true">Punched cards</choice>
+        <choice answer="true">Hard disk</choice>
+        <choice>CPU cache</choice>
     </choose>
-    <choose multiple="true" score="1" id="3">
-        <q>Who among the following possess a Bloodline Limit ability?</q>
-        <choice>Uzumaki Naruto</choice>
-        <choice answer="true">Uchiha Sasuke</choice>
-        <choice>Haruno Sakura</choice>
-        <choice answer="true">Hyuuga Neji</choice>
+    <choose multiple="true" score="2" id="3">
+        <q>&quot;Big Blue&quot; is a nickname attached to which IT-related company/s</q>
+        <choice>Cisco</choice>
+        <choice>Google</choice>
+        <choice answer="true">IBM</choice>
+        <choice>Microsoft</choice>
     </choose>
-    <choose multiple="true" score="1" id="4">
-        <q>Who among the following are part of the Shichibukai?</q>
-        <choice answer="true">Flamingo</choice>
-        <choice answer="true">Blackbeard</choice>
-        <choice>Dragoon</choice>
-        <choice>Whitebeard</choice>
+    <choose multiple="true" score="2" id="4">
+        <q>What does EE in Java EE stand for?</q>
+        <choice>Enhanced Edition</choice>
+        <choice answer="true">Enterprise Edition</choice>
+        <choice>Exceed Edition</choice>
+        <choice>Extra Edition</choice>
+    </choose>
+    <choose multiple="true" score="2" id="5">
+        <q>In computer graphics, this refers to applying a 2D image to a surface of a shape or polygon on a 3D model.</q>
+        <choice>Bilinear interpolation</choice>
+        <choice>Phone shading</choice>
+        <choice>Rendering</choice>
+        <choice answer="true">Texture mapping</choice>
+    </choose>
+    <choose multiple="true" score="2" id="6">
+        <q>What does TCP (as in TCP/IP) stand for?</q>
+        <choice>Transfer Connection Protocol</choice>
+        <choice>Transfer Control Protocol</choice>
+        <choice>Transmission Connection Protocol</choice>
+        <choice answer="true">Transmission Control Protocol</choice>
+    </choose>
+    <choose multiple="true" score="2" id="7">
+        <q>Who invented the first mouse prototype at the Stanford Research Institute in 1963?</q>
+        <choice>Tom Cranston</choice>
+        <choice answer="true">Douglas Engelbart</choice>
+        <choice>Steve Kirsch</choice>
+        <choice>John Woodyard</choice>
+    </choose>
+    <choose multiple="true" score="4" id="8">
+        <q>Which of the following lighting techniques in 3D computer graphics do NOT support specular highlighting?</q>
+        <choice>Flat shading</choice>
+        <choice>Gouraud shading</choice>
+        <choice>Phong shading</choice>
+        <choice answer="true">None of the above</choice>
+    </choose>
+    <choose multiple="true" score="4" id="9">
+        <q>Which of the following fall under the necessary conditions for a deadlock?</q>
+        <choice answer="true">There is a resource that cannot be used by more than one process at a time.</choice>
+        <choice answer="true">Processes already holding resources may request for new resources.</choice>
+        <choice answer="true">Two or more processes form a circular chain where each process waits for a resource that the next process holds.</choice>
+        <choice>Held resources can be forcibly removed even if the relevant process is not done with them.</choice>
+    </choose>
+    <choose multiple="true" score="4" id="10">
+        <q>The Linux kernel was initially conceived and created in 1991 by:</q>
+        <choice>Andrew Morton</choice>
+        <choice>Richard Stallman</choice>
+        <choice answer="true">Linus Torvalds</choice>
+        <choice>None of the above</choice>
+    </choose>
+    <choose multiple="true" score="4" id="11">
+        <q>In computer science, which problem deals with a process adding data to and another process removing data from a fixed-size buffer?</q>
+        <choice>Dining Philosopher's Problem</choice>
+        <choice answer="true">Producer-Consumer Problem</choice>
+        <choice>Read-Writer Problem</choice>
+        <choice>None of the above</choice>
+    </choose>
+    <choose multiple="true" score="4" id="12">
+        <q>In 3D computer graphics, this type of light source lights all objects within a scene equally.</q>
+        <choice answer="true">Ambient light</choice>
+        <choice>Diffuse light</choice>
+        <choice>Point light</choice>
+        <choice>Spotlight</choice>
+    </choose>
+    <choose multiple="true" score="6" id="13">
+        <q>Which of the following is NOT part of the initial set of ?general purpose domains? defined by RFC 920 in October 1984?</q>
+        <choice answer="true">.cat</choice>
+        <choice>.com</choice>
+        <choice>.edu</choice>
+        <choice>.gov</choice>
+    </choose>
+    <choose multiple="true" score="6" id="14">
+        <q>Who founded YouTube?</q>
+        <choice answer="true">Steve Chen</choice>
+        <choice answer="true">Chad Hurley</choice>
+        <choice answer="true">Jawed Karim</choice>
+        <choice>Stephanie Lenz</choice>
+    </choose>
+    <choose multiple="true" score="6" id="15">
+        <q>This is an Intel-proprietary technology that improves parallelization of computations by having the operating system address two virtual processors for each processor core that is physically present.</q>
+        <choice>Distributed computing</choice>
+        <choice answer="true">Hyper-threading</choice>
+        <choice>Multitasking</choice>
+        <choice>Symmetric multiprocessing</choice>
     </choose>
 </stage>

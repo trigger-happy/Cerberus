@@ -186,7 +186,7 @@ The instructions are parsed from the XML.</string>
       </font>
      </property>
      <property name="text">
-      <string>Start</string>
+      <string>&amp;Start</string>
      </property>
     </widget>
    </item>

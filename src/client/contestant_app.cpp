@@ -541,7 +541,7 @@ void ContestantApp::displayQuestionAndChoices()
 
 	if ( round == 1 )
 	{
-        m_elims_dlg->question_lbl->setText ( q.question );
+        m_elims_dlg->question_text->setText ( q.question );
         m_elims_dlg->a_choice->setText ( q.answer_key[0].c );
         m_elims_dlg->b_choice->setText ( q.answer_key[1].c );
         m_elims_dlg->c_choice->setText ( q.answer_key[2].c );
@@ -549,7 +549,7 @@ void ContestantApp::displayQuestionAndChoices()
 	}
     else if( round == 2 )
     {
-        m_semifinals_dlg->question_lbl->setText ( q.question );
+        m_semifinals_dlg->question_text->setText ( q.question );
         m_semifinals_dlg->a_choice->setText ( q.answer_key[0].c );
         m_semifinals_dlg->b_choice->setText ( q.answer_key[1].c );
         m_semifinals_dlg->c_choice->setText ( q.answer_key[2].c );
@@ -559,7 +559,7 @@ void ContestantApp::displayQuestionAndChoices()
     {
         if( q.type == Question::CHOOSE_ANY || q.type == Question::CHOOSE_ONE )
         {
-            m_finalsChoice_dlg->question_lbl->setText ( q.question );
+            m_finalsChoice_dlg->question_text->setText ( q.question );
             m_finalsChoice_dlg->a_choice->setText ( q.answer_key[0].c );
             m_finalsChoice_dlg->b_choice->setText ( q.answer_key[1].c );
             m_finalsChoice_dlg->c_choice->setText ( q.answer_key[2].c );
@@ -570,7 +570,7 @@ void ContestantApp::displayQuestionAndChoices()
         }
         else if( q.type == Question::IDENTIFICATION )
         {
-            m_finalsIdent_dlg->question_lbl->setText( q.question );
+            m_finalsIdent_dlg->question_text->setText( q.question );
 
             m_finalsChoice_w->hide();
             m_finalsIdent_w->show();

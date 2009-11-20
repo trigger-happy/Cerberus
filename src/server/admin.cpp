@@ -345,10 +345,8 @@ void Admin::onStartQuestionTime() {
 	m_preciseTimer->start();
 
 
-	if ( m_currentRound == 3 ) {
-		m_server->startQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
-	} else if ( m_currentRound == 4 ) {
-		m_server->startQuestionTime( m_selected_question, m_q4_v.at( m_selected_question ).time_limit );
+	if ( m_currentRound >= 3 ) {
+		m_server->startQuestionTime( m_selected_question, m_timeleft );
 	}
 }
 
@@ -356,10 +354,8 @@ void Admin::onPauseQuestionTime() {
 	m_timer->stop();
 	m_preciseTimer->pause();
 
-	if ( m_currentRound == 3 ) {
-		m_server->pauseQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
-	} else if ( m_currentRound == 4 ) {
-		m_server->pauseQuestionTime( m_selected_question, m_q4_v.at( m_selected_question ).time_limit );
+	if ( m_currentRound >= 3 ) {
+		m_server->pauseQuestionTime( m_selected_question, m_timeleft );
 	}
 }
 
@@ -370,9 +366,7 @@ void Admin::onStopQuestionTime() {
 	m_dlg->time2_lcd->display( 0 );
 
 	if ( m_currentRound == 3 ) {
-		m_server->stopQuestionTime( m_selected_question, m_q3_v.at( m_selected_question ).time_limit );
-	} else if ( m_currentRound == 4 ) {
-		m_server->stopQuestionTime( m_selected_question, m_q4_v.at( m_selected_question ).time_limit );
+		m_server->stopQuestionTime( m_selected_question, m_timeleft );
 	}
 }
 
