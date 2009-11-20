@@ -139,6 +139,11 @@
      </item>
      <item>
       <widget class="QTextEdit" name="question_text">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="readOnly">
         <bool>true</bool>
        </property>
@@ -252,7 +257,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Submit Answer</string>
+      <string>&amp;Submit Answer</string>
      </property>
     </widget>
    </item>
