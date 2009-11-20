@@ -633,13 +633,31 @@ void Server::setContestTime( ushort time ) {
 }
 
 void Server::scoreReset() {
+	QFile file( "scores.log" );
+
+	if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
+		qDebug() << "Unable to open scores.log\n";
+	}
+
+	QTextStream out( &file );
 	SqlUtil::getInstance().scoreReset();
 
+	out << QDate::currentDate().toString( Qt::TextDate ) << "\n";
+	out << QString( "Round %1 scores\n" ).arg( m_round );
+
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
+		// dump
+		out << m_rankmodel->item( i, 0 )->text() << " ";
+		out << m_rankmodel->item( i, 1 )->text() << " ";
+		out << m_rankmodel->item( i, 2 )->text() << " ";
+		out << m_rankmodel->item( i, 3 )->text() << " ";
+		out << m_rankmodel->item( i, 4 )->text() << "\n";
+		// reset
 		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
 		m_rankmodel->item( i, 4 )->setText( QString( "0" ) );
 	}
 
+	out << "\n";
 	filterTeamView();
 }
 
