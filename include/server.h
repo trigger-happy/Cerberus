@@ -108,21 +108,21 @@ public:
 	\param num The question number (0-based index).
 	\param time The time in seconds.
 	*/
-	void startQuestionTime( int num, int time );
+	void startQuestionTime( int num, int& time );
 
 	/*!
 	Stop the question timer for num question.
 	\param num The question number.
 	\param time The time in seconds.
 	*/
-	void stopQuestionTime( int num, int time );
+	void stopQuestionTime( int num, int& time );
 
 	/*!
 	Pause the question timer for num question.
 	\param num The question number.
 	\param time The time in seconds.
 	*/
-	void pauseQuestionTime( int num, int time );
+	void pauseQuestionTime( int num, int& time );
 
 	/*!
 	Send a command to the projector to show the current question on screen.
