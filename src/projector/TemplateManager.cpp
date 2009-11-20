@@ -62,6 +62,13 @@ TemplateManager::TemplateManager()
 	initialize();
 }
 
+void TemplateManager::setTemplatePath(const QString &path) {
+	m_dir = QDir(path);
+	if ( !m_dir.exists() ) {
+		qWarning() << "Template path " << m_dir.absolutePath() << " does not exist.";
+	}
+}
+
 //#define DEBUG_TEMPLATE_RESOLUTION
 
 ctemplate::Template* TemplateManager::getTemplate(TKey template_key) {
