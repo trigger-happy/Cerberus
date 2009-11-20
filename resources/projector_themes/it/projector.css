@@ -1,15 +1,16 @@
 
 body {
-	background-color: beige;
+	background-color: white;
 	padding: 0 12px;
 }
 
 a{
 	font-size: 28px;
 }
+
 h1 {
-	text-align:center;
-	color: #3333ff;
+	text-align: center;
+	color: #0000aa;
 	font-weight: 600;
 	font-size: 48px;
 	margin: 12px 0;
@@ -20,10 +21,27 @@ h2 {
 	font-size: 28 px;
 }
 
+h3{
+	text-align: center;
+	font-size: 40px;
+	color: #0000ee;
+}
+
+h4{
+	color: #ccccff;
+	text-align: center;
+	font-size: 30px;
+	padding: 10px 0;
+}
+
+h5{	
+	font-size: 30px;
+}
+
 table{
-	margin-left:auto;
-	margin-right:auto;
-	width:50%;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
 }
 
 td, th {
@@ -31,7 +49,7 @@ td, th {
 }
 
 td {
-	background-color: white;
+	background-color: #cdeede;
 	font-size: 20px;
 }
 
@@ -40,12 +58,14 @@ th {
 	color: white;
 	background-color: #7777FF;
 	font-weight: 400;
-	font-size:24px;
+	font-size: 24px;
 }
-img
-{
-horizontal-align:text-top;
+
+img{
+	padding: 0 350px;
+horizontal-align: text-top;
 }
+
 * {
 	margin: 0;
 	padding: 0;
