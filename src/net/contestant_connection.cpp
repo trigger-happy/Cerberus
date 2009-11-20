@@ -138,7 +138,7 @@ void ContestantConnection::ready() {
 			break;
 
 		case QRY_QUESTION_STATE:
-			setQuestionState( m_qnum, m_qtime, m_qstatus );
+			setQuestionState( m_qnum, *m_qtime, m_qstatus );
 			break;
 
 		case QRY_ANSWER_SUBMIT:
@@ -319,9 +319,9 @@ void ContestantConnection::setStatus ( CONTEST_STATUS s ) {
 	m_con_status = s;
 }
 
-void ContestantConnection::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state ) {
+void ContestantConnection::setQuestionState ( ushort qnum, ushort& time, QUESTION_STATUS state ) {
 	m_qnum = qnum;
-	m_qtime = time;
+	m_qtime = &time;
 	m_qstatus = state;
 	//construct the packet and send it
 	QByteArray block;

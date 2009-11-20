@@ -154,13 +154,13 @@ public:
 	\param time The time left for this question.
 	\param state The status of this question.
 	*/
-	void setQuestionState( ushort qnum, ushort time, QUESTION_STATUS state );
+	void setQuestionState( ushort qnum, ushort& time, QUESTION_STATUS state );
 
 	/*!
 	Get the question time.
 	\return the question time.
 	*/
-	inline ushort getQTime() {
+	inline ushort* getQTime() {
 		return m_qtime;
 	}
 
@@ -295,7 +295,7 @@ protected:
 	CONTEST_STATUS m_con_status;
 	// question state
 	ushort m_qnumber;
-	ushort m_qtime;
+	ushort* m_qtime;
 	QUESTION_STATUS m_qstatus;
 	//server socket
 	QTcpServer* m_server;

@@ -225,9 +225,9 @@ void ServerNetwork::setContestTime ( ushort time ) {
 
 }
 
-void ServerNetwork::setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state ) {
+void ServerNetwork::setQuestionState ( ushort qnum, ushort& time, QUESTION_STATUS state ) {
 	m_qnumber = qnum;
-	m_qtime = time;
+	m_qtime = &time;
 	m_qstatus = state;
 
 	if ( m_round >= 3 ) {

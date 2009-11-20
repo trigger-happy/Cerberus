@@ -84,7 +84,7 @@ public:
 	\param time The time left for this question.
 	\param state The state of this question.
 	*/
-	void setQuestionState ( ushort qnum, ushort time, QUESTION_STATUS state );
+	void setQuestionState ( ushort qnum, ushort& time, QUESTION_STATUS state );
 
 	/*!
 	Set the pointer to the question data. This is to be used by ServerNet.
@@ -194,7 +194,7 @@ private:
 
 	//private fields
 	ushort m_qnum;
-	ushort m_qtime;
+	ushort* m_qtime;
 	QUESTION_STATUS m_qstatus;
 	bool m_answer_capable;
 	QTcpSocket* m_socket;

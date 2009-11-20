@@ -468,8 +468,8 @@ void Server::hideAnswer() {
 	m_network->hideAnswer();
 }
 
-void Server::startQuestionTime( int num, int time ) {
-	m_network->setQuestionState( num, time, QUESTION_RUNNING );
+void Server::startQuestionTime( int num, int& time ) {
+	m_network->setQuestionState( num, ( ushort& )time, QUESTION_RUNNING );
 	m_selected_question_num = num;
 
 	QMutableHashIterator<QString, bool> i( m_cansubmit );
@@ -482,12 +482,12 @@ void Server::startQuestionTime( int num, int time ) {
 	m_network->enableContestSubmission( true );
 }
 
-void Server::stopQuestionTime( int num, int time ) {
-	m_network->setQuestionState( num, time, QUESTION_STOPPED );
+void Server::stopQuestionTime( int num, int& time ) {
+	m_network->setQuestionState( num, ( ushort& )time, QUESTION_STOPPED );
 }
 
-void Server::pauseQuestionTime( int num, int time ) {
-	m_network->setQuestionState( num, time, QUESTION_PAUSED );
+void Server::pauseQuestionTime( int num, int& time ) {
+	m_network->setQuestionState( num, ( ushort& )time, QUESTION_PAUSED );
 }
 
 int Server::getRoundTime( int round ) {
