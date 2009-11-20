@@ -111,4 +111,214 @@ But this time, you will have more than one possible answer for each question.
         <choice>Multitasking</choice>
         <choice>Symmetric multiprocessing</choice>
     </choose>
+    <choose multiple="true" score="2" id="16">
+        <q>Which of the following are keyboard layouts?</q>
+        <choice answer="true">Dvorak</choice>
+        <choice>Asdf</choice>
+        <choice>Unicode</choice>
+        <choice answer="true">Qwerty</choice>
+    </choose>
+    <choose multiple="true" score="2" id="17">
+        <q>Who is the inventor/s of the Difference Engine?</q>
+        <choice answer="true">Charles Babbage</choice>
+        <choice>Bob Cabbage</choice>
+        <choice>Isaac Newton</choice>
+        <choice>Gottfried Leibniz</choice>
+    </choose>
+    <choose multiple="true" score="2" id="18">
+        <q>What is the original name of the Java Programming language?</q>
+        <choice>Cypress</choice>
+        <choice>Eucalyptus</choice>
+        <choice answer="true">Oak</choice>
+        <choice>Arabica</choice>
+    </choose>
+    <choose multiple="true" score="2" id="19">
+        <q>Which of the following is/are developed by Adobe?</q>
+        <choice answer="true">Flash</choice>
+        <choice answer="true">Flex</choice>
+        <choice>Fable</choice>
+        <choice>Flame</choice>
+    </choose>
+    <choose multiple="true" score="2" id="20">
+        <q>Which of the following products are owned by Google?</q>
+        <choice answer="true">Gmail</choice>
+        <choice answer="true">Orkut</choice>
+        <choice answer="true">Blogger</choice>
+        <choice answer="true">Android</choice>
+    </choose>
+    <choose multiple="true" score="2" id="21">
+        <q>What device/s can be used for storing data?</q>
+        <choice answer="true">DVD</choice>
+        <choice>Keyboard</choice>
+        <choice>USB</choice>
+        <choice>LCD</choice>
+    </choose>
+    <choose multiple="true" score="2" id="22">
+        <q>What does the acronym XML stand for?</q>
+        <choice>eXtremely Managable Language</choice>
+        <choice answer="true">eXtensible Markup Language</choice>
+        <choice>eXclusive Markup Language</choice>
+        <choice>eXpert Markup Language</choice>
+    </choose>
+    <choose multiple="true" score="4" id="23">
+        <q>What can the P in the acronym LAMP stand for?</q>
+        <choice answer="true">Perl</choice>
+        <choice answer="true">PHP</choice>
+        <choice answer="true">Python</choice>
+        <choice>Postgres</choice>
+    </choose>
+    <choose multiple="true" score="4" id="24">
+        <q>What protocol/s is used for transferring files between computers?</q>
+        <choice answer="true">rdp</choice>
+        <choice>smtp</choice>
+        <choice answer="true">scp</choice>
+        <choice>icmp</choice>
+    </choose>
+    <choose multiple="true" score="4" id="25">
+        <q>Which of the following is a scripting language?</q>
+        <choice answer="true">Perl</choice>
+        <choice>Java</choice>
+        <choice>C++</choice>
+        <choice answer="true">Ruby</choice>
+    </choose>
+    <choose multiple="true" score="4" id="26">
+        <q>What web protocol/s allows for secure transfer of data between the site owner and the site user?</q>
+        <choice>ftp</choice>
+        <choice>svn</choice>
+        <choice answer="true">https</choice>
+        <choice>rdp</choice>
+    </choose>
+    <choose multiple="true" score="4" id="27">
+        <q>What does SSH stand for?</q>
+        <choice answer="true">Secure Shell</choice>
+        <choice>Secure System Help</choice>
+        <choice>Secure Standby Helm</choice>
+        <choice>Secure Ship</choice>
+    </choose>
+    <choose multiple="true" score="6" id="28">
+        <q>Which of the following products are owned by Sun Microsystems?</q>
+        <choice answer="true">Netbeans</choice>
+        <choice answer="true">MySQL</choice>
+        <choice>Tomcat</choice>
+        <choice answer="true">Spring</choice>
+    </choose>
+    <choose multiple="true" score="6" id="29">
+        <q>What algorithm/s is used to solve the Minimum Cost Spanning Tree problem?</q>
+        <choice answer="true">Kruskal?s Algorithm</choice>
+        <choice>Dijkstra?s Algorithm</choice>
+        <choice>Floyd?s Algorithm</choice>
+        <choice answer="true">Primm?s algorithm</choice>
+    </choose>
+    <choose multiple="true" score="6" id="30">
+        <q>Which of the following are NOT programming languages?</q>
+        <choice>Ada</choice>
+        <choice answer="true">Board</choice>
+        <choice>C</choice>
+        <choice>D</choice>
+    </choose>
+    <choose multiple="true" score="2" id="31">
+        <q>At what date was Fedora 12 released? (In the Philippines)</q>
+        <choice>11/16/09</choice>
+        <choice answer="true">11/17/09</choice>
+        <choice>11/18/09</choice>
+        <choice>11/19/09</choice>
+    </choose>
+    <choose multiple="true" score="2" id="32">
+        <q>Binary has 2 digits, and Octal has 8. So Hexadecimal has _____ digits</q>
+        <choice>60</choice>
+        <choice>6</choice>
+        <choice answer="true">16</choice>
+        <choice>160</choice>
+    </choose>
+    <choose multiple="true" score="2" id="33">
+        <q>Which of these devices may retain data of a computer virus?</q>
+        <choice answer="true">Digital Camera</choice>
+        <choice answer="true">Hard Drive</choice>
+        <choice>Mouse</choice>
+        <choice answer="true">USB Flash Drive</choice>
+    </choose>
+    <choose multiple="true" score="2" id="34">
+        <q>In binary, what is twice the value of 0011?</q>
+        <choice>0010</choice>
+        <choice answer="true">0110”</choice>
+        <choice>1010</choice>
+        <choice>1100”</choice>
+    </choose>
+    <choose multiple="true" score="2" id="35">
+        <q>What does IDE mean?</q>
+        <choice>Instructional Development Environment</choice>
+        <choice>Invisible Dimension Epicenter</choice>
+        <choice>Intelligent Development Environment</choice>
+        <choice answer="true">Integrated Development Environment</choice>
+    </choose>
+    <choose multiple="true" score="2" id="36">
+        <q>What are the TWO words form which “modem” was derived?</q>
+        <choice answer="true">Modulator</choice>
+        <choice>Module</choice>
+        <choice answer="true">Demodulator</choice>
+        <choice>Demodulus</choice>
+    </choose>
+    <choose multiple="true" score="2" id="37">
+        <q>What is the hexadecimal equivalent of 100101011100001111?</q>
+        <choice>25A19</choice>
+        <choice answer="true">2570F</choice>
+        <choice>95C3C</choice>
+        <choice>95C32</choice>
+    </choose>
+    <choose multiple="true" score="4" id="38">
+        <q>From what company did the Mozilla Project obtain rights from?</q>
+        <choice answer="true">Netscape</choice>
+        <choice>Oracle</choice>
+        <choice>Firefox</choice>
+        <choice>Nokia</choice>
+    </choose>
+    <choose multiple="true" score="4" id="39">
+        <q>Among the following, which is the fastest sorting algorithm?</q>
+        <choice>Insertion Sort</choice>
+        <choice>Bubble Sort</choice>
+        <choice>Fast Sort</choice>
+        <choice answer="true">Quick Sort</choice>
+    </choose>
+    <choose multiple="true" score="4" id="40">
+        <q>Which of these Microsoft releases were actually based on Windows NT?</q>
+        <choice answer="true">Windows XP</choice>
+        <choice>Windows 95</choice>
+        <choice answer="true">Windows 2000</choice>
+        <choice answer="true">Windows Vista</choice>
+    </choose>
+    <choose multiple="true" score="4" id="41">
+        <q>What is the minimum number of bits needed to represent 127?</q>
+        <choice>6</choice>
+        <choice answer="true">7</choice>
+        <choice>8</choice>
+        <choice>9</choice>
+    </choose>
+    <choose multiple="true" score="4" id="42">
+        <q>Dennis Ritchie designed what programming language?</q>
+        <choice>C++</choice>
+        <choice>Visual Basic</choice>
+        <choice answer="true">C</choice>
+        <choice>Perl</choice>
+    </choose>
+    <choose multiple="true" score="6" id="43">
+        <q>What time was Fedora 12 released? (GMT +8)</q>
+        <choice>10:00:00 PM</choice>
+        <choice answer="true">11:00:00 PM</choice>
+        <choice>12:00:00 PM</choice>
+        <choice>01:00:00 AM</choice>
+    </choose>
+    <choose multiple="true" score="6" id="44">
+        <q>How many Perl versions have been released?</q>
+        <choice answer="true">10</choice>
+        <choice>4</choice>
+        <choice>2</choice>
+        <choice>18</choice>
+    </choose>
+    <choose multiple="true" score="6" id="45">
+        <q>Who were the founders of the Open Source Initiative?</q>
+        <choice>Linus Torvalds</choice>
+        <choice answer="true">Eric S. Raymond</choice>
+        <choice>Richard Stallman</choice>
+        <choice answer="true">Bruce Perens</choice>
+    </choose>
 </stage>

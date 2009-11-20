@@ -63,4 +63,117 @@ Questions will appear automatically.</welcome_msg>
         <q>What does KDD (a data mining branch or process, name coined by Gregory Piatetsky-Shapiro in 1989) stand for?</q>
         <a>Knowledge Discovery in Databases</a>
     </identification>
+    <identification score="3" time_limit="15" id="11">
+        <q>What is the name of the  rendering engine behind the Safari browser?</q>
+        <a>WebKit</a>
+    </identification>
+    <identification score="3" time_limit="15" id="12">
+        <q>PHP is a popular scripting language used to create dynamic web pages. What does PHP stand for? (The answer is &quot;PHP: ___________.&quot;)</q>
+        <a>Hypertext Preprocessor</a>
+    </identification>
+    <choose multiple="true" score="5" time_limit="15" id="13">
+        <q>What do you call the method of fraudently trying to acquire information, most commonly done through a seemingly legitimate email?</q>
+        <choice>Trojan Horse</choice>
+        <choice>Rootkit</choice>
+        <choice answer="true">Phishing</choice>
+        <choice>Buffer Overflow</choice>
+    </choose>
+    <identification score="5" time_limit="90" id="14">
+        <q>Convert the number 1,564 to binary.</q>
+        <a>1100001110</a>
+    </identification>
+    <choose multiple="true" score="5" time_limit="15" id="15">
+        <q>Who is the creator of the Ruby Programming Language?</q>
+        <choice>Ken Thompson</choice>
+        <choice>Joel Spolsky</choice>
+        <choice answer="true">Yukio Matsumoto</choice>
+        <choice>Kent Beck</choice>
+    </choose>
+    <identification score="5" time_limit="15" id="16">
+        <q>What is the name of the network created by the US Department of Defense?s Advanced Research Projects Agency which eventually became the Internet?</q>
+        <a>Arpanet</a>
+    </identification>
+    <identification score="7" time_limit="60" id="17">
+        <q>How many Kilobytes are there in a Gigabyte?</q>
+        <a>1048576</a>
+    </identification>
+    <identification score="7" time_limit="15" id="18">
+        <q>In the IEEE standard for floating point arithmetic (IEEE 754), how many bits are used to store the significand in a 32-bit floating point number?</q>
+        <a>23</a>
+    </identification>
+    <choose multiple="true" score="7" time_limit="15" id="19">
+        <q>Who is the creator of the TeX typesetting system?</q>
+        <choice answer="true">Donald Knuth</choice>
+        <choice>Steve Jobs</choice>
+        <choice>Linux Torvalds</choice>
+        <choice>Alan Turing</choice>
+    </choose>
+    <identification score="7" time_limit="120" id="20">
+        <q>What is the decimal equivalent of the hexadecimal number BEEF?</q>
+        <a>48879</a>
+    </identification>
+    <choose multiple="true" score="3" time_limit="15" id="21">
+        <q>For the Free Software Foundation, what does “free” in “free software” mean?</q>
+        <choice>Free as in Price</choice>
+        <choice answer="true">Free as in Freedom</choice>
+        <choice>Free as in Beer</choice>
+        <choice>Free as in Cost</choice>
+    </choose>
+    <choose multiple="true" score="3" time_limit="40" id="22">
+        <q>What is a terabyte?</q>
+        <choice>1 000 000 000 bytes</choice>
+        <choice>100 000 000 bytes</choice>
+        <choice>1 000 000 000 000 000 bytes</choice>
+        <choice answer="true">1 000 000 000 000 bytes</choice>
+    </choose>
+    <choose multiple="true" score="5" time_limit="15" id="23">
+        <q>Which musical format stores information like notes, tempo and sequence, rather than actual audio samples?</q>
+        <choice>WAV</choice>
+        <choice>MP3</choice>
+        <choice answer="true">MIDI</choice>
+        <choice>AU</choice>
+    </choose>
+    <identification score="5" time_limit="15" id="24">
+        <q>On the command-line for Windows, what command lists the contents of the current directory?</q>
+        <a>dir</a>
+        <a>DIR</a>
+    </identification>
+    <choose multiple="true" score="5" time_limit="30" id="25">
+        <q>Which is currently the computer language of choice for extremely large game development projects?</q>
+        <choice answer="true">C++</choice>
+        <choice>Java</choice>
+        <choice>Perl</choice>
+        <choice>Python</choice>
+    </choose>
+    <choose multiple="true" score="5" time_limit="30" id="26">
+        <q>What does BIOS stand for?</q>
+        <choice>Bitwise Input/Output System</choice>
+        <choice answer="true">Basic Input/Output System</choice>
+        <choice>Basic Internal Operation System</choice>
+        <choice>Basic Internal Output System</choice>
+    </choose>
+    <choose multiple="true" score="7" time_limit="30" id="27">
+        <q>Which if the following are Linux distributions?</q>
+        <choice answer="true">Ubuntu</choice>
+        <choice answer="true">openSUSE</choice>
+        <choice answer="true">Fedora</choice>
+        <choice answer="true">Poseidon</choice>
+    </choose>
+    <identification score="7" time_limit="30" id="28">
+        <q>In Linux, what is a background application called?</q>
+        <a>Daemon</a>
+        <a>daemon</a>
+    </identification>
+    <choose multiple="true" score="7" time_limit="40" id="29">
+        <q>Which company currently owns the Qt GUI Framework?</q>
+        <choice>Microsoft</choice>
+        <choice>Linux Foundation</choice>
+        <choice answer="true">Nokia</choice>
+        <choice>Ericsson</choice>
+    </choose>
+    <identification score="7" time_limit="40" id="30">
+        <q>What does IRC stand for?</q>
+        <a>Internet Relay Chat</a>
+        <a>internet relay chat</a>
+    </identification>
 </stage>

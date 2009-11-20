@@ -10,4 +10,16 @@ Can you answer this question?
         <a>Arithmetic underflow</a>
         <a>Floating point underflow</a>
     </identification>
+    <identification score="1" time_limit="30" id="2">
+        <q>What is the name of the online computational knowledge engine that was created by Wolfram Research?</q>
+        <a>Alpha</a>
+        <a>Wolframe Alpha</a>
+    </identification>
+    <choose multiple="true" score="1" time_limit="30" id="3">
+        <q>Who did Linus Torvalds argue against about how “Linux is Obsolete”?</q>
+        <choice>James Coplien</choice>
+        <choice>Bill Gates</choice>
+        <choice answer="true">Andrew Tanenbaum</choice>
+        <choice>Steve Jobs</choice>
+    </choose>
 </stage>

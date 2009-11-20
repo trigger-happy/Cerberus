@@ -112,4 +112,214 @@ Each question will only have one possible answer.</welcome_msg>
         <choice>A. Michael Noll</choice>
         <choice>Ivan Sutherland</choice>
     </choose>
+    <choose score="1" id="16">
+        <q>In the world of computers, what does the acronym USB stand for?</q>
+        <choice>Uninterruptible Serial Bus</choice>
+        <choice answer="true">Universal Serial Bus</choice>
+        <choice>Unlimited Serial Bus</choice>
+        <choice>Uncomplicated Serial Bus</choice>
+    </choose>
+    <choose score="1" id="17">
+        <q>What data storage device encodes data on rapidly rotating platters with magnetic surfaces?</q>
+        <choice answer="true">Hard Disk Drives</choice>
+        <choice>Floppy Disk Drives</choice>
+        <choice>CD-ROMs</choice>
+        <choice>Flash drives</choice>
+    </choose>
+    <choose score="1" id="18">
+        <q>In the world of computers, what do you call a computer program that allows other programs to interact with a hardware device?</q>
+        <choice answer="true">Device Drivers</choice>
+        <choice>Device Decoders</choice>
+        <choice>Hardware Decoder</choice>
+        <choice>Hardware applet</choice>
+    </choose>
+    <choose score="1" id="19">
+        <q>What does the acronym API stand for?</q>
+        <choice>Application Programming Interrupt</choice>
+        <choice>Application Programming Induction</choice>
+        <choice answer="true">Application Programming Interface</choice>
+        <choice>Application Programming Intelligence</choice>
+    </choose>
+    <choose score="1" id="20">
+        <q>what do you call software that acts as an interface between the user and the computer, and is responsible for management of various applications running on that commputer as well as how the computer?s various resources are shared across these applications?</q>
+        <choice>Microsoft</choice>
+        <choice answer="true">Operating System</choice>
+        <choice>Middleware</choice>
+        <choice>Resource Program</choice>
+    </choose>
+    <choose score="1" id="21">
+        <q>What computer peripheral consists of an object held under one?s hand with one or more buttons, and is used for pointing and clicking items in a GUI?</q>
+        <choice>Trackball</choice>
+        <choice>Keybaord</choice>
+        <choice>WiiMote</choice>
+        <choice answer="true">Mouse</choice>
+    </choose>
+    <choose score="1" id="22">
+        <q>What does GUI stand for?</q>
+        <choice answer="true">Graphical User Interface</choice>
+        <choice>Generally Unique Interface</choice>
+        <choice>Good Unlimited Internet</choice>
+        <choice>Graphical User Interferrence</choice>
+    </choose>
+    <choose score="3" id="23">
+        <q>What is the name of the Java mascot?</q>
+        <choice answer="true">Duke</choice>
+        <choice>Tux</choice>
+        <choice>Mike</choice>
+        <choice>Mario</choice>
+    </choose>
+    <choose score="3" id="24">
+        <q>What open wireless protocol is used for exchanging data over short distances, and is now widely supported in mobile phones, PDA?s and notebooks, and is  even used for connecting controllers to gaming consoles like the Wii?</q>
+        <choice>WIFI</choice>
+        <choice>AM</choice>
+        <choice answer="true">Bluetooth</choice>
+        <choice>WiMax</choice>
+    </choose>
+    <choose score="3" id="25">
+        <q>What software company is responsible for the development and distribution of the increasingly popular Linux-based operating system Ubuntu?</q>
+        <choice>Red Hat</choice>
+        <choice>Novell</choice>
+        <choice answer="true">Canonical</choice>
+        <choice>Microsoft</choice>
+    </choose>
+    <choose score="3" id="26">
+        <q>Which software developer pioneered the development of the Linux kernel?</q>
+        <choice>Steve Ballmer</choice>
+        <choice>Donald Knuth</choice>
+        <choice>Linux Backus</choice>
+        <choice answer="true">Linux Torvalds</choice>
+    </choose>
+    <choose score="3" id="27">
+        <q>Which software developer invented the programming language FORTRAN?</q>
+        <choice answer="true">John Backus</choice>
+        <choice>Bill Gates</choice>
+        <choice>Steve Wozniak</choice>
+        <choice>Charles Babbage</choice>
+    </choose>
+    <choose score="5" id="28">
+        <q>What is the name of the rendering engine that Mozilla Firefox uses?</q>
+        <choice>WebKit</choice>
+        <choice answer="true">Gecko</choice>
+        <choice>SeaMonkey</choice>
+        <choice>Netscape</choice>
+    </choose>
+    <choose score="5" id="29">
+        <q>Who is credited as the inventor of the Java Programming Language?</q>
+        <choice>Niklaus Wirth</choice>
+        <choice>Michael Feldman</choice>
+        <choice>Adele Goldberg</choice>
+        <choice answer="true">James Gosling</choice>
+    </choose>
+    <choose score="5" id="30">
+        <q>What collection of web techniques is responsible for interactive web applications and is used by most of today?s web applications like Gmail?</q>
+        <choice>Flash</choice>
+        <choice>Flex</choice>
+        <choice answer="true">Ajax</choice>
+        <choice>Ulysses</choice>
+    </choose>
+    <choose score="1" id="31">
+        <q>Qbasic is owned by which company?</q>
+        <choice>Sun</choice>
+        <choice>Oracle</choice>
+        <choice answer="true">Microsoft</choice>
+        <choice>Novell</choice>
+    </choose>
+    <choose score="1" id="32">
+        <q>What is the input/output device which allows you to move the pointer on the screen?</q>
+        <choice>Ballpen</choice>
+        <choice answer="true">Mouse</choice>
+        <choice>Accelerometer</choice>
+        <choice>Mount</choice>
+    </choose>
+    <choose score="1" id="33">
+        <q>Which of the following is an open source mobile operating system?</q>
+        <choice>Debian</choice>
+        <choice answer="true">Android</choice>
+        <choice>Symbian</choice>
+        <choice>JDK</choice>
+    </choose>
+    <choose score="1" id="34">
+        <q>What is the media player usually bundled with iTunes?</q>
+        <choice>Safari</choice>
+        <choice>Real Player</choice>
+        <choice>Windows Media Player</choice>
+        <choice answer="true">QuickTime</choice>
+    </choose>
+    <choose score="1" id="35">
+        <q>What is the spreadsheet application in Microsoft Office?</q>
+        <choice>Calc</choice>
+        <choice>Math</choice>
+        <choice answer="true">Excel</choice>
+        <choice>Excell</choice>
+    </choose>
+    <choose score="1" id="36">
+        <q>What does .exe stand for?</q>
+        <choice>Execution</choice>
+        <choice answer="true">Executable</choice>
+        <choice>Exception</choice>
+        <choice>External</choice>
+    </choose>
+    <choose score="1" id="37">
+        <q>In MS Office programs, what usually does the button with a diskette do?</q>
+        <choice>Close</choice>
+        <choice>Open</choice>
+        <choice answer="true">Save</choice>
+        <choice>Print</choice>
+    </choose>
+    <choose score="3" id="38">
+        <q>Who is the man associated with the Turing Machine?</q>
+        <choice>Allen Turing</choice>
+        <choice>Danny Turing</choice>
+        <choice answer="true">Alan Turing</choice>
+        <choice>Allan Turing</choice>
+    </choose>
+    <choose score="3" id="39">
+        <q>What is FIFO?</q>
+        <choice answer="true">First In First Out</choice>
+        <choice>Finally In Finally Out</choice>
+        <choice>Form Input From Output</choice>
+        <choice>Some football association</choice>
+    </choose>
+    <choose score="3" id="40">
+        <q>What is LIFO?</q>
+        <choice>Log In From Outside</choice>
+        <choice answer="true">Last In First Out</choice>
+        <choice>Last In First On</choice>
+        <choice>Last In Fade Out</choice>
+    </choose>
+    <choose score="3" id="41">
+        <q>In networking, what does WAN mean?</q>
+        <choice>Word Association Network</choice>
+        <choice answer="true">Wide Area Network</choice>
+        <choice>Worm Access Network</choice>
+        <choice>Wide Access Network</choice>
+    </choose>
+    <choose score="3" id="42">
+        <q>What is Microsoft's newer command line interface?</q>
+        <choice>Bing</choice>
+        <choice>Bash</choice>
+        <choice>C shell</choice>
+        <choice answer="true">PowerShell</choice>
+    </choose>
+    <choose score="5" id="43">
+        <q>Which one of these was an actual computer?</q>
+        <choice>Apple IX</choice>
+        <choice answer="true">Commodore 64</choice>
+        <choice>Atari ND</choice>
+        <choice>R2D2</choice>
+    </choose>
+    <choose score="5" id="44">
+        <q>In Qbasic, if DO has a LOOP, then WHILE has a ______.</q>
+        <choice>WHERE</choice>
+        <choice>UNTIL</choice>
+        <choice answer="true">WEND</choice>
+        <choice>END</choice>
+    </choose>
+    <choose score="5" id="45">
+        <q>What is an object which must be instantiated once and only once? (Java)</q>
+        <choice answer="true">singleton</choice>
+        <choice>static</choice>
+        <choice>simpleton</choice>
+        <choice>soloton</choice>
+    </choose>
 </stage>
