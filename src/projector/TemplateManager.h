@@ -36,11 +36,9 @@ public:
 	enum TKey { INDEX, ERROR, SCOREBOARD, QDISPLAY, TIMEBOARD, N_TEMPLATES };
 	TemplateManager();
 
-	void setTemplatePath(const QString &path) {
-		m_dir = QDir(path);
-	}
+	void setTemplatePath(const QString &path);
 
-	QString getTemplatePath() { return m_dir.canonicalPath(); }
+	QString getTemplatePath() const { return m_dir.canonicalPath(); }
 
 	ctemplate::Template* getTemplate(TKey template_key);
 private:

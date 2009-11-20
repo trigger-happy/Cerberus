@@ -45,6 +45,7 @@ ContestantConnection::ContestantConnection ( ServerNetwork* sn, QTcpSocket* sock
 	out << ( ushort ) true;
 
 	m_socket->write ( block );
+	m_socket->flush();
 
 	m_qnum = m_snet->getQNumber();
 	m_qtime = m_snet->getQTime();
@@ -229,6 +230,7 @@ void ContestantConnection::errorReply ( ERROR_MESSAGES err ) {
 	out << ( uchar ) err;
 
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ContestantConnection::disconnected() {
@@ -250,6 +252,7 @@ void ContestantConnection::authenticationReply ( bool res ) {
 	out << ( uchar ) res;
 
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ContestantConnection::sendQData ( const QString& xml ) {
@@ -266,6 +269,7 @@ void ContestantConnection::sendQData ( const QString& xml ) {
 	out.writeRawData ( hash.data(), hash.size() );
 	out << xml;
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ContestantConnection::sendAReply ( bool res ) {
@@ -280,6 +284,7 @@ void ContestantConnection::sendAReply ( bool res ) {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( uchar ) res;
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ContestantConnection::sendContestTime() {
@@ -294,6 +299,7 @@ void ContestantConnection::sendContestTime() {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( ushort ) m_contime;
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ContestantConnection::sendContestState () {
@@ -309,6 +315,7 @@ void ContestantConnection::sendContestState () {
 	out << ( ushort ) m_round << ( uchar ) m_con_status;
 
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ContestantConnection::setRound ( int round ) {
@@ -334,6 +341,7 @@ void ContestantConnection::setQuestionState ( ushort qnum, ushort& time, QUESTIO
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( ushort ) qnum << ( ushort ) time << ( ushort ) state;
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ContestantConnection::dropClient() {

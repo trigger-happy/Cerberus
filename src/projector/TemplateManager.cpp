@@ -53,13 +53,19 @@ void TemplateManager::initialize() {
 			DEFAULT_KEYS[TIMEBOARD],
 			DEFAULT_TEMPLATE_TIMEBOARD, strlen(DEFAULT_TEMPLATE_TIMEBOARD));
 
-	Template::ReloadAllIfChanged();
 	initialized = true;
 }
 
 TemplateManager::TemplateManager()
 {
 	initialize();
+}
+
+void TemplateManager::setTemplatePath(const QString &path) {
+	m_dir = QDir(path);
+	if ( !m_dir.exists() ) {
+		qWarning() << "Template path " << m_dir.absolutePath() << " does not exist.";
+	}
 }
 
 //#define DEBUG_TEMPLATE_RESOLUTION
@@ -77,8 +83,10 @@ ctemplate::Template* TemplateManager::getTemplate(TKey template_key) {
 #endif
 		Template *ret = Template::GetTemplate(
 				fullPath.canonicalFilePath().toStdString(), ctemplate::DO_NOT_STRIP);
-		if ( ret )
+		if ( ret ) {
+			ret->ReloadIfChanged();
 			return ret;
+		}
 	}
 #ifdef DEBUG_TEMPLATE_RESOLUTION
 	qDebug() << "\tNot found, resorting to default.";
