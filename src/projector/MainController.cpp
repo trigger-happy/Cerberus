@@ -116,8 +116,10 @@ void MainController::onRoundsReceived(const ushort nRounds) {
 	m_stageDataCounter = nRounds;
 	m_stageData.resize(nRounds);
 
-	for ( int i = 1; i <= nRounds; ++i )
-		m_net->getStageData(i);
+        for ( int i = 1; i <= nRounds; ++i ) {
+            qDebug() << "Sending stage data request: " << i;
+            m_net->getStageData(i);
+        }
 }
 
 void MainController::onContestState( ushort round, CONTEST_STATUS status ) {
