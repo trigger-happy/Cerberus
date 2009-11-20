@@ -404,12 +404,24 @@ void Server::setScore( QString c_user, double score ) {
 
 		if ( temp->text() == target ) {
 			m_rankmodel->item( i, 3 )->setText( QString( "%1" ).arg( score ) );
-			m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg(
-			                                        ( getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
-			                                          m_preciseTimeLeft +
-			                                          SCORE_TIME_PRECISION / 2 ) //for rounding off to the nearest SCORE_TIME_PRECISON
-			                                        / SCORE_TIME_PRECISION //truncate the rest of the score off
-			                                    ) );
+
+			if ( m_round < 3 ) {
+				m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg(
+				                                        ( getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
+				                                          m_preciseTimeLeft +
+				                                          SCORE_TIME_PRECISION / 2 ) //for rounding off to the nearest SCORE_TIME_PRECISON
+				                                        / SCORE_TIME_PRECISION //truncate the rest of the score off
+				                                    ) );
+			} else {
+				int prevtime = m_rankmodel->item( i, 4 )->text().toInt();
+				prevtime += ( ( getQuestionTime( m_round, m_selected_question_num ) * 1000 - //In seconds, convert to milliseconds
+				                m_preciseTimeLeft +
+				                SCORE_TIME_PRECISION / 2 ) //for rounding off to the nearest SCORE_TIME_PRECISON
+				              / SCORE_TIME_PRECISION //truncate the rest of the score off
+				            );
+				m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg( prevtime ) );
+			}
+
 			updateRankData();
 			break;
 		}
