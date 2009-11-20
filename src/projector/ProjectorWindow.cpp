@@ -170,8 +170,10 @@ void ProjectorWindow::setConfig(const ProjectorConfig &cfg) {
 	if ( m_cfg != &cfg )
 		*m_cfg = cfg;
 
-	m_base_url = QUrl::fromLocalFile(m_cfg->theme_path);
 	m_tpl_mgr.setTemplatePath(m_cfg->theme_path);
+	m_base_url = QUrl::fromLocalFile(m_tpl_mgr.getTemplatePath() + '/');
+	qDebug() << "Base url: " << m_base_url;
+
 	if ( m_cfg->contest_name.isEmpty() )
 		setWindowTitle(WINDOW_TITLE);
 	else

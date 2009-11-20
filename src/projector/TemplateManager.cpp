@@ -67,7 +67,7 @@ TemplateManager::TemplateManager()
 ctemplate::Template* TemplateManager::getTemplate(TKey template_key) {
 	using ctemplate::Template;
 
-	QFileInfo fullPath(QDir(m_path), TEMPLATE_FILENAMES[template_key]);
+	QFileInfo fullPath(m_dir, TEMPLATE_FILENAMES[template_key]);
 #ifdef DEBUG_TEMPLATE_RESOLUTION
 	qDebug() << "Requesting for template: " << fullPath.absoluteFilePath();
 #endif

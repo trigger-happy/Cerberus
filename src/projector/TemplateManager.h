@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define PROJECTOR_TEMPLATEMANAGER_H_
 
 #include <QString>
+#include <QDir>
 
 namespace ctemplate {
 	class Template;
@@ -36,15 +37,15 @@ public:
 	TemplateManager();
 
 	void setTemplatePath(const QString &path) {
-		m_path = path;
+		m_dir = QDir(path);
 	}
 
-	const QString& getTemplatePath() { return m_path; }
+	QString getTemplatePath() { return m_dir.canonicalPath(); }
 
 	ctemplate::Template* getTemplate(TKey template_key);
 private:
 	static void initialize();
-	QString m_path;
+	QDir m_dir;
 };
 
 #endif // PROJECTOR_TEMPLATEMANAGER_H_
