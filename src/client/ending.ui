@@ -134,7 +134,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Exit</string>
+      <string>&amp;Exit</string>
      </property>
     </widget>
    </item>

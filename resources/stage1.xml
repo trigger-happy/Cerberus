@@ -1,39 +1,115 @@
 <?xml version="1.0"?>
-<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="3600">
-    <welcome_msg>Welcome to Round 1! Get Ready to Rumble!</welcome_msg>
+<stage xmlns="http://cerberus.compsat.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cerberus.compsat.org stage.xsd" time_limit="1800">
+    <welcome_msg>Ohayou Gozaimasu!
+
+Welcome to Cerberus Testing! Thank you for taking the time to test this system out. 
+
+Just sit back, relax, and enjoy the first round of this mock contest. :)
+
+Each question will only have one possible answer.</welcome_msg>
     <choose score="1" id="1">
-        <q>How many Genins made it into the preliminaries of the Third Chuunin Exam?</q>
-        <choice>20</choice>
-        <choice answer="true">21</choice>
-        <choice>16</choice>
-        <choice>17</choice>
+        <q>What does the ME in JavaME stand for?</q>
+        <choice answer="true">Micro Edition</choice>
+        <choice>Mini Edition</choice>
+        <choice>Mobile Edition</choice>
+        <choice>My Edition</choice>
     </choose>
-    <choose score="2" id="2">
-        <q>What is the name of Naruto's rival?</q>
-        <choice>Gaara</choice>
-        <choice>Neji</choice>
-        <choice answer="true">Sasuke</choice>
-        <choice>Rock Lee</choice>
+    <choose score="1" id="2">
+        <q>Latest client version of Microsoft's line of Windows product is:</q>
+        <choice>Windows XP Professional x64</choice>
+        <choice>Windows Vista</choice>
+        <choice>Windows CE</choice>
+        <choice answer="true">Windows 7</choice>
     </choose>
     <choose score="1" id="3">
-        <q>How many Chakra Gates are there in the body?</q>
-        <choice>3</choice>
-        <choice answer="true">8</choice>
-        <choice>11</choice>
-        <choice>14</choice>
+        <q>This is a set of tools with a managed runtime environment provided by Microsoft that facilitates computer game development and management.</q>
+        <choice>Eclipse</choice>
+        <choice>Java3D</choice>
+        <choice>OpenGL</choice>
+        <choice answer="true">XNA</choice>
     </choose>
     <choose score="1" id="4">
-        <q>Who killed Jiraiya?</q>
-        <choice>Uchiha Madara</choice>
-        <choice>Kyuubi</choice>
-        <choice>Orochimaru</choice>
-        <choice answer="true">Pain</choice>
+        <q>How many bytes are there in a binary kilobyte (KB or KiB)?</q>
+        <choice>1000</choice>
+        <choice answer="true">1024</choice>
+        <choice>1028</choice>
+        <choice>1248</choice>
     </choose>
-    <choose score="2" id="5">
-        <q>Who was stabbed in the latest manga of One Piece?</q>
-        <choice>Ace</choice>
-        <choice answer="true">Whitebeard</choice>
-        <choice>Luffy</choice>
-        <choice>Blackbeard</choice>
+    <choose score="1" id="5">
+        <q>This is a free and open source web browser managed by Mozilla Corporation</q>
+        <choice answer="true">Firefox</choice>
+        <choice>Netscape</choice>
+        <choice>Opera</choice>
+        <choice>Webzilla</choice>
+    </choose>
+    <choose score="1" id="6">
+        <q>Computer programs that allow higher-level computer programs to interact with hardware are called:</q>
+        <choice>APIs</choice>
+        <choice answer="true">Device drivers</choice>
+        <choice>Interrupt handlers</choice>
+        <choice>None of the above</choice>
+    </choose>
+    <choose score="1" id="7">
+        <q>An object-oriented programming language developed at Sun Microsystems in the early 1990s.</q>
+        <choice>C++</choice>
+        <choice answer="true">Java</choice>
+        <choice>Smalltalk</choice>
+        <choice>Solaris</choice>
+    </choose>
+    <choose score="3" id="8">
+        <q>What does NaN stand for?</q>
+        <choice>Not a Network</choice>
+        <choice answer="true">Not a Number</choice>
+        <choice>Never a Null</choice>
+        <choice>Number abNormal</choice>
+    </choose>
+    <choose score="3" id="9">
+        <q>What are concurrent processes?</q>
+        <choice>Processes that return quickly.</choice>
+        <choice answer="true">Processes that can be run in parallel.</choice>
+        <choice>Both a and b</choice>
+        <choice>None of the above</choice>
+    </choose>
+    <choose score="3" id="10">
+        <q>This refers to the empirical observation that the number of transistors that can be inexpensively placed on an integrated circuit doubles approximately every two years.</q>
+        <choice>Amdahl's Law</choice>
+        <choice>Metcalfe's Law</choice>
+        <choice answer="true">Moore's Law</choice>
+        <choice>Murphy's Law</choice>
+    </choose>
+    <choose score="3" id="11">
+        <q>When using Category 5e cables for Ethernet networks without repeaters, the cable's length is normally limited to:</q>
+        <choice>100 feet</choice>
+        <choice>150 feet</choice>
+        <choice answer="true">100 meters</choice>
+        <choice>150 meters</choice>
+    </choose>
+    <choose score="3" id="12">
+        <q>This is a type of non-photorealistic rendering designed to make computer graphics appear hand-drawn.</q>
+        <choice answer="true">Cel-shading</choice>
+        <choice>Flat shading</choice>
+        <choice>Gouraud shading</choice>
+        <choice>Phong shading</choice>
+    </choose>
+    <choose score="5" id="13">
+        <q>Which of the following has only ONE binary representation of the number (0) if used to represent a signed integer?</q>
+        <choice>Sign-and-magnitude</choice>
+        <choice>One's complement</choice>
+        <choice answer="true">Two's complement</choice>
+        <choice>None of the above</choice>
+    </choose>
+    <choose score="5" id="14">
+        <q>This is a piece of code that accesses a shared resource and must not be concurrently accessed by more than one thread of execution</q>
+        <choice answer="true">Critical section</choice>
+        <choice>Deadlock</choice>
+        <choice>Interrupt</choice>
+        <choice>Semaphore</choice>
+    </choose>
+    <choose score="5" id="15">
+        <q>Recognized as the father of digital art by Smithsonian Institution's monthly magazine publication, who created the first computer art in 1964</q>
+        <choice answer="true">Charles Csuri</choice>
+        <choice>Henri Gouraud</choice>
+        <choice>A. Michael Noll</choice>
+        <choice>Ivan Sutherland</choice>
     </choose>
 </stage>

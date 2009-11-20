@@ -404,12 +404,24 @@ void Server::setScore( QString c_user, double score ) {
 
 		if ( temp->text() == target ) {
 			m_rankmodel->item( i, 3 )->setText( QString( "%1" ).arg( score ) );
-			m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg(
-			                                        ( getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
-			                                          m_preciseTimeLeft +
-			                                          SCORE_TIME_PRECISION / 2 ) //for rounding off to the nearest SCORE_TIME_PRECISON
-			                                        / SCORE_TIME_PRECISION //truncate the rest of the score off
-			                                    ) );
+
+			if ( m_round < 3 ) {
+				m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg(
+				                                        ( getRoundTime( m_round ) * 1000 - //In seconds, convert to milliseconds
+				                                          m_preciseTimeLeft +
+				                                          SCORE_TIME_PRECISION / 2 ) //for rounding off to the nearest SCORE_TIME_PRECISON
+				                                        / SCORE_TIME_PRECISION //truncate the rest of the score off
+				                                    ) );
+			} else {
+				int prevtime = m_rankmodel->item( i, 4 )->text().toInt();
+				prevtime += ( ( getQuestionTime( m_round, m_selected_question_num ) * 1000 - //In seconds, convert to milliseconds
+				                m_preciseTimeLeft +
+				                SCORE_TIME_PRECISION / 2 ) //for rounding off to the nearest SCORE_TIME_PRECISON
+				              / SCORE_TIME_PRECISION //truncate the rest of the score off
+				            );
+				m_rankmodel->item( i, 4 )->setText( QString( "%1" ).arg( prevtime ) );
+			}
+
 			updateRankData();
 			break;
 		}
@@ -621,13 +633,31 @@ void Server::setContestTime( ushort time ) {
 }
 
 void Server::scoreReset() {
+	QFile file( "scores.log" );
+
+	if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
+		qDebug() << "Unable to open scores.log\n";
+	}
+
+	QTextStream out( &file );
 	SqlUtil::getInstance().scoreReset();
 
+	out << QDate::currentDate().toString( Qt::TextDate ) << "\n";
+	out << QString( "Round %1 scores\n" ).arg( m_round );
+
 	for ( int i = 0; i < m_rankmodel->rowCount(); i++ ) {
+		// dump
+		out << m_rankmodel->item( i, 0 )->text() << " ";
+		out << m_rankmodel->item( i, 1 )->text() << " ";
+		out << m_rankmodel->item( i, 2 )->text() << " ";
+		out << m_rankmodel->item( i, 3 )->text() << " ";
+		out << m_rankmodel->item( i, 4 )->text() << "\n";
+		// reset
 		m_rankmodel->item( i, 3 )->setText( QString( "0" ) );
 		m_rankmodel->item( i, 4 )->setText( QString( "0" ) );
 	}
 
+	out << "\n";
 	filterTeamView();
 }
 
