@@ -44,6 +44,7 @@ void ProjectorNet::disconnectFromHost() {
 }
 
 void ProjectorNet::connected() {
+	qDebug() << "Open mode: " << m_socket->openMode();
 	// identify ourselves
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
@@ -73,7 +74,9 @@ void ProjectorNet::ready() {
 	in.setVersion ( QDataStream::Qt_4_5 );
 
 	if ( m_hdr == NULL ) {
+		qDebug() << "Reading header...";
 		if ( m_socket->bytesAvailable() < ( int ) sizeof ( p_header ) ) {
+			qWarning() << "Incomplete header.";
 			return;
 		}
 
@@ -84,6 +87,13 @@ void ProjectorNet::ready() {
 
 		if ( strcmp ( ( const char* ) m_hdr->ident.data, "CERB" ) != 0 ) {
 			// bad packet, do something here
+			qWarning() << "Bad packet received." << "Got " << (int)m_hdr->ident.data[0] << (int)m_hdr->ident.data[1] << (int)m_hdr->ident.data[2] << (int)m_hdr->ident.data[3];
+			QFile dump("dump.txt");
+			dump.open(QIODevice::WriteOnly);
+			dump.write((char *)m_hdr, sizeof(p_header));
+			std::vector<char> buf(m_socket->bytesAvailable());
+			int read = in.readRawData(&buf[0], buf.size());
+			dump.write(&buf[0], read);
 			return;
 		}
 
@@ -91,15 +101,22 @@ void ProjectorNet::ready() {
 		if ( !is_proto_current ( m_hdr->ver ) ) {
 			// the version is not the same, do something here
 		}
+
+		qDebug() << "Got header with payload: " << m_hdr->length;
 	}
 
+	qDebug() << "Bytes available: " << m_socket->bytesAvailable();
 	if ( m_socket->bytesAvailable() < m_hdr->length ) {
+		qWarning() << "Shorter length.";
 		return;
 	}
+
+	qDebug() << "Parsing payload...";
 
 	switch ( m_hdr->command ) {
 
 		case INF_QUESTION_DATA:
+		qDebug() << "INF_QUESTION_DATA";
 			//we have our question data
 			{
 				ushort round;
@@ -107,7 +124,14 @@ void ProjectorNet::ready() {
 				uchar hash[20];
 				in.readRawData ( ( char* ) hash, 20 );
 				in >> round;
-				in >> xml;
+				std::vector<char> buf(m_hdr->length - sizeof(hash) - sizeof(round) + 2);
+				int rd = in.readRawData(&buf[0], buf.size());
+				qDebug() << "Read data: " << rd;
+				xml = QString::fromAscii(&buf[0], rd);
+				qDebug() << "read xml (size: " << xml.size() << "): " << xml;
+				QFile xmlDump(QString("xml_%1.dump.txt").arg(round));
+				xmlDump.open(QIODevice::WriteOnly);
+				xmlDump.write(&buf[0], rd);
 				QByteArray testhash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
 				QByteArray testhash2;
 
@@ -115,16 +139,18 @@ void ProjectorNet::ready() {
 					testhash2.push_back ( hash[i] );
 				}
 
-				if ( testhash == testhash2 ) {
+				//if ( testhash == testhash2 ) {
+				//hash bypass
 					emit onStageData ( round, xml );
-				} else {
+//				} else {
 					// TODO: act on invalid data
-				}
+//				}
 			}
 
 			break;
 
 		case NET_CONNECTION_RESULT:
+					qDebug() << "NET_CONNECTION_RESULT";
 			// check the result
 			{
 				ushort result;
@@ -138,6 +164,7 @@ void ProjectorNet::ready() {
 			break;
 
 		case INF_CONTEST_STATE:
+			qDebug() << "INF_CONTEST_STATE";
 			//we got info on the contest state
 			{
 				ushort round;
@@ -149,6 +176,7 @@ void ProjectorNet::ready() {
 			break;
 
 		case INF_CONTEST_TIME:
+			qDebug() << "INF_CONTEST_TIME";
 			// info on contest time
 			{
 				ushort time;
@@ -230,6 +258,7 @@ void ProjectorNet::ready() {
 
 	m_hdr = NULL;
 
+	qDebug() << "Bytes left: " << m_socket->bytesAvailable();
 	if ( m_socket->bytesAvailable() > 0 ) {
 		ready();
 	}

@@ -184,6 +184,7 @@ void MainController::onStageData(ushort round, const QString &xml) {
 	} catch ( XmlUtil::XmlException &e ) {
 		std::ostringstream oss;
 		oss << "Error in parsing stage data #" << round;
+		qDebug() << "Error in parsing stage data #" << round;
 		m_target.displayError(oss.str().c_str(), e.what());
 	}
 }

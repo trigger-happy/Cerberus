@@ -341,6 +341,7 @@ void Server::projectorConnect( ProjectorConnection* pc ) {
 	if ( testing ) cout << "Projector has connected.\n";
 
 	connect( pc, SIGNAL( onContestTimeRequest( ushort& ) ), this, SIGNAL( onContestTimeRequest( ushort& ) ) );
+	pc->init();
 }
 
 void Server::projectorDisconnect( ProjectorConnection* pc ) {

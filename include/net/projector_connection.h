@@ -129,6 +129,7 @@ public:
 		m_qdata = qdata;
 	}
 
+	void init();
 public slots:
 	/*!
 	Called when there's a socket error.

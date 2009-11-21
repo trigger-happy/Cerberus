@@ -20,6 +20,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "net/protocol.h"
 #include "data_types.h"
 
+#include <QDebug>
+
 using std::vector;
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket,
@@ -34,6 +36,11 @@ ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket,
 	          this, SLOT ( error ( QAbstractSocket::SocketError ) ) );
 	connect ( m_socket, SIGNAL ( readyRead() ), this, SLOT ( ready() ) );
 	m_hdr = NULL;
+
+
+}
+
+void ProjectorConnection::init() {
 	// reply to client of the now established connection
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
@@ -47,9 +54,9 @@ ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket,
 	out << ( ushort ) true;
 
 	m_socket->write ( block );
-	m_socket->flush();
-}
 
+
+}
 void ProjectorConnection::error( const QAbstractSocket::SocketError& err ) {
 	emit onError( m_socket->errorString() );
 }
@@ -86,6 +93,7 @@ void ProjectorConnection::ready() {
 	switch ( m_hdr->command ) {
 
 		case QRY_QUESTION_REQUEST:
+qDebug() << "Projector: QRY_QUESTION_REQUEST";
 			//contestant is asking for question data
 			ushort round;
 			in >> round;
@@ -94,22 +102,26 @@ void ProjectorConnection::ready() {
 			break;
 
 		case QRY_CONTEST_STATE:
+			qDebug() << "Projector: QRY_CONTEST_STATE";
 			//contestant is asking for the contest state.
 
 			sendContestState();
 			break;
 
 		case QRY_CONTEST_TIME:
+			qDebug() << "Projector: QRY_CONTEST_TIME";
 			emit onContestTimeRequest( m_contime );
 			sendContestTime();
 			break;
 
 		case QRY_PROJECTOR_READY:
+			qDebug() << "Projector: QRY_PROJECTOR_READY";
 			m_ready = true;
 			emit projectorReady( this );
 			break;
 
 		case QRY_NUM_ROUNDS:
+			qDebug() << "Projector: QRY_NUM_ROUNDS";
 			sendNumRounds();
 			break;
 
@@ -142,7 +154,7 @@ void ProjectorConnection::setQuestionState( ushort qnum, ushort time, QUESTION_S
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( ushort ) qnum << ( ushort ) time << ( ushort ) state;
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
 void ProjectorConnection::showContestTime() {
@@ -156,7 +168,7 @@ void ProjectorConnection::showContestTime() {
 	hdr.length = 0;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
 void ProjectorConnection::showQuestionTime() {
@@ -174,7 +186,7 @@ void ProjectorConnection::showAnswer() {
 	hdr.length = 0;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
 void ProjectorConnection::hideAnswer() {
@@ -188,7 +200,7 @@ void ProjectorConnection::hideAnswer() {
 	hdr.length = 0;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
 void ProjectorConnection::sendContestState() {
@@ -204,7 +216,7 @@ void ProjectorConnection::sendContestState() {
 	out << ( ushort ) m_round << ( uchar ) m_con_status;
 
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
 void ProjectorConnection::sendContestTime() {
@@ -219,7 +231,7 @@ void ProjectorConnection::sendContestTime() {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( ushort ) m_contime;
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
 void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
@@ -252,10 +264,12 @@ void ProjectorConnection::showContestRanks( const vector<RankData>& rd ) {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
+#include <QDebug>
 void ProjectorConnection::sendQData( ushort round, const QString& xml ) {
+
 	//construct the packet and send it
 	QByteArray block;
 	QDataStream out ( &block, QIODevice::WriteOnly );
@@ -269,8 +283,10 @@ void ProjectorConnection::sendQData( ushort round, const QString& xml ) {
 	out.writeRawData ( hash.data(), hash.size() );
 	out << ( ushort ) round;
 	out << xml;
-	m_socket->write ( block );
+	qint64 res = m_socket->write ( block );
 	m_socket->flush();
+
+
 }
 
 void ProjectorConnection::showMainScreen() {
@@ -284,7 +300,7 @@ void ProjectorConnection::showMainScreen() {
 	hdr.length = 0;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
-	m_socket->flush();
+
 }
 
 void ProjectorConnection::sendNumRounds() {
@@ -299,5 +315,4 @@ void ProjectorConnection::sendNumRounds() {
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out << ( ushort ) m_maxrounds;
 	m_socket->write ( block );
-	m_socket->flush();
 }
