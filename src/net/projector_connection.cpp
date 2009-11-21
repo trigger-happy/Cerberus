@@ -263,12 +263,14 @@ void ProjectorConnection::sendQData( ushort round, const QString& xml ) {
 	// construct the header
 	p_header hdr;
 	hdr.command = INF_QUESTION_DATA;
+	QByteArray x = xml.toUtf8();
 	QByteArray hash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
-	hdr.length = hash.size() + xml.size();
+	hdr.length = hash.size() + x.size();
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out.writeRawData ( hash.data(), hash.size() );
 	out << ( ushort ) round;
-	out << xml;
+	
+	out.writeRawData(x.data(), x.size());
 	m_socket->write ( block );
 	m_socket->flush();
 }

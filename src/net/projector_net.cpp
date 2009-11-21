@@ -57,6 +57,7 @@ void ProjectorNet::connected() {
 	out << ( uchar ) CLIENT_PROJECTOR;
 
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ProjectorNet::disconnected() {
@@ -246,6 +247,7 @@ void ProjectorNet::getContestState() {
 	hdr.command = QRY_CONTEST_STATE;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ProjectorNet::getContestTime() {
@@ -258,6 +260,7 @@ void ProjectorNet::getContestTime() {
 	hdr.command = QRY_CONTEST_TIME;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ProjectorNet::sendReadyState() {
@@ -270,6 +273,7 @@ void ProjectorNet::sendReadyState() {
 	hdr.command = QRY_PROJECTOR_READY;
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	m_socket->write ( block );
+	m_socket->flush();
 }
 
 void ProjectorNet::getStageData( int round ) {
