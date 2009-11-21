@@ -20,8 +20,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "net/protocol.h"
 #include "data_types.h"
 
-#include <QDebug>
-
 using std::vector;
 
 ProjectorConnection::ProjectorConnection( QObject* parent, QTcpSocket* socket,
@@ -277,13 +275,15 @@ void ProjectorConnection::sendQData( ushort round, const QString& xml ) {
 	// construct the header
 	p_header hdr;
 	hdr.command = INF_QUESTION_DATA;
+	QByteArray x = xml.toUtf8();
 	QByteArray hash = QCryptographicHash::hash ( xml.toAscii(), QCryptographicHash::Sha1 );
-	hdr.length = hash.size() + xml.size();
+	hdr.length = hash.size() + x.size();
 	out.writeRawData ( ( const char* ) &hdr, sizeof ( p_header ) );
 	out.writeRawData ( hash.data(), hash.size() );
 	out << ( ushort ) round;
-	out << xml;
-	qint64 res = m_socket->write ( block );
+	
+	out.writeRawData(x.data(), x.size());
+	m_socket->write ( block );
 	m_socket->flush();
 
 
