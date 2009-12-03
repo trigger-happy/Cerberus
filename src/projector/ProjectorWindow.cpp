@@ -72,14 +72,17 @@ void ProjectorWindow::setTimeLeft(unsigned int val) {
 	const QVariant &result =
 			m_ui->webView->page()->mainFrame()->
 			evaluateJavaScript(
-					JS_TRIGGER_TIME.arg(QString::number(val)));
+					JS_TRIGGER_TIME.arg(QString::number(
+							(val == ContestTimer::INDEFINITE ? -1.0 : (val/(double)MSEC_PER_SEC))
+							)));
 
-	//if the "time left" is infinity, show an infinity symbol instead (javascript handlers should
-	//consider this scenario).
+	//if the "time left" is infinity, show an infinity symbol instead (javascript handlers will get
+	//"-1" and should consider this scenario).
 	if ( ContestTimer::INDEFINITE == val ) {
 		//send infinity symbol
 		ctemplate::TemplateDictionary::SetGlobalValue("TIME_LEFT", ENTITY_INFINITY);
 	} else {
+		//this should be big enough for any time value given.
 		static char buffer[1024];
 		//format the thing differently if it's over a minute
 		if ( val > MSEC_PER_SEC * 60 ) {
