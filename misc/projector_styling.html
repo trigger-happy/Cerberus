@@ -27,7 +27,36 @@ Example configuration:
 <li>Variables that are to be replaces are represented by words inside double curly brackets {{LIKE_THIS}}.</li>
 <li>Section starts with {{#SECTION_NAME}} and ends with {{/SECTION_NAME}}. They are often used for things that are optionally shown or repeated (like the rankings).</li>
 </ol>
-
+<h1>JavaScript Time Handler</h1>
+<p>
+For templates that have {{TIME_LEFT}} tags. The projector refreshes the templates (that is, the entire page gets re-rendered) at every set interval to update the time. While this may by adequate for simple templates, it may introduce performance issues for more complex ones.</p>
+<p>The solution to this is to introduce javascript handlers which handles the refreshing of the time. This way, only a portion of the web page is updated, reducing flickering. Using javascript handlers is just a matter of assigning a function to <code>window.ontimeleft</code> taking one floating-point parameter which is the time left in seconds. For example (doctype declaration omitted for brevity):</p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+	&lt;script type=&quot;text/javascript&quot;&gt;
+		window.ontimeleft = function(timeLeft) {
+			var time_left = document.getElementById(&quot;time_left&quot;);
+			if ( timeLeft &lt; 0 ) {
+				//indefinite time, use an infinite symbol
+				time_left.innerHTML = &quot;&amp;infin;&quot;;
+			} else {
+				time_left.innerHTML = timeLeft;
+			}
+		};
+	&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;time_left&quot;&gt;{{TIME_LEFT}}&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+Some details to note:
+<ul>
+	<li>The script checks if the timeLeft passed to it is indefinite (used for contests with no time limit) by checking if it's less than zero. An infinite symbol is displayed if that is the case.</li>
+	<li>The div tag contains the <code>{{TIME_LEFT}}</code> template tag. The triggering of the js handler is not guaranteed when the page is initially loaded.</li>
+	<li>If catching the timeLeft upon loading is desired, attach a javascript handler to the <code>window.onload</code> event and assign a variable to <code>{{TIME_LEFT}}</code> or manually retrieve them from the element. When assigning a variable directly from <code>{{TIME_LEFT}}</code>, do note the cases where <code>{{TIME_LEFT}}</code> is equal to &quot;&amp;infin;&quot; (without the quotes) which may introduce parsing errors in the script. The solution is to surround <code>{{TIME_LEFT}}</code> with quotes and attempt to convert that to a float value using <code>parseFloat</code>.
+</ul>
 <h1>Templates</h1>
 <h2>index.html</h2>
 <pre>&lt;html&gt;
