@@ -56,6 +56,7 @@ Some details to note:
 	<li>The script checks if the timeLeft passed to it is indefinite (used for contests with no time limit) by checking if it's less than zero. An infinite symbol is displayed if that is the case.</li>
 	<li>The div tag contains the <code>{{TIME_LEFT}}</code> template tag. The triggering of the js handler is not guaranteed when the page is initially loaded.</li>
 	<li>If catching the timeLeft upon loading is desired, attach a javascript handler to the <code>window.onload</code> event and assign a variable to <code>{{TIME_LEFT}}</code> or manually retrieve them from the element. When assigning a variable directly from <code>{{TIME_LEFT}}</code>, do note the cases where <code>{{TIME_LEFT}}</code> is equal to &quot;&amp;infin;&quot; (without the quotes) which may introduce parsing errors in the script. The solution is to surround <code>{{TIME_LEFT}}</code> with quotes and attempt to convert that to a float value using <code>parseFloat</code>.
+	<li>The projector automatically detects whether you have an event handler installed or not when attempting to update the time. When there's no event handler installed, it simply refreshes the entire page the normal way with <code>{{TIME_LEFT}}</code>. If there's one installed, the handler is called instead and the page is not refreshed. This also means that <code>{{TIME_LEFT}}</code> will not be resubstituted again (i.e. it won't contain the updated values but the value when the page initially loaded).
 </ul>
 <h1>Templates</h1>
 <h2>index.html</h2>
